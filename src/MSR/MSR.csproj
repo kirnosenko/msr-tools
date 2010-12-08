@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{25E8A69D-6400-423F-8B83-C22C096E9D72}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MSR</RootNamespace>
+    <AssemblyName>MSR</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\BugTracking\BugZilla\BugZillaData.cs" />
+    <Compile Include="Data\Entities\BugFix.cs" />
+    <Compile Include="Data\Entities\Commit.cs" />
+    <Compile Include="Data\Entities\DSL\Mapping\BugFixMappingExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Mapping\CodeBlockMappingExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Mapping\CommitMappingExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Mapping\EntityMappingExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Mapping\ModificationMappingExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Mapping\ProjectFileMappingExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Mapping\RepositoryMappingExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\BugFixSelectionExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\CodeBlockSelectionExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\CommitSelectionExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\EntitySelectionExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\Metrics\BugLifetime.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\Metrics\Defects.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\Metrics\DefectCodeDensity.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\ModificationSelectionExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\ProjectFileSelectionExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\RepositoryResolverHelper.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\RepositorySelectionExpression.cs" />
+    <Compile Include="Data\Entities\Mapping\BugFixDetectorBasedOnLogMessage.cs" />
+    <Compile Include="Data\Entities\Mapping\IMapper.cs" />
+    <Compile Include="Data\Entities\Mapping\IMappingHost.cs" />
+    <Compile Include="Data\Entities\Mapping\IPathSelector.cs" />
+    <Compile Include="Data\Entities\Mapping\MappingController.cs" />
+    <Compile Include="Data\Entities\Mapping\IBugFixDetector.cs" />
+    <Compile Include="Data\Entities\Mapping\BugFixMapper.cs" />
+    <Compile Include="Data\Entities\CodeBlock.cs" />
+    <Compile Include="Data\Entities\Mapping\CodeBlockMapper.cs" />
+    <Compile Include="Data\Entities\Mapping\SkipPathByExtension.cs" />
+    <Compile Include="Data\Entities\Mapping\SkipPathByDirectory.cs" />
+    <Compile Include="Data\Entities\Mapping\TakePathByExtension.cs" />
+    <Compile Include="Data\Entities\RepositoryResolverHelper.cs" />
+    <Compile Include="Data\IDataStore.cs" />
+    <Compile Include="Data\InMemoryDataStore.cs" />
+    <Compile Include="Data\InMemoryRepository.cs" />
+    <Compile Include="Data\InMemorySession.cs" />
+    <Compile Include="Data\IRepository.cs" />
+    <Compile Include="Data\IRepositoryResolver.cs" />
+    <Compile Include="Data\ISession.cs" />
+    <Compile Include="Data\Persistent\PersistentDataStoreProfiler.cs" />
+    <Compile Include="Data\VersionControl\FileUniDiff.cs" />
+    <Compile Include="Data\VersionControl\Git\CommandLineGitClient.cs" />
+    <Compile Include="Data\VersionControl\Git\GitBlame.cs" />
+    <Compile Include="Data\VersionControl\Git\GitData.cs" />
+    <Compile Include="Data\VersionControl\Git\GitLog.cs" />
+    <Compile Include="Data\VersionControl\Git\TouchedPathGitAction.cs" />
+    <Compile Include="Data\VersionControl\Git\IGitClient.cs" />
+    <Compile Include="Data\VersionControl\IBlame.cs" />
+    <Compile Include="Data\VersionControl\IDiff.cs" />
+    <Compile Include="Data\VersionControl\ILog.cs" />
+    <Compile Include="Data\Entities\Mapping\ModificationMapper.cs" />
+    <Compile Include="Data\VersionControl\Log.cs" />
+    <Compile Include="Data\VersionControl\ScmDataCache.cs" />
+    <Compile Include="Data\VersionControl\Svn\SvnBlame.cs" />
+    <Compile Include="Data\VersionControl\Svn\SvnFullUniDiff.cs" />
+    <Compile Include="Data\VersionControl\Svn\SvnLog.cs" />
+    <Compile Include="Data\Persistent\PersistentDataStore.cs" />
+    <Compile Include="Data\Persistent\PersistentRepository.cs" />
+    <Compile Include="Data\Persistent\PersistentSession.cs" />
+    <Compile Include="Data\Entities\Mapping\CommitMapper.cs" />
+    <Compile Include="Data\Entities\Mapping\EntityMapper.cs" />
+    <Compile Include="Data\Entities\Mapping\ProjectFileMapper.cs" />
+    <Compile Include="Data\VersionControl\Svn\TouchedPathSvnAction.cs" />
+    <Compile Include="Data\VersionControl\TouchedPath.cs" />
+    <Compile Include="Data\Entities\Modification.cs" />
+    <Compile Include="Data\Entities\ProjectFile.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\Metrics\TraditionalDefectDensity.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\Metrics\Loc.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Data\VersionControl\Svn\ISvnClient.cs" />
+    <Compile Include="Data\VersionControl\IScmData.cs" />
+    <Compile Include="Data\VersionControl\Svn\CommandLineSvnClient.cs" />
+    <Compile Include="Data\VersionControl\Svn\SvnData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MSR.Util\MSR.Util.csproj">
+      <Project>{8F9A4FAD-4EEB-4590-BEF5-034CDE2BFFBB}</Project>
+      <Name>MSR.Util</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

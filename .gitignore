@@ -1,0 +1,5 @@
+﻿# ignore this
+src/*/bin
+src/*/obj
+*.user
+*.suo

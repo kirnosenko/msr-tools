@@ -1,0 +1,2802 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Accord.Math</name>
+    </assembly>
+    <members>
+        <member name="T:Accord.Math.Formats.MatrixFormatProviderBase">
+            <summary>
+              Base class for IMatrixFormatProvider implementors.
+            </summary>
+            
+        </member>
+        <member name="T:Accord.Math.Formats.IMatrixFormatProvider">
+            <summary>
+              Common interface for Matrix format providers.
+            </summary>
+            
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.FormatMatrixStart">
+            <summary>A string denoting the start of the matrix to be used in formatting.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.FormatMatrixEnd">
+            <summary>A string denoting the end of the matrix to be used in formatting.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.FormatRowStart">
+            <summary>A string denoting the start of a matrix row to be used in formatting.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.FormatRowEnd">
+            <summary>A string denoting the end of a matrix row to be used in formatting.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.FormatColStart">
+            <summary>A string denoting the start of a matrix column to be used in formatting.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.FormatColEnd">
+            <summary>A string denoting the end of a matrix column to be used in formatting.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.FormatRowDelimiter">
+            <summary>A string containing the row delimiter for a matrix to be used in formatting.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.FormatColDelimiter">
+            <summary>A string containing the column delimiter for a matrix to be used in formatting.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.ParseMatrixStart">
+            <summary>A string denoting the start of the matrix to be used in parsing.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.ParseMatrixEnd">
+            <summary>A string denoting the end of the matrix to be used in parsing.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.ParseRowStart">
+            <summary>A string denoting the start of a matrix row to be used in parsing.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.ParseRowEnd">
+            <summary>A string denoting the end of a matrix row to be used in parsing.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.ParseColStart">
+            <summary>A string denoting the start of a matrix column to be used in parsing.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.ParseColEnd">
+            <summary>A string denoting the end of a matrix column to be used in parsing.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.ParseRowDelimiter">
+            <summary>A string containing the row delimiter for a matrix to be used in parsing.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.ParseColDelimiter">
+            <summary>A string containing the column delimiter for a matrix to be used in parsing.</summary>
+        </member>
+        <member name="P:Accord.Math.Formats.IMatrixFormatProvider.CultureInfo">
+            <summary>
+              Gets the culture specific formatting information
+              to be used during parsing or formatting.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Formats.MatrixFormatProviderBase.#ctor(System.Globalization.CultureInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Accord.Math.Formats.MatrixFormatProviderBase"/> class.
+            </summary>
+            <param name="culture">The culture.</param>
+        </member>
+        <member name="M:Accord.Math.Formats.MatrixFormatProviderBase.GetFormat(System.Type)">
+            <summary>
+              Returns an object that provides formatting services for the specified
+              type. Currently, only <see cref="T:Accord.Math.Formats.IMatrixFormatProvider"/> is supported.
+            </summary>
+            <param name="formatType">
+              An object that specifies the type of format
+              object to return. </param>
+            <returns>
+              An instance of the object specified by formatType, if the
+              <see cref="T:System.IFormatProvider">IFormatProvider</see> implementation
+              can supply that type of object; otherwise, null.</returns>
+              
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.FormatMatrixStart">
+            <summary>
+            A string denoting the start of the matrix to be used in formatting.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.FormatMatrixEnd">
+            <summary>
+            A string denoting the end of the matrix to be used in formatting.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.FormatRowStart">
+            <summary>
+            A string denoting the start of a matrix row to be used in formatting.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.FormatRowEnd">
+            <summary>
+            A string denoting the end of a matrix row to be used in formatting.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.FormatColStart">
+            <summary>
+            A string denoting the start of a matrix column to be used in formatting.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.FormatColEnd">
+            <summary>
+            A string denoting the end of a matrix column to be used in formatting.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.FormatRowDelimiter">
+            <summary>
+            A string containing the row delimiter for a matrix to be used in formatting.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.FormatColDelimiter">
+            <summary>
+            A string containing the column delimiter for a matrix to be used in formatting.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.ParseMatrixStart">
+            <summary>
+            A string denoting the start of the matrix to be used in parsing.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.ParseMatrixEnd">
+            <summary>
+            A string denoting the end of the matrix to be used in parsing.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.ParseRowStart">
+            <summary>
+            A string denoting the start of a matrix row to be used in parsing.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.ParseRowEnd">
+            <summary>
+            A string denoting the end of a matrix row to be used in parsing.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.ParseColStart">
+            <summary>
+            A string denoting the start of a matrix column to be used in parsing.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.ParseColEnd">
+            <summary>
+            A string denoting the end of a matrix column to be used in parsing.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.ParseRowDelimiter">
+            <summary>
+            A string containing the row delimiter for a matrix to be used in parsing.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.ParseColDelimiter">
+            <summary>
+            A string containing the column delimiter for a matrix to be used in parsing.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Formats.MatrixFormatProviderBase.CultureInfo">
+            <summary>
+            Gets the culture specific formatting information
+            to be used during parsing or formatting.
+            </summary>
+        </member>
+        <member name="T:Accord.Math.HilbertTransform">
+            <summary>
+              Hilbert Transformation.
+            </summary>
+            <remarks>
+            <para>
+              The Fast Hilbert transform is a time-domain to time-domain transformation which
+              shifts the phase of a signal by 90 degrees. Positive frequency components are
+              shifted by +90 degrees, and negative frequency components are shifted by –90
+              degrees. Applying a Hilbert transform to a signal twice in succession shifts
+              the phases of all of the components by 180 degrees, and so produces the negative
+              of the original signal.</para>
+            <para>
+              The hilbert transform may be implemented efficiently using the fast Fourier
+              transform. Following Fourier transformation, the negative frequencies are
+              zeroed. An inverse Fourier transform will then yield a 90-degree-phase-shifted
+              version of the original waveform. Each corresponding pair of samples from these
+              two waveforms are interpreted as Cartesian coordinates for Cartesian-to-polar
+              coordinate conversion. The resulting angular and magnitude values are the
+              instantaneous phase and amplitude values.</para>
+              
+              <para>
+                References:
+                <list type="bullet">
+                  <item><description>
+                    <a href="http://www.scholarpedia.org/article/Hilbert_transform_for_brain_waves">
+                    http://www.scholarpedia.org/article/Hilbert_transform_for_brain_waves</a>
+                  </description></item>
+                </list>
+              </para>
+            </remarks>
+            
+        </member>
+        <member name="M:Accord.Math.HilbertTransform.FHT(System.Double[],AForge.Math.FourierTransform.Direction)">
+            <summary>
+              Performs the transformation over a double[] array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.HilbertTransform.FHT(AForge.Math.Complex[],AForge.Math.FourierTransform.Direction)">
+            <summary>
+              Performs the transformation over a complex[] array.
+            </summary>
+        </member>
+        <member name="T:Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm">
+            <summary>
+              Nonnegative Matrix Factorization algorithms.
+            </summary>
+        </member>
+        <member name="F:Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm.MultiplicativeUpdate">
+            <summary>
+              Multiplicative update rule, also known as Lee and Seung's updates.
+              May lead to slower convergence and is very sensitive to initial values.
+            </summary>
+        </member>
+        <member name="F:Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm.AlternateLeastSquares">
+            <summary>
+              Alternate Least Squares update. May converge faster and more
+              consistently than the multiplicative update rule.
+            </summary>
+        </member>
+        <member name="T:Accord.Math.Decompositions.NonnegativeFactorization">
+            <summary>
+              Nonnegative Matrix Factorization.
+            </summary>
+            <remarks>
+            <para>
+              For a nonnegative n-by-m matrix <c>A</c>, the Nonnegative Matrix Factorization
+              is given by a n-by-k matrix of nonnegative factors <c>W</c> and a k-by-m matrix
+              of nonnegative factor coefficients <c>H</c>. The factorization is not exact, as
+              <c>W * H</c> is a lower-rank approximation to <c>A</c>. The factors <c>W</c> and
+              <c>H</c> are chosen to minimize the root-mean-squared residual <c>U</c> between
+              <c>A</c> and <c>W * H</c>.</para>
+              
+              <para>
+                References:
+                <list type="bullet">
+                  <item><description>
+                    <a href="http://en.wikipedia.org/wiki/Non-negative_matrix_factorization">
+                    http://en.wikipedia.org/wiki/Non-negative_matrix_factorization</a>
+                  </description></item>
+                  <item><description>
+                    <a href="http://www.mathworks.com/help/toolbox/stats/nnmf.html">
+                    http://www.mathworks.com/help/toolbox/stats/nnmf.html</a>
+                  </description></item>
+                </list>
+              </para>
+            </remarks>
+            
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.#ctor(System.Double[0:,0:])">
+            <summary>
+              Constructs a new non-negative matrix factorization.
+            </summary>
+            <param name="value">The matrix to be factorized.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.#ctor(System.Double[0:,0:],System.Int32)">
+            <summary>
+              Constructs a new non-negative matrix factorization.
+            </summary>
+            <param name="value">The matrix to be factorized.</param>
+            <param name="k">The desired approximation rank.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.#ctor(System.Double[0:,0:],System.Int32,System.Int32)">
+            <summary>
+              Constructs a new non-negative matrix factorization.
+            </summary>
+            <param name="value">The matrix to be factorized.</param>
+            <param name="k">The desired approximation rank.</param>
+            <param name="attempts">How many repetitions of the method should be
+            performed to avoid arriving at a poor local solution minima. Default
+            value is <c>1</c>.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.#ctor(System.Double[0:,0:],System.Int32,Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm)">
+            <summary>
+              Constructs a new non-negative matrix factorization.
+            </summary>
+            <param name="value">The matrix to be factorized.</param>
+            <param name="k">The desired approximation rank.</param>
+            <param name="algorithm">The algorithm to be used in the factorization.
+            Please see <see cref="T:Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm"/> for details.
+            Default is <see cref="F:Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm.AlternateLeastSquares"/>.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.#ctor(System.Double[0:,0:],System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Constructs a new non-negative matrix factorization.
+            </summary>
+            <param name="value">The matrix to be factorized.</param>
+            <param name="h0">Initial approximation to the coefficient matrix H.
+            Default is <see langword="null"/>.</param>
+            <param name="w0">Initial approximation to the weight matrix W.
+            Default is <see langword="null"/>.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.#ctor(System.Double[0:,0:],System.Double[0:,0:],System.Double[0:,0:],Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm)">
+            <summary>
+              Constructs a new non-negative matrix factorization.
+            </summary>
+            <param name="value">The matrix to be factorized.</param>
+            <param name="h0">Initial approximation to the coefficient matrix H.</param>
+            <param name="w0">Initial approximation to the weight matrix W.</param>
+            <param name="algorithm">The algorithm to be used in the factorization.
+            Please see <see cref="T:Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm"/> for details.
+            Default is <see cref="F:Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm.AlternateLeastSquares"/>.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.#ctor(System.Double[0:,0:],System.Int32,Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm,System.Int32,System.Int32,System.Double,System.Double)">
+            <summary>
+              Constructs a new non-negative matrix factorization.
+            </summary>
+            <param name="value">The matrix to be factorized.</param>
+            <param name="k">The desired approximation rank.</param>
+            <param name="algorithm">The algorithm to be used in the factorization.
+            Please see <see cref="T:Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm"/> for details.
+            Default is <see cref="F:Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm.AlternateLeastSquares"/>.</param>
+            <param name="attempts">How many repetitions of the method should be
+            performed to avoid arriving at a poor local solution minima. Default
+            value is <c>1</c>.</param>
+            <param name="maxIterations">The maximum number of iterations to perform.</param>
+            <param name="errorTolerance">The minimum change in error to use as convergence criteria.</param>
+            <param name="changeTolerance">The maximum absolute factor change to use as convergence criteria.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.#ctor(System.Double[0:,0:],System.Double[0:,0:],System.Double[0:,0:],Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm,System.Int32,System.Int32,System.Double,System.Double)">
+            <summary>
+              Constructs a new non-negative matrix factorization.
+            </summary>
+            <param name="value">The matrix to be factorized.</param>
+            <param name="h0">Initial approximation to the coefficient matrix H.</param>
+            <param name="w0">Initial approximation to the weight matrix W.</param>
+            <param name="algorithm">The algorithm to be used in the factorization.
+            Please see <see cref="T:Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm"/> for details.
+            Default is <see cref="F:Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm.AlternateLeastSquares"/>.</param>
+            <param name="attempts">How many repetitions of the method should be
+            performed to avoid arriving at a poor local solution minima. Default
+            value is <c>1</c>.</param>
+            <param name="maxIterations">The maximum number of iterations to perform.</param>
+            <param name="errorTolerance">The minimum change in error to use as convergence criteria.</param>
+            <param name="changeTolerance">The maximum absolute factor change to use as convergence criteria.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.init(System.Double[0:,0:],System.Int32,Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm,System.Double[0:,0:],System.Double[0:,0:],System.Int32,System.Int32,System.Double,System.Double)">
+            <summary>
+              Constructs a new non-negative matrix factorization.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.nnmf(System.Double[0:,0:],System.Double[0:,0:]@,System.Double[0:,0:]@,Accord.Math.Decompositions.NonnegativeFactorizationAlgorithm,System.Int32,System.Double,System.Double)">
+            <summary>
+              Single non-negative matrix factorization.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.normdiff(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Norm of differences
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.maxdiff(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Max absolute difference
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.maxabs(System.Double[0:,0:])">
+            <summary>
+              Max absolute value
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Decompositions.NonnegativeFactorization.makepositive(System.Double[0:,0:])">
+            <summary>
+              Enforces a matrix to contain only positive values.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.NonnegativeFactorization.LeftNonnegativeFactors">
+            <summary>
+              Gets the nonnegative factor matrix W.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.NonnegativeFactorization.RightNonnegativeFactors">
+            <summary>
+              Gets the nonnegative factor matrix H.
+            </summary>
+        </member>
+        <member name="T:Accord.Math.Formats.CSharpMatrixFormatProvider">
+            <summary>
+              Gets the matrix representation used in C# multi-dimensional arrays.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.Math.Formats.CSharpMatrixFormatProvider.#ctor(System.Globalization.CultureInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Accord.Math.Formats.CSharpMatrixFormatProvider"/> class.
+            </summary>
+        </member>
+        <member name="F:Accord.Math.Formats.CSharpMatrixFormatProvider.CurrentCulture">
+            <summary>
+              Gets the IMatrixFormatProvider which uses the CultureInfo used by the current thread.
+            </summary>
+            
+        </member>
+        <member name="F:Accord.Math.Formats.CSharpMatrixFormatProvider.InvariantCulture">
+            <summary>
+              Gets the IMatrixFormatProvider which uses the invariant system culture.
+            </summary>
+            
+        </member>
+        <member name="T:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition">
+            <summary>
+              Determines the Generalized eigenvalues and eigenvectors of two real square matrices.
+            </summary>
+            <remarks>
+              <para>
+                A generalized eigenvalue problem is the problem of finding a vector <c>v</c> that
+                obeys <c>A * v = λ * B * v</c> where <c>A</c> and <c>B</c> are matrices. If <c>v</c>
+                obeys this equation, with some <c>λ</c>, then we call <c>v</c> the generalized eigenvector
+                of <c>A</c> and <c>B</c>, and <c>λ</c> is called the generalized eigenvalue of <c>A</c>
+                and <c>B</c> which corresponds to the generalized eigenvector <c>v</c>. The possible
+                values of <c>λ</c>, must obey the identity <c>det(A - λ*B) = 0</c>.</para>
+              <para>
+                Part of this code has been adapted from the original EISPACK routines in Fortran.</para>
+             
+              <para>
+                References:
+                <list type="bullet">
+                  <item><description>
+                    <a href="http://en.wikipedia.org/wiki/Generalized_eigenvalue_problem#Generalized_eigenvalue_problem">
+                    http://en.wikipedia.org/wiki/Generalized_eigenvalue_problem#Generalized_eigenvalue_problem</a>
+                  </description></item>
+                  <item><description>
+                    <a href="http://www.netlib.org/eispack/">
+                    http://www.netlib.org/eispack/</a>
+                  </description></item>
+                </list>
+              </para>
+            </remarks>
+            
+        </member>
+        <member name="M:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.#ctor(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>Constructs a new generalized eigenvalue decomposition.</summary>
+            <param name="a">The first matrix of the (A,B) matrix pencil.</param>
+            <param name="b">The second matrix of the (A,B) matrix pencil.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.qzhes(System.Int32,System.Double[0:,0:],System.Double[0:,0:],System.Boolean,System.Double[0:,0:])">
+             <summary>
+               Adaptation of the original Fortran QZHES routine from EISPACK.
+             </summary>
+             <remarks>
+               This subroutine is the first step of the qz algorithm
+               for solving generalized matrix eigenvalue problems,
+               siam j. numer. anal. 10, 241-256(1973) by moler and stewart.
+            
+               This subroutine accepts a pair of real general matrices and
+               reduces one of them to upper hessenberg form and the other
+               to upper triangular form using orthogonal transformations.
+               it is usually followed by  qzit,  qzval  and, possibly,  qzvec.
+               
+               For the full documentation, please check the original function.
+             </remarks>
+        </member>
+        <member name="M:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.qzit(System.Int32,System.Double[0:,0:],System.Double[0:,0:],System.Double,System.Boolean,System.Double[0:,0:],System.Int32@)">
+            <summary>
+              Adaptation of the original Fortran QZIT routine from EISPACK.
+            </summary>
+            <remarks>
+              This subroutine is the second step of the qz algorithm
+              for solving generalized matrix eigenvalue problems,
+              siam j. numer. anal. 10, 241-256(1973) by moler and stewart,
+              as modified in technical note nasa tn d-7305(1973) by ward.
+              
+              This subroutine accepts a pair of real matrices, one of them
+              in upper hessenberg form and the other in upper triangular form.
+              it reduces the hessenberg matrix to quasi-triangular form using
+              orthogonal transformations while maintaining the triangular form
+              of the other matrix.  it is usually preceded by  qzhes  and
+              followed by  qzval  and, possibly,  qzvec.
+              
+              For the full documentation, please check the original function.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.qzval(System.Int32,System.Double[0:,0:],System.Double[0:,0:],System.Double[],System.Double[],System.Double[],System.Boolean,System.Double[0:,0:])">
+            <summary>
+              Adaptation of the original Fortran QZVAL routine from EISPACK.
+            </summary>
+            <remarks>
+              This subroutine is the third step of the qz algorithm
+              for solving generalized matrix eigenvalue problems,
+              siam j. numer. anal. 10, 241-256(1973) by moler and stewart.
+              
+              This subroutine accepts a pair of real matrices, one of them
+              in quasi-triangular form and the other in upper triangular form.
+              it reduces the quasi-triangular matrix further, so that any
+              remaining 2-by-2 blocks correspond to pairs of complex
+              eigenvalues, and returns quantities whose ratios give the
+              generalized eigenvalues.  it is usually preceded by  qzhes
+              and  qzit  and may be followed by  qzvec.
+              
+              For the full documentation, please check the original function.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.qzvec(System.Int32,System.Double[0:,0:],System.Double[0:,0:],System.Double[],System.Double[],System.Double[],System.Double[0:,0:])">
+            <summary>
+              Adaptation of the original Fortran QZVEC routine from EISPACK.
+            </summary>
+            <remarks>
+              This subroutine is the optional fourth step of the qz algorithm
+              for solving generalized matrix eigenvalue problems,
+              siam j. numer. anal. 10, 241-256(1973) by moler and stewart.
+              
+              This subroutine accepts a pair of real matrices, one of them in
+              quasi-triangular form (in which each 2-by-2 block corresponds to
+              a pair of complex eigenvalues) and the other in upper triangular
+              form.  It computes the eigenvectors of the triangular problem and
+              transforms the results back to the original coordinate system.
+              it is usually preceded by  qzhes,  qzit, and  qzval.
+              
+              For the full documentation, please check the original function.
+            </remarks>
+        </member>
+        <member name="P:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.RealAlphas">
+            <summary>Returns the real parts of the alpha values.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.ImaginaryAlphas">
+            <summary>Returns the imaginary parts of the alpha values.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.Betas">
+            <summary>Returns the beta values.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.IsSingular">
+            <summary>
+              Returns true if matrix B is singular.
+            </summary>
+            <remarks>
+              This method checks if any of the generated betas is zero. It
+              does not says that the problem is singular, but only that one
+              of the matrices of the pencil (A,B) is singular.
+            </remarks>
+        </member>
+        <member name="P:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.IsDegenerate">
+            <summary>
+              Returns true if the eigenvalue problem is degenerate (ill-posed).
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.RealEigenvalues">
+            <summary>Returns the real parts of the eigenvalues.</summary>
+            <remarks>
+              The eigenvalues are computed using the ratio alpha[i]/beta[i],
+              which can lead to valid, but infinite eigenvalues.
+            </remarks>
+        </member>
+        <member name="P:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.ImaginaryEigenvalues">
+            <summary>Returns the imaginary parts of the eigenvalues.</summary>	
+            <remarks>
+              The eigenvalues are computed using the ratio alpha[i]/beta[i],
+              which can lead to valid, but infinite eigenvalues.
+            </remarks>
+        </member>
+        <member name="P:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.Eigenvectors">
+            <summary>Returns the eigenvector matrix.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.GeneralizedEigenvalueDecomposition.DiagonalMatrix">
+            <summary>Returns the block diagonal eigenvalue matrix.</summary>
+        </member>
+        <member name="T:Accord.Math.Decompositions.SingularValueDecomposition">
+            <summary>
+              Singular Value Decomposition for a rectangular matrix.
+            </summary>
+            <remarks>
+             <para>
+              For an m-by-n matrix <c>A</c> with <c>m &gt;= n</c>, the singular value decomposition
+              is an m-by-n orthogonal matrix <c>U</c>, an n-by-n diagonal matrix <c>S</c>, and
+              an n-by-n orthogonal matrix <c>V</c> so that <c>A = U * S * V'</c>.
+              The singular values, <c>sigma[k] = S[k,k]</c>, are ordered so that
+              <c>sigma[0] &gt;= sigma[1] &gt;= ... &gt;= sigma[n-1]</c>.</para>
+             <para>
+              The singular value decomposition always exists, so the constructor will
+              never fail. The matrix condition number and the effective numerical
+              rank can be computed from this decomposition.</para>
+             <para>
+              WARNING! Please be aware that if A has less rows than columns, it is better
+              to compute the decomposition on the transpose of A and then swap the left
+              and right eigenvectors. If the routine is computed on A directly, the diagonal
+              of singular values may contain one or more zeros. The identity A = U * S * V'
+              may still hold, however. To overcome this problem, pass true to the
+              <see cref="M:Accord.Math.Decompositions.SingularValueDecomposition.#ctor(System.Double[0:,0:],System.Boolean,System.Boolean,System.Boolean)">autoTranspose</see> argument of the class constructor.</para>
+             <para>
+              This routine computes the economy decomposition of A.</para> 
+            </remarks>
+            
+        </member>
+        <member name="M:Accord.Math.Decompositions.SingularValueDecomposition.#ctor(System.Double[0:,0:])">
+            <summary>Constructs a new singular value decomposition.</summary>
+            <param name="value">The matrix to be decomposed.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.SingularValueDecomposition.#ctor(System.Double[0:,0:],System.Boolean,System.Boolean)">
+            <summary>Constructs a new singular value decomposition.</summary>
+            <param name="value">The matrix to be decomposed.</param>
+            <param name="computeLeftSingularVectors">Pass <see langword="true"/>
+            if the left singular vector matrix U should be computed. Pass
+            <see langword="false"/> otherwise. Default is <see langword="true"/>.</param>
+            <param name="computeRightSingularVectors">Pass <see langword="true"/>
+            if the right singular vector matrix V should be computed. Pass
+            <see langword="false"/> otherwise. Default is <see langword="true"/>.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.SingularValueDecomposition.#ctor(System.Double[0:,0:],System.Boolean,System.Boolean,System.Boolean)">
+            <summary>Constructs a new singular value decomposition.</summary>
+            <param name="value">The matrix to be decomposed.</param>
+            <param name="computeLeftSingularVectors">Pass <see langword="true"/>
+            if the left singular vector matrix U should be computed. Pass
+            <see langword="false"/> otherwise. Default is <see langword="true"/>.</param>
+            <param name="computeRightSingularVectors">Pass <see langword="true"/>
+            if the right singular vector matrix V should be computed. Pass
+            <see langword="false"/> otherwise. Default is <see langword="true"/>.</param>
+            <param name="autoTranspose">Pass <see langword="true"/>
+            to automatically transpose the value matrix in case JAMA's assumptions about
+            the dimensionality of the matrix are violated. Pass <see langword="false"/>
+            otherwise. Default is <see langword="false"/>.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.SingularValueDecomposition.Solve(System.Double[0:,0:])">
+            <summary>
+              Solves a linear equation system of the form AX = B.
+            </summary>
+            <param name="value">Parameter B from the equation AX = B.</param>
+            <returns>The solution X from equation AX = B.</returns>
+        </member>
+        <member name="M:Accord.Math.Decompositions.SingularValueDecomposition.Solve(System.Double[])">
+            <summary>
+              Solves a linear equation system of the form Ax = b.
+            </summary>
+            <param name="value">The b from the equation Ax = b.</param>
+            <returns>The x from equation Ax = b.</returns>
+        </member>
+        <member name="M:Accord.Math.Decompositions.SingularValueDecomposition.Inverse">
+            <summary>
+              Computes the (pseudo-)inverse of the matrix given to the Singular value decomposition.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.SingularValueDecomposition.Condition">
+            <summary>Returns the condition number <c>max(S) / min(S)</c>.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.SingularValueDecomposition.Threshold">
+            <summary>Returns the singularity threshold.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.SingularValueDecomposition.TwoNorm">
+            <summary>Returns the Two norm.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.SingularValueDecomposition.Rank">
+            <summary>Returns the effective numerical matrix rank.</summary>
+            <value>Number of non-negligible singular values.</value>
+        </member>
+        <member name="P:Accord.Math.Decompositions.SingularValueDecomposition.Diagonal">
+            <summary>Returns the one-dimensional array of singular values.</summary>		
+        </member>
+        <member name="P:Accord.Math.Decompositions.SingularValueDecomposition.DiagonalMatrix">
+            <summary>Returns the block diagonal matrix of singular values.</summary>		
+        </member>
+        <member name="P:Accord.Math.Decompositions.SingularValueDecomposition.RightSingularVectors">
+            <summary>Returns the V matrix of Singular Vectors.</summary>		
+        </member>
+        <member name="P:Accord.Math.Decompositions.SingularValueDecomposition.LeftSingularVectors">
+            <summary>Return the U matrix of Singular Vectors.</summary>		
+        </member>
+        <member name="T:Accord.Math.Distance">
+            <summary>
+              Static class Distance. Defines a set of extension methods defining distance measures.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.Math.Distance.SquareMahalanobis(System.Double[],System.Double[],System.Double[0:,0:])">
+            <summary>
+              Gets the Square Mahalanobis distance between two points.
+            </summary>
+            <param name="x">A point in space.</param>
+            <param name="y">A point in space.</param>
+            <param name="precision">
+              The inverse of the covariance matrix of the distribution for the two points x and y.
+            </param>
+            <returns>The Square Mahalanobis distance between x and y.</returns>
+        </member>
+        <member name="M:Accord.Math.Distance.Mahalanobis(System.Double[],System.Double[],System.Double[0:,0:])">
+            <summary>
+              Gets the Mahalanobis distance between two points.
+            </summary>
+            <param name="x">A point in space.</param>
+            <param name="y">A point in space.</param>
+            <param name="precision">
+              The inverse of the covariance matrix of the distribution for the two points x and y.
+            </param>
+            <returns>The Mahalanobis distance between x and y.</returns>
+        </member>
+        <member name="M:Accord.Math.Distance.Manhattan(System.Double[],System.Double[])">
+            <summary>
+              Gets the Manhattan distance between two points.
+            </summary>
+            <param name="x">A point in space.</param>
+            <param name="y">A point in space.</param>
+            <returns>The manhattan distance between x and y.</returns>
+        </member>
+        <member name="M:Accord.Math.Distance.SquareEuclidean(System.Double[],System.Double[])">
+            <summary>
+              Gets the Square Euclidean distance between two points.
+            </summary>
+            <param name="x">A point in space.</param>
+            <param name="y">A point in space.</param>
+            <returns>The Square Euclidean distance between x and y.</returns>
+        </member>
+        <member name="M:Accord.Math.Distance.Euclidean(System.Double[],System.Double[])">
+            <summary>
+              Gets the Euclidean distance between two points.
+            </summary>
+            <param name="x">A point in space.</param>
+            <param name="y">A point in space.</param>
+            <returns>The Euclidean distance between x and y.</returns>
+        </member>
+        <member name="M:Accord.Math.Distance.Modular(System.Int32,System.Int32,System.Int32)">
+            <summary>
+              Gets the Modulo-m distance between two integers a and b.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Distance.Bhattacharyya(System.Double[],System.Double[])">
+            <summary>
+              Bhattacharyya distance between two normalized histograms.
+            </summary>
+            <param name="histogram1">A normalized histogram.</param>
+            <param name="histogram2">A normalized histogram.</param>
+            <returns>The Bhattacharya distance between the two histograms.</returns>
+        </member>
+        <member name="M:Accord.Math.Distance.Bhattacharyya(System.Double[],System.Double[0:,0:],System.Double[],System.Double[0:,0:])">
+            <summary>
+              Bhattacharyya distance between two gaussian distributions.
+            </summary>
+            <param name="mean1">Mean for the first distribution.</param>
+            <param name="sigma1">Covariance matrix for the first distribution.</param>
+            <param name="mean2">Mean for the second distribution.</param>
+            <param name="sigma2">Covariance matrix for the second distribution.</param>
+            <returns>The Bhattacharia distance between the two distributions.</returns>
+        </member>
+        <member name="T:Accord.Math.Formats.DefaultMatrixFormatProvider">
+            <summary>
+              Gets the default matrix representation, where each row
+              is separated by a new line, and columns are separated by spaces.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.Math.Formats.DefaultMatrixFormatProvider.#ctor(System.Globalization.CultureInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Accord.Math.Formats.DefaultMatrixFormatProvider"/> class.
+            </summary>
+        </member>
+        <member name="F:Accord.Math.Formats.DefaultMatrixFormatProvider.CurrentCulture">
+            <summary>
+              Gets the IMatrixFormatProvider which uses the CultureInfo used by the current thread.
+            </summary>
+            
+        </member>
+        <member name="F:Accord.Math.Formats.DefaultMatrixFormatProvider.InvariantCulture">
+            <summary>
+              Gets the IMatrixFormatProvider which uses the invariant system culture.
+            </summary>
+            
+        </member>
+        <member name="T:Accord.Math.Special">
+            <summary>
+              Set of special mathematic functions.
+            </summary>
+            <remarks>
+              References:
+              <list type="bullet">
+                <item><description>
+                  Numerical Recipes in C, 2nd Edition (1992)
+                </description></item>
+                <item><description>
+                  Cephes Math Library, http://www.netlib.org/cephes/
+                </description></item>
+              </list>
+            </remarks>
+        </member>
+        <member name="F:Accord.Math.Special.DoubleEpsilon">
+            <summary>Double-precision machine roundoff error.</summary>
+            <remarks>This value is actually different from Double.Epsilon.</remarks>
+        </member>
+        <member name="F:Accord.Math.Special.SingleEpsilon">
+            <summary>Single-precision machine roundoff error.</summary>
+            <remarks>This value is actually different from Single.Epsilon.</remarks>
+        </member>
+        <member name="F:Accord.Math.Special.LogMax">
+            <summary>Maximum log on the machine.</summary>
+        </member>
+        <member name="F:Accord.Math.Special.LogMin">
+            <summary>Minimum log on the machine.</summary>
+        </member>
+        <member name="F:Accord.Math.Special.GammaMax">
+            <summary>Maximum gamma on the machine.</summary>
+        </member>
+        <member name="F:Accord.Math.Special.LogPI">
+            <summary>Log of number PI.</summary>
+        </member>
+        <member name="F:Accord.Math.Special.SqrtPI">
+            <summary>Square root of number PI.</summary>
+        </member>
+        <member name="F:Accord.Math.Special.Sqrt2">
+            <summary>Square root of 2.</summary>
+        </member>
+        <member name="F:Accord.Math.Special.SqrtH">
+            <summary>Half square root of 2.</summary>
+        </member>
+        <member name="M:Accord.Math.Special.Gamma(System.Double)">
+            <summary>
+              Gamma function of the specified value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Rgamma(System.Double,System.Double)">
+            <summary>
+              Regularized Gamma function (P)
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Digamma(System.Double)">
+            <summary>
+              Digamma function.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Stirf(System.Double)">
+            <summary>
+              Gamma function as computed by Stirling's formula.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Igamc(System.Double,System.Double)">
+            <summary>
+              Complemented incomplete gamma function.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Igam(System.Double,System.Double)">
+            <summary>
+              Incomplete gamma function.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.ChiSq(System.Double,System.Double)">
+            <summary>
+              Chi-square function (left hand tail).
+            </summary>
+            <remarks>
+              Returns the area under the left hand tail (from 0 to x)
+              of the Chi square probability density function with
+              df degrees of freedom.
+            </remarks>
+            <param name="df">degrees of freedom</param>
+            <param name="x">double value</param>
+            <returns></returns>
+        </member>
+        <member name="M:Accord.Math.Special.ChiSqc(System.Double,System.Double)">
+            <summary>
+             Chi-square function (right hand tail).
+            </summary>
+            <remarks>
+             Returns the area under the right hand tail (from x to
+             infinity) of the Chi square probability density function
+             with df degrees of freedom:
+            </remarks>
+            <param name="df">degrees of freedom</param>
+            <param name="x">double value</param>
+            <returns></returns>
+        </member>
+        <member name="M:Accord.Math.Special.Poisson(System.Int32,System.Double)">
+            <summary>
+              Sum of the first k terms of the Poisson distribution.
+            </summary>
+            <param name="k">number of terms</param>
+            <param name="x">double value</param>
+            <returns></returns>
+        </member>
+        <member name="M:Accord.Math.Special.Poissonc(System.Int32,System.Double)">
+            <summary>
+              Sum of the terms k+1 to infinity of the Poisson distribution.
+            </summary>
+            <param name="k">start</param>
+            <param name="x">double value</param>
+            <returns></returns>
+        </member>
+        <member name="M:Accord.Math.Special.Normal(System.Double)">
+            <summary>
+              Area under the Gaussian probability density function,
+              integrated from minus infinity to the given value.
+            </summary>
+            <returns>
+              The area under the Gaussian p.d.f. integrated
+              from minus infinity to the given value.
+            </returns>
+        </member>
+        <member name="M:Accord.Math.Special.Erfc(System.Double)">
+            <summary>
+              Complementary error function of the specified value.
+            </summary>
+            <remarks>
+              http://mathworld.wolfram.com/Erfc.html
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Special.Erf(System.Double)">
+            <summary>
+              Error function of the specified value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Lgamma(System.Double)">
+            <summary>
+              Natural logarithm of gamma function.
+            </summary>
+            <param name="x"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Accord.Math.Special.Ibeta(System.Double,System.Double,System.Double)">
+            <summary>
+              Incomplete beta function evaluated from zero to xx.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Incbcf(System.Double,System.Double,System.Double)">
+            <summary>
+              Continued fraction expansion #1 for incomplete beta integral.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Incbd(System.Double,System.Double,System.Double)">
+            <summary>
+              Continued fraction expansion #2 for incomplete beta integral.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.PowerSeries(System.Double,System.Double,System.Double)">
+            <summary>
+              Power series for incomplete beta integral. Use when b*x
+              is small and x not too close to 1.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Polevl(System.Double,System.Double[],System.Int32)">
+            <summary>
+              Evaluates polynomial of degree N
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.P1evl(System.Double,System.Double[],System.Int32)">
+            <summary>
+              Evaluates polynomial of degree N with assumption that coef[N] = 1.0
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.BesselJ0(System.Double)">
+            <summary>
+            Returns the Bessel function of order 0 of the specified number.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.BesselJ(System.Double)">
+            <summary>
+            Returns the Bessel function of order 1 of the specified number.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.BesselJ(System.Int32,System.Double)">
+            <summary>
+            Returns the Bessel function of order n of the specified number.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.BesselY0(System.Double)">
+            <summary>
+            Returns the Bessel function of the second kind, of order 0 of the specified number.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.BesselY(System.Double)">
+            <summary>
+            Returns the Bessel function of the second kind, of order 1 of the specified number.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.BesselY(System.Int32,System.Double)">
+            <summary>
+            Returns the Bessel function of the second kind, of order n of the specified number.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.BSpline(System.Int32,System.Double)">
+            <summary>
+              Computes the Basic Spline of order n
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Binomial(System.Int32,System.Int32)">
+            <summary>
+              Computes the Binomial Coefficients C(n,k).
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Lfactorial(System.Int32)">
+            <summary>
+              Returns the log factorial of a number (ln(n!))
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Log1p(System.Double)">
+            <summary>
+              Computes log(1+x) without losing precision for small values of x.
+            </summary>
+            <remarks>
+              References:
+              - http://www.johndcook.com/csharp_log_one_plus_x.html
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Special.Expm1(System.Double)">
+            <summary>
+              Compute exp(x) - 1 without loss of precision for small values of x.
+            </summary>
+            <remarks>
+              References:
+              - http://www.johndcook.com/cpp_expm1.html
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Special.Factorial(System.Int32)">
+            <summary>
+              Computes the factorial of a number (n!)
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Special.Epslon(System.Double)">
+            <summary>
+              Estimates unit roundoff in quantities of size x.
+            </summary>
+            <remarks>
+              This is a port of the epslon function from EISPACK.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Special.Sign(System.Double,System.Double)">
+            <summary>
+              Returns A with the sign of B.
+            </summary>
+            <remarks>
+              This is a port of the sign transfer function from EISPACK.
+            </remarks>
+            <returns>If B > 0 then the result is ABS(A), else it is -ABS(A).</returns>
+        </member>
+        <member name="T:Accord.Math.Norm">
+            <summary>
+              Static class Norm. Defines a set of extension methods defining norms measures.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.Math.Norm.Norm1(System.Double[0:,0:])">
+            <summary>
+              Returns the maximum column sum of the given matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Norm.Norm2(System.Double[0:,0:])">
+            <summary>
+              Returns the maximum singular value of the given matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Norm.Frobenius(System.Double[0:,0:])">
+            <summary>
+              Gets the square root of the sum of squares for all elements in a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Norm.SquareEuclidean(System.Double[])">
+            <summary>
+              Gets the Squared Euclidean norm for a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Norm.Euclidean(System.Double[])">
+            <summary>
+              Gets the Euclidean norm for a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Norm.SquareEuclidean(System.Double[0:,0:])">
+            <summary>
+              Gets the Squared Euclidean norm vector for a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Norm.SquareEuclidean(System.Double[0:,0:],System.Int32)">
+            <summary>
+              Gets the Squared Euclidean norm vector for a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Norm.Euclidean(System.Double[0:,0:])">
+            <summary>
+              Gets the Euclidean norm for a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Norm.Euclidean(System.Double[0:,0:],System.Int32)">
+            <summary>
+              Gets the Euclidean norm for a matrix.
+            </summary>
+        </member>
+        <member name="T:Accord.Math.Decompositions.EigenvalueDecomposition">
+            <summary>
+                Determines the eigenvalues and eigenvectors of a real square matrix.
+            </summary>
+            <remarks>
+              <para>
+                In the mathematical discipline of linear algebra, eigendecomposition
+                or sometimes spectral decomposition is the factorization of a matrix
+                into a canonical form, whereby the matrix is represented in terms of
+                its eigenvalues and eigenvectors.</para>
+              <para>
+                If <c>A</c> is symmetric, then <c>A = V * D * V'</c> and <c>A = V * V'</c>
+                where the eigenvalue matrix <c>D</c> is diagonal and the eigenvector matrix <c>V</c> is orthogonal.
+                If <c>A</c> is not symmetric, the eigenvalue matrix <c>D</c> is block diagonal
+                with the real eigenvalues in 1-by-1 blocks and any complex eigenvalues,
+                <c>lambda + i*mu</c>, in 2-by-2 blocks, <c>[lambda, mu; -mu, lambda]</c>.
+                The columns of <c>V</c> represent the eigenvectors in the sense that <c>A * V = V * D</c>.
+                The matrix V may be badly conditioned, or even singular, so the validity of the equation
+                <c>A = V * D * inverse(V)</c> depends upon the condition of <c>V</c>.
+              </para>
+            </remarks>
+            
+        </member>
+        <member name="M:Accord.Math.Decompositions.EigenvalueDecomposition.#ctor(System.Double[0:,0:])">
+            <summary>Construct an eigenvalue decomposition.</summary>
+            <param name="value">The matrix to be decomposed.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.EigenvalueDecomposition.#ctor(System.Double[0:,0:],System.Boolean)">
+            <summary>Constructs a new eigenvalue decomposition.</summary>
+            <param name="value">The matrix to be decomposed.</param>
+            <param name="assumeSymmetric">Defines if the matrix should be
+            assumed as being symmetric regardless if it is or not.</param>
+        </member>
+        <member name="P:Accord.Math.Decompositions.EigenvalueDecomposition.RealEigenvalues">
+            <summary>Returns the real parts of the eigenvalues.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.EigenvalueDecomposition.ImaginaryEigenvalues">
+            <summary>Returns the imaginary parts of the eigenvalues.</summary>	
+        </member>
+        <member name="P:Accord.Math.Decompositions.EigenvalueDecomposition.Eigenvectors">
+            <summary>Returns the eigenvector matrix.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.EigenvalueDecomposition.DiagonalMatrix">
+            <summary>Returns the block diagonal eigenvalue matrix.</summary>
+        </member>
+        <member name="T:Accord.Math.Decompositions.CholeskyDecomposition">
+            <summary>
+            	Cholesky Decomposition of a symmetric, positive definite matrix.
+            </summary>
+            <remarks>
+              <para>
+            	For a symmetric, positive definite matrix <c>A</c>, the Cholesky decomposition is a
+            	lower triangular matrix <c>L</c> so that <c>A = L * L'</c>.
+            	If the matrix is not symmetric or positive definite, the constructor returns a partial 
+            	decomposition and sets two internal variables that can be queried using the
+            	<see cref="P:Accord.Math.Decompositions.CholeskyDecomposition.Symmetric"/> and <see cref="P:Accord.Math.Decompositions.CholeskyDecomposition.PositiveDefinite"/> properties.</para>
+              <para>
+                Any square matrix A with non-zero pivots can be written as the product of a
+                lower triangular matrix L and an upper triangular matrix U; this is called
+                the LU decomposition. However, if A is symmetric and positive definite, we
+                can choose the factors such that U is the transpose of L, and this is called
+                the Cholesky decomposition. Both the LU and the Cholesky decomposition are
+                used to solve systems of linear equations.</para>
+              <para>
+                When it is applicable, the Cholesky decomposition is twice as efficient
+                as the LU decomposition.</para>
+            </remarks>
+            
+        </member>
+        <member name="M:Accord.Math.Decompositions.CholeskyDecomposition.#ctor(System.Double[0:,0:])">
+            <summary>Constructs a new Cholesky Decomposition.</summary>
+            <param name="value">The matrix to be decomposed.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.CholeskyDecomposition.Solve(System.Double[0:,0:])">
+            <summary>Solves a set of equation systems of type <c>A * X = B</c>.</summary>
+            <param name="value">Right hand side matrix with as many rows as <c>A</c> and any number of columns.</param>
+            <returns>Matrix <c>X</c> so that <c>L * L' * X = B</c>.</returns>
+            <exception cref="T:System.ArgumentException">Matrix dimensions do not match.</exception>
+            <exception cref="T:System.InvalidOperationException">Matrix is not symmetric and positive definite.</exception>
+        </member>
+        <member name="M:Accord.Math.Decompositions.CholeskyDecomposition.Solve(System.Double[])">
+            <summary>Solves a set of equation systems of type <c>A * x = b</c>.</summary>
+            <param name="value">Right hand side column vector with as many rows as <c>A</c>.</param>
+            <returns>Vector <c>x</c> so that <c>L * L' * x = b</c>.</returns>
+            <exception cref="T:System.ArgumentException">Matrix dimensions do not match.</exception>
+            <exception cref="T:System.InvalidOperationException">Matrix is not symmetric and positive definite.</exception>
+        </member>
+        <member name="M:Accord.Math.Decompositions.CholeskyDecomposition.Clone">
+            <summary>
+              Creates a new object that is a copy of the current instance.
+            </summary>
+            <returns>
+              A new object that is a copy of this instance.
+            </returns>
+        </member>
+        <member name="P:Accord.Math.Decompositions.CholeskyDecomposition.Symmetric">
+            <summary>Returns <see langword="true"/> if the matrix is symmetric.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.CholeskyDecomposition.PositiveDefinite">
+            <summary>Returns <see langword="true"/> if the matrix is positive definite.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.CholeskyDecomposition.LeftTriangularFactor">
+            <summary>Returns the left triangular factor <c>L</c> so that <c>A = L * L'</c>.</summary>
+        </member>
+        <member name="T:Accord.Math.Formats.OctaveMatrixFormatProvider">
+            <summary>
+              Format provider for the matrix format used by Octave (and MATLAB).
+            </summary>
+            
+        </member>
+        <member name="M:Accord.Math.Formats.OctaveMatrixFormatProvider.#ctor(System.Globalization.CultureInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Accord.Math.Formats.OctaveMatrixFormatProvider"/> class.
+            </summary>
+        </member>
+        <member name="F:Accord.Math.Formats.OctaveMatrixFormatProvider.CurrentCulture">
+            <summary>
+              Gets the IMatrixFormatProvider which uses the CultureInfo used by the current thread.
+            </summary>
+            
+        </member>
+        <member name="F:Accord.Math.Formats.OctaveMatrixFormatProvider.InvariantCulture">
+            <summary>
+              Gets the IMatrixFormatProvider which uses the invariant system culture.
+            </summary>
+            
+        </member>
+        <member name="T:Accord.Math.Formats.CSharpJaggedMatrixFormatProvider">
+            <summary>
+              Gets the matrix representation used in C# jagged arrays.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.Math.Formats.CSharpJaggedMatrixFormatProvider.#ctor(System.Globalization.CultureInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Accord.Math.Formats.CSharpJaggedMatrixFormatProvider"/> class.
+            </summary>
+        </member>
+        <member name="F:Accord.Math.Formats.CSharpJaggedMatrixFormatProvider.CurrentCulture">
+            <summary>
+              Gets the IMatrixFormatProvider which uses the CultureInfo used by the current thread.
+            </summary>
+            
+        </member>
+        <member name="F:Accord.Math.Formats.CSharpJaggedMatrixFormatProvider.InvariantCulture">
+            <summary>
+              Gets the IMatrixFormatProvider which uses the invariant system culture.
+            </summary>
+            
+        </member>
+        <member name="T:Accord.Math.Decompositions.QrDecomposition">
+            <summary>
+              QR decomposition for a rectangular matrix.
+            </summary>
+            <remarks>
+            <para>
+              For an m-by-n matrix <c>A</c> with <c>m &gt;= n</c>, the QR decomposition
+              is an m-by-n orthogonal matrix <c>Q</c> and an n-by-n upper triangular
+              matrix <c>R</c> so that <c>A = Q * R</c>.</para>
+            <para>
+              The QR decomposition always exists, even if the matrix does not have
+              full rank, so the constructor will never fail. The primary use of the
+              QR decomposition is in the least squares solution of nonsquare systems
+              of simultaneous linear equations.
+              This will fail if <see cref="P:Accord.Math.Decompositions.QrDecomposition.FullRank"/> returns <see langword="false"/>.</para>  
+            </remarks>
+            
+        </member>
+        <member name="M:Accord.Math.Decompositions.QrDecomposition.#ctor(System.Double[0:,0:])">
+            <summary>Constructs a QR decomposition.</summary>	
+            <param name="value">The matrix A to be decomposed.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.QrDecomposition.#ctor(System.Double[0:,0:],System.Boolean)">
+            <summary>Constructs a QR decomposition.</summary>	
+            <param name="value">The matrix A to be decomposed.</param>
+            <param name="transpose">True if the decomposition should be performed on
+            the transpose of A rather than A itself, false otherwise. Default is false.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.QrDecomposition.Solve(System.Double[0:,0:])">
+            <summary>Least squares solution of <c>A * X = B</c></summary>
+            <param name="value">Right-hand-side matrix with as many rows as <c>A</c> and any number of columns.</param>
+            <returns>A matrix that minimized the two norm of <c>Q * R * X - B</c>.</returns>
+            <exception cref="T:System.ArgumentException">Matrix row dimensions must be the same.</exception>
+            <exception cref="T:System.InvalidOperationException">Matrix is rank deficient.</exception>
+        </member>
+        <member name="M:Accord.Math.Decompositions.QrDecomposition.SolveTranspose(System.Double[0:,0:])">
+            <summary>Least squares solution of <c>X * A = B</c></summary>
+            <param name="value">Right-hand-side matrix with as many columns as <c>A</c> and any number of rows.</param>
+            <returns>A matrix that minimized the two norm of <c>X * Q * R - B</c>.</returns>
+            <exception cref="T:System.ArgumentException">Matrix column dimensions must be the same.</exception>
+            <exception cref="T:System.InvalidOperationException">Matrix is rank deficient.</exception>
+        </member>
+        <member name="M:Accord.Math.Decompositions.QrDecomposition.Solve(System.Double[])">
+            <summary>Least squares solution of <c>A * X = B</c></summary>
+            <param name="value">Right-hand-side matrix with as many rows as <c>A</c> and any number of columns.</param>
+            <returns>A matrix that minimized the two norm of <c>Q * R * X - B</c>.</returns>
+            <exception cref="T:System.ArgumentException">Matrix row dimensions must be the same.</exception>
+            <exception cref="T:System.InvalidOperationException">Matrix is rank deficient.</exception>
+        </member>
+        <member name="M:Accord.Math.Decompositions.QrDecomposition.Inverse">
+            <summary>Least squares solution of <c>A * X = I</c></summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.QrDecomposition.FullRank">
+            <summary>Shows if the matrix <c>A</c> is of full rank.</summary>
+            <value>The value is <see langword="true"/> if <c>R</c>, and hence <c>A</c>, has full rank.</value>
+        </member>
+        <member name="P:Accord.Math.Decompositions.QrDecomposition.UpperTriangularFactor">
+            <summary>Returns the upper triangular factor <c>R</c>.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.QrDecomposition.OrthogonalFactor">
+            <summary>Returns the orthogonal factor <c>Q</c>.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.QrDecomposition.Diagonal">
+            <summary>Returns the diagonal of <c>R</c>.</summary>
+        </member>
+        <member name="T:Accord.Math.Tools">
+            <summary>
+              Set of mathematical tools.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Tools.SetRandomSeed(System.Int32)">
+            <summary>
+              Sets a random seed for the internal number generator.
+            </summary>
+            <remarks>
+              This method is only available in the debug version
+              of the framework.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Tools.NextPowerOf2(System.Int32)">
+            <summary>
+              Returns the next power of 2 after the input value x.
+            </summary>
+            <param name="x">Input value x.</param>
+            <returns>Returns the next power of 2 after the input value x.</returns>
+        </member>
+        <member name="M:Accord.Math.Tools.PreviousPowerOf2(System.Int32)">
+            <summary>
+              Returns the previous power of 2 after the input value x.
+            </summary>
+            <param name="x">Input value x.</param>
+            <returns>Returns the previous power of 2 after the input value x.</returns>
+        </member>
+        <member name="M:Accord.Math.Tools.Hypotenuse(System.Double,System.Double)">
+            <summary>
+              Hypotenuse calculus without overflow/underflow
+            </summary>
+            <param name="a">first value</param>
+            <param name="b">second value</param>
+            <returns>The hypotenuse Sqrt(a^2 + b^2)</returns>
+        </member>
+        <member name="M:Accord.Math.Tools.Mod(System.Int32,System.Int32)">
+            <summary>
+              Gets the proper modulus operation for
+              a integer x and modulo m.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Tools.Scale(AForge.IntRange,AForge.IntRange,System.Int32)">
+            <summary>
+              Converts the value x (which is measured in the scale
+              'from') to another value measured in the scale 'to'.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Tools.Scale(AForge.DoubleRange,AForge.DoubleRange,System.Double)">
+            <summary>
+              Converts the value x (which is measured in the scale
+              'from') to another value measured in the scale 'to'.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Tools.Scale(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+              Converts the value x (which is measured in the scale
+              'from') to another value measured in the scale 'to'.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Tools.Acosh(System.Double)">
+            <summary>
+              Returns the hyperbolic arc cosine of the specified value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Tools.Asinh(System.Double)">
+            <summary>
+            Returns the hyperbolic arc sine of the specified value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Tools.Atanh(System.Double)">
+            <summary>
+            Returns the hyperbolic arc tangent of the specified value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Tools.FactorialPower(System.Int32,System.Int32)">
+            <summary>
+              Returns the factorial falling power of the specified value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Tools.TruncatedPower(System.Double,System.Double)">
+            <summary>
+              Truncated power function.
+            </summary>
+        </member>
+        <member name="P:Accord.Math.Tools.Random">
+            <summary>
+              Gets a reference to the random number generator used
+              internally by the Accord.NET classes and methods.
+            </summary>
+        </member>
+        <member name="T:Accord.Math.ComparerDirection">
+            <summary>
+              Directions for the General Comparer.
+            </summary>
+        </member>
+        <member name="F:Accord.Math.ComparerDirection.Ascending">
+            <summary>
+              Sorting will be performed in ascending order.
+            </summary>
+        </member>
+        <member name="F:Accord.Math.ComparerDirection.Descending">
+            <summary>
+              Sorting will be performed in descending order.
+            </summary>
+        </member>
+        <member name="T:Accord.Math.GeneralComparer">
+            <summary>
+              General comparer which supports multiple directions
+              and comparison of absolute values.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.GeneralComparer.#ctor(Accord.Math.ComparerDirection)">
+            <summary>
+              Constructs a new General Comparer.
+            </summary>
+            <param name="direction">The direction to compare.</param>
+        </member>
+        <member name="M:Accord.Math.GeneralComparer.#ctor(Accord.Math.ComparerDirection,System.Boolean)">
+            <summary>
+              Constructs a new General Comparer.
+            </summary>
+            <param name="direction">The direction to compare.</param>
+            <param name="useAbsoluteValues">True to compare absolute values, false otherwise. Default is false.</param>
+        </member>
+        <member name="M:Accord.Math.GeneralComparer.Compare(System.Double,System.Double)">
+            <summary>
+              Compares two objects and returns a value indicating whether one is less than,
+               equal to, or greater than the other.
+            </summary>
+            <param name="x">The first object to compare.</param>
+            <param name="y">The second object to compare.</param>
+        </member>
+        <member name="T:Accord.Math.Matrix">
+            <summary>
+            Static class Matrix. Defines a set of extension methods
+            that operates mainly on multidimensional arrays and vectors.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsEqual(System.Double[0:,0:],System.Double[0:,0:],System.Double)">
+            <summary>
+              Compares two matrices for equality, considering an acceptance threshold.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsEqual(System.Single[0:,0:],System.Single[0:,0:],System.Single)">
+            <summary>
+              Compares two matrices for equality, considering an acceptance threshold.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsEqual(System.Double[][],System.Double[][],System.Double)">
+            <summary>
+              Compares two matrices for equality, considering an acceptance threshold.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsEqual(System.Double[],System.Double[],System.Double)">
+            <summary>
+              Compares two vectors for equality, considering an acceptance threshold.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsEqual(System.Double[],System.Double)">
+            <summary>
+              Compares each member of a vector for equality with a scalar value x.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsEqual(System.Double[0:,0:],System.Double)">
+            <summary>
+              Compares each member of a matrix for equality with a scalar value x.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsEqual``1(``0[][],``0[][])">
+            <summary>
+              Compares two matrices for equality.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsEqual``1(``0[0:,0:],``0[0:,0:])">
+            <summary>Compares two matrices for equality.</summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsEqual``1(``0[],``0[])">
+            <summary>Compares two vectors for equality.</summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Equals(System.Object)">
+            <summary>
+              This method should not be called. Use Matrix.IsEqual instead.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Transpose``1(``0[0:,0:])">
+            <summary>
+              Gets the transpose of a matrix.
+            </summary>
+            <param name="value">A matrix.</param>
+            <returns>The transpose of matrix m.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Transpose``1(``0[])">
+            <summary>
+              Gets the transpose of a row vector.
+            </summary>
+            <param name="value">A row vector.</param>
+            <returns>The transpose of the vector.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Multiply(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Multiplies two matrices.
+            </summary>
+            <param name="a">The left matrix.</param>
+            <param name="b">The right matrix.</param>
+            <returns>The product of the multiplication of the two matrices.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Multiply(System.Double[0:,0:],System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Multiplies two matrices.
+            </summary>
+            <param name="a">The left matrix.</param>
+            <param name="b">The right matrix.</param>
+            <param name="r">The matrix to store results.</param>
+        </member>
+        <member name="M:Accord.Math.Matrix.Multiply(System.Single[0:,0:],System.Single[0:,0:])">
+            <summary>
+              Multiplies two matrices.
+            </summary>
+            <param name="a">The left matrix.</param>
+            <param name="b">The right matrix.</param>
+            <returns>The product of the multiplication of the two matrices.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Multiply(System.Single[0:,0:],System.Single[0:,0:],System.Single[0:,0:])">
+            <summary>
+              Multiplies two matrices.
+            </summary>
+            <param name="a">The left matrix.</param>
+            <param name="b">The right matrix.</param>
+            <param name="r">The matrix to store results.</param>
+        </member>
+        <member name="M:Accord.Math.Matrix.Multiply(System.Double[],System.Double[0:,0:])">
+            <summary>
+              Multiplies a row vector and a matrix.
+            </summary>
+            <param name="a">A row vector.</param>
+            <param name="b">A matrix.</param>
+            <returns>The product of the multiplication of the row vector and the matrix.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Multiply(System.Double[0:,0:],System.Double[])">
+            <summary>
+              Multiplies a matrix and a vector (a*bT).
+            </summary>
+            <param name="a">A matrix.</param>
+            <param name="b">A column vector.</param>
+            <returns>The product of the multiplication of matrix a and column vector b.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Multiply(System.Double[0:,0:],System.Double)">
+            <summary>
+              Multiplies a matrix by a scalar.
+            </summary>
+            <param name="a">A matrix.</param>
+            <param name="x">A scalar.</param>
+            <returns>The product of the multiplication of matrix a and scalar x.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Multiply(System.Double[],System.Double)">
+            <summary>
+              Multiplies a vector by a scalar.
+            </summary>
+            <param name="a">A vector.</param>
+            <param name="x">A scalar.</param>
+            <returns>The product of the multiplication of vector a and scalar x.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Multiply(System.Double,System.Double[0:,0:])">
+            <summary>
+              Multiplies a matrix by a scalar.
+            </summary>
+            <param name="a">A scalar.</param>
+            <param name="x">A matrix.</param>
+            <returns>The product of the multiplication of vector a and scalar x.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Multiply(System.Double,System.Double[])">
+            <summary>
+              Multiplies a vector by a scalar.
+            </summary>
+            <param name="a">A scalar.</param>
+            <param name="x">A matrix.</param>
+            <returns>The product of the multiplication of vector a and scalar x.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Divide(System.Double[],System.Double)">
+            <summary>
+              Divides a vector by a scalar.
+            </summary>
+            <param name="a">A vector.</param>
+            <param name="x">A scalar.</param>
+            <returns>The division quotient of vector a and scalar x.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Divide(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Divides two matrices by multiplying A by the inverse of B.
+            </summary>
+            <param name="a">The first matrix.</param>
+            <param name="b">The second matrix (which will be inverted).</param>
+            <returns>The result from the division of a and b.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Divide(System.Double[0:,0:],System.Double)">
+            <summary>
+              Divides a matrix by a scalar.
+            </summary>
+            <param name="a">A matrix.</param>
+            <param name="x">A scalar.</param>
+            <returns>The division quotient of matrix a and scalar x.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.InnerProduct(System.Double[],System.Double[])">
+            <summary>
+              Gets the inner product (scalar product) between two vectors (aT*b).
+            </summary>
+            <param name="a">A vector.</param>
+            <param name="b">A vector.</param>
+            <returns>The inner product of the multiplication of the vectors.</returns>
+            <remarks>
+               In mathematics, the dot product is an algebraic operation that takes two
+               equal-length sequences of numbers (usually coordinate vectors) and returns
+               a single number obtained by multiplying corresponding entries and adding up
+               those products. The name is derived from the dot that is often used to designate
+               this operation; the alternative name scalar product emphasizes the scalar
+               (rather than vector) nature of the result.
+               
+               The principal use of this product is the inner product in a Euclidean vector space:
+               when two vectors are expressed on an orthonormal basis, the dot product of their 
+               coordinate vectors gives their inner product.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.OuterProduct(System.Double[],System.Double[])">
+            <summary>
+              Gets the outer product (matrix product) between two vectors (a*bT).
+            </summary>
+            <remarks>
+              In linear algebra, the outer product typically refers to the tensor
+              product of two vectors. The result of applying the outer product to
+              a pair of vectors is a matrix. The name contrasts with the inner product,
+              which takes as input a pair of vectors and produces a scalar.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.VectorProduct(System.Double[],System.Double[])">
+            <summary>
+              Vectorial product.
+            </summary>
+            <remarks>
+              The cross product, vector product or Gibbs vector product is a binary operation
+              on two vectors in three-dimensional space. It has a vector result, a vector which
+              is always perpendicular to both of the vectors being multiplied and the plane
+              containing them. It has many applications in mathematics, engineering and physics.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.VectorProduct(System.Single[],System.Single[])">
+            <summary>
+              Vectorial product.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.CartesianProduct``1(System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>
+              Computes the cartesian product of many sets.
+            </summary>
+            <remarks>
+              References:
+              - http://blogs.msdn.com/b/ericlippert/archive/2010/06/28/computing-a-cartesian-product-with-linq.aspx 
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.CartesianProduct``1(``0[][])">
+            <summary>
+              Computes the cartesian product of many sets.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.CartesianProduct``1(``0[],``0[])">
+            <summary>
+              Computes the cartesian product of two sets.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Add(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Adds two matrices.
+            </summary>
+            <param name="a">A matrix.</param>
+            <param name="b">A matrix.</param>
+            <returns>The sum of the two matrices a and b.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Add(System.Double[0:,0:],System.Double[],System.Int32)">
+            <summary>
+              Adds a vector to a column or row of a matrix.
+            </summary>
+            <param name="a">A matrix.</param>
+            <param name="b">A vector.</param>
+            <param name="dimension">
+              Pass 0 if the vector should be added row-wise, 
+              or 1 if the vector should be added column-wise.
+            </param>
+        </member>
+        <member name="M:Accord.Math.Matrix.Subtract(System.Double[0:,0:],System.Double[],System.Int32)">
+            <summary>
+              Adds a vector to a column or row of a matrix.
+            </summary>
+            <param name="a">A matrix.</param>
+            <param name="b">A vector.</param>
+            <param name="dimension">The dimension to add the vector to.</param>
+        </member>
+        <member name="M:Accord.Math.Matrix.Add(System.Double[],System.Double[])">
+            <summary>
+              Adds two vectors.
+            </summary>
+            <param name="a">A vector.</param>
+            <param name="b">A vector.</param>
+            <returns>The addition of vector a to vector b.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Subtract(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Subtracts two matrices.
+            </summary>
+            <param name="a">A matrix.</param>
+            <param name="b">A matrix.</param>
+            <returns>The subtraction of matrix b from matrix a.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Subtract(System.Double[],System.Double[])">
+            <summary>
+              Subtracts two vectors.
+            </summary>
+            <param name="a">A vector.</param>
+            <param name="b">A vector.</param>
+            <returns>The subtraction of vector b from vector a.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Subtract(System.Double[],System.Double)">
+            <summary>
+              Subtracts a scalar from a vector.
+            </summary>
+            <param name="a">A vector.</param>
+            <param name="b">A scalar.</param>
+            <returns>The subtraction of b from all elements in a.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Power(System.Double[0:,0:],System.Int32)">
+            <summary>
+              Multiplies a matrix by itself n times.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Random(System.Int32,System.Int32)">
+            <summary>
+              Creates a rows-by-cols matrix with uniformly distributed random data.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Random(System.Int32,System.Boolean,System.Double,System.Double)">
+            <summary>
+              Creates a rows-by-cols matrix with uniformly distributed random data.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Random(System.Int32,System.Int32,System.Double,System.Double)">
+            <summary>
+              Creates a rows-by-cols matrix with uniformly distributed random data.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Random(System.Int32,System.Int32,AForge.Math.Random.IRandomNumberGenerator)">
+            <summary>
+              Creates a rows-by-cols matrix random data drawn from a given distribution.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Random(System.Int32,System.Double,System.Double)">
+            <summary>
+              Creates a vector with uniformly distributed random data.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Random(System.Int32,AForge.Math.Random.IRandomNumberGenerator)">
+            <summary>
+              Creates a vector with random data drawn from a given distribution.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Magic(System.Int32)">
+            <summary>
+              Creates a magic square matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Diagonal``1(``0[0:,0:])">
+            <summary>
+              Gets the diagonal vector from a matrix.
+            </summary>
+            <param name="m">A matrix.</param>
+            <returns>The diagonal vector from matrix m.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Diagonal``1(System.Int32,``0)">
+            <summary>
+              Returns a square diagonal matrix of the given size.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Diagonal``1(System.Int32,System.Int32,``0)">
+            <summary>
+              Returns a matrix of the given size with value on its diagonal.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Diagonal``1(``0[])">
+            <summary>
+              Return a square matrix with a vector of values on its diagonal.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Diagonal``1(System.Int32,``0[])">
+            <summary>
+              Return a square matrix with a vector of values on its diagonal.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Diagonal``1(System.Int32,System.Int32,``0[])">
+            <summary>
+              Returns a matrix with a vector of values on its diagonal.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Create``1(System.Int32,System.Int32,``0)">
+            <summary>
+              Returns a matrix with all elements set to a given value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Create``1(System.Int32,``0)">
+            <summary>
+              Returns a matrix with all elements set to a given value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Expand``1(``0[],System.Int32[])">
+            <summary>
+              Expands a data vector given in summary form.
+            </summary>
+            <param name="data">A base vector.</param>
+            <param name="count">An array containing by how much each line should be replicated.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Expand``1(``0[][],System.Int32[])">
+            <summary>
+              Expands a data matrix given in summary form.
+            </summary>
+            <param name="data">A base matrix.</param>
+            <param name="count">An array containing by how much each line should be replicated.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Expand``1(``0[0:,0:],System.Int32[])">
+            <summary>
+              Expands a data matrix given in summary form.
+            </summary>
+            <param name="data">A base matrix.</param>
+            <param name="count">An array containing by how much each line should be replicated.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Identity(System.Int32)">
+            <summary>
+              Returns the Identity matrix of the given size.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Centering(System.Int32)">
+            <summary>
+              Creates a centering matrix of size n x n in the form (I - 1n)
+              where 1n is a matrix with all entries 1/n.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.RowVector``1(``0[])">
+            <summary>
+              Creates a matrix with a single row vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ColumnVector``1(``0[])">
+            <summary>
+              Creates a matrix with a single column vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Indexes(System.Int32,System.Int32)">
+            <summary>
+              Creates a index vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Interval(System.Int32,System.Int32)">
+            <summary>
+              Creates an interval vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Interval(System.Double,System.Double,System.Double)">
+            <summary>
+              Creates an interval vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Interval(System.Double,System.Double,System.Int32)">
+            <summary>
+              Creates an interval vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Combine``1(``0[],``0[])">
+            <summary>
+              Combines two vectors horizontally.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Combine``1(``0[],``0)">
+            <summary>
+              Combines a vector and a element horizontally.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Combine``1(``0[][])">
+            <summary>
+              Combine vectors horizontally.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Combine``1(``0[0:,0:][])">
+            <summary>
+              Combines matrices vertically.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Combine``1(``0[][][])">
+            <summary>
+              Combines matrices vertically.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Submatrix``1(``0[0:,0:],System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Returns a sub matrix extracted from the current matrix.</summary>
+            <param name="data">The matrix to return the submatrix from.</param>
+            <param name="startRow">Start row index</param>
+            <param name="endRow">End row index</param>
+            <param name="startColumn">Start column index</param>
+            <param name="endColumn">End column index</param>
+            <remarks>
+              Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.Submatrix``1(``0[0:,0:],System.Int32[],System.Int32[])">
+            <summary>Returns a sub matrix extracted from the current matrix.</summary>
+            <param name="data">The matrix to return the submatrix from.</param>
+            <param name="rowIndexes">Array of row indices. Pass null to select all indices.</param>
+            <param name="columnIndexes">Array of column indices. Pass null to select all indices.</param>
+            <remarks>
+              Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.Submatrix``1(``0[0:,0:],System.Int32[])">
+            <summary>Returns a sub matrix extracted from the current matrix.</summary>
+            <param name="data">The matrix to return the submatrix from.</param>
+            <param name="rowIndexes">Array of row indices</param>
+            <remarks>
+              Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.Submatrix``1(``0[],System.Int32[])">
+            <summary>Returns a subvector extracted from the current vector.</summary>
+            <param name="data">The vector to return the subvector from.</param>
+            <param name="indexes">Array of indices.</param>
+            <remarks>
+              Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.Submatrix``1(``0[],System.Int32,System.Int32)">
+            <summary>Returns a sub matrix extracted from the current matrix.</summary>
+            <param name="data">The vector to return the subvector from.</param>
+            <param name="i0">Starting index.</param>
+            <param name="i1">End index.</param>
+            <remarks>
+              Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.Submatrix``1(``0[],System.Int32)">
+            <summary>Returns a sub matrix extracted from the current matrix.</summary>
+            <remarks>
+              Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.Submatrix``1(``0[0:,0:],System.Int32,System.Int32,System.Int32[])">
+            <summary>Returns a sub matrix extracted from the current matrix.</summary>
+            <param name="data">The matrix to return the submatrix from.</param>
+            <param name="i0">Starting row index</param>
+            <param name="i1">End row index</param>
+            <param name="c">Array of column indices</param>
+            <remarks>
+              Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.Submatrix``1(``0[0:,0:],System.Int32[],System.Int32,System.Int32)">
+            <summary>Returns a sub matrix extracted from the current matrix.</summary>
+            <param name="data">The matrix to return the submatrix from.</param>
+            <param name="r">Array of row indices</param>
+            <param name="j0">Start column index</param>
+            <param name="j1">End column index</param>
+            <remarks>
+              Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.Submatrix``1(``0[][],System.Int32,System.Int32,System.Int32[])">
+            <summary>Returns a sub matrix extracted from the current matrix.</summary>
+            <param name="data">The matrix to return the submatrix from.</param>
+            <param name="i0">Starting row index</param>
+            <param name="i1">End row index</param>
+            <param name="c">Array of column indices</param>
+            <remarks>
+              Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.RemoveColumn``1(``0[][],System.Int32)">
+            <summary>
+              Returns a new matrix without one of its columns.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.InsertColumn``1(``0[0:,0:],``0[],System.Int32)">
+            <summary>
+              Returns a new matrix with a given column vector inserted at a given index.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.RemoveAt``1(``0[],System.Int32)">
+            <summary>
+              Removes an element from a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.GetColumn``1(``0[0:,0:],System.Int32)">
+            <summary>
+              Gets a column vector from a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.GetColumn``1(``0[][],System.Int32)">
+            <summary>
+              Gets a column vector from a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.SetColumn``1(``0[0:,0:],System.Int32,``0[])">
+            <summary>
+              Stores a column vector into the given column position of the matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.GetRow``1(``0[0:,0:],System.Int32)">
+            <summary>
+              Gets a row vector from a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.SetRow``1(``0[0:,0:],System.Int32,``0[])">
+            <summary>
+              Stores a row vector into the given row position of the matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Find``1(``0[],System.Func{``0,System.Boolean})">
+            <summary>
+              Gets the indices of all elements matching a certain criteria.
+            </summary>
+            <typeparam name="T">The type of the array.</typeparam>
+            <param name="data">The array to search inside.</param>
+            <param name="func">The search criteria.</param>
+        </member>
+        <member name="M:Accord.Math.Matrix.Find``1(``0[],System.Func{``0,System.Boolean},System.Boolean)">
+            <summary>
+              Gets the indices of all elements matching a certain criteria.
+            </summary>
+            <typeparam name="T">The type of the array.</typeparam>
+            <param name="data">The array to search inside.</param>
+            <param name="func">The search criteria.</param>
+            <param name="firstOnly">
+               Set to true to stop when the first element is
+               found, set to false to get all elements.
+            </param>
+        </member>
+        <member name="M:Accord.Math.Matrix.Find``1(``0[0:,0:],System.Func{``0,System.Boolean})">
+            <summary>
+              Gets the indices of all elements matching a certain criteria.
+            </summary>
+            <typeparam name="T">The type of the array.</typeparam>
+            <param name="data">The array to search inside.</param>
+            <param name="func">The search criteria.</param>
+        </member>
+        <member name="M:Accord.Math.Matrix.Find``1(``0[0:,0:],System.Func{``0,System.Boolean},System.Boolean)">
+            <summary>
+              Gets the indices of all elements matching a certain criteria.
+            </summary>
+            <typeparam name="T">The type of the array.</typeparam>
+            <param name="data">The array to search inside.</param>
+            <param name="func">The search criteria.</param>
+            <param name="firstOnly">
+               Set to true to stop when the first element is
+               found, set to false to get all elements.
+            </param>
+        </member>
+        <member name="M:Accord.Math.Matrix.Apply``2(``0[],System.Func{``0,``1})">
+            <summary>
+              Applies a function to every element of the array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Apply``2(``0[0:,0:],System.Func{``0,``1})">
+            <summary>
+              Applies a function to every element of a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ApplyInPlace``1(``0[],System.Func{``0,``0})">
+            <summary>
+              Applies a function to every element of the array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ApplyInPlace``1(``0[],System.Func{``0,System.Int32,``0})">
+            <summary>
+              Applies a function to every element of the array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Sort``2(``0[],``1[0:,0:],System.Collections.Generic.IComparer{``0})">
+            <summary>
+              Sorts the columns of a matrix by sorting keys.
+            </summary>
+            <param name="keys">The key value for each column.</param>
+            <param name="values">The matrix to be sorted.</param>
+            <param name="comparer">The comparer to use.</param>
+        </member>
+        <member name="M:Accord.Math.Matrix.Split``1(``0[],System.Int32)">
+            <summary>
+              Splits a given vector into a smaller vectors of the given size.
+            </summary>
+            <param name="vector">The vector to be splitted.</param>
+            <param name="size">The size of the resulting vectors.</param>
+            <returns>An array of vectors containing the subdivisions of the given vector.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsSquare``1(``0[0:,0:])">
+            <summary>
+              Returns true if a matrix is square.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsSymmetric(System.Double[0:,0:])">
+            <summary>
+              Returns true if a matrix is symmetric.
+            </summary>
+            <param name="matrix"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Trace(System.Double[0:,0:])">
+            <summary>
+              Gets the trace of a matrix.
+            </summary>
+            <remarks>
+              The trace of an n-by-n square matrix A is defined to be the sum of the
+              elements on the main diagonal (the diagonal from the upper left to the
+              lower right) of A.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.Determinant(System.Double[0:,0:])">
+            <summary>
+              Gets the determinant of a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.IsPositiveDefinite(System.Double[0:,0:])">
+            <summary>
+               Gets whether a matrix is positive definite.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.CumulativeSum(System.Double[])">
+            <summary>Calculates a vector cumulative sum.</summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.CumulativeSum(System.Double[0:,0:],System.Int32)">
+            <summary>Calculates the matrix Sum vector.</summary>
+            <param name="value">A matrix whose sums will be calculated.</param>
+            <param name="dimension">The dimension in which the cumulative sum will be calculated.</param>
+            <returns>Returns a vector containing the sums of each variable in the given matrix.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Sum(System.Double[0:,0:])">
+            <summary>Calculates the matrix Sum vector.</summary>
+            <param name="value">A matrix whose sums will be calculated.</param>
+            <returns>Returns a vector containing the sums of each variable in the given matrix.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Sum(System.Double[0:,0:],System.Int32)">
+            <summary>Calculates the matrix Sum vector.</summary>
+            <param name="value">A matrix whose sums will be calculated.</param>
+            <param name="dimension">The dimension in which the sum will be calculated.</param>
+            <returns>Returns a vector containing the sums of each variable in the given matrix.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Sum(System.Int32[0:,0:])">
+            <summary>Calculates the matrix Sum vector.</summary>
+            <param name="value">A matrix whose sums will be calculated.</param>
+            <returns>Returns a vector containing the sums of each variable in the given matrix.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Sum(System.Int32[0:,0:],System.Int32)">
+            <summary>Calculates the matrix Sum vector.</summary>
+            <param name="value">A matrix whose sums will be calculated.</param>
+            <param name="dimension">The dimension in which the sum will be calculated.</param>
+            <returns>Returns a vector containing the sums of each variable in the given matrix.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Sum(System.Double[])">
+            <summary>
+              Gets the sum of all elements in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Product(System.Double[])">
+            <summary>
+              Gets the product of all elements in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Sum(System.Int32[])">
+            <summary>
+              Gets the sum of all elements in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Product(System.Int32[])">
+            <summary>
+              Gets the product of all elements in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Max``1(``0[],System.Int32@)">
+            <summary>
+              Gets the maximum element in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Max``1(``0[])">
+            <summary>
+              Gets the maximum element in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Max(System.Double[])">
+            <summary>
+              Gets the maximum element in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Min(System.Double[])">
+            <summary>
+              Gets the minimum element in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Max(System.Double[],System.Int32@)">
+            <summary>
+              Gets the maximum element in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Min(System.Double[],System.Int32@)">
+            <summary>
+              Gets the minimum element in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Max(System.Single[])">
+            <summary>
+              Gets the maximum element in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Min(System.Single[])">
+            <summary>
+              Gets the minimum element in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Max(System.Int32[])">
+            <summary>
+              Gets the maximum element in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Min(System.Int32[])">
+            <summary>
+              Gets the minimum element in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Max(System.Double[0:,0:],System.Int32,System.Int32[]@)">
+            <summary>
+              Gets the maximum values accross one dimension of a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Min(System.Double[0:,0:],System.Int32,System.Int32[]@)">
+            <summary>
+              Gets the minimum values across one dimension of a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Range(System.Double[])">
+            <summary>
+              Gets the range of the values in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Range(System.Int32[])">
+            <summary>
+              Gets the range of the values in a vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Range(System.Double[0:,0:])">
+            <summary>
+              Gets the range of the values accross the columns of a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Round(System.Double[0:,0:],System.Int32)">
+            <summary>
+              Rounds a double-precision floating-point matrix to a specified number of fractional digits.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Floor(System.Double[0:,0:])">
+            <summary>
+              Returns the largest integer less than or equal than to the specified 
+              double-precision floating-point number for each element of the matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Ceiling(System.Double[0:,0:])">
+            <summary>
+              Returns the largest integer greater than or equal than to the specified 
+              double-precision floating-point number for each element of the matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Round(System.Double[],System.Int32)">
+            <summary>
+              Rounds a double-precision floating-point number array to a specified number of fractional digits.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Floor(System.Double[])">
+            <summary>
+              Returns the largest integer less than or equal than to the specified 
+              double-precision floating-point number for each element of the array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Ceiling(System.Double[])">
+            <summary>
+              Returns the largest integer greater than or equal than to the specified 
+              double-precision floating-point number for each element of the array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Abs(System.Int32[])">
+            <summary>
+              Elementwise absolute value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Abs(System.Double[])">
+            <summary>
+              Elementwise absolute value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Abs(System.Double[0:,0:])">
+            <summary>
+              Elementwise absolute value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Abs(System.Int32[0:,0:])">
+            <summary>
+              Elementwise absolute value.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Sqrt(System.Double[])">
+            <summary>
+              Elementwise Square root.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Sqrt(System.Double[0:,0:])">
+            <summary>
+              Elementwise Square root.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ElementwisePower(System.Double[0:,0:],System.Double)">
+            <summary>
+              Elementwise power operation.
+            </summary>
+            <param name="x">A matrix.</param>
+            <param name="y">A power.</param>
+            <returns>Returns x elevated to the power of y.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.ElementwisePower(System.Double[],System.Double)">
+            <summary>
+              Elementwise power operation.
+            </summary>
+            <param name="x">A matrix.</param>
+            <param name="y">A power.</param>
+            <returns>Returns x elevated to the power of y.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.ElementwiseDivide(System.Double[],System.Double[])">
+            <summary>
+              Elementwise divide operation.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ElementwiseDivide(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Elementwise divide operation.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ElementwiseDivide(System.Double[0:,0:],System.Double[],System.Int32)">
+            <summary>
+              Elementwise division.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ElementwiseMultiply(System.Double[],System.Double[])">
+            <summary>
+              Elementwise multiply operation.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ElementwiseMultiply(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Elementwise multiply operation.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ElementwiseMultiply(System.Int32[],System.Int32[])">
+            <summary>
+              Elementwise multiply operation.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ElementwiseMultiply(System.Int32[0:,0:],System.Int32[0:,0:])">
+            <summary>
+              Elementwise multiplication.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ElementwiseMultiply(System.Double[0:,0:],System.Double[],System.Int32)">
+            <summary>
+              Elementwise multiplication.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ToMatrix``1(``0[][])">
+            <summary>
+              Converts a jagged-array into a multidimensional array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ToMatrix``1(``0[])">
+            <summary>
+              Converts an array into a multidimensional array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ToArray``1(``0[0:,0:])">
+            <summary>
+              Converts a multidimensional array into a jagged-array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ToMatrix(System.Data.DataTable,System.String[]@)">
+            <summary>
+              Converts a DataTable to a double[,] array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ToMatrix(System.Data.DataTable)">
+            <summary>
+              Converts a DataTable to a double[,] array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ToArray(System.Data.DataTable)">
+            <summary>
+              Converts a DataTable to a double[][] array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ToArray(System.Data.DataColumn)">
+            <summary>
+              Converts a DataColumn to a double[] array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Solve(System.Double[0:,0:],System.Double[0:,0:])">
+            <summary>
+              Returns the LHS solution matrix if the matrix is square or the least squares solution otherwise.
+            </summary>
+            <remarks>
+              Please note that this does not check if the matrix is non-singular before attempting to solve.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.Solve(System.Double[0:,0:],System.Double[])">
+            <summary>
+              Returns the LHS solution vector if the matrix is square or the least squares solution otherwise.
+            </summary>
+            <remarks>
+              Please note that this does not check if the matrix is non-singular before attempting to solve.
+            </remarks>
+        </member>
+        <member name="M:Accord.Math.Matrix.Inverse(System.Double[0:,0:])">
+            <summary>
+              Computes the inverse of a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.PseudoInverse(System.Double[0:,0:])">
+            <summary>
+              Computes the pseudo-inverse of a matrix.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Reshape``1(``0[],System.Int32,System.Int32)">
+            <summary>
+              Transforms a vector into a matrix of given dimensions.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Reshape``1(``0[0:,0:],System.Int32)">
+            <summary>
+              Transforms a vector into a single vector.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.ToString(System.Double[0:,0:])">
+            <summary>
+              Returns a <see cref="T:System.String"/> representing a matrix.
+            </summary>
+            <param name="matrix">The matrix.</param>
+            <returns>
+              A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.ToString(System.Double[0:,0:],System.Boolean,Accord.Math.Formats.IMatrixFormatProvider)">
+            <summary>
+              Returns a <see cref="T:System.String"/> that representing a matrix.
+            </summary>
+            <param name="matrix">The matrix.</param>
+            <param name="multiline">
+              If set to <c>true</c>, the matrix will be written using multiple
+              lines. If set to <c>false</c>, the matrix will be written in a 
+              single line.</param>
+            <param name="provider">
+              The <see cref="T:Accord.Math.Formats.IMatrixFormatProvider"/> to be used
+              when creating the resulting string. Default is to use
+              <see cref="F:Accord.Math.Formats.DefaultMatrixFormatProvider.CurrentCulture"/>.
+            </param>
+            <returns>
+              A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.ToString(System.Double[0:,0:],Accord.Math.Formats.IMatrixFormatProvider)">
+            <summary>
+              Returns a <see cref="T:System.String"/> that representing a matrix.
+            </summary>
+            <param name="matrix">The matrix.</param>
+            <param name="provider">
+              The <see cref="T:Accord.Math.Formats.IMatrixFormatProvider"/> to be used
+              when creating the resulting string. Default is to use
+              <see cref="F:Accord.Math.Formats.DefaultMatrixFormatProvider.CurrentCulture"/>.
+            </param>
+            <returns>
+              A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.ToString(System.Double[0:,0:],System.String,Accord.Math.Formats.IMatrixFormatProvider)">
+            <summary>
+              Returns a <see cref="T:System.String"/> that representing a matrix.
+            </summary>
+            <param name="matrix">The matrix.</param>
+            <param name="format">
+              The format to use when creating the resulting string.
+            </param>
+            <param name="provider">
+              The <see cref="T:Accord.Math.Formats.IMatrixFormatProvider"/> to be used
+              when creating the resulting string. Default is to use
+              <see cref="F:Accord.Math.Formats.DefaultMatrixFormatProvider.CurrentCulture"/>.
+            </param>
+            <returns>
+              A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.ToString(System.Double[][])">
+            <summary>
+              Returns a <see cref="T:System.String"/> that representing a matrix.
+            </summary>
+            <param name="matrix">The matrix.</param>
+            <returns>
+              A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.ToString(System.Double[][],Accord.Math.Formats.IMatrixFormatProvider)">
+            <summary>
+              Returns a <see cref="T:System.String"/> that representing a matrix.
+            </summary>
+            <param name="matrix">The matrix.</param>
+            <param name="provider">
+              The <see cref="T:Accord.Math.Formats.IMatrixFormatProvider"/> to be used
+              when creating the resulting string. Default is to use
+              <see cref="F:Accord.Math.Formats.DefaultMatrixFormatProvider.CurrentCulture"/>.
+            </param>
+            <returns>
+              A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.ToString(System.Double[][],System.String,Accord.Math.Formats.IMatrixFormatProvider)">
+            <summary>
+              Returns a <see cref="T:System.String"/> that representing a matrix.
+            </summary>
+            <param name="matrix">The matrix.</param>
+            <param name="format">
+              The format to use when creating the resulting string.
+            </param>
+            <param name="provider">
+              The <see cref="T:Accord.Math.Formats.IMatrixFormatProvider"/> to be used
+              when creating the resulting string. Default is to use
+              <see cref="F:Accord.Math.Formats.DefaultMatrixFormatProvider.CurrentCulture"/>.
+            </param>
+            <returns>
+              A <see cref="T:System.String"/> that represents this instance.
+            </returns>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.Parse(System.String)">
+            <summary>
+              Converts the string representation of a matrix to its
+              double-precision floating-point number matrix equivalent.
+            </summary>
+            <param name="str">The string representation of the matrix.</param>
+            <returns>A double-precision floating-point number matrix parsed
+            from the given string using the given format provider.</returns>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.Parse(System.String,Accord.Math.Formats.IMatrixFormatProvider)">
+            <summary>
+              Converts the string representation of a matrix to its
+              double-precision floating-point number matrix equivalent.
+            </summary>
+            <param name="str">The string representation of the matrix.</param>
+            <param name="provider">
+              The format provider to use in the conversion. Default is to use
+              <see cref="F:Accord.Math.Formats.DefaultMatrixFormatProvider.CurrentCulture"/>.
+            </param>
+            <returns>A double-precision floating-point number matrix parsed
+            from the given string using the given format provider.</returns>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.ParseJagged(System.String,Accord.Math.Formats.IMatrixFormatProvider)">
+            <summary>
+              Converts the string representation of a matrix to its
+              double-precision floating-point number matrix equivalent.
+            </summary>
+            <param name="s">The string representation of the matrix.</param>
+            <param name="provider">
+              The format provider to use in the conversion. Default is to use
+              <see cref="F:Accord.Math.Formats.DefaultMatrixFormatProvider.CurrentCulture"/>.
+            </param>
+            <returns>A double-precision floating-point number matrix parsed
+            from the given string using the given format provider.</returns>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.TryParse(System.String,Accord.Math.Formats.IMatrixFormatProvider,System.Double[0:,0:]@)">
+            <summary>
+              Converts the string representation of a matrix to its
+              double-precision floating-point number matrix equivalent.
+              A return value indicates whether the conversion succeeded or failed.
+            </summary>
+            <param name="s">The string representation of the matrix.</param>
+            <param name="provider">
+              The format provider to use in the conversion. Default is to use
+              <see cref="F:Accord.Math.Formats.DefaultMatrixFormatProvider.CurrentCulture"/>.
+            </param>
+            <param name="matrix">A double-precision floating-point number matrix parsed
+            from the given string using the given format provider.</param>
+            <result>When this method returns, contains the double-precision floating-point
+            number matrix equivalent to the <see param="s"/> parameter, if the conversion succeeded, 
+            or null if the conversion failed. The conversion fails if the <see param="s"/> parameter
+            is null, is not a matrix in a valid format, or contains elements which represent
+            a number less than MinValue or greater than MaxValue. This parameter is passed
+            uninitialized. </result>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.TryParse(System.String,Accord.Math.Formats.IMatrixFormatProvider,System.Double[][]@)">
+            <summary>
+              Converts the string representation of a matrix to its
+              double-precision floating-point number matrix equivalent.
+              A return value indicates whether the conversion succeeded or failed.
+            </summary>
+            <param name="s">The string representation of the matrix.</param>
+            <param name="provider">
+              The format provider to use in the conversion. Default is to use
+              <see cref="F:Accord.Math.Formats.DefaultMatrixFormatProvider.CurrentCulture"/>.
+            </param>
+            <param name="matrix">A double-precision floating-point number matrix parsed
+            from the given string using the given format provider.</param>
+            <result>When this method returns, contains the double-precision floating-point
+            number matrix equivalent to the <see param="s"/> parameter, if the conversion succeeded, 
+            or null if the conversion failed. The conversion fails if the <see param="s"/> parameter
+            is null, is not a matrix in a valid format, or contains elements which represent
+            a number less than MinValue or greater than MaxValue. This parameter is passed
+            uninitialized. </result>
+            
+        </member>
+        <member name="M:Accord.Math.Matrix.Abs(AForge.Math.Complex[])">
+            <summary>
+              Computes the absolute value of an array of complex numbers.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Sum(AForge.Math.Complex[])">
+            <summary>
+              Computes the sum of an array of complex numbers.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Multiply(AForge.Math.Complex[],AForge.Math.Complex[])">
+            <summary>
+              Elementwise multiplication of two complex vectors.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Magnitude(AForge.Math.Complex[])">
+            <summary>
+              Gets the magnitude of every complex number in an array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Phase(AForge.Math.Complex[])">
+            <summary>
+              Gets the phase of every complex number in an array.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Matrix.Re(AForge.Math.Complex[])">
+            <summary>
+              Returns the real vector part of the complex vector c.
+            </summary>
+            <param name="c">A vector of complex numbers.</param>
+            <returns>A vector of scalars with the real part of the complex numers.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.Im(AForge.Math.Complex[])">
+            <summary>
+              Returns the imaginary vector part of the complex vector c.
+            </summary>
+            <param name="c">A vector of complex numbers.</param>
+            <returns>A vector of scalars with the imaginary part of the complex numers.</returns>
+        </member>
+        <member name="M:Accord.Math.Matrix.ToArray(AForge.Math.Complex[])">
+            <summary>
+              Converts a complex number to a matrix of scalar values
+              in which the first column contains the real values and 
+              the second column contains the imaginary values.
+            </summary>
+            <param name="c">An array of complex numbers.</param>
+        </member>
+        <member name="M:Accord.Math.Matrix.Range(AForge.Math.Complex[])">
+            <summary>
+              Gets the range of the magnitude values in a complex number vector.
+            </summary>
+            <param name="array">A complex number vector.</param>
+            <returns>The range of magnitude values in the complex vector.</returns>
+        </member>
+        <member name="T:Accord.Math.Decompositions.LuDecomposition">
+            <summary>
+              LU decomposition of a rectangular matrix.
+            </summary>
+            <remarks>
+              <para>
+                For an m-by-n matrix <c>A</c> with <c>m &gt;= n</c>, the LU decomposition is an m-by-n
+                unit lower triangular matrix <c>L</c>, an n-by-n upper triangular matrix <c>U</c>,
+                and a permutation vector <c>piv</c> of length m so that <c>A(piv) = L*U</c>.
+                If m &lt; n, then <c>L</c> is m-by-m and <c>U</c> is m-by-n.</para>
+              <para>
+                The LU decomposition with pivoting always exists, even if the matrix is
+                singular, so the constructor will never fail.  The primary use of the
+                LU decomposition is in the solution of square systems of simultaneous
+                linear equations. This will fail if <see cref="P:Accord.Math.Decompositions.LuDecomposition.NonSingular"/> returns
+                <see langword="false"/>.
+              </para>
+            </remarks>
+            
+        </member>
+        <member name="M:Accord.Math.Decompositions.LuDecomposition.#ctor(System.Double[0:,0:])">
+            <summary>Construct a new LU decomposition.</summary>	
+            <param name="value">The matrix A to be decomposed.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.LuDecomposition.#ctor(System.Double[0:,0:],System.Boolean)">
+            <summary>Construct a LU decomposition.</summary>	
+            <param name="value">The matrix A to be decomposed.</param>
+            <param name="transpose">True if the decomposition should be performed on
+            the transpose of A rather than A itself, false otherwise. Default is false.</param>
+        </member>
+        <member name="M:Accord.Math.Decompositions.LuDecomposition.Inverse">
+            <summary>Solves a set of equation systems of type <c>A * X = I</c>.</summary>
+        </member>
+        <member name="M:Accord.Math.Decompositions.LuDecomposition.Solve(System.Double[0:,0:])">
+            <summary>Solves a set of equation systems of type <c>A * X = B</c>.</summary>
+            <param name="value">Right hand side matrix with as many rows as <c>A</c> and any number of columns.</param>
+            <returns>Matrix <c>X</c> so that <c>L * U * X = B</c>.</returns>
+        </member>
+        <member name="M:Accord.Math.Decompositions.LuDecomposition.SolveTranspose(System.Double[0:,0:])">
+            <summary>Solves a set of equation systems of type <c>X * A = B</c>.</summary>
+            <param name="value">Right hand side matrix with as many columns as <c>A</c> and any number of rows.</param>
+            <returns>Matrix <c>X</c> so that <c>X * L * U = A</c>.</returns>
+        </member>
+        <member name="M:Accord.Math.Decompositions.LuDecomposition.Solve(System.Double[])">
+            <summary>Solves a set of equation systems of type <c>A * X = B</c>.</summary>
+            <param name="value">Right hand side matrix with as many rows as <c>A</c> and any number of columns.</param>
+            <returns>Matrix <c>X</c> so that <c>L * U * X = B</c>.</returns>
+        </member>
+        <member name="P:Accord.Math.Decompositions.LuDecomposition.NonSingular">
+            <summary>Returns if the matrix is non-singular.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.LuDecomposition.Determinant">
+            <summary>Returns the determinant of the matrix.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.LuDecomposition.LowerTriangularFactor">
+            <summary>Returns the lower triangular factor <c>L</c> with <c>A=LU</c>.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.LuDecomposition.UpperTriangularFactor">
+            <summary>Returns the lower triangular factor <c>L</c> with <c>A=LU</c>.</summary>
+        </member>
+        <member name="P:Accord.Math.Decompositions.LuDecomposition.PivotPermutationVector">
+            <summary>Returns the pivot permuation vector.</summary>
+        </member>
+        <member name="T:Accord.Math.Formats.MatrixFormatter">
+            <summary>
+              Defines how matrices are formatted and displayed, depending on the
+              chosen format representation.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.Math.Formats.MatrixFormatter.Format(System.String,System.Object,System.IFormatProvider)">
+            <summary>
+              Converts the value of a specified object to an equivalent string
+              representation using specified formatting information.
+            </summary>
+            <param name="format">A format string containing formatting specifications.</param>
+            <param name="arg">An object to format.</param>
+            <param name="formatProvider">
+              An <see cref="T:System.IFormatProvider"/> object that supplies
+              format information about the current instance.</param>
+            <returns>
+              The string representation of the value of <paramref name="arg"/>,
+              formatted as specified by <paramref name="format"/> and <paramref
+              name="formatProvider"/>.
+            </returns>
+            
+        </member>
+        <member name="M:Accord.Math.Formats.MatrixFormatter.Format(System.String,System.Array,Accord.Math.Formats.IMatrixFormatProvider)">
+            <summary>
+              Converts a jagged or multidimensional array into a <a cref="T:System.String">System.String</a> representation.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.Math.Formats.MatrixFormatter.parseOptions(System.String,System.String@,System.String@)">
+            <summary>
+              Parses a format string containing the format options for the matrix representation.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Formats.MatrixFormatter.handleOtherFormats(System.String,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+              Handles formatting for objects other than matrices.
+            </summary>
+        </member>
+        <member name="M:Accord.Math.Formats.MatrixFormatter.ParseJagged(System.String,Accord.Math.Formats.IMatrixFormatProvider)">
+            <summary>
+              Converts a matrix represented in a System.String into a jagged array.
+            </summary>
+            
+        </member>
+        <member name="M:Accord.Math.Formats.MatrixFormatter.ParseMultidimensional(System.String,Accord.Math.Formats.IMatrixFormatProvider)">
+            <summary>
+              Converts a matrix represented in a System.String into a multi-dimensional array.
+            </summary>
+            
+        </member>
+    </members>
+</doc>
