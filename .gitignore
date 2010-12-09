@@ -3,3 +3,4 @@ src/*/bin
 src/*/obj
 *.user
 *.suo
+TestResult.xml

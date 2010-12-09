@@ -46,6 +46,9 @@ namespace MSR.Data.VersionControl.Git
 						TouchPath(TouchedPath.TouchedPathAction.DELETED, blocks[1]);
 						TouchPath(TouchedPath.TouchedPathAction.ADDED, blocks[2], blocks[1]);
 						break;
+					case TouchedPathGitAction.COPIED:
+						TouchPath(TouchedPath.TouchedPathAction.ADDED, blocks[2], blocks[1]);
+						break;
 					default:
 						break;
 				}
@@ -74,6 +77,7 @@ namespace MSR.Data.VersionControl.Git
 				case "A": return TouchedPathGitAction.ADDED;
 				case "D": return TouchedPathGitAction.DELETED;
 				case "R": return TouchedPathGitAction.RENAMED;
+				case "C": return TouchedPathGitAction.COPIED;
 			}
 			throw new ApplicationException(string.Format("{0} - is invalid path action", action));
 		}

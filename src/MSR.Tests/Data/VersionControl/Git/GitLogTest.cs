@@ -36,7 +36,15 @@ M	Makefile
 R100	show-diff.c	diff-files.c
 R100	git-export.c	export.c
 R100	git-mktag.c	mktag.c";
-		
+
+private string log_3 =
+@"35587ec664abcf6ed79d9d743ab58d0600cf0bc1
+adrian
+2005-07-14 18:20:03 +0000
+Created django.contrib and moved comments into it
+C100	django/views/comments/__init__.py	django/contrib/__init__.py
+C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
+	
 		private GitLog log;
 		
 		[Test]
@@ -105,6 +113,18 @@ R100	git-mktag.c	mktag.c";
 					&&
 					x.SourceRevision == null
 				);
+		}
+		[Test]
+		public void Should_keep_information_about_copied_paths()
+		{
+			log = new GitLog(log_3.ToStream());
+
+			log.TouchedPaths.Count()
+				.Should().Be(2);
+			log.TouchedPaths
+				.Where(x => x.Action == TouchedPath.TouchedPathAction.ADDED)
+				.Count()
+					.Should().Be(2);
 		}
 	}
 }

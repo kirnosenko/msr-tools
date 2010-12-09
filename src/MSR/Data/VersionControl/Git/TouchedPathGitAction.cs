@@ -13,6 +13,7 @@ namespace MSR.Data.VersionControl.Git
 		ADDED,
 		MODIFIED,
 		DELETED,
-		RENAMED
+		RENAMED,
+		COPIED
 	}
 }
