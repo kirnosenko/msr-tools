@@ -10,17 +10,38 @@ using System.Data.Linq.Mapping;
 
 namespace MSR.Data.Entities
 {
+	/// <summary>
+	/// Piece of code. Added or removed.
+	/// </summary>
 	[Table(Name = "CodeBlocks")]
 	public class CodeBlock
 	{
 		[Column(DbType = "Int NOT NULL IDENTITY", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
 		public int ID { get; set; }
+		/// <summary>
+		/// A size of the code block. Can be LOC or something else.
+		/// A positive value means code addition.
+		/// A negative value means code removing.
+		/// </summary>
 		[Column(CanBeNull = false)]
 		public double Size { get; set; }
+		/// <summary>
+		/// Commit in which code was added in.
+		/// Null for code removing.
+		/// </summary>
 		[Column(CanBeNull = true)]
 		public int? AddedInitiallyInCommitID { get; set; }
+		/// <summary>
+		/// Modification code block was created in.
+		/// Null for code removing.
+		/// </summary>
 		[Column(CanBeNull = false)]
 		public int ModificationID { get; set; }
+		/// <summary>
+		/// A code block being changed by this one.
+		/// Now code removing block keeps code block from which
+		/// code being removed.
+		/// </summary>
 		[Column(CanBeNull = true)]
 		public int? TargetCodeBlockID { get; set; }
 

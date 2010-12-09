@@ -10,19 +10,39 @@ using System.Data.Linq.Mapping;
 
 namespace MSR.Data.Entities
 {
+	/// <summary>
+	/// File in version control system.
+	/// </summary>
 	[Table(Name = "Files")]
 	public class ProjectFile
 	{
 		[Column(DbType = "Int NOT NULL IDENTITY", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
 		public int ID { get; set; }
+		/// <summary>
+		/// Path of the file.
+		/// </summary>
 		[Column(DbType = "NVarChar(MAX) NOT NULL")]
 		public string Path { get; set; }
+		/// <summary>
+		/// Commit the file was added in.
+		/// </summary>
 		[Column(CanBeNull = false)]
 		public int AddedInCommitID { get; set; }
+		/// <summary>
+		/// Commit the file was deleted in.
+		/// Null if the file exists so far.
+		/// </summary>
 		[Column(CanBeNull = true)]
 		public int? DeletedInCommitID { get; set; }
+		/// <summary>
+		/// The source file of the file.
+		/// Null if the file was created from scratch.
+		/// </summary>
 		[Column(CanBeNull = true)]
 		public int? SourceFileID { get; set; }
+		/// <summary>
+		/// The revision the source file was taken from.
+		/// </summary>
 		[Column(CanBeNull = true)]
 		public int? SourceCommitID { get; set; }
 		

@@ -10,13 +10,22 @@ using System.Data.Linq.Mapping;
 
 namespace MSR.Data.Entities
 {
+	/// <summary>
+	/// Modification of a path in a commit.
+	/// </summary>
 	[Table(Name = "Modifications")]
 	public class Modification
 	{
 		[Column(DbType = "Int NOT NULL IDENTITY", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
 		public int ID { get; set; }
+		/// <summary>
+		/// Commit that contains modification.
+		/// </summary>
 		[Column(CanBeNull = false)]
 		public int CommitID { get; set; }
+		/// <summary>
+		/// File touched by modification.
+		/// </summary>
 		[Column(CanBeNull = false)]
 		public int FileID { get; set; }
 

@@ -4,3 +4,4 @@ src/*/obj
 *.user
 *.suo
 TestResult.xml
+*VisualState.xml

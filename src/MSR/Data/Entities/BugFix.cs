@@ -10,11 +10,17 @@ using System.Data.Linq.Mapping;
 
 namespace MSR.Data.Entities
 {
+	/// <summary>
+	/// Bug fix.
+	/// </summary>
 	[Table(Name = "BugFixes")]
 	public class BugFix
 	{
 		[Column(DbType = "Int NOT NULL IDENTITY", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
 		public int ID { get; set; }
+		/// <summary>
+		/// Commit that contains code that fixes a bug.
+		/// </summary>
 		[Column(CanBeNull = false)]
 		public int CommitID { get; set; }
 
