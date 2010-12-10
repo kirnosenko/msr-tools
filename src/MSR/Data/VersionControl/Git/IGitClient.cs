@@ -19,6 +19,7 @@ namespace MSR.Data.VersionControl.Git
 		Stream RevList();
 		Stream Log(string revision);
 		Stream Diff(string revision, string path);
+		Stream Diff(string newPath, string newRevision, string oldPath, string oldRevision);
 		Stream Blame(string revision, string path);
 	}
 }

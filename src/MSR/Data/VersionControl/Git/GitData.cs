@@ -36,7 +36,10 @@ namespace MSR.Data.VersionControl.Git
 		}
 		public IDiff Diff(string newPath, string newRevision, string oldPath, string oldRevision)
 		{
-			return FileUniDiff.Empty;
+			using (var diff = git.Diff(newPath, newRevision, oldPath, oldRevision))
+			{
+				return new FileUniDiff(diff);
+			}
 		}
 		public IBlame Blame(string revision, string filePath)
 		{

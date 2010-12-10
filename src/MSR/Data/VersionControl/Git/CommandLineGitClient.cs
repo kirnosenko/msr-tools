@@ -22,19 +22,37 @@ namespace MSR.Data.VersionControl.Git
 		}
 		public Stream RevList()
 		{
-			return RunCommand("rev-list master --topo-order --reverse");
+			return RunCommand(
+				"rev-list master --topo-order --reverse"
+			);
 		}
 		public Stream Log(string revision)
 		{
-			return RunCommand("log -n 1 --format=format:%H%n%cn%n%ci%n%s --name-status -C {0}", revision);
+			return RunCommand(
+				"log -n 1 --format=format:%H%n%cn%n%ci%n%s --name-status -C {0}",
+				revision
+			);
 		}
 		public Stream Diff(string revision, string path)
 		{
-			return RunCommand("diff-tree -p --root {0} -- {1}", revision, path);
+			return RunCommand(
+				"diff-tree -p --root {0} -- {1}",
+				revision, path
+			);
+		}
+		public Stream Diff(string newPath, string newRevision, string oldPath, string oldRevision)
+		{
+			return RunCommand(
+				"diff-tree -p -C --root {0} -- {1} {2} -- {3}",
+				newRevision, newPath, oldRevision, oldPath
+			);
 		}
 		public Stream Blame(string revision, string path)
 		{
-			return RunCommand("blame -l -s -C --root {0} -- {1}", revision, path);
+			return RunCommand(
+				"blame -l -s -C --root {0} -- {1}",
+				revision, path
+			);
 		}
 		
 		public string RepositoryPath
