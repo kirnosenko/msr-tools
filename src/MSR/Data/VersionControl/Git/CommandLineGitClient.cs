@@ -46,7 +46,7 @@ namespace MSR.Data.VersionControl.Git
 		public Stream Blame(string revision, string path)
 		{
 			return RunCommand(
-				"blame -l -s --root {0} -- {1}",
+				"blame -l -s --root --incremental {0} -- {1}",
 				revision, path
 			);
 		}
