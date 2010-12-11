@@ -13,12 +13,8 @@ namespace MSR.Data.VersionControl.Git
 	{
 		public CommandLineGitClient(string repositoryPath)
 		{
-			Command = "git";
 			RepositoryPath = repositoryPath;
-		}
-		public string Command
-		{
-			get; set;
+			Command = "git";
 		}
 		public Stream RevList()
 		{
@@ -29,7 +25,7 @@ namespace MSR.Data.VersionControl.Git
 		public Stream Log(string revision)
 		{
 			return RunCommand(
-				"log -n 1 --format=format:%H%n%cn%n%ci%n%s --name-status -C {0}",
+				"log -n 1 -C --format=format:%H%n%cn%n%ci%n%s --name-status {0}",
 				revision
 			);
 		}
@@ -50,7 +46,7 @@ namespace MSR.Data.VersionControl.Git
 		public Stream Blame(string revision, string path)
 		{
 			return RunCommand(
-				"blame -l -s -C --root {0} -- {1}",
+				"blame -l -s --root {0} -- {1}",
 				revision, path
 			);
 		}
@@ -58,6 +54,10 @@ namespace MSR.Data.VersionControl.Git
 		public string RepositoryPath
 		{
 			get; private set;
+		}
+		public string Command
+		{
+			get; set;
 		}
 		private Stream RunCommand(string cmd, params object[] objects)
 		{
