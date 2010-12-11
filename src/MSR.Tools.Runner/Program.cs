@@ -27,8 +27,11 @@ namespace MSR.Tools.Runner
 			//configFile = @"E:\repo\dia\dia.config"; // 4384 revisions
 			//configFile = @"E:\repo\gnome-vfs\gnome-vfs.config"; // 5550 revisions
 			//configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
-			configFile = @"E:\repo\git\git.config";
+			//configFile = @"E:\repo\git\git.config";
 			//configFile = @"E:\repo\linux-2.6\linux-2.6.config";
+			//configFile = @"E:\repo\jquery\jquery.config";
+			//configFile = @"E:\repo\django\django.config";
+			configFile = @"E:\repo\postgresql\postgresql.config";
 			//configFile = @"E:\repo\msr\msr.config"; // 184 revisions
 			
 			Mapping();
@@ -41,9 +44,9 @@ namespace MSR.Tools.Runner
 		{
 			MappingTool mapper = new MappingTool(configFile);
 			
-			mapper.Map(false, "300");
+			//mapper.Map(false, "1000");
 			//mapper.Truncate("414");
-			//mapper.Check(100);
+			mapper.Check(1000);
 		}
 		static void Predict()
 		{
@@ -84,7 +87,7 @@ namespace MSR.Tools.Runner
 		{
 			CalculatingTool calc = new CalculatingTool(configFile);
 			
-			calc.QueryUnderProfiler();
+			calc.LocStat();
 		}
 	}
 }

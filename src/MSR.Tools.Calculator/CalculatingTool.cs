@@ -59,8 +59,8 @@ namespace MSR.Tools.Calculator
 		}
 		public void QueryUnderProfiler()
 		{
-			PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(data);
-			data.Logger = Console.Out;
+			//PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(data);
+			//data.Logger = Console.Out;
 			
 			using (var s = data.OpenSession())
 			{
@@ -68,11 +68,11 @@ namespace MSR.Tools.Calculator
 				
 				Console.WriteLine(
 					selectionDSL
-						.BugFixes().CalculateBugLifetimeSpread()
+						.CodeBlocks().CalculateLOC()
 				);
 			}
 
-			Console.WriteLine("{0}", prof.NumberOfQueries);
+			//Console.WriteLine("{0}", prof.NumberOfQueries);
 		}
 		public void LocStat()
 		{
@@ -82,7 +82,6 @@ namespace MSR.Tools.Calculator
 				
 				var code = selectionDSL
 					.Files()
-						.InDirectory("/trunk")
 						.Exist()
 					.Modifications()
 						.InFiles()
