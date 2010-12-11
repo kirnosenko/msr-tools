@@ -35,6 +35,15 @@ namespace MSR.Data.Entities.DSL.Selection
 		{
 			return Reselect(s => s.Where(x => x.Date < date));
 		}
+		public CommitSelectionExpression BeforeRevision(int revisionOrderedNumber)
+		{
+			return Reselect(s =>
+				from c in s
+				where
+					c.OrderedNumber < revisionOrderedNumber
+				select c
+			);
+		}
 		public CommitSelectionExpression BeforeRevision(string revision)
 		{
 			return Reselect(s =>
@@ -44,6 +53,15 @@ namespace MSR.Data.Entities.DSL.Selection
 					.OrderedNumber
 				where
 					c.OrderedNumber < revisionNumber
+				select c
+			);
+		}
+		public CommitSelectionExpression TillRevision(int revisionOrderedNumber)
+		{
+			return Reselect(s =>
+				from c in s
+				where
+					c.OrderedNumber <= revisionOrderedNumber
 				select c
 			);
 		}
@@ -59,6 +77,15 @@ namespace MSR.Data.Entities.DSL.Selection
 				select c
 			);
 		}
+		public CommitSelectionExpression FromRevision(int revisionOrderedNumber)
+		{
+			return Reselect(s =>
+				from c in s
+				where
+					c.OrderedNumber >= revisionOrderedNumber
+				select c
+			);
+		}
 		public CommitSelectionExpression FromRevision(string revision)
 		{
 			return Reselect(s =>
@@ -68,6 +95,15 @@ namespace MSR.Data.Entities.DSL.Selection
 					.OrderedNumber
 				where
 					c.OrderedNumber >= revisionNumber
+				select c
+			);
+		}
+		public CommitSelectionExpression AfterRevision(int revisionOrderedNumber)
+		{
+			return Reselect(s =>
+				from c in s
+				where
+					c.OrderedNumber > revisionOrderedNumber
 				select c
 			);
 		}

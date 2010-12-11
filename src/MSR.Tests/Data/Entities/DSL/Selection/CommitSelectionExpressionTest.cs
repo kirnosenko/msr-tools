@@ -56,36 +56,60 @@ namespace MSR.Data.Entities.DSL.Selection
 		public void Should_select_commits_relatively_specified()
 		{
 			mappingDSL
-				.AddCommit("1")
+				.AddCommit("abc")
 			.Submit()
-				.AddCommit("2")
+				.AddCommit("abcd")
 			.Submit()
-				.AddCommit("3")
+				.AddCommit("abcde")
 			.Submit();
 
 			selectionDSL
-				.Commits().BeforeRevision("1").Count()
+				.Commits().BeforeRevision(1).Count()
 					.Should().Be(0);
 			selectionDSL
-				.Commits().BeforeRevision("2").Count()
+				.Commits().BeforeRevision("abc").Count()
+					.Should().Be(0);
+			selectionDSL
+				.Commits().BeforeRevision(2).Count()
 					.Should().Be(1);
 			selectionDSL
-				.Commits().TillRevision("1").Count()
+				.Commits().BeforeRevision("abcd").Count()
 					.Should().Be(1);
 			selectionDSL
-				.Commits().TillRevision("3").Count()
+				.Commits().TillRevision(1).Count()
+					.Should().Be(1);
+			selectionDSL
+				.Commits().TillRevision("abc").Count()
+					.Should().Be(1);
+			selectionDSL
+				.Commits().TillRevision(3).Count()
 					.Should().Be(3);
 			selectionDSL
-				.Commits().FromRevision("2").Count()
+				.Commits().TillRevision("abcde").Count()
+					.Should().Be(3);
+			selectionDSL
+				.Commits().FromRevision(2).Count()
 					.Should().Be(2);
 			selectionDSL
-				.Commits().FromRevision("3").Count()
+				.Commits().FromRevision("abcd").Count()
+					.Should().Be(2);
+			selectionDSL
+				.Commits().FromRevision(3).Count()
 					.Should().Be(1);
 			selectionDSL
-				.Commits().AfterRevision("1").Count()
+				.Commits().FromRevision("abcde").Count()
+					.Should().Be(1);
+			selectionDSL
+				.Commits().AfterRevision(1).Count()
 					.Should().Be(2);
 			selectionDSL
-				.Commits().AfterRevision("3").Count()
+				.Commits().AfterRevision("abc").Count()
+					.Should().Be(2);
+			selectionDSL
+				.Commits().AfterRevision(3).Count()
+					.Should().Be(0);
+			selectionDSL
+				.Commits().AfterRevision("abcde").Count()
 					.Should().Be(0);
 		}
 		[Test]
