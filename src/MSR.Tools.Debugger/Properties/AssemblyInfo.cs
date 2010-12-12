@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MSR.Tools.Runner")]
+[assembly: AssemblyTitle("MSR.Tools.Debugger")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MSR.Tools.Runner")]
+[assembly: AssemblyProduct("MSR.Tools.Debugger")]
 [assembly: AssemblyCopyright("Copyright © Semyon Kirnosenko 2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3fba1975-37f3-47d8-85e3-1f27ecd53e10")]
+[assembly: Guid("974198b4-0614-4fe7-94dc-f9911f57d5ea")]
 
 // Version information for an assembly consists of the following four values:
 //
