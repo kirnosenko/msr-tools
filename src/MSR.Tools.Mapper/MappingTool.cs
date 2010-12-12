@@ -22,14 +22,9 @@ namespace MSR.Tools.Mapper
 {
 	public class MappingTool : Tool
 	{
-		protected IScmData scmData;
-		protected IScmData scmDataNoCache;
-		
 		public MappingTool(string configFile)
 			: base(configFile)
 		{
-			scmData = GetConfiguredType<IScmData>();
-			scmDataNoCache = GetConfiguredType<IScmData>("nocache");
 		}
 		public void Map(bool createSchema, string tillRevision)
 		{
@@ -256,6 +251,9 @@ namespace MSR.Tools.Mapper
 									.Single(cb => cb.ID == g.Key).ModificationID
 								).FileID
 							).Path,
+						AddedCodeSize = repositories.Repository<CodeBlock>()
+							.Single(cb => cb.ID == g.Key)
+							.Size,
 						Revision = repositories.Repository<Commit>()
 							.Single(c => c.ID == repositories.Repository<Modification>()
 								.Single(m => m.ID == repositories.Repository<CodeBlock>()
@@ -266,9 +264,10 @@ namespace MSR.Tools.Mapper
 				).Where(x => x.CodeSize < 0)
 			)
 			{
-				Console.WriteLine("There are too many deleted code blocks for code block in revision {0} for file {1}. Code size {2} should be greater or equal to 0",
+				Console.WriteLine("There are too many deleted code blocks for code block in revision {0} for file {1} for code with size {2}. Code size {3} should be greater or equal to 0",
 					codeBlockWithWrongTarget.Revision,
 					codeBlockWithWrongTarget.Path,
+					codeBlockWithWrongTarget.AddedCodeSize,
 					codeBlockWithWrongTarget.CodeSize
 				);
 			}
@@ -278,7 +277,6 @@ namespace MSR.Tools.Mapper
 			var selectionDSL = new RepositorySelectionExpression(repositories);
 
 			var existentFiles = selectionDSL.Files()
-				//.InDirectory("/trunk")
 				.ExistInRevision(testRevision);
 
 			foreach (var existentFile in existentFiles)
@@ -297,52 +295,52 @@ namespace MSR.Tools.Mapper
 					Console.WriteLine("Incorrect number of lines in file {0}. {1} should be {2}",
 						existentFile.Path, currentLOC, fileBlame.Count
 					);
+				}
 
-					SmartDictionary<string, int> linesByRevision = new SmartDictionary<string, int>(x => 0);
-					foreach (var line in fileBlame)
+				SmartDictionary<string, int> linesByRevision = new SmartDictionary<string, int>(x => 0);
+				foreach (var line in fileBlame)
+				{
+					linesByRevision[line.Value]++;
+				}
+
+				var codeBySourceRevision =
+				(
+					from f in repositories.Repository<ProjectFile>()
+					join m in repositories.Repository<Modification>() on f.ID equals m.FileID
+					join cb in repositories.Repository<CodeBlock>() on m.ID equals cb.ModificationID
+					join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
+					let addedCodeBlock = repositories.Repository<CodeBlock>()
+						.Single(x => x.ID == (cb.Size < 0 ? cb.TargetCodeBlockID : cb.ID))
+					let codeAddedInitiallyInRevision = repositories.Repository<Commit>()
+						.Single(x => x.ID == addedCodeBlock.AddedInitiallyInCommitID)
+						.Revision
+					let testRevisionNumber = repositories.Repository<Commit>()
+						.Single(x => x.Revision == testRevision)
+						.OrderedNumber
+					where
+						f.ID == existentFile.ID
+						&&
+						c.OrderedNumber <= testRevisionNumber
+					group cb.Size by codeAddedInitiallyInRevision into g
+					select new { FromRevision = g.Key, CodeSize = g.Sum() }
+				).Where(x => x.CodeSize != 0);
+
+				if (codeBySourceRevision.Count() != linesByRevision.Count)
+				{
+					Console.WriteLine("Number of revisions file {0} contains code from is incorrect. {1} should be {2}",
+						existentFile.Path, codeBySourceRevision.Count(), linesByRevision.Count
+					);
+				}
+				foreach (var codeForRevision in codeBySourceRevision)
+				{
+					if (codeForRevision.CodeSize != linesByRevision[codeForRevision.FromRevision])
 					{
-						linesByRevision[line.Value]++;
-					}
-
-					var codeBySourceRevision =
-					(
-						from f in repositories.Repository<ProjectFile>()
-						join m in repositories.Repository<Modification>() on f.ID equals m.FileID
-						join cb in repositories.Repository<CodeBlock>() on m.ID equals cb.ModificationID
-						join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
-						let addedCodeBlock = repositories.Repository<CodeBlock>()
-							.Single(x => x.ID == (cb.Size < 0 ? cb.TargetCodeBlockID : cb.ID))
-						let codeAddedInitiallyInRevision = repositories.Repository<Commit>()
-							.Single(x => x.ID == addedCodeBlock.AddedInitiallyInCommitID)
-							.Revision
-						let testRevisionNumber = repositories.Repository<Commit>()
-							.Single(x => x.Revision == testRevision)
-							.OrderedNumber
-						where
-							f.ID == existentFile.ID
-							&&
-							c.OrderedNumber <= testRevisionNumber
-						group cb.Size by codeAddedInitiallyInRevision into g
-						select new { FromRevision = g.Key, CodeSize = g.Sum() }
-					).Where(x => x.CodeSize != 0);
-
-					if (codeBySourceRevision.Count() != linesByRevision.Count)
-					{
-						Console.WriteLine("Number of revisions file {0} contains code from is incorrect. {1} should be {2}",
-							existentFile.Path, codeBySourceRevision.Count(), linesByRevision.Count
+						Console.WriteLine("Incorrect number of lines in file {0} from revision {1}. {2} should be {3}",
+							existentFile.Path,
+							codeForRevision.FromRevision,
+							codeForRevision.CodeSize,
+							linesByRevision[codeForRevision.FromRevision]
 						);
-					}
-					foreach (var codeForRevision in codeBySourceRevision)
-					{
-						if (codeForRevision.CodeSize != linesByRevision[codeForRevision.FromRevision])
-						{
-							Console.WriteLine("Incorrect number of lines in file {0} from revision {1}. {2} should be {3}",
-								existentFile.Path,
-								codeForRevision.FromRevision,
-								codeForRevision.CodeSize,
-								linesByRevision[codeForRevision.FromRevision]
-							);
-						}
 					}
 				}
 			}

@@ -11,6 +11,7 @@ using Microsoft.Practices.Unity.Configuration;
 
 using MSR.Data.Persistent;
 using MSR.Data.Entities;
+using MSR.Data.VersionControl;
 
 namespace MSR.Tools
 {
@@ -19,12 +20,16 @@ namespace MSR.Tools
 		private IUnityContainer container;
 		
 		protected PersistentDataStore data;
+		protected IScmData scmData;
+		protected IScmData scmDataNoCache;
 		
 		public Tool(string configFileName)
 		{
 			container = GetContainer(configFileName);
 			
 			data = GetConfiguredType<PersistentDataStore>();
+			scmData = GetConfiguredType<IScmData>();
+			scmDataNoCache = GetConfiguredType<IScmData>("nocache");
 		}
 		protected T GetConfiguredType<T>()
 		{
