@@ -281,7 +281,19 @@ namespace MSR.Tools.Mapper
 
 			foreach (var existentFile in existentFiles)
 			{
-				IBlame fileBlame = scmData.Blame(testRevision, existentFile.Path);
+				IBlame fileBlame = null;
+				try
+				{
+					fileBlame = scmData.Blame(testRevision, existentFile.Path);
+				}
+				catch
+				{
+					Console.WriteLine("File {0} does not exist.", existentFile.Path);
+				}
+				if (fileBlame == null)
+				{
+					continue;
+				}
 
 				double currentLOC = selectionDSL
 					.Commits().TillRevision(testRevision)
