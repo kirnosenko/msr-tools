@@ -76,6 +76,7 @@
     <Compile Include="Data\Entities\Mapping\BlameStub.cs" />
     <Compile Include="Data\Entities\Mapping\BugFixDetectorBasedOnLogMessageTest.cs" />
     <Compile Include="Data\Entities\Mapping\BugFixMapperTest.cs" />
+    <Compile Include="Data\Entities\Mapping\CodeBlockMapperBasedOnBlameTest.cs" />
     <Compile Include="Data\Entities\Mapping\CodeBlockMapperTest.cs" />
     <Compile Include="Data\Entities\Mapping\CommitMapperTest.cs" />
     <Compile Include="Data\Entities\Mapping\MappingControllerTest.cs" />

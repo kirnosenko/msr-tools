@@ -67,6 +67,7 @@
     <Compile Include="Data\Entities\DSL\Selection\RepositoryResolverHelper.cs" />
     <Compile Include="Data\Entities\DSL\Selection\RepositorySelectionExpression.cs" />
     <Compile Include="Data\Entities\Mapping\BugFixDetectorBasedOnLogMessage.cs" />
+    <Compile Include="Data\Entities\Mapping\CodeBlockMapperBasedOnBlame.cs" />
     <Compile Include="Data\Entities\Mapping\IMapper.cs" />
     <Compile Include="Data\Entities\Mapping\IMappingHost.cs" />
     <Compile Include="Data\Entities\Mapping\IPathSelector.cs" />
