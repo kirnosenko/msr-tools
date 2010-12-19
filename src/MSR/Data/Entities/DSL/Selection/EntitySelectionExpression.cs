@@ -47,6 +47,10 @@ namespace MSR.Data.Entities.DSL.Selection
 		}
 		public Exp Reselect(Func<Exp,Exp> selector)
 		{
+			if (selector == null)
+			{
+				return this as Exp;
+			}
 			return selector(this as Exp) as Exp;
 		}
 		public Exp Are(IQueryable<E> selection)

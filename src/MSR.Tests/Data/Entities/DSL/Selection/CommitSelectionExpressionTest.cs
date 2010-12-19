@@ -230,5 +230,24 @@ namespace MSR.Data.Entities.DSL.Selection
 				.Count()
 					.Should().Be(2);
 		}
+		[Test]
+		public void Can_continue_expression_after_null_reselector()
+		{
+			mappingDSL
+				.AddCommit("1")
+			.Submit()
+				.AddCommit("2")
+			.Submit()
+				.AddCommit("3")
+			.Submit()
+				.AddCommit("4")
+			.Submit();
+
+			selectionDSL.Commits()
+				.Reselect((Func<CommitSelectionExpression, CommitSelectionExpression>)null)
+				.BeforeRevision("3")
+				.Count()
+					.Should().Be(2);
+		}
 	}
 }
