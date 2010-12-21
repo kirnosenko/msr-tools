@@ -26,7 +26,7 @@ namespace MSR.Tools.Mapper
 			: base(configFile)
 		{
 		}
-		public void Map(bool createSchema, string tillRevision)
+		public void Map(bool createSchema, int revisionCount)
 		{
 			if (createSchema)
 			{
@@ -38,7 +38,7 @@ namespace MSR.Tools.Mapper
 				MappingController mapping = GetConfiguredType<MappingController>();
 
 				int startRevision = MappingStartRevision(data);
-				int stopRevision = Convert.ToInt32(tillRevision);
+				int stopRevision = revisionCount;
 
 				for (int revision = startRevision; revision <= stopRevision; revision++)
 				{
@@ -126,10 +126,6 @@ namespace MSR.Tools.Mapper
 		{
 			using (var s = data.OpenSession())
 			{
-				if (s.Repository<Commit>().Count() == 0)
-				{
-					return 1;
-				}
 				return s.Repository<Commit>().Count() + 1;
 			}
 		}
