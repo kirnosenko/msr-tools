@@ -13,10 +13,10 @@ namespace MSR.Data.Persistent
 {
 	public class PersistentSession : ISession
 	{
-		private DataContext context;
+		private IDataContext context;
 		private Dictionary<Type, object> repositories = new Dictionary<Type, object>();
 
-		public PersistentSession(DataContext context)
+		public PersistentSession(IDataContext context)
 		{
 			this.context = context;
 			ReadOnly = false;

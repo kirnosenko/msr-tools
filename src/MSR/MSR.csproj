@@ -87,6 +87,9 @@
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\IRepositoryResolver.cs" />
     <Compile Include="Data\ISession.cs" />
+    <Compile Include="Data\Persistent\DefaultDataContext.cs" />
+    <Compile Include="Data\Persistent\IDataContext.cs" />
+    <Compile Include="Data\Persistent\MsSqlServerDataStore.cs" />
     <Compile Include="Data\Persistent\PersistentDataStoreProfiler.cs" />
     <Compile Include="Data\VersionControl\FileUniDiff.cs" />
     <Compile Include="Data\VersionControl\Git\CommandLineGitClient.cs" />

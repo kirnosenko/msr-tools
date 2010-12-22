@@ -14,40 +14,40 @@ namespace MSR.Data.Persistent
 {
 	public class PersistentRepository<T> : IRepository<T> where T : class
 	{
-		private DataContext context;
+		private IDataContext context;
 		
-		public PersistentRepository(DataContext context)
+		public PersistentRepository(IDataContext context)
 		{
 			this.context = context;
 		}
 		public void Add(T entity)
 		{
-			Table.InsertOnSubmit(entity);
+			context.Add(entity);
 		}
 		public void AddRange(IEnumerable<T> entities)
 		{
-			Table.InsertAllOnSubmit(entities);
+			context.AddRange(entities);
 		}
 		public void Delete(T entity)
 		{
-			Table.DeleteOnSubmit(entity);
+			context.Delete(entity);
 		}
 
 		#region IQueryable Members
 
 		public Type ElementType
 		{
-			get { return ((IQueryable)Table).ElementType; }
+			get { return context.Queryable<T>().ElementType; }
 		}
 
 		public System.Linq.Expressions.Expression Expression
 		{
-			get { return ((IQueryable)Table).Expression; }
+			get { return context.Queryable<T>().Expression; }
 		}
 
 		public IQueryProvider Provider
 		{
-			get { return ((IQueryable)Table).Provider; }
+			get { return context.Queryable<T>().Provider; }
 		}
 
 		#endregion
@@ -56,7 +56,7 @@ namespace MSR.Data.Persistent
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			return Table.GetEnumerator();
+			return context.Enumerable<T>().GetEnumerator();
 		}
 
 		#endregion
@@ -65,14 +65,9 @@ namespace MSR.Data.Persistent
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IEnumerable)Table).GetEnumerator();
+			return ((IEnumerable)context.Enumerable<T>()).GetEnumerator();
 		}
 
 		#endregion
-		
-		private Table<T> Table
-		{
-			get { return context.GetTable<T>(); }
-		}
 	}
 }

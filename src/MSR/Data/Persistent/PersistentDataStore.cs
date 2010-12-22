@@ -10,13 +10,10 @@ using System.IO;
 
 namespace MSR.Data.Persistent
 {
-	public class PersistentDataStore : IDataStore
+	public abstract class PersistentDataStore : IDataStore
 	{
-		private string connectionString;
-
-		public PersistentDataStore(string connectionString)
+		public PersistentDataStore()
 		{
-			this.connectionString = connectionString;
 			QueryTimeout = 60;
 		}
 		public ISession OpenSession()
@@ -31,15 +28,7 @@ namespace MSR.Data.Persistent
 		{
 			using (var context = CreateDataContext())
 			{
-				if (context.DatabaseExists())
-				{
-					context.DeleteDatabase();
-				}
-				foreach (var table in tables)
-				{
-					context.GetTable(table);
-				}
-				context.CreateDatabase();
+				context.CreateSchema(tables);
 			}
 		}
 		public TextWriter Logger
@@ -54,12 +43,6 @@ namespace MSR.Data.Persistent
 		{
 			get; set;
 		}
-		private DataContext CreateDataContext()
-		{
-			return new DataContext(connectionString)
-			{
-				Log = Logger
-			};
-		}
+		protected abstract IDataContext CreateDataContext();
 	}
 }
