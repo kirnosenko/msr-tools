@@ -1,6 +1,10 @@
+/*
+ * MSR Tools - tools for mining software repositories
+ * 
+ * Copyright (C) 2010  Semyon Kirnosenko
+ */
+
 using System;
-using System.Linq;
-using DbLinq.Data.Linq;
 using DbLinq.PostgreSql;
 using Npgsql;
 
@@ -16,11 +20,11 @@ namespace MSR.Data.Persistent
 		}
 		protected override IDataContext CreateDataContext()
 		{
-			return new AlternativeDataContext(new DataContext
-			(
-				new NpgsqlConnection(connectionString),
-				new PgsqlVendor()
-			))
+			return new AlternativeDataContext(
+				new PgsqlDataContext(
+					new NpgsqlConnection(connectionString)
+				)
+			)
 			{
 				Logger = Logger
 			};

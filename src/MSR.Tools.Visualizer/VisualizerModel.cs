@@ -17,19 +17,22 @@ using MSR.Data.VersionControl;
 
 namespace MSR.Tools.Visualizer
 {
-	public class GraphModel
+	public class VisualizerModel
 	{
-		private IDataStore data;
+		private VisualizationTool visualizer;
 		
-		public GraphModel(IDataStore data)
+		public VisualizerModel()
 		{
-			this.data = data;
+		}
+		public void OpenConfig(string fileName)
+		{
+			visualizer = new VisualizationTool(fileName);
 		}
 		public PointPairList DefectDensityToFileSize()
 		{
 			PointPairList points = new PointPairList();
 			
-			using (var s = data.OpenSession())
+			using (var s = Data.OpenSession())
 			{
 				RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(s);
 				var fileIDs = selectionDSL.Files()
@@ -58,7 +61,7 @@ namespace MSR.Tools.Visualizer
 		{
 			PointPairList points = new PointPairList();
 			
-			using (var s = data.OpenSession())
+			using (var s = Data.OpenSession())
 			{
 				RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(s);
 				
@@ -100,7 +103,7 @@ namespace MSR.Tools.Visualizer
 		{
 			List<PointPairList> pointsList = new List<PointPairList>();
 
-			using (var s = data.OpenSession())
+			using (var s = Data.OpenSession())
 			{
 				RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(s);
 				Dictionary<string,string> revPairs = new Dictionary<string,string>()
@@ -129,6 +132,10 @@ namespace MSR.Tools.Visualizer
 			}
 
 			return pointsList;
+		}
+		private IDataStore Data
+		{
+			get { return visualizer.Data; }
 		}
 	}
 }

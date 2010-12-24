@@ -5,12 +5,7 @@
  */
 
 using System;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-
-using MSR.Data.Persistent;
+using MSR.Data;
 
 namespace MSR.Tools.Visualizer
 {
@@ -20,20 +15,9 @@ namespace MSR.Tools.Visualizer
 			: base(configFile)
 		{
 		}
-		public void Show()
+		public IDataStore Data
 		{
-			PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(data);
-
-			WinFormsViewFactory views = new WinFormsViewFactory();
-
-			GraphPresenter graph = new GraphPresenter(
-				new GraphModel(data), views.GraphView()
-			);
-
-			//graph.ShowPoints();
-			graph.ShowLines();
-
-			MessageBox.Show(string.Format("SQL queries: {0}", prof.NumberOfQueries));
+			get { return data; }
 		}
 	}
 }

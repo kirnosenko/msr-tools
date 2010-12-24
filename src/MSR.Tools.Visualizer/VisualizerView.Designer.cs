@@ -1,6 +1,6 @@
 ﻿namespace MSR.Tools.Visualizer
 {
-	partial class GraphView
+	partial class VisualizerView
 	{
 		/// <summary>
 		/// Required designer variable.

@@ -11,15 +11,19 @@ using ZedGraph;
 
 namespace MSR.Tools.Visualizer
 {
-	public class GraphPresenter
+	public class VisualizerPresenter
 	{
-		private GraphModel model;
-		private IGraphView view;
+		private VisualizerModel model;
+		private IVisualizerView view;
 		
-		public GraphPresenter(GraphModel model, IGraphView view)
+		public VisualizerPresenter(VisualizerModel model, IVisualizerView view)
 		{
 			this.model = model;
 			this.view = view;
+		}
+		public void Show()
+		{
+			view.ShowView();
 		}
 		public void ShowPoints()
 		{

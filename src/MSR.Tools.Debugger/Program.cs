@@ -29,15 +29,15 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
 			//configFile = @"E:\repo\git\git.config";
 			//configFile = @"E:\repo\linux-2.6\linux-2.6.config";
-			configFile = @"E:\repo\jquery\jquery.config";
+			//configFile = @"E:\repo\jquery\jquery.config";
 			//configFile = @"E:\repo\django\django.config";
-			//configFile = @"E:\repo\postgresql\postgresql.config";
+			configFile = @"E:\repo\postgresql\postgresql.config";
 			//configFile = @"E:\repo\msr\msr.config"; // 184 revisions
 
 			//Debug();
-			Mapping();
+			//Mapping();
 			//Predict();
-			//Stat();
+			Stat();
 
 			Console.ReadKey();
 		}
@@ -51,9 +51,9 @@ namespace MSR.Tools.Debugger
 		{
 			MappingTool mapper = new MappingTool(configFile);
 
-			//mapper.Map(false, "172");
+			//mapper.Map(true, 100);
 			//mapper.Truncate(964);
-			mapper.Check(130);
+			mapper.Check(2000);
 		}
 		static void Predict()
 		{
@@ -94,7 +94,7 @@ namespace MSR.Tools.Debugger
 		{
 			CalculatingTool calc = new CalculatingTool(configFile);
 
-			calc.LocStat();
+			calc.QueryUnderProfiler();
 		}
 	}
 }

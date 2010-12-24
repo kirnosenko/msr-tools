@@ -11,7 +11,7 @@ namespace MSR.Tools.Visualizer
 {
 	public interface IWinFormsViewFactory
 	{
-		IGraphView GraphView();
+		IVisualizerView GraphView();
 	}
 	
 	public class WinFormsViewFactory
@@ -21,9 +21,9 @@ namespace MSR.Tools.Visualizer
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 		}
-		public IGraphView GraphView()
+		public IVisualizerView VisualizerView()
 		{
-			return new GraphView();
+			return new VisualizerView();
 		}
 	}
 }

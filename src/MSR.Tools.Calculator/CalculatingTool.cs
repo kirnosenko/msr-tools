@@ -60,16 +60,16 @@ namespace MSR.Tools.Calculator
 		public void QueryUnderProfiler()
 		{
 			//PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(data);
-			//data.Logger = Console.Out;
+			data.Logger = Console.Out;
 			
 			using (var s = data.OpenSession())
 			{
 				RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(s);
-				
-				Console.WriteLine(
-					selectionDSL
-						.CodeBlocks().CalculateLOC()
-				);
+
+				foreach (var f in selectionDSL.Files().PathIs("src/interfaces/libpq++/libpq++.h"))
+				{
+					Console.WriteLine(f.Path);
+				}
 			}
 
 			//Console.WriteLine("{0}", prof.NumberOfQueries);
