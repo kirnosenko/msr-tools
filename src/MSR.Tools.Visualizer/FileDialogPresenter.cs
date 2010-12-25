@@ -1,3 +1,9 @@
+/*
+ * MSR Tools - tools for mining software repositories
+ * 
+ * Copyright (C) 2010  Semyon Kirnosenko
+ */
+
 using System;
 
 namespace MSR.Tools.Visualizer
@@ -8,7 +14,7 @@ namespace MSR.Tools.Visualizer
 		string SaveFile(string fileName);
 	}
 	
-	public class FileDialogPresenter
+	public class FileDialogPresenter : IFileDialogPresenter
 	{
 		private IFileDialogView view;
 

@@ -1,3 +1,9 @@
+/*
+ * MSR Tools - tools for mining software repositories
+ * 
+ * Copyright (C) 2010  Semyon Kirnosenko
+ */
+
 using System;
 using System.Windows.Forms;
 
@@ -8,6 +14,7 @@ namespace MSR.Tools.Visualizer
 		event Action<IMenuItemView> OnClick;
 		string Name { get; }
 		string Text { get; set; }
+		bool Enabled { get; set; }
 		bool Checked { get; set; }
 	}
 	
@@ -37,6 +44,11 @@ namespace MSR.Tools.Visualizer
 		{
 			get { return menuItem.Text; }
 			set { menuItem.Text = value; }
+		}
+		public bool Enabled
+		{
+			get { return menuItem.Enabled; }
+			set { menuItem.Enabled = value; }
 		}
 		public bool Checked
 		{

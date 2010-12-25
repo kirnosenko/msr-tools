@@ -9,19 +9,31 @@ using System.Windows.Forms;
 
 namespace MSR.Tools.Visualizer
 {
-	public interface IWinFormsViewFactory
+	public interface IViewFactory
 	{
-		IVisualizerView GraphView();
+		IMessageDialogView MessageDialog();
+		IFileDialogView FileDialog();
+		
+		IVisualizerView Visualizer();
 	}
 	
-	public class WinFormsViewFactory
+	public class WinFormsViewFactory : IViewFactory
 	{
 		public WinFormsViewFactory()
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 		}
-		public IVisualizerView VisualizerView()
+		public IMessageDialogView MessageDialog()
+		{
+			return new MessageDialogView();
+		}
+		public IFileDialogView FileDialog()
+		{
+			return new FileDialogView();
+		}
+		
+		public IVisualizerView Visualizer()
 		{
 			return new VisualizerView();
 		}

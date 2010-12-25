@@ -50,10 +50,15 @@
     <Compile Include="GraphView.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="IVisualization.cs" />
     <Compile Include="MainMenuView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MenuItemView.cs" />
+    <Compile Include="MessageDialogPresenter.cs" />
+    <Compile Include="MessageDialogView.cs" />
+    <Compile Include="PresenterFactory.cs" />
+    <Compile Include="Visualizations\BugLifeTimeDistribution.cs" />
     <Compile Include="VisualizerView.cs">
       <SubType>Form</SubType>
     </Compile>

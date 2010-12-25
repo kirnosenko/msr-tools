@@ -15,38 +15,55 @@ namespace MSR.Tools.Visualizer
 	{
 		private VisualizerModel model;
 		private IVisualizerView view;
-		
-		public VisualizerPresenter(VisualizerModel model, IVisualizerView view)
+		private IPresenterFactory presenters;
+
+		public VisualizerPresenter(VisualizerModel model, IVisualizerView view, IPresenterFactory presenters)
 		{
 			this.model = model;
 			this.view = view;
+			this.presenters = presenters;
+			
+			CreateMainMenu();
 		}
 		public void Show()
 		{
 			view.ShowView();
 		}
-		public void ShowPoints()
+		public void CreateMainMenu()
 		{
-			PointPairList points;
-			
-			using (new TimeLogger("", x => view.Title = x.FormatedTime))
+			view.MainMenu.AddCommand("Visualizer");
+			view.MainMenu.AddCommand("Open config...", "Visualizer").OnClick += i =>
 			{
-				points = model.DefectDensityToFileSize();
-				//points = model.BugLifeTime();
-			}
-			
-			view.ShowPoints(points);
-		}
-		public void ShowLines()
-		{
-			List<PointPairList> lines = new List<PointPairList>();
-
-			using (new TimeLogger("", x => view.Title = x.FormatedTime))
+				string fileName = presenters.FileDialog().OpenFile(null);
+				if (fileName != null)
+				{
+					try
+					{
+						model.OpenConfig(fileName);
+						view.Title = fileName;
+					}
+					catch (Exception e)
+					{
+						presenters.MessageDialog().Error(e.Message);
+					}
+				}
+			};
+			view.MainMenu.AddCommand("Scale");
+			view.MainMenu.AddCommand("log x", "Scale").OnClick += i =>
 			{
-				lines.AddRange(model.BugLifeTimes());
-			}
-
-			view.ShowPoints(lines);
+				i.Checked = ! i.Checked;
+				view.Graph.XAxisLogScale = i.Checked;
+			};
+			view.MainMenu.AddCommand("log y", "Scale").OnClick += i =>
+			{
+				i.Checked = ! i.Checked;
+				view.Graph.YAxisLogScale = i.Checked;
+			};
+			view.MainMenu.AddCommand("Visualizations");
+			view.MainMenu.AddCommand("bugs", "Visualizations").OnClick += i =>
+			{
+				model.Visualize(i.Name, view.Graph);
+			};
 		}
 	}
 }

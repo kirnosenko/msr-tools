@@ -14,20 +14,28 @@ using MSR.Data.Entities;
 using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
 using MSR.Data.VersionControl;
+using MSR.Tools.Visualizer.Visualizations;
 
 namespace MSR.Tools.Visualizer
 {
 	public class VisualizerModel
 	{
 		private VisualizationTool visualizer;
+		private Dictionary<string,IVisualization> visualizations = new Dictionary<string,IVisualization>();
 		
 		public VisualizerModel()
 		{
+			visualizations.Add("bugs", new BugLifeTimeDistribution());
 		}
 		public void OpenConfig(string fileName)
 		{
 			visualizer = new VisualizationTool(fileName);
 		}
+		public void Visualize(string visualizationName, IGraphView graph)
+		{
+			visualizations[visualizationName].Visualize(visualizer.Data, graph);
+		}
+		/*
 		public PointPairList DefectDensityToFileSize()
 		{
 			PointPairList points = new PointPairList();
@@ -54,7 +62,7 @@ namespace MSR.Tools.Visualizer
 					points.Add(loc, dd);
 				}
 			}
-
+			
 			return points;
 		}
 		public PointPairList BugLifeTime()
@@ -132,7 +140,7 @@ namespace MSR.Tools.Visualizer
 			}
 
 			return pointsList;
-		}
+		}*/
 		private IDataStore Data
 		{
 			get { return visualizer.Data; }

@@ -14,9 +14,10 @@ namespace MSR.Tools.Visualizer
 		static void Main()
 		{
 			WinFormsViewFactory views = new WinFormsViewFactory();
-
+			PresenterFactory presenters = new PresenterFactory(views);
+			
 			VisualizerPresenter graph = new VisualizerPresenter(
-				new VisualizerModel(), views.VisualizerView()
+				new VisualizerModel(), views.Visualizer(), presenters
 			);
 
 			graph.Show();
