@@ -5,75 +5,52 @@
  */
 
 using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using DbLinq.Data.Linq;
+using DbLinq.Vendor;
 
 namespace MSR.Data.Persistent
 {
-	public class AlternativeDataContext : IDataContext
+	public class AlternativeDataContext : DataContext, IDataContext
 	{
-		private DataContext context;
-
-		public AlternativeDataContext(DataContext context)
+		public AlternativeDataContext(IDbConnection connection, IVendor vendor)
+			: base(connection, vendor)
 		{
-			this.context = context;
-		}
-		public void Dispose()
-		{
-			context.Dispose();
 		}
 		public void CreateSchema(params Type[] tables)
 		{
-			if (context.DatabaseExists())
+			if (DatabaseExists())
 			{
-				context.DeleteDatabase();
+				DeleteDatabase();
 			}
 			foreach (var table in tables)
 			{
-				context.GetTable(table);
+				GetTable(table);
 			}
-			context.CreateDatabase();
+			CreateDatabase();
 		}
 		public void Add<T>(T entity) where T : class
 		{
-			Table<T>().InsertOnSubmit(entity);
+			GetTable<T>().InsertOnSubmit(entity);
 		}
 		public void AddRange<T>(IEnumerable<T> entities) where T : class
 		{
-			Table<T>().InsertAllOnSubmit(entities);
+			GetTable<T>().InsertAllOnSubmit(entities);
 		}
 		public void Delete<T>(T entity) where T : class
 		{
-			Table<T>().DeleteOnSubmit(entity);
+			GetTable<T>().DeleteOnSubmit(entity);
 		}
 		public IQueryable<T> Queryable<T>() where T : class
 		{
-			return context.GetTable<T>();
+			return GetTable<T>();
 		}
 		public IEnumerable<T> Enumerable<T>() where T : class
 		{
-			return context.GetTable<T>();
-		}
-		public void SubmitChanges()
-		{
-			context.SubmitChanges();
-		}
-
-		public int CommandTimeout
-		{
-			get { return context.CommandTimeout; }
-			set {}
-		}
-		public TextWriter Logger
-		{
-			get { return context.Log; }
-			set { context.Log = value; }
-		}
-		private Table<T> Table<T>() where T : class
-		{
-			return context.GetTable<T>();
+			return GetTable<T>();
 		}
 	}
 }

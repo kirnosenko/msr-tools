@@ -21,12 +21,11 @@ namespace MSR.Data.Persistent
 		protected override IDataContext CreateDataContext()
 		{
 			return new AlternativeDataContext(
-				new PgsqlDataContext(
-					new NpgsqlConnection(connectionString)
-				)
+				new NpgsqlConnection(connectionString),
+				new PostgreSqlVendor()
 			)
 			{
-				Logger = Logger
+				Log = Logger
 			};
 		}
 	}

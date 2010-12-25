@@ -20,7 +20,7 @@ namespace MSR.Data.Persistent
 		{
 			return new DefaultDataContext(connectionString)
 			{
-				Logger = Logger
+				Log = Logger
 			};
 		}
 	}

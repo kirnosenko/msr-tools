@@ -24,6 +24,6 @@ namespace MSR.Data.Persistent
 		void SubmitChanges();
 		
 		int CommandTimeout { get; set; }
-		TextWriter Logger { get; set; }
+		TextWriter Log { get; set; }
 	}
 }
