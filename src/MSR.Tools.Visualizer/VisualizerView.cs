@@ -19,6 +19,7 @@ namespace MSR.Tools.Visualizer
 		string Title { get; set; }
 		IMainMenuView MainMenu { get; }
 		IGraphView Graph { get; }
+		IStatusBarView StatusBar { get; }
 	}
 
 	public partial class VisualizerView : Form, IVisualizerView
@@ -47,8 +48,9 @@ namespace MSR.Tools.Visualizer
 			Height = WindowHeight;
 			Width = WindowWidth;
 
-			MainMenu = new MainMenuView(this);
 			Graph = new GraphView(this);
+			MainMenu = new MainMenuView(this);
+			StatusBar = new StatusBarView(this);
 		}
 		public void ShowView()
 		{
@@ -64,6 +66,10 @@ namespace MSR.Tools.Visualizer
 			get; private set;
 		}
 		public IGraphView Graph
+		{
+			get; private set;
+		}
+		public IStatusBarView StatusBar
 		{
 			get; private set;
 		}

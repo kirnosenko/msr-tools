@@ -5,7 +5,7 @@
  */
 
 using System;
-using MSR.Data;
+using MSR.Data.Persistent;
 
 namespace MSR.Tools.Visualizer
 {
@@ -15,7 +15,7 @@ namespace MSR.Tools.Visualizer
 			: base(configFile)
 		{
 		}
-		public IDataStore Data
+		public PersistentDataStore Data
 		{
 			get { return data; }
 		}

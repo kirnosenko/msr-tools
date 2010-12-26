@@ -13,7 +13,7 @@ namespace MSR.Tools.Visualizer
 {
 	public interface IGraphView
 	{
-		void ShowPoints(double[] x, double[] y);
+		void ShowPoints(string legend, double[] x, double[] y);
 		
 		string Title { get; set; }
 		string XAxisTitle { get; set; }
@@ -28,10 +28,14 @@ namespace MSR.Tools.Visualizer
 		{
 			Parent = parent;
 			Dock = DockStyle.Fill;
+			
+			Title = "";
+			XAxisTitle = "";
+			YAxisTitle = "";
 		}
-		public void ShowPoints(double[] x, double[] y)
+		public void ShowPoints(string legend, double[] x, double[] y)
 		{
-			LineItem myCurve = GraphPane.AddCurve("My Curve", x, y, Color.Blue, SymbolType.Diamond);
+			LineItem myCurve = GraphPane.AddCurve(legend, x, y, Color.Blue, SymbolType.Diamond);
 			myCurve.Symbol.Fill = new Fill(Color.White);
 			myCurve.Line.IsVisible = false;
 			AxisChange();

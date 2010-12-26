@@ -13,6 +13,7 @@ using MSR.Data;
 using MSR.Data.Entities;
 using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
+using MSR.Data.Persistent;
 using MSR.Data.VersionControl;
 using MSR.Tools.Visualizer.Visualizations;
 
@@ -33,7 +34,18 @@ namespace MSR.Tools.Visualizer
 		}
 		public void Visualize(string visualizationName, IGraphView graph)
 		{
+			PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(Data);
+			prof.Start();
 			visualizations[visualizationName].Visualize(visualizer.Data, graph);
+			prof.Stop();
+			LastVisualizationProfiling = string.Format(
+				"Last visualization: queries = {0} time = {1}",
+				prof.NumberOfQueries, prof.ElapsedTime.ToFormatedString()
+			);
+		}
+		public string LastVisualizationProfiling
+		{
+			get; private set;
 		}
 		/*
 		public PointPairList DefectDensityToFileSize()
@@ -141,7 +153,7 @@ namespace MSR.Tools.Visualizer
 
 			return pointsList;
 		}*/
-		private IDataStore Data
+		private PersistentDataStore Data
 		{
 			get { return visualizer.Data; }
 		}

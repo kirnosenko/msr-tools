@@ -23,6 +23,7 @@ namespace MSR.Tools.Visualizer
 		public MainMenuView(Control parent)
 		{
 			Parent = parent;
+			Dock = DockStyle.Top;
 		}
 		public IMenuItemView AddCommand(string name)
 		{

@@ -60,7 +60,6 @@ namespace MSR.Tools.Calculator
 		public void QueryUnderProfiler()
 		{
 			//PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(data);
-			data.Logger = Console.Out;
 			
 			using (var s = data.OpenSession())
 			{

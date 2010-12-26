@@ -33,7 +33,11 @@ namespace MSR.Tools.Visualizer.Visualizations
 					y[i] = bugLiveTimes.Where(t => t <= bugLiveTime).Count();
 					i++;
 				}
-				graph.ShowPoints(x, y);
+				
+				graph.Title = "Bug lifetime distribution";
+				graph.XAxisTitle = "Days";
+				graph.YAxisTitle = "Total number of fixed bugs";
+				graph.ShowPoints("", x, y);
 			}
 		}
 	}

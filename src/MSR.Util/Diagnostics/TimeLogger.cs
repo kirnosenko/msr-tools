@@ -32,10 +32,7 @@ namespace System.Diagnostics
 				return string.Format(
 					"{0}: {1}",
 					taskTitle,
-					timer.Elapsed.Hours.ToString("D2") + ":" +
-					timer.Elapsed.Minutes.ToString("D2") + ":" +
-					timer.Elapsed.Seconds.ToString("D2") + ":" +
-					timer.Elapsed.Milliseconds.ToString("D3")
+					timer.Elapsed.ToFormatedString()
 				);
 			}
 		}

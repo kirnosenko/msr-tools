@@ -5,6 +5,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace MSR.Data.Persistent
@@ -14,6 +15,7 @@ namespace MSR.Data.Persistent
 		private PersistentDataStore data;
 		private Stream log;
 		private StreamWriter logger;
+		private Stopwatch timer;
 
 		public PersistentDataStoreProfiler(PersistentDataStore data)
 		{
@@ -25,9 +27,11 @@ namespace MSR.Data.Persistent
 		public void Start()
 		{
 			data.Logger = logger;
+			timer = Stopwatch.StartNew();
 		}
 		public void Stop()
 		{
+			timer.Stop();
 			data.Logger = null;
 			logger.Flush();
 		}
@@ -35,7 +39,6 @@ namespace MSR.Data.Persistent
 		{
 			get
 			{
-				Stop();
 				int numberOfQueries = 0;
 				
 				log.Seek(0, SeekOrigin.Begin);
@@ -49,8 +52,14 @@ namespace MSR.Data.Persistent
 					}
 				}
 				
-				Start();
 				return numberOfQueries;
+			}
+		}
+		public TimeSpan ElapsedTime
+		{
+			get
+			{
+				return timer.Elapsed;
 			}
 		}
 	}

@@ -23,13 +23,26 @@ namespace MSR.Tools.Visualizer
 			this.view = view;
 			this.presenters = presenters;
 			
+			Title = string.Empty;
 			CreateMainMenu();
 		}
 		public void Show()
 		{
 			view.ShowView();
 		}
-		public void CreateMainMenu()
+		public string Title
+		{
+			get { return view.Title; }
+			set
+			{
+				view.Title = "Visualizer";
+				if ((value != null) && (value != string.Empty))
+				{
+					view.Title += " - " + value;
+				}
+			}
+		}
+		private void CreateMainMenu()
 		{
 			view.MainMenu.AddCommand("Visualizer");
 			view.MainMenu.AddCommand("Open config...", "Visualizer").OnClick += i =>
@@ -40,7 +53,7 @@ namespace MSR.Tools.Visualizer
 					try
 					{
 						model.OpenConfig(fileName);
-						view.Title = fileName;
+						Title = fileName;
 					}
 					catch (Exception e)
 					{
@@ -63,6 +76,7 @@ namespace MSR.Tools.Visualizer
 			view.MainMenu.AddCommand("bugs", "Visualizations").OnClick += i =>
 			{
 				model.Visualize(i.Name, view.Graph);
+				view.StatusBar.Status = model.LastVisualizationProfiling;
 			};
 		}
 	}

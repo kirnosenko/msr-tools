@@ -58,6 +58,9 @@
     <Compile Include="MessageDialogPresenter.cs" />
     <Compile Include="MessageDialogView.cs" />
     <Compile Include="PresenterFactory.cs" />
+    <Compile Include="StatusBarView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Visualizations\BugLifeTimeDistribution.cs" />
     <Compile Include="VisualizerView.cs">
       <SubType>Form</SubType>
