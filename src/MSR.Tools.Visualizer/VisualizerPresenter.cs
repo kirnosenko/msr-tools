@@ -58,7 +58,8 @@ namespace MSR.Tools.Visualizer
 					}
 				}
 			};
-			view.MainMenu.AddCommand("Scale");
+			view.MainMenu.AddCommand("View");
+			view.MainMenu.AddCommand("Scale", "View");
 			view.MainMenu.AddCommand("log x", "Scale").OnClick += i =>
 			{
 				i.Checked = ! i.Checked;
@@ -68,6 +69,18 @@ namespace MSR.Tools.Visualizer
 			{
 				i.Checked = ! i.Checked;
 				view.Graph.YAxisLogScale = i.Checked;
+			};
+			view.MainMenu.AddCommand("Clean up", "View");
+			var acu = view.MainMenu.AddCommand("Automatically", "Clean up");
+			acu.OnClick += i =>
+			{
+				i.Checked = ! i.Checked;
+				model.AutomaticallyCleanUp = i.Checked;
+			};
+			acu.Checked = model.AutomaticallyCleanUp;
+			view.MainMenu.AddCommand("Clean up now", "Clean up").OnClick += i =>
+			{
+				view.Graph.CleanUp();
 			};
 			view.MainMenu.AddCommand("Visualizations");
 			foreach (var visualization in model.Visualizations)

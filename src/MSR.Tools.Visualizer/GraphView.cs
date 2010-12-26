@@ -14,6 +14,7 @@ namespace MSR.Tools.Visualizer
 	public interface IGraphView
 	{
 		void ShowPoints(string legend, double[] x, double[] y);
+		void CleanUp();
 		
 		string Title { get; set; }
 		string XAxisTitle { get; set; }
@@ -39,6 +40,11 @@ namespace MSR.Tools.Visualizer
 			myCurve.Symbol.Fill = new Fill(Color.White);
 			myCurve.Line.IsVisible = false;
 			AxisChange();
+			Invalidate();
+		}
+		public void CleanUp()
+		{
+			GraphPane.CurveList.Clear();
 			Invalidate();
 		}
 		public string Title

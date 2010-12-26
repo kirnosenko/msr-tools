@@ -21,6 +21,8 @@ namespace MSR.Tools.Visualizer
 			visualizations.Add("bugs", new BugLifeTimeDistribution());
 			visualizations.Add("ddToFileSize", new DefectDensityToFileSize());
 			visualizations.Add("LOC", new CodeSizeToDate());
+			
+			AutomaticallyCleanUp = true;
 		}
 		public void OpenConfig(string fileName)
 		{
@@ -28,6 +30,10 @@ namespace MSR.Tools.Visualizer
 		}
 		public void Visualize(string visualizationName, IGraphView graph)
 		{
+			if (AutomaticallyCleanUp)
+			{
+				graph.CleanUp();
+			}
 			visualizer.Visualize(visualizations[visualizationName], graph);
 		}
 		public string LastVisualizationProfiling
@@ -37,6 +43,10 @@ namespace MSR.Tools.Visualizer
 		public IEnumerable<string> Visualizations
 		{
 			get { return visualizations.Keys; }
+		}
+		public bool AutomaticallyCleanUp
+		{
+			get; set;
 		}
 		/*
 		public IEnumerable<PointPairList> BugLifeTimes()
