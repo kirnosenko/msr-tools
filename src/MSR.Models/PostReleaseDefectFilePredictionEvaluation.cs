@@ -80,7 +80,7 @@ namespace MSR.Models
 				.Modifications().ContainCodeBlocks()
 				.Commits()
 					.AfterRevision(ReleaseRevision)
-					.DateIsLesserThan(PostReleasePeriodEnd())
+					.DateIsLesserOrEquelThan(PostReleasePeriodEnd())
 					.ContainModifications()
 					.AreBugFixes()
 				.Files().Again().TouchedInCommits()

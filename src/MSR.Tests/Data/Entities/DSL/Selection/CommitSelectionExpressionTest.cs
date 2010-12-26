@@ -47,9 +47,18 @@ namespace MSR.Data.Entities.DSL.Selection
 			.Submit()
 				.AddCommit("5").At(DateTime.Today.AddDays(-5))
 			.Submit();
-			
+
 			selectionDSL
-				.Commits().DateIsLesserThan(DateTime.Today.AddDays(-6)).Count()
+				.Commits().DateIsGreaterThan(DateTime.Today.AddDays(-8)).Count()
+					.Should().Be(1);
+			selectionDSL
+				.Commits().DateIsGreaterOrEquelThan(DateTime.Today.AddDays(-8)).Count()
+					.Should().Be(2);
+			selectionDSL
+				.Commits().DateIsLesserThan(DateTime.Today.AddDays(-8)).Count()
+					.Should().Be(1);
+			selectionDSL
+				.Commits().DateIsLesserOrEquelThan(DateTime.Today.AddDays(-8)).Count()
 					.Should().Be(2);
 		}
 		[Test]

@@ -73,11 +73,14 @@ namespace MSR.Tools.Visualizer
 				view.Graph.YAxisLogScale = i.Checked;
 			};
 			view.MainMenu.AddCommand("Visualizations");
-			view.MainMenu.AddCommand("bugs", "Visualizations").OnClick += i =>
+			foreach (var visualization in model.Visualizations)
 			{
-				model.Visualize(i.Name, view.Graph);
-				view.StatusBar.Status = model.LastVisualizationProfiling;
-			};
+				view.MainMenu.AddCommand(visualization, "Visualizations").OnClick += i =>
+				{
+					model.Visualize(i.Name, view.Graph);
+					view.StatusBar.Status = model.LastVisualizationProfiling;
+				};
+			}
 		}
 	}
 }

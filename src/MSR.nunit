@@ -2,6 +2,7 @@
   <Settings activeconfig="Debug" />
   <Config name="Debug" binpathtype="Auto">
     <assembly path="MSR.Tests\bin\Debug\MSR.Tests.dll" />
+    <assembly path="MSR.Tools.Visualizer.Tests\bin\Debug\MSR.Tools.Visualizer.Tests.dll" />
   </Config>
   <Config name="Release" binpathtype="Auto" />
 </NUnitProject>

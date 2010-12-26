@@ -18,5 +18,12 @@ namespace MSR.Data.Entities
 					c => c.OrderedNumber == repositories.Repository<Commit>().Max(x => x.OrderedNumber)
 				).Revision;
 		}
+		public static TimeSpan DevelopmentPeriod(this IRepositoryResolver repositories)
+		{
+			return
+				repositories.Repository<Commit>().Max(c => c.Date)
+				-
+				repositories.Repository<Commit>().Min(c => c.Date);
+		}
 	}
 }

@@ -27,6 +27,8 @@ namespace MSR.Tools.Visualizer
 		public VisualizerModel()
 		{
 			visualizations.Add("bugs", new BugLifeTimeDistribution());
+			visualizations.Add("ddToFileSize", new DefectDensityToFileSize());
+			visualizations.Add("LOC", new CodeSizeToDate());
 		}
 		public void OpenConfig(string fileName)
 		{
@@ -47,59 +49,11 @@ namespace MSR.Tools.Visualizer
 		{
 			get; private set;
 		}
+		public IEnumerable<string> Visualizations
+		{
+			get { return visualizations.Keys; }
+		}
 		/*
-		public PointPairList DefectDensityToFileSize()
-		{
-			PointPairList points = new PointPairList();
-			
-			using (var s = Data.OpenSession())
-			{
-				RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(s);
-				var fileIDs = selectionDSL.Files()
-					.InDirectory("/trunk")
-					.Exist()
-					.Select(f => f.ID);
-
-				foreach (var fileID in fileIDs)
-				{
-					RepositorySelectionExpression fileDSL = new RepositorySelectionExpression(s);
-
-					var code = fileDSL.Files()
-						.IdIs(fileID)
-						.Modifications().InFiles()
-						.CodeBlocks().InModifications();
-
-					var loc = code.CalculateLOC();
-					var dd = code.CalculateTraditionalDefectDensity();
-					points.Add(loc, dd);
-				}
-			}
-			
-			return points;
-		}
-		public PointPairList BugLifeTime()
-		{
-			PointPairList points = new PointPairList();
-			
-			using (var s = Data.OpenSession())
-			{
-				RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(s);
-				
-				var bugLiveTimes = selectionDSL
-					.BugFixes().CalculateMaxBugLifetime();
-				
-				foreach (var bugLiveTime in bugLiveTimes)
-				{
-					points.Add(
-						bugLiveTime,
-						bugLiveTimes.Where(x => x <= bugLiveTime).Count()
-					);
-				}
-				
-			}
-			
-			return points;
-		}
 		public PointPairList BugLifeTimeForCode(CodeBlockSelectionExpression code)
 		{
 			PointPairList points = new PointPairList();

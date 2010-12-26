@@ -31,9 +31,21 @@ namespace MSR.Data.Entities.DSL.Selection
 		{
 			return Reselect(s => s.Where(x => x.Revision == revision));
 		}
+		public CommitSelectionExpression DateIsGreaterThan(DateTime date)
+		{
+			return Reselect(s => s.Where(x => x.Date > date));
+		}
+		public CommitSelectionExpression DateIsGreaterOrEquelThan(DateTime date)
+		{
+			return Reselect(s => s.Where(x => x.Date >= date));
+		}
 		public CommitSelectionExpression DateIsLesserThan(DateTime date)
 		{
 			return Reselect(s => s.Where(x => x.Date < date));
+		}
+		public CommitSelectionExpression DateIsLesserOrEquelThan(DateTime date)
+		{
+			return Reselect(s => s.Where(x => x.Date <= date));
 		}
 		public CommitSelectionExpression BeforeRevision(int revisionOrderedNumber)
 		{

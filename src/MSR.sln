@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSR.Tools.Debugger", "MSR.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSR.Data.Persistent", "MSR.Data.Persistent\MSR.Data.Persistent.csproj", "{A6B322D3-6D91-46B4-8E99-64C5E46B626F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSR.Tools.Visualizer.Tests", "MSR.Tools.Visualizer.Tests\MSR.Tools.Visualizer.Tests.csproj", "{97666001-D547-4A12-B16E-851B6DAF1955}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{A6B322D3-6D91-46B4-8E99-64C5E46B626F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6B322D3-6D91-46B4-8E99-64C5E46B626F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6B322D3-6D91-46B4-8E99-64C5E46B626F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97666001-D547-4A12-B16E-851B6DAF1955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97666001-D547-4A12-B16E-851B6DAF1955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97666001-D547-4A12-B16E-851B6DAF1955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97666001-D547-4A12-B16E-851B6DAF1955}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
