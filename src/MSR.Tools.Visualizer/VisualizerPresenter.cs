@@ -5,9 +5,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using ZedGraph;
 
 namespace MSR.Tools.Visualizer
 {

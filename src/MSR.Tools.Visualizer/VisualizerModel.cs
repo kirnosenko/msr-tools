@@ -6,15 +6,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using ZedGraph;
 
-using MSR.Data;
-using MSR.Data.Entities;
-using MSR.Data.Entities.DSL.Selection;
-using MSR.Data.Entities.DSL.Selection.Metrics;
-using MSR.Data.Persistent;
-using MSR.Data.VersionControl;
 using MSR.Tools.Visualizer.Visualizations;
 
 namespace MSR.Tools.Visualizer
@@ -36,43 +28,17 @@ namespace MSR.Tools.Visualizer
 		}
 		public void Visualize(string visualizationName, IGraphView graph)
 		{
-			PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(Data);
-			prof.Start();
-			visualizations[visualizationName].Visualize(visualizer.Data, graph);
-			prof.Stop();
-			LastVisualizationProfiling = string.Format(
-				"Last visualization: queries = {0} time = {1}",
-				prof.NumberOfQueries, prof.ElapsedTime.ToFormatedString()
-			);
+			visualizer.Visualize(visualizations[visualizationName], graph);
 		}
 		public string LastVisualizationProfiling
 		{
-			get; private set;
+			get { return visualizer.LastVisualizationProfiling; }
 		}
 		public IEnumerable<string> Visualizations
 		{
 			get { return visualizations.Keys; }
 		}
 		/*
-		public PointPairList BugLifeTimeForCode(CodeBlockSelectionExpression code)
-		{
-			PointPairList points = new PointPairList();
-			
-			var bugLiveTimes = code
-				.Modifications().ContainCodeBlocks()
-				.Commits().ContainModifications()
-				.BugFixes().InCommits().CalculateAvarageBugLifetime();
-
-			foreach (var bugLiveTime in bugLiveTimes)
-			{
-				points.Add(
-					bugLiveTime,
-					(double)bugLiveTimes.Where(x => x <= bugLiveTime).Count() / bugLiveTimes.Count()
-				);
-			}
-			
-			return points;
-		}
 		public IEnumerable<PointPairList> BugLifeTimes()
 		{
 			List<PointPairList> pointsList = new List<PointPairList>();
@@ -107,9 +73,5 @@ namespace MSR.Tools.Visualizer
 
 			return pointsList;
 		}*/
-		private PersistentDataStore Data
-		{
-			get { return visualizer.Data; }
-		}
 	}
 }

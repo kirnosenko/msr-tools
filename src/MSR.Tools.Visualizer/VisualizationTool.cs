@@ -15,6 +15,21 @@ namespace MSR.Tools.Visualizer
 			: base(configFile)
 		{
 		}
+		public void Visualize(IVisualization visualization, IGraphView graph)
+		{
+			PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(Data);
+			prof.Start();
+			visualization.Visualize(data, graph);
+			prof.Stop();
+			LastVisualizationProfiling = string.Format(
+				"Last visualization: queries = {0} time = {1}",
+				prof.NumberOfQueries, prof.ElapsedTime.ToFormatedString()
+			);
+		}
+		public string LastVisualizationProfiling
+		{
+			get; private set;
+		}
 		public PersistentDataStore Data
 		{
 			get { return data; }
