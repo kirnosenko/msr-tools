@@ -1,13 +1,17 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.IO;
+using System.Text;
+using NVelocity;
+using NVelocity.App;
 
 using MSR.Data.Entities;
 using MSR.Data.Entities.Mapping;
@@ -27,7 +31,64 @@ namespace MSR.Tools.Calculator
 			: base(configFile)
 		{
 		}
+		
+		public void CreateStat(string outputDir, string templateDir)
+		{
+			using (var s = data.OpenSession())
+			{
+				int commits = s.Repository<Commit>().Count();
+				var authors = s.Repository<Commit>()
+					.Select(x => x.Author)
+					.Distinct();
 
+				Dictionary<string, CodeBlockSelectionExpression> codeByAuthor = new Dictionary<string, CodeBlockSelectionExpression>();
+				foreach (var author in authors)
+				{
+					codeByAuthor.Add(
+						author,
+						s.SelectionDSL()
+							.Commits().AuthorIs(author)
+							.Modifications().InCommits()
+							.CodeBlocks().InModifications()
+							.Fixed()
+					);
+				}
+
+				var statByAuthor =
+					from a in codeByAuthor
+					let author = a.Key
+					let code = a.Value
+					let authorCommits = code.Commits().Again().Count()
+					select new
+					{
+						name = author,
+						commits = string.Format("{0} ({1}%)", authorCommits, (((double)authorCommits / commits) * 100).ToString("F02")),
+						dd = code.CalculateTraditionalDefectDensity().ToString("F02"),
+						added = code.Added().CalculateLOC(),
+						deleted = code.Deleted().CalculateLOC(),
+						current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC(),
+						addedInFixes = code.Added().InBugFixes().CalculateLOC(),
+						deletedInFixes = code.Deleted().InBugFixes().CalculateLOC()
+					};
+
+				VelocityContext context = new VelocityContext();
+				context.Put("authors", statByAuthor.OrderBy(x => x.name));
+
+				File.Copy(templateDir + "/stats.css", outputDir + "/stats.css", true);
+				File.Copy(templateDir + "/sortable.js", outputDir + "/sortable.js", true);
+
+				using (TextWriter writer = new StreamWriter(outputDir + "/authors.html"))
+				{
+					Velocity.Init();
+					Velocity.MergeTemplate(
+						templateDir + "/authors.html",
+						Encoding.UTF8.WebName,
+						context,
+						writer
+					);
+				}
+			}
+		}
 		public void Predict(string previousReleaseRevision, string releaseRevision)
 		{
 			using (ConsoleTimeLogger.Start("prediction"))
@@ -111,72 +172,5 @@ namespace MSR.Tools.Calculator
 				Console.WriteLine("DCD {0}", code.CalculateDefectCodeDensity());
 			}
 		}
-		
-		#region Author Stat
-
-		public void AuthorStat()
-		{
-			using (var s = data.OpenSession())
-			{
-				RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(s);
-
-				var authors = selectionDSL.Commits()
-					.Select(x => x.Author)
-					.Distinct();
-
-				Console.WriteLine("{0,15} | {1,6} | {2,7} | {3,7} | {4,7} | {5,5} | {6,5}",
-					"author",
-					"dd",
-					"LOCa",
-					"LOCd",
-					"LOCc",
-					"fc+",
-					"fc-"
-				);
-
-				Dictionary<string, CodeBlockSelectionExpression> codeByAuthor = new Dictionary<string, CodeBlockSelectionExpression>();
-				foreach (var author in authors)
-				{
-					codeByAuthor.Add(
-						author,
-						selectionDSL
-							.Commits().AuthorIs(author)
-							.Modifications().InCommits()
-							.CodeBlocks().InModifications()
-							.Fixed()
-					);
-				}
-
-				var stat =
-					from a in codeByAuthor
-					let author = a.Key
-					let code = a.Value
-					select new
-					{
-						author = author,
-						dcd = code.CalculateDefectCodeDensity().ToString("F04"),
-						added = code.Added().CalculateLOC(),
-						deleted = code.Deleted().CalculateLOC(),
-						current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC(),
-						addedInFixes = code.Added().InBugFixes().CalculateLOC(),
-						deletedInFixes = code.Deleted().InBugFixes().CalculateLOC()
-					};
-
-				foreach (var authorStat in stat.OrderByDescending(x => x.dcd))
-				{
-					Console.WriteLine("{0,15} | {1,6} | {2,7} | {3,7} | {4,7} | {5,5} | {6,5}",
-						authorStat.author,
-						authorStat.dcd,
-						authorStat.added,
-						authorStat.deleted,
-						authorStat.current,
-						authorStat.addedInFixes,
-						authorStat.deletedInFixes
-					);
-				}
-			}
-		}
-
-		#endregion
 	}
 }

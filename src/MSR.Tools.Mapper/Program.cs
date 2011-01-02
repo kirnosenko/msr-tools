@@ -1,12 +1,10 @@
 ﻿/*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MSR.Tools.Mapper
 {
@@ -14,15 +12,17 @@ namespace MSR.Tools.Mapper
 	{
 		static void Main(string[] args)
 		{
-			string configFile = args[0];
-			string cmd = args[1];
+			string configFile;
+			string cmd;
 			bool createSchema = false;
 			int numberOfRevisions = 0;
 			
 			try
 			{
+				configFile = args[0];
+				cmd = args[1];
 				int i = 2;
-				while (i < args.Count())
+				while (i < args.Length)
 				{
 					switch (args[i])
 					{

@@ -1,7 +1,7 @@
 ﻿/*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -30,14 +30,16 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\git\git.config";
 			//configFile = @"E:\repo\linux-2.6\linux-2.6.config";
 			//configFile = @"E:\repo\jquery\jquery.config";
-			//configFile = @"E:\repo\django\django.config";
-			configFile = @"E:\repo\postgresql\postgresql.config";
+			configFile = @"E:\repo\django\django.config";
+			//configFile = @"E:\repo\postgresql\postgresql.config";
 			//configFile = @"E:\repo\msr\msr.config"; // 184 revisions
 
 			//Debug();
 			//Mapping();
 			//Predict();
-			Stat();
+			//Stat();
+			//AuthorStat();
+			CreateStat();
 
 			Console.ReadKey();
 		}
@@ -51,9 +53,9 @@ namespace MSR.Tools.Debugger
 		{
 			MappingTool mapper = new MappingTool(configFile);
 
-			//mapper.Map(true, 100);
+			mapper.Map(true, 19);
 			//mapper.Truncate(964);
-			mapper.Check(2000);
+			//mapper.Check(19);
 		}
 		static void Predict()
 		{
@@ -94,7 +96,13 @@ namespace MSR.Tools.Debugger
 		{
 			CalculatingTool calc = new CalculatingTool(configFile);
 
-			calc.QueryUnderProfiler();
+			calc.LocStat();
+		}
+		static void CreateStat()
+		{
+			CalculatingTool calc = new CalculatingTool(configFile);
+
+			calc.CreateStat("d:/temp", "../../../MSR.Tools.Calculator/templates/html");
 		}
 	}
 }
