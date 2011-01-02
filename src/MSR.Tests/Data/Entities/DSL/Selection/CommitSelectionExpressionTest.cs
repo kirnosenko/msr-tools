@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -171,6 +171,12 @@ namespace MSR.Data.Entities.DSL.Selection
 				.Should().Be(1);
 			r2code.Deleted().Count()
 				.Should().Be(1);
+			r2code.Reselect(e => e.Added()).Count()
+				.Should().Be(1);
+			r2code.Are(mappingDSL.Repository<CodeBlock>()).Count()
+				.Should().Be(3);
+			r2code.Added().Again().Count()
+				.Should().Be(2);
 			r2code.Count()
 				.Should().Be(2);
 		}

@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -35,17 +35,7 @@ namespace MSR.Data.Entities.DSL.Selection
 			}
 			return parentExp.Selection<T>();
 		}
-		public Exp Reselect(Func<IQueryable<E>, IQueryable<E>> selector)
-		{
-			if (isFixed)
-			{
-				return (Recreate() as EntitySelectionExpression<E,Exp>)
-					.Reselect(s => selector(selection));
-			}
-			selection = selector(selection);
-			return this as Exp;
-		}
-		public Exp Reselect(Func<Exp,Exp> selector)
+		public Exp Reselect(Func<Exp, Exp> selector)
 		{
 			if (selector == null)
 			{
@@ -53,19 +43,21 @@ namespace MSR.Data.Entities.DSL.Selection
 			}
 			return selector(this as Exp) as Exp;
 		}
+		public Exp Reselect(Func<IQueryable<E>, IQueryable<E>> selector)
+		{
+			return Reselect(selector(selection));
+		}
 		public Exp Are(IQueryable<E> selection)
 		{
-			this.selection = selection;
-			return this as Exp;
+			return Reselect(selection);
+		}
+		public Exp Again()
+		{
+			return Reselect(parentExp.Selection<E>());
 		}
 		public Exp Fixed()
 		{
 			isFixed = true;
-			return this as Exp;
-		}
-		public Exp Again()
-		{
-			selection = parentExp.Selection<E>();
 			return this as Exp;
 		}
 		public Exp Do(Action<Exp> action)
@@ -111,5 +103,16 @@ namespace MSR.Data.Entities.DSL.Selection
 		}
 
 		#endregion
+		
+		private Exp Reselect(IQueryable<E> newSelection)
+		{
+			if (isFixed)
+			{
+				return (Recreate() as EntitySelectionExpression<E, Exp>)
+					.Reselect(s => newSelection);
+			}
+			selection = newSelection;
+			return this as Exp;
+		}
 	}
 }
