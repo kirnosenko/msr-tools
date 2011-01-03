@@ -46,13 +46,17 @@
       <Project>{A6B322D3-6D91-46B4-8E99-64C5E46B626F}</Project>
       <Name>MSR.Data.Persistent</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MSR.Tools.Calculator\MSR.Tools.Calculator.csproj">
-      <Project>{C7959482-D4BD-4412-90FA-3BBA94225911}</Project>
-      <Name>MSR.Tools.Calculator</Name>
+    <ProjectReference Include="..\MSR.Models\MSR.Models.csproj">
+      <Project>{E8BE4CCD-C394-41F0-8D7B-28515D2DDD5F}</Project>
+      <Name>MSR.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\MSR.Tools.Mapper\MSR.Tools.Mapper.csproj">
       <Project>{319EA618-90CB-4CD2-A8B5-910DEC4142C1}</Project>
       <Name>MSR.Tools.Mapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MSR.Tools.StatGenerator\MSR.Tools.StatGenerator.csproj">
+      <Project>{6E1A8A58-2C8D-4354-8B42-B46D9728635D}</Project>
+      <Name>MSR.Tools.StatGenerator</Name>
     </ProjectReference>
     <ProjectReference Include="..\MSR.Tools\MSR.Tools.csproj">
       <Project>{B6039F7F-3580-4FAC-A929-E9CA05C1A113}</Project>

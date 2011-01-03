@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C7959482-D4BD-4412-90FA-3BBA94225911}</ProjectGuid>
+    <ProjectGuid>{6E1A8A58-2C8D-4354-8B42-B46D9728635D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MSR.Tools.Calculator</RootNamespace>
-    <AssemblyName>MSR.Tools.Calculator</AssemblyName>
+    <RootNamespace>MSR.Tools.StatGenerator</RootNamespace>
+    <AssemblyName>MSR.Tools.StatGenerator</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -41,22 +41,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CalculatingTool.cs" />
+    <Compile Include="AuthorStatBuilder.cs" />
+    <Compile Include="GeneralStatBuilder.cs" />
+    <Compile Include="GeneratingTool.cs" />
+    <Compile Include="CompositeStatBuilder.cs" />
+    <Compile Include="IStatBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MSR.Models\MSR.Models.csproj">
-      <Project>{E8BE4CCD-C394-41F0-8D7B-28515D2DDD5F}</Project>
-      <Name>MSR.Models</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MSR.Tools\MSR.Tools.csproj">
       <Project>{B6039F7F-3580-4FAC-A929-E9CA05C1A113}</Project>
       <Name>MSR.Tools</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MSR.Util\MSR.Util.csproj">
-      <Project>{8F9A4FAD-4EEB-4590-BEF5-034CDE2BFFBB}</Project>
-      <Name>MSR.Util</Name>
     </ProjectReference>
     <ProjectReference Include="..\MSR\MSR.csproj">
       <Project>{25E8A69D-6400-423F-8B83-C22C096E9D72}</Project>

@@ -6,7 +6,7 @@
 
 using System;
 
-namespace MSR.Tools.Calculator
+namespace MSR.Tools.StatGenerator
 {
 	class Program
 	{
@@ -26,9 +26,13 @@ namespace MSR.Tools.Calculator
 				{
 					switch (args[i])
 					{
-						case "-d":
+						case "-o":
 							i++;
 							outputDir = args[i];
+							break;
+						case "-t":
+							i++;
+							templateDir = args[i];
 							break;
 						default:
 							break;
@@ -40,16 +44,17 @@ namespace MSR.Tools.Calculator
 			{
 				Console.WriteLine("usage: MSR.Tools.Calculator CONFIG_FILE_NAME COMMAND [ARGS]");
 				Console.WriteLine("Commands:");
-				Console.WriteLine("  stat		create stat using template");
-				Console.WriteLine("    -d DIR	output directory");
+				Console.WriteLine("  stat		create stat using templates");
+				Console.WriteLine("    -o DIR	output directory");
+				Console.WriteLine("    -t DIR	templates directory");
 				
 				return;
 			}
 
-			CalculatingTool calculator = null;
+			GeneratingTool generator = null;
 			try
 			{
-				calculator = new CalculatingTool(configFile);
+				generator = new GeneratingTool(configFile);
 			}
 			catch (Exception e)
 			{
@@ -59,7 +64,7 @@ namespace MSR.Tools.Calculator
 			switch (cmd)
 			{
 				case "stat":
-					calculator.CreateStat(outputDir, templateDir);
+					generator.GenerateStat(outputDir, templateDir);
 					break;
 				default:
 					Console.WriteLine("Unknown command {0}", cmd);

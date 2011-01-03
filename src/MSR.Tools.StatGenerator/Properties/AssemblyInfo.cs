@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MSR.Tools.Calculator")]
+[assembly: AssemblyTitle("MSR.Tools.StatGenerator")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("MSR.Tools.Calculator")]
-[assembly: AssemblyCopyright("Copyright © Semyon Kirnosenko 2010")]
+[assembly: AssemblyProduct("MSR.Tools.StatGenerator")]
+[assembly: AssemblyCopyright("Copyright © Semyon Kirnosenko 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4484babc-9ce1-44b9-8713-69b70d66cc14")]
+[assembly: Guid("a82775d9-683d-4537-8dd8-397e6e99f498")]
 
 // Version information for an assembly consists of the following four values:
 //

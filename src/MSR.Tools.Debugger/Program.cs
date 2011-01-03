@@ -10,8 +10,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-using MSR.Tools.Calculator;
 using MSR.Tools.Mapper;
+using MSR.Tools.StatGenerator;
 
 namespace MSR.Tools.Debugger
 {
@@ -37,9 +37,8 @@ namespace MSR.Tools.Debugger
 			//Debug();
 			//Mapping();
 			//Predict();
-			//Stat();
-			//AuthorStat();
-			CreateStat();
+			//LocStat();
+			GenerateStat();
 
 			Console.ReadKey();
 		}
@@ -47,7 +46,7 @@ namespace MSR.Tools.Debugger
 		{
 			DebuggingTool debugger = new DebuggingTool(configFile);
 
-			debugger.Blame("jquery/jquery.js", "f342a1a09a2767f52089209e5c2d18e45552d141");
+			
 		}
 		static void Mapping()
 		{
@@ -86,23 +85,24 @@ namespace MSR.Tools.Debugger
 			string gnome_vfs_r_2_10_0 = "4366";
 			string gnome_vfs_r_2_12_0 = "4593";
 
-			CalculatingTool calc = new CalculatingTool(configFile);
+			DebuggingTool debugger = new DebuggingTool(configFile);
 			string previousReleaseRevision = gnome_terminal_r_2_6_0;
 			string releaseRevision = gnome_terminal_r_2_8_0;
 
-			calc.Predict(previousReleaseRevision, releaseRevision);
+			debugger.Predict(previousReleaseRevision, releaseRevision);
 		}
-		static void Stat()
+		static void LocStat()
 		{
-			CalculatingTool calc = new CalculatingTool(configFile);
-
-			calc.LocStat();
+			DebuggingTool debugger = new DebuggingTool(configFile);
+			debugger.LocStat();
 		}
-		static void CreateStat()
+		static void GenerateStat()
 		{
-			CalculatingTool calc = new CalculatingTool(configFile);
-
-			calc.CreateStat("d:/temp", "../../../MSR.Tools.Calculator/templates/html");
+			using (ConsoleTimeLogger.Start("stat generating"))
+			{
+				GeneratingTool generator = new GeneratingTool(configFile);
+				generator.GenerateStat("d:/temp", "../../../MSR.Tools.StatGenerator/templates/html");
+			}
 		}
 	}
 }
