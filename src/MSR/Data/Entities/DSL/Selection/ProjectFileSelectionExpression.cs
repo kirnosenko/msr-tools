@@ -43,6 +43,15 @@ namespace MSR.Data.Entities.DSL.Selection
 				select f
 			);
 		}
+		public ProjectFileSelectionExpression Deleted()
+		{
+			return Reselect(s =>
+				from f in s
+				where
+					f.DeletedInCommitID != null
+				select f
+			);
+		}
 		public ProjectFileSelectionExpression DeletedInCommits()
 		{
 			return Reselect(s =>
@@ -72,6 +81,12 @@ namespace MSR.Data.Entities.DSL.Selection
 		{
 			return Reselect(s =>
 				s.Where(x => x.Path.StartsWith(pathBeginning))
+			);
+		}
+		public ProjectFileSelectionExpression PathEndsWith(string pathEnding)
+		{
+			return Reselect(s =>
+				s.Where(x => x.Path.EndsWith(pathEnding))
 			);
 		}
 		public ProjectFileSelectionExpression Exist()

@@ -51,10 +51,10 @@ namespace MSR.Tools.StatGenerator
 						commits = string.Format("{0} ({1}%)", authorCommits, (((double)authorCommits / commits) * 100).ToString("F02")),
 						dd = code.CalculateTraditionalDefectDensity().ToString("F02"),
 						added = code.Added().CalculateLOC(),
-						deleted = code.Deleted().CalculateLOC(),
-						current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC(),
 						addedInFixes = code.Added().InBugFixes().CalculateLOC(),
-						deletedInFixes = code.Deleted().InBugFixes().CalculateLOC()
+						deleted = - code.Deleted().CalculateLOC(),
+						deletedInFixes = - code.Deleted().InBugFixes().CalculateLOC(),
+						current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
 					};
 
 				context.Put("authors", statByAuthor.OrderBy(x => x.name).ToArray());

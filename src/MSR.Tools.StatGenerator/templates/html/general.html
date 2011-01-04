@@ -19,35 +19,21 @@
             </div>
         </div>
         <div id="main">
-			<h2>Authors</h2>
+			<h2>Genaral</h2>
 			<p>
-				<table class="authors sortable" id="authors">
-					<tr>
-						<th>Author</th>
-						<th>Commits (%)</th>
-						<th>Defect density (defects per KLOC)</th>
-						<th>Added LOC</th>
-						<th>Added LOC in fixes</th>
-						<th>Removed LOC</th>
-						<th>Removed LOC in fixes</th>
-						<th>Current LOC</th>
-					</tr>
-					#foreach($author in $authors)
-					#before
-					<tr 
-					#each
-					<td>$author.name</td>
-					<td>$author.commits</td>
-					<td>$author.dd</td>
-					<td>$author.added</td>
-					<td>$author.addedInFixes</td>
-					<td>$author.deleted</td>
-					<td>$author.deletedInFixes</td>
-					<td>$author.current</td>
-					#after
-					</tr>
-					#end
-				</table>
+				Generation date: $stat_date
+				<br>
+				Statistics period: from $stat_period_from to $stat_period_to
+				<br>
+				Number of authors: $authors_count
+				<br>
+				Number of commits: $commits_count
+				<br>
+				Number of fix commits: $commits_fix_count ($commits_fix_percent %)
+				<br>
+				Number of files: $files_current ($files_added added, $files_removed removed)
+				<br>
+				Number of LOC: $loc_current ($loc_added added, $loc_removed removed)
 			</p>
 			<div id="footer">
 				Generated with <a href="http://msr.sf.net">MSR Tools</a>.
