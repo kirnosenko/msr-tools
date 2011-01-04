@@ -57,7 +57,13 @@ namespace MSR.Tools.StatGenerator
 				);
 				context.Put("loc_removed",
 					- s.SelectionDSL().CodeBlocks().Deleted().CalculateLOC()
-				);				
+				);
+				context.Put("dd",
+					s.SelectionDSL()
+						.Files().Exist()
+						.Modifications().InFiles()
+						.CodeBlocks().InModifications().CalculateTraditionalDefectDensity().ToString("F02");
+				);
 			}
 		}
 	}

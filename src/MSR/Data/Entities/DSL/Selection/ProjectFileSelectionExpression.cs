@@ -75,7 +75,11 @@ namespace MSR.Data.Entities.DSL.Selection
 		}
 		public ProjectFileSelectionExpression InDirectory(string dirPath)
 		{
-			return PathStartsWith(dirPath + "/");
+			if (! dirPath.EndsWith("/"))
+			{
+				dirPath += "/";
+			}
+			return PathStartsWith(dirPath);
 		}
 		public ProjectFileSelectionExpression PathStartsWith(string pathBeginning)
 		{

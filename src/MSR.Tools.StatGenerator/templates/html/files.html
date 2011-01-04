@@ -1,6 +1,6 @@
 <h2>Files</h2>
 <p>
-	<table class="files sortable" id="files">
+	<table class="exts sortable" id="exts">
 		<tr>
 			<th>Extension</th>
 			<th>Number of files (%)</th>
@@ -11,17 +11,44 @@
 			<th>Removed LOC in fixes</th>
 			<th>Current LOC</th>
 		</tr>
-		#foreach($type in $file_types)
+		#foreach($ext in $exts)
 		#each
 		<tr>
-			<td>$type.ext</td>
-			<td>$type.files ($type.files_percent %)</td>
-			<td>$type.dd</td>
-			<td>$type.added</td>
-			<td>$type.addedInFixes</td>
-			<td>$type.deleted</td>
-			<td>$type.deletedInFixes</td>
-			<td>$type.current</td>
+			<td>$ext.name</td>
+			<td>$ext.files ($ext.files_percent %)</td>
+			<td>$ext.dd</td>
+			<td>$ext.added</td>
+			<td>$ext.addedInFixes</td>
+			<td>$ext.deleted</td>
+			<td>$ext.deletedInFixes</td>
+			<td>$ext.current</td>
+		</tr>
+		#end
+	</table>
+</p>
+<p>
+	<table class="dirs sortable" id="dirs">
+		<tr>
+			<th>Directory</th>
+			<th>Number of files (%)</th>
+			<th>Defect density (defects per KLOC)</th>
+			<th>Added LOC</th>
+			<th>Added LOC in fixes</th>
+			<th>Removed LOC</th>
+			<th>Removed LOC in fixes</th>
+			<th>Current LOC</th>
+		</tr>
+		#foreach($dir in $dirs)
+		#each
+		<tr>
+			<td>$dir.name</td>
+			<td>$dir.files ($dir.files_percent %)</td>
+			<td>$dir.dd</td>
+			<td>$dir.added</td>
+			<td>$dir.addedInFixes</td>
+			<td>$dir.deleted</td>
+			<td>$dir.deletedInFixes</td>
+			<td>$dir.current</td>
 		</tr>
 		#end
 	</table>

@@ -53,7 +53,7 @@ namespace MSR.Tools.StatGenerator
 					int ext_files_count = code.Files().Again().Count();
 					
 					extObjects.Add(new {
-						ext = ext,
+						name = ext,
 						files = ext_files_count,
 						files_percent = ((double)ext_files_count / files_count * 100).ToString("F02"),
 						dd = code.CalculateTraditionalDefectDensity().ToString("F02"),
@@ -64,7 +64,41 @@ namespace MSR.Tools.StatGenerator
 						current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
 					});
 				}
-				context.Put("file_types", extObjects);
+				context.Put("exts", extObjects);
+
+				List<string> dirs = new List<string>();
+				foreach (var path in paths)
+				{
+					string dir = Path.GetDirectoryName(path).Replace("\\", "/");
+					if (! dirs.Contains(dir))
+					{
+						dirs.Add(dir);
+					}
+				}
+				
+				List<object> dirObjects = new List<object>();
+				foreach (var dir in dirs)
+				{
+					var code = s.SelectionDSL()
+						.Files().Exist().InDirectory(dir)
+						.Modifications().InFiles()
+						.CodeBlocks().InModifications().Fixed();
+					int dir_files_count = code.Files().Again().Count();
+					
+					dirObjects.Add(new
+					{
+						name = dir,
+						files = dir_files_count,
+						files_percent = ((double)dir_files_count / files_count * 100).ToString("F02"),
+						dd = code.CalculateTraditionalDefectDensity().ToString("F02"),
+						added = code.Added().CalculateLOC(),
+						addedInFixes = code.Added().InBugFixes().CalculateLOC(),
+						deleted = - code.Deleted().CalculateLOC(),
+						deletedInFixes = -code.Deleted().InBugFixes().CalculateLOC(),
+						current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
+					});
+				}
+				context.Put("dirs", dirObjects);
 			}
 		}
 	}

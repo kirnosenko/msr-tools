@@ -193,6 +193,9 @@ namespace MSR.Data.Entities.DSL.Selection
 				.AddCommit("2")
 					.AddFile("/trunk/dir2changelog")
 					.AddFile("/trunk/dir2/file2").Modified()
+			.Submit()
+				.AddCommit("3")
+					.AddFile("/file3")
 			.Submit();
 			
 			selectionDSL
@@ -204,6 +207,9 @@ namespace MSR.Data.Entities.DSL.Selection
 			selectionDSL
 				.Files().InDirectory("/trunk").Count()
 					.Should().Be(3);
+			selectionDSL
+				.Files().InDirectory("/").Count()
+					.Should().Be(4);
 		}
 	}
 }
