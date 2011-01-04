@@ -1,44 +1,16 @@
-<html>
-<head>
-	<title>MSR Tools statistics</title>
-	<link rel="stylesheet" href="stats.css" type="text/css" />
-	<script type="text/javascript" src="sortable.js"></script>
-</head>
-<body>
-	<div class="page">
-		<div id="header">
-			<div id="title">
-				<h1>MSR Tools statistics</h1>
-			</div>
-            <div id="menucontainer">
-                <ul id="menu">
-					<li><a href="general.html">Genaral</a></li>
-                    <li><a href="authors.html">Authors</a></li>
-					<li><a href="files.html">Files</a></li>
-                </ul>
-            </div>
-        </div>
-        <div id="main">
-			<h2>Genaral</h2>
-			<p>
-				Generation date: $stat_date
-				<br>
-				Statistics period: from $stat_period_from to $stat_period_to
-				<br>
-				Number of authors: $authors_count
-				<br>
-				Number of commits: $commits_count
-				<br>
-				Number of fix commits: $commits_fix_count ($commits_fix_percent %)
-				<br>
-				Number of files: $files_current ($files_added added, $files_removed removed)
-				<br>
-				Number of LOC: $loc_current ($loc_added added, $loc_removed removed)
-			</p>
-			<div id="footer">
-				Generated with <a href="http://msr.sf.net">MSR Tools</a>.
-			</div>
-		</div>
-	</div>
-</body>
-</html>
+<h2>Genaral</h2>
+<p>
+	Generation date: $stat_date
+	<br>
+	Statistics period: from $stat_period_from to $stat_period_to
+	<br>
+	Number of authors: $authors_count
+	<br>
+	Number of commits: $commits_count
+	<br>
+	Number of fix commits: $commits_fix_count ($commits_fix_percent %)
+	<br>
+	Number of files: $files_current ($files_added added, $files_removed removed)
+	<br>
+	Number of LOC: $loc_current ($loc_added added, $loc_removed removed)
+</p>

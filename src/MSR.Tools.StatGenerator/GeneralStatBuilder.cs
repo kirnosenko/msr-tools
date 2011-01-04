@@ -16,9 +16,14 @@ using MSR.Data.Entities.DSL.Selection.Metrics;
 
 namespace MSR.Tools.StatGenerator
 {
-	public class GeneralStatBuilder : IStatBuilder
+	public class GeneralStatBuilder : StatPageBuilder
 	{
-		public void AddData(IDataStore data, VelocityContext context)
+		public GeneralStatBuilder()
+		{
+			PageName = "General";
+			PageTemplate = "general.html";
+		}
+		public override void AddData(IDataStore data, VelocityContext context)
 		{
 			using (var s = data.OpenSession())
 			{

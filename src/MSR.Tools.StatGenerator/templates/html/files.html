@@ -1,58 +1,28 @@
-<html>
-<head>
-	<title>MSR Tools statistics</title>
-	<link rel="stylesheet" href="stats.css" type="text/css" />
-	<script type="text/javascript" src="sortable.js"></script>
-</head>
-<body>
-	<div class="page">
-		<div id="header">
-			<div id="title">
-				<h1>MSR Tools statistics</h1>
-			</div>
-            <div id="menucontainer">
-                <ul id="menu">
-					<li><a href="general.html">Genaral</a></li>
-                    <li><a href="authors.html">Authors</a></li>
-					<li><a href="files.html">Files</a></li>
-                </ul>
-            </div>
-        </div>
-        <div id="main">
-			<h2>Files</h2>
-			<p>
-				<table class="authors sortable" id="authors">
-					<tr>
-						<th>Extension</th>
-						<th>Number of files (%)</th>
-						<th>Defect density (defects per KLOC)</th>
-						<th>Added LOC</th>
-						<th>Added LOC in fixes</th>
-						<th>Removed LOC</th>
-						<th>Removed LOC in fixes</th>
-						<th>Current LOC</th>
-					</tr>
-					#foreach($type in $file_types)
-					#before
-					<tr 
-					#each
-					<td>$type.ext</td>
-					<td>$type.files ($type.files_percent %)</td>
-					<td>$type.dd</td>
-					<td>$type.added</td>
-					<td>$type.addedInFixes</td>
-					<td>$type.deleted</td>
-					<td>$type.deletedInFixes</td>
-					<td>$type.current</td>
-					#after
-					</tr>
-					#end
-				</table>
-			</p>
-			<div id="footer">
-				Generated with <a href="http://msr.sf.net">MSR Tools</a>.
-			</div>
-		</div>
-	</div>
-</body>
-</html>
+<h2>Files</h2>
+<p>
+	<table class="files sortable" id="files">
+		<tr>
+			<th>Extension</th>
+			<th>Number of files (%)</th>
+			<th>Defect density (defects per KLOC)</th>
+			<th>Added LOC</th>
+			<th>Added LOC in fixes</th>
+			<th>Removed LOC</th>
+			<th>Removed LOC in fixes</th>
+			<th>Current LOC</th>
+		</tr>
+		#foreach($type in $file_types)
+		#each
+		<tr>
+			<td>$type.ext</td>
+			<td>$type.files ($type.files_percent %)</td>
+			<td>$type.dd</td>
+			<td>$type.added</td>
+			<td>$type.addedInFixes</td>
+			<td>$type.deleted</td>
+			<td>$type.deletedInFixes</td>
+			<td>$type.current</td>
+		</tr>
+		#end
+	</table>
+</p>

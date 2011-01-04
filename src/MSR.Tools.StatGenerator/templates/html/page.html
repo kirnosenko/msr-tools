@@ -1,0 +1,30 @@
+<html>
+<head>
+	<title>MSR Tools statistics</title>
+	<link rel="stylesheet" href="stats.css" type="text/css" />
+	<script type="text/javascript" src="sortable.js"></script>
+</head>
+<body>
+	<div class="page">
+		<div id="header">
+			<div id="title">
+				<h1>MSR Tools statistics</h1>
+			</div>
+            <div id="menucontainer">
+                <ul id="menu">
+					#foreach($item in $menu)
+					#each
+					<li><a href="$item.url">$item.name</a></li>
+					#end
+                </ul>
+            </div>
+        </div>
+        <div id="main">
+			$content
+			<div id="footer">
+				Generated with <a href="http://msr.sf.net">MSR Tools</a>.
+			</div>
+		</div>
+	</div>
+</body>
+</html>

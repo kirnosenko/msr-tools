@@ -11,8 +11,10 @@ using MSR.Data;
 
 namespace MSR.Tools.StatGenerator
 {
-	public interface IStatBuilder
+	public interface IStatPageBuilder
 	{
 		void AddData(IDataStore data, VelocityContext context);
+		string PageName { get; set; }
+		string PageTemplate { get; set; }
 	}
 }
