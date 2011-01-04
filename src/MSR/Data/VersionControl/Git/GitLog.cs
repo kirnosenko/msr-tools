@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -61,6 +61,11 @@ namespace MSR.Data.VersionControl.Git
 		}
 		private void TouchPath(TouchedPath.TouchedPathAction action, string path, string sourcePath)
 		{
+			path = "/" + path;
+			if (sourcePath != null)
+			{
+				sourcePath = "/" + sourcePath;
+			}
 			touchedPaths.Add(new TouchedPath()
 			{
 				Path = path,

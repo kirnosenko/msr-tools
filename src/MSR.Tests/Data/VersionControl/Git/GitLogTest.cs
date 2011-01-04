@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -69,12 +69,12 @@ C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
 			log.TouchedPaths.Select(x => x.Path).ToArray()
 				.Should().Have.SameSequenceAs(new string[]
 				{
-					"cache.h",
-					"init-db.c",
-					"read-cache.c",
-					"read-tree.c",
-					"README",
-					"update-cache.c"
+					"/cache.h",
+					"/init-db.c",
+					"/read-cache.c",
+					"/read-tree.c",
+					"/README",
+					"/update-cache.c"
 				});
 		}
 		[Test]
@@ -87,18 +87,18 @@ C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
 				.Select(x => x.Path).ToArray()
 					.Should().Have.SameValuesAs(new string[]
 					{
-						"show-diff.c",
-						"git-export.c",
-						"git-mktag.c"
+						"/show-diff.c",
+						"/git-export.c",
+						"/git-mktag.c"
 					});
 			log.TouchedPaths
 				.Where(x => x.Action == TouchedPath.TouchedPathAction.ADDED)
 				.Select(x => x.Path).ToArray()
 					.Should().Have.SameValuesAs(new string[]
 					{
-						"diff-files.c",
-						"export.c",
-						"mktag.c"
+						"/diff-files.c",
+						"/export.c",
+						"/mktag.c"
 					});
 		}
 		[Test]
@@ -107,9 +107,9 @@ C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
 			log = new GitLog(log_2.ToStream());
 			
 			log.TouchedPaths
-				.Single(x => x.Path == "export.c")
+				.Single(x => x.Path == "/export.c")
 				.Satisfy(x =>
-					x.SourcePath == "git-export.c"
+					x.SourcePath == "/git-export.c"
 					&&
 					x.SourceRevision == null
 				);
