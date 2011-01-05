@@ -43,7 +43,7 @@ namespace MSR.Data.VersionControl.Svn
 		{
 			Revision = logXml.Attribute("revision").Value;
 			Author = (logXml.Element("author") != null) ? logXml.Element("author").Value : "";
-			Date = DateTime.Parse(logXml.Element("date").Value, CultureInfo.InvariantCulture);
+			Date = DateTime.Parse(logXml.Element("date").Value).ToUniversalTime();
 			Message = logXml.Element("msg").Value;
 		}
 		private void ParseTouchedPathsInfo()

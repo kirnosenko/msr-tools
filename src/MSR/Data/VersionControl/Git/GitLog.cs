@@ -20,7 +20,7 @@ namespace MSR.Data.VersionControl.Git
 			
 			Revision = reader.ReadLine();
 			Author = reader.ReadLine();
-			Date = DateTime.Parse(reader.ReadLine());
+			Date = DateTime.Parse(reader.ReadLine()).ToUniversalTime();
 			Message = reader.ReadLine();
 			
 			string line;

@@ -57,7 +57,7 @@ C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
 			log.Author
 				.Should().Be("Linus Torvalds");
 			log.Date
-				.Should().Be(DateTime.Parse("12.04.2005 02:47:57"));
+				.Should().Be(DateTime.Parse("11.04.2005 22:47:57"));
 			log.Message
 				.Should().Be("Rename '.dircache' directory to '.git'");
 		}
