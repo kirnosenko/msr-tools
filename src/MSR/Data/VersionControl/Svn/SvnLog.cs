@@ -51,6 +51,16 @@ namespace MSR.Data.VersionControl.Svn
 		}
 		private void ParseTouchedPathsInfo()
 		{
+			foreach (var touchedPath in SvnTouchedPaths())
+			{
+				TouchPath(touchedPath);
+			}
+			touchedPaths.Sort((x, y) => string.CompareOrdinal(x.Path.ToLower(), y.Path.ToLower()));
+		}
+		private IEnumerable<SvnTouchedPath> SvnTouchedPaths()
+		{
+			List<SvnTouchedPath> svnTouchedPaths = new List<SvnTouchedPath>();
+
 			XElement diffSumXml;
 			using (var diffSum = svn.DiffSum(Revision))
 			{
@@ -58,56 +68,38 @@ namespace MSR.Data.VersionControl.Svn
 			}
 			int repositoryPathLength = svn.RepositoryPath.Length;
 
-			TouchedPathSvnAction action;
-			string path;
-			bool isFile;
 			IEnumerable<string> replacedPaths = logXml.Descendants("path")
 				.Where(x => x.Attribute("action").Value == "R")
 				.Select(x => x.Value);
-			
+
 			foreach (var diffPath in diffSumXml.Descendants("path"))
 			{
-				path = diffPath.Value.Substring(repositoryPathLength);
-				isFile = diffPath.Attribute("kind").Value == "file";
-				action = ParsePathAction(diffPath.Attribute("item").Value);
-				if (action == TouchedPathSvnAction.MODIFIED && replacedPaths.Contains(path))
+				var touchedPath = new SvnTouchedPath()
 				{
-					action = TouchedPathSvnAction.REPLACED;
-				}
-				
-				switch (action)
+					Path = diffPath.Value.Substring(repositoryPathLength),
+					IsFile = diffPath.Attribute("kind").Value == "file",
+					Action = ParsePathAction(diffPath.Attribute("item").Value)
+				};
+
+				if (touchedPath.Action == SvnTouchedPath.SvnTouchedPathAction.MODIFIED && replacedPaths.Contains(touchedPath.Path))
 				{
-					case TouchedPathSvnAction.MODIFIED:
-						TouchPath(TouchedPath.TouchedPathAction.MODIFIED, path, isFile);
-						break;
-					case TouchedPathSvnAction.ADDED:
-						TouchPath(TouchedPath.TouchedPathAction.ADDED, path, isFile);
-						break;
-					case TouchedPathSvnAction.DELETED:
-						TouchPath(TouchedPath.TouchedPathAction.DELETED, path, isFile);
-						break;
-					case TouchedPathSvnAction.REPLACED:
-						TouchPath(TouchedPath.TouchedPathAction.DELETED, path, isFile);
-						TouchPath(TouchedPath.TouchedPathAction.ADDED, path, isFile);
-						break;
-					default:
-						break;
+					touchedPath.Action = SvnTouchedPath.SvnTouchedPathAction.REPLACED;
 				}
+
+				svnTouchedPaths.Add(touchedPath);
 			}
 			foreach (var logPath in logXml.Descendants("path")
 				.Where(x => x.Attribute("copyfrom-path") != null)
 				.OrderBy(x => x.Value)
 			)
 			{
-				var touchedPath = touchedPaths.SingleOrDefault(x =>
-					x.Action == TouchedPath.TouchedPathAction.ADDED
-					&&
+				var touchedPath = svnTouchedPaths.Single(x =>
 					x.Path == logPath.Value
 				);
 				if (! touchedPath.IsFile)
 				{
-					foreach (var copiedFile in touchedPaths
-						.Where(x => x.Action == TouchedPath.TouchedPathAction.ADDED && x.Path.StartsWith(logPath.Value + "/"))
+					foreach (var copiedFile in svnTouchedPaths
+						.Where(x => x.Path.StartsWith(logPath.Value + "/"))
 					)
 					{
 						copiedFile.SourcePath = copiedFile.Path.Replace(logPath.Value, logPath.Attribute("copyfrom-path").Value);
@@ -120,29 +112,92 @@ namespace MSR.Data.VersionControl.Svn
 					touchedPath.SourceRevision = logPath.Attribute("copyfrom-rev").Value;
 				}
 			}
-
-			touchedPaths.Sort((x, y) => string.CompareOrdinal(x.Path.ToLower(), y.Path.ToLower()));
+			
+			return svnTouchedPaths;
 		}
-		private void TouchPath(TouchedPath.TouchedPathAction action, string path, bool isFile)
+		private void TouchPath(SvnTouchedPath touchedPath)
+		{
+			if (touchedPath.IsFile)
+			{
+				switch (touchedPath.Action)
+				{
+					case SvnTouchedPath.SvnTouchedPathAction.MODIFIED:
+						TouchPath(TouchedPath.TouchedPathAction.MODIFIED, touchedPath.Path);
+						break;
+					case SvnTouchedPath.SvnTouchedPathAction.ADDED:
+						TouchPath(TouchedPath.TouchedPathAction.ADDED, touchedPath.Path, touchedPath.SourcePath, touchedPath.SourceRevision);
+						break;
+					case SvnTouchedPath.SvnTouchedPathAction.DELETED:
+						TouchPath(TouchedPath.TouchedPathAction.DELETED, touchedPath.Path);
+						break;
+					case SvnTouchedPath.SvnTouchedPathAction.REPLACED:
+						TouchPath(TouchedPath.TouchedPathAction.DELETED, touchedPath.Path);
+						TouchPath(TouchedPath.TouchedPathAction.ADDED, touchedPath.Path, touchedPath.SourcePath, touchedPath.SourceRevision);
+						break;
+					default:
+						break;
+				}
+			}
+			else if (touchedPath.Action == SvnTouchedPath.SvnTouchedPathAction.DELETED)
+			{
+				foreach (var deletedFile in PathList(touchedPath.Path, PreviousRevision()))
+				{
+					TouchPath(TouchedPath.TouchedPathAction.DELETED, deletedFile);
+				}
+			}
+		}
+		private void TouchPath(TouchedPath.TouchedPathAction action, string path)
+		{
+			TouchPath(action, path, null, null);
+		}
+		private void TouchPath(TouchedPath.TouchedPathAction action, string path, string sourcePath, string sourceRevision)
 		{
 			touchedPaths.Add(new TouchedPath()
 			{
 				Action = action,
 				Path = path,
-				IsFile = isFile
+				SourcePath = sourcePath,
+				SourceRevision = sourceRevision
 			});
 		}
-		private TouchedPathSvnAction ParsePathAction(string action)
+		private SvnTouchedPath.SvnTouchedPathAction ParsePathAction(string action)
 		{
 			switch (action.Substring(0,1).ToUpper())
 			{
-				case "M": return TouchedPathSvnAction.MODIFIED;
-				case "A": return TouchedPathSvnAction.ADDED;
-				case "D": return TouchedPathSvnAction.DELETED;
-				case "R": return TouchedPathSvnAction.REPLACED;
-				case "N": return TouchedPathSvnAction.NONE;
+				case "M": return SvnTouchedPath.SvnTouchedPathAction.MODIFIED;
+				case "A": return SvnTouchedPath.SvnTouchedPathAction.ADDED;
+				case "D": return SvnTouchedPath.SvnTouchedPathAction.DELETED;
+				case "R": return SvnTouchedPath.SvnTouchedPathAction.REPLACED;
+				case "N": return SvnTouchedPath.SvnTouchedPathAction.NONE;
 			}
 			throw new ApplicationException(string.Format("{0} - is invalid path action", action));
+		}
+		private IEnumerable<string> PathList(string path, string revision)
+		{
+			List<string> paths = new List<string>();
+			
+			using (var list = svn.List(revision, path))
+			using (TextReader reader = new StreamReader(list))
+			{
+				string line;
+				while ((line = reader.ReadLine()) != null)
+				{
+					if (line.EndsWith("/"))
+					{
+						paths.AddRange(PathList(path + "/" + line.Remove(line.Length - 1), revision));
+					}
+					else
+					{
+						paths.Add(path + "/" + line);
+					}
+				}
+			}
+			
+			return paths;
+		}
+		private string PreviousRevision()
+		{
+			return (Convert.ToInt32(Revision) - 1).ToString();
 		}
 	}
 }

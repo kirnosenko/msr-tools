@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -14,6 +14,7 @@ namespace MSR.Data.VersionControl.Svn
 		string RepositoryPath { get; }
 		Stream Log(string revision);
 		Stream DiffSum(string revision);
+		Stream List(string revision, string dirPath);
 		Stream Diff(string revision);
 		Stream Diff(string newPath, string newRevision, string oldPath, string oldRevision);
 		Stream Blame(string revision, string filePath);

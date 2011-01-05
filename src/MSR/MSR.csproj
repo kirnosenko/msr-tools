@@ -113,7 +113,7 @@
     <Compile Include="Data\Entities\Mapping\CommitMapper.cs" />
     <Compile Include="Data\Entities\Mapping\EntityMapper.cs" />
     <Compile Include="Data\Entities\Mapping\ProjectFileMapper.cs" />
-    <Compile Include="Data\VersionControl\Svn\TouchedPathSvnAction.cs" />
+    <Compile Include="Data\VersionControl\Svn\SvnTouchedPath.cs" />
     <Compile Include="Data\VersionControl\TouchedPath.cs" />
     <Compile Include="Data\Entities\Modification.cs" />
     <Compile Include="Data\Entities\ProjectFile.cs" />

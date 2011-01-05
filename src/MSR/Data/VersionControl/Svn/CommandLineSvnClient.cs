@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -24,6 +24,10 @@ namespace MSR.Data.VersionControl.Svn
 		public Stream DiffSum(string revision)
 		{
 			return RunSvnCommand("diff \"{0}\"@{1} -c {1} --summarize --xml", RepositoryPath, revision);
+		}
+		public Stream List(string revision, string dirPath)
+		{
+			return RunSvnCommand("list \"{0}{2}\"@{1}", RepositoryPath, revision, dirPath);
 		}
 		public Stream Diff(string revision)
 		{
