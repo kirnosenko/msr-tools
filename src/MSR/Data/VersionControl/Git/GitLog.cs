@@ -69,7 +69,6 @@ namespace MSR.Data.VersionControl.Git
 			touchedPaths.Add(new TouchedPath()
 			{
 				Path = path,
-				IsFile = true,
 				Action = action,
 				SourcePath = sourcePath
 			});

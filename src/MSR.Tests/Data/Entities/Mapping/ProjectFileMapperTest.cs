@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -52,19 +52,6 @@ namespace MSR.Data.Entities.Mapping
 					f.Path == "file1" &&
 					f.AddedInCommit.Revision == "10"
 				);
-		}
-		[Test]
-		public void Should_not_map_added_dir()
-		{
-			AddDir("dir1");
-
-			mapper.Map(
-				mappingDSL.AddCommit("10")
-			);
-			Submit();
-
-			Repository<ProjectFile>().Count()
-				.Should().Be(0);
 		}
 		[Test]
 		public void Should_not_map_anything_for_modified_file()
@@ -150,26 +137,6 @@ namespace MSR.Data.Entities.Mapping
 				.Should().Be("10");
 		}
 		[Test]
-		public void Should_delete_files_in_deleted_directory()
-		{
-			mappingDSL
-				.AddCommit("1")
-					.AddFile("/dir1/file1").Modified()
-			.Submit();
-
-			DeleteDir("/dir1");
-
-			mapper.Map(
-				mappingDSL.AddCommit("10")
-			);
-			Submit();
-			
-			Repository<ProjectFile>()
-				.Single(f => f.Path == "/dir1/file1")
-				.DeletedInCommit.Revision
-					.Should().Be("10");
-		}
-		[Test]
 		public void Can_ignore_files_by_extension()
 		{
 			AddFile("file1.123");
@@ -195,45 +162,32 @@ namespace MSR.Data.Entities.Mapping
 					.Should().Have.SameSequenceAs(new string[] { "file1.123" });
 		}
 		
-		private void AddDir(string path)
-		{
-			TouchPath(path, false, TouchedPath.TouchedPathAction.ADDED, null, null);
-		}
 		private void AddFile(string path)
 		{
-			TouchPath(path, true, TouchedPath.TouchedPathAction.ADDED, null, null);
+			TouchPath(path, TouchedPath.TouchedPathAction.ADDED, null, null);
 		}
 		private void ModifyFile(string path)
 		{
-			TouchPath(path, true, TouchedPath.TouchedPathAction.MODIFIED, null, null);
-		}
-		private void CopyDir(string path, string sourcePath, string sourceRevision)
-		{
-			TouchPath(path, false, TouchedPath.TouchedPathAction.ADDED, sourcePath, sourceRevision);
+			TouchPath(path, TouchedPath.TouchedPathAction.MODIFIED, null, null);
 		}
 		private void CopyFile(string path, string sourcePath, string sourceRevision)
 		{
-			TouchPath(path, true, TouchedPath.TouchedPathAction.ADDED, sourcePath, sourceRevision);
+			TouchPath(path, TouchedPath.TouchedPathAction.ADDED, sourcePath, sourceRevision);
 		}
 		private void RenameFile(string path, string sourcePath)
 		{
 			DeleteFile(sourcePath);
 			CopyFile(path, sourcePath, null);
 		}
-		private void DeleteDir(string path)
-		{
-			TouchPath(path, false, TouchedPath.TouchedPathAction.DELETED, null, null);
-		}
 		private void DeleteFile(string path)
 		{
-			TouchPath(path, true, TouchedPath.TouchedPathAction.DELETED, null, null);
+			TouchPath(path, TouchedPath.TouchedPathAction.DELETED, null, null);
 		}
-		private void TouchPath(string path, bool isFile, TouchedPath.TouchedPathAction action, string sourcePath, string sourceRevision)
+		private void TouchPath(string path, TouchedPath.TouchedPathAction action, string sourcePath, string sourceRevision)
 		{
 			touchedFiles.Add(new TouchedPath()
 			{
 				Path = path,
-				IsFile = isFile,
 				Action = action,
 				SourcePath = sourcePath,
 				SourceRevision = sourceRevision

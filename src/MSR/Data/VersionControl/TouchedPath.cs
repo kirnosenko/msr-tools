@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -36,10 +36,6 @@ namespace MSR.Data.VersionControl
 		/// Touched path.
 		/// </summary>
 		public string Path;
-		/// <summary>
-		/// True for a file path, false for a dir path.
-		/// </summary>
-		public bool IsFile;
 		/// <summary>
 		/// Action on touched path.
 		/// </summary>

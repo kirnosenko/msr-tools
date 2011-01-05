@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -34,7 +34,7 @@ namespace MSR.Data.Entities.Mapping
 			
 			ILog log = scmData.Log(expression.CurrentEntity<Commit>().Revision);
 			
-			foreach (var touchedFile in log.TouchedPaths.Where(f => f.IsFile))
+			foreach (var touchedFile in log.TouchedPaths)
 			{
 				if (! ShouldProcessPath(touchedFile.Path))
 				{
@@ -69,21 +69,6 @@ namespace MSR.Data.Entities.Mapping
 				fileExpressions.Add(
 					fileExp
 				);
-			}
-			foreach (var deletedDir in log.TouchedPaths
-				.Where(p => !p.IsFile && p.Action == TouchedPath.TouchedPathAction.DELETED)
-			)
-			{
-				foreach (var deletedFilePath in ExistentFilesInDir(expression, deletedDir.Path))
-				{
-					ProjectFileMappingExpression fileExp = null;
-					
-					fileExp = expression.File(deletedFilePath);
-					fileExp.Delete();
-					fileExpressions.Add(
-						fileExp
-					);
-				}
 			}
 			
 			return fileExpressions;
