@@ -19,7 +19,7 @@ namespace MSR.Data.Entities
 		[Column(DbType = "Int NOT NULL IDENTITY", AutoSync = AutoSync.OnInsert, IsPrimaryKey = true, IsDbGenerated = true)]
 		public int ID { get; set; }
 		/// <summary>
-		/// Path of the file.
+		/// UNIX-formated path of the file with leading slash.
 		/// </summary>
 		[Column(DbType = "NVarChar(MAX) NOT NULL")]
 		public string Path { get; set; }

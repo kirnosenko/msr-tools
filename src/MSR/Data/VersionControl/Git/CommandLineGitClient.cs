@@ -33,21 +33,21 @@ namespace MSR.Data.VersionControl.Git
 		{
 			return RunCommand(
 				"diff-tree -p --root {0} -- {1}",
-				revision, path
+				revision, ToGitPath(path)
 			);
 		}
 		public Stream Diff(string newPath, string newRevision, string oldPath, string oldRevision)
 		{
 			return RunCommand(
 				"diff-tree -p -C --root {0} -- {1} {2} -- {3}",
-				newRevision, newPath, oldRevision, oldPath
+				newRevision, ToGitPath(newPath), oldRevision, ToGitPath(oldPath)
 			);
 		}
 		public Stream Blame(string revision, string path)
 		{
 			return RunCommand(
 				"blame -l -s --root --incremental {0} -- {1}",
-				revision, path
+				revision, ToGitPath(path)
 			);
 		}
 		
@@ -71,6 +71,15 @@ namespace MSR.Data.VersionControl.Git
 
 			buf.Seek(0, SeekOrigin.Begin);
 			return buf;
+		}
+		/// <summary>
+		/// Remove leading slash to get git path.
+		/// </summary>
+		/// <param name="path">Internal path with leading slash.</param>
+		/// <returns>Git path.</returns>
+		private string ToGitPath(string path)
+		{
+			return path.Remove(0,1);
 		}
 	}
 }
