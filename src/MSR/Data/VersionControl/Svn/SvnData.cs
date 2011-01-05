@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -23,14 +23,7 @@ namespace MSR.Data.VersionControl.Svn
 		}
 		public ILog Log(string revision)
 		{
-			using (var log = svn.Log(revision))
-			{
-				return new SvnLog(
-					log,
-					() => svn.DiffSum(revision),
-					svn.RepositoryPath
-				);
-			}
+			return new SvnLog(svn, revision);
 		}
 		public IDiff Diff(string revision, string filePath)
 		{

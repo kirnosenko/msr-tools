@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -15,16 +15,18 @@ namespace MSR.Data.VersionControl.Svn
 {
 	public class SvnLog : Log
 	{
+		private ISvnClient svn;
 		private XElement logXml;
-		private Func<Stream> diffSum;
-		private string repositoryPath;
+		
 		private bool touchedPathsInfoParsed = false;
 		
-		public SvnLog(Stream log, Func<Stream> diffSum, string repositoryPath)
+		public SvnLog(ISvnClient svn, string revision)
 		{
-			this.logXml = XElement.Load(new StreamReader(log)).Element("logentry");
-			this.diffSum = diffSum;
-			this.repositoryPath = repositoryPath;
+			this.svn = svn;
+			using (var log = svn.Log(revision))
+			{
+				logXml = XElement.Load(new StreamReader(log)).Element("logentry");
+			}
 			ParseCommitInfo();
 		}
 		public override IEnumerable<TouchedPath> TouchedPaths
@@ -49,8 +51,12 @@ namespace MSR.Data.VersionControl.Svn
 		}
 		private void ParseTouchedPathsInfo()
 		{
-			XElement diffSumXml = XElement.Load(new StreamReader(diffSum()));
-			int repositoryPathLength = repositoryPath.Length;
+			XElement diffSumXml;
+			using (var diffSum = svn.DiffSum(Revision))
+			{
+				diffSumXml = XElement.Load(new StreamReader(diffSum));
+			}
+			int repositoryPathLength = svn.RepositoryPath.Length;
 
 			TouchedPathSvnAction action;
 			string path;
