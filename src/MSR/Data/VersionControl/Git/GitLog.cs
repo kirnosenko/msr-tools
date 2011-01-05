@@ -16,6 +16,7 @@ namespace MSR.Data.VersionControl.Git
 		public GitLog(Stream log)
 		{
 			TextReader reader = new StreamReader(log);
+			touchedFiles = new List<TouchedFile>();
 			
 			Revision = reader.ReadLine();
 			Author = reader.ReadLine();
@@ -24,7 +25,7 @@ namespace MSR.Data.VersionControl.Git
 			
 			string line;
 			string[] blocks;
-			TouchedPathGitAction action;
+			TouchedFileGitAction action;
 			
 			while ((line = reader.ReadLine()) != null)
 			{
@@ -33,55 +34,55 @@ namespace MSR.Data.VersionControl.Git
 				
 				switch (action)
 				{
-					case TouchedPathGitAction.MODIFIED:
-						TouchPath(TouchedPath.TouchedPathAction.MODIFIED, blocks[1]);
+					case TouchedFileGitAction.MODIFIED:
+						TouchFile(TouchedFile.TouchedFileAction.MODIFIED, blocks[1]);
 						break;
-					case TouchedPathGitAction.ADDED:
-						TouchPath(TouchedPath.TouchedPathAction.ADDED, blocks[1]);
+					case TouchedFileGitAction.ADDED:
+						TouchFile(TouchedFile.TouchedFileAction.ADDED, blocks[1]);
 						break;
-					case TouchedPathGitAction.DELETED:
-						TouchPath(TouchedPath.TouchedPathAction.DELETED, blocks[1]);
+					case TouchedFileGitAction.DELETED:
+						TouchFile(TouchedFile.TouchedFileAction.DELETED, blocks[1]);
 						break;
-					case TouchedPathGitAction.RENAMED:
-						TouchPath(TouchedPath.TouchedPathAction.DELETED, blocks[1]);
-						TouchPath(TouchedPath.TouchedPathAction.ADDED, blocks[2], blocks[1]);
+					case TouchedFileGitAction.RENAMED:
+						TouchFile(TouchedFile.TouchedFileAction.DELETED, blocks[1]);
+						TouchFile(TouchedFile.TouchedFileAction.ADDED, blocks[2], blocks[1]);
 						break;
-					case TouchedPathGitAction.COPIED:
-						TouchPath(TouchedPath.TouchedPathAction.ADDED, blocks[2], blocks[1]);
+					case TouchedFileGitAction.COPIED:
+						TouchFile(TouchedFile.TouchedFileAction.ADDED, blocks[2], blocks[1]);
 						break;
 					default:
 						break;
 				}
 			}
-			touchedPaths.Sort((x,y) => string.CompareOrdinal(x.Path.ToLower(), y.Path.ToLower()));
+			touchedFiles.Sort((x,y) => string.CompareOrdinal(x.Path.ToLower(), y.Path.ToLower()));
 		}
-		private void TouchPath(TouchedPath.TouchedPathAction action, string path)
+		private void TouchFile(TouchedFile.TouchedFileAction action, string path)
 		{
-			TouchPath(action, path, null);
+			TouchFile(action, path, null);
 		}
-		private void TouchPath(TouchedPath.TouchedPathAction action, string path, string sourcePath)
+		private void TouchFile(TouchedFile.TouchedFileAction action, string path, string sourcePath)
 		{
 			path = "/" + path;
 			if (sourcePath != null)
 			{
 				sourcePath = "/" + sourcePath;
 			}
-			touchedPaths.Add(new TouchedPath()
+			touchedFiles.Add(new TouchedFile()
 			{
 				Path = path,
 				Action = action,
 				SourcePath = sourcePath
 			});
 		}
-		private TouchedPathGitAction ParsePathAction(string action)
+		private TouchedFileGitAction ParsePathAction(string action)
 		{
 			switch (action.Substring(0, 1).ToUpper())
 			{
-				case "M": return TouchedPathGitAction.MODIFIED;
-				case "A": return TouchedPathGitAction.ADDED;
-				case "D": return TouchedPathGitAction.DELETED;
-				case "R": return TouchedPathGitAction.RENAMED;
-				case "C": return TouchedPathGitAction.COPIED;
+				case "M": return TouchedFileGitAction.MODIFIED;
+				case "A": return TouchedFileGitAction.ADDED;
+				case "D": return TouchedFileGitAction.DELETED;
+				case "R": return TouchedFileGitAction.RENAMED;
+				case "C": return TouchedFileGitAction.COPIED;
 			}
 			throw new ApplicationException(string.Format("{0} - is invalid path action", action));
 		}

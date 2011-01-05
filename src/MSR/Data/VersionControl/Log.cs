@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -11,7 +11,7 @@ namespace MSR.Data.VersionControl
 {
 	public abstract class Log : ILog
 	{
-		protected List<TouchedPath> touchedPaths = new List<TouchedPath>();
+		protected List<TouchedFile> touchedFiles;
 		
 		public string Revision
 		{
@@ -29,9 +29,9 @@ namespace MSR.Data.VersionControl
 		{
 			get; protected set;
 		}
-		public virtual IEnumerable<TouchedPath> TouchedPaths
+		public virtual IEnumerable<TouchedFile> TouchedFiles
 		{
-			get { return touchedPaths; }
+			get { return touchedFiles; }
 		}
 	}
 }

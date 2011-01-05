@@ -66,7 +66,7 @@ C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
 		{
 			log = new GitLog(log_1.ToStream());
 			
-			log.TouchedPaths.Select(x => x.Path).ToArray()
+			log.TouchedFiles.Select(x => x.Path).ToArray()
 				.Should().Have.SameSequenceAs(new string[]
 				{
 					"/cache.h",
@@ -82,8 +82,8 @@ C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
 		{
 			log = new GitLog(log_2.ToStream());
 			
-			log.TouchedPaths
-				.Where(x => x.Action == TouchedPath.TouchedPathAction.DELETED)
+			log.TouchedFiles
+				.Where(x => x.Action == TouchedFile.TouchedFileAction.DELETED)
 				.Select(x => x.Path).ToArray()
 					.Should().Have.SameValuesAs(new string[]
 					{
@@ -91,8 +91,8 @@ C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
 						"/git-export.c",
 						"/git-mktag.c"
 					});
-			log.TouchedPaths
-				.Where(x => x.Action == TouchedPath.TouchedPathAction.ADDED)
+			log.TouchedFiles
+				.Where(x => x.Action == TouchedFile.TouchedFileAction.ADDED)
 				.Select(x => x.Path).ToArray()
 					.Should().Have.SameValuesAs(new string[]
 					{
@@ -106,7 +106,7 @@ C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
 		{
 			log = new GitLog(log_2.ToStream());
 			
-			log.TouchedPaths
+			log.TouchedFiles
 				.Single(x => x.Path == "/export.c")
 				.Satisfy(x =>
 					x.SourcePath == "/git-export.c"
@@ -119,10 +119,10 @@ C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
 		{
 			log = new GitLog(log_3.ToStream());
 
-			log.TouchedPaths.Count()
+			log.TouchedFiles.Count()
 				.Should().Be(2);
-			log.TouchedPaths
-				.Where(x => x.Action == TouchedPath.TouchedPathAction.ADDED)
+			log.TouchedFiles
+				.Where(x => x.Action == TouchedFile.TouchedFileAction.ADDED)
 				.Count()
 					.Should().Be(2);
 		}

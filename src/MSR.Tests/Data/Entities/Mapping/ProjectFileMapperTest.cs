@@ -21,14 +21,14 @@ namespace MSR.Data.Entities.Mapping
 	{
 		private ProjectFileMapper mapper;
 		
-		private List<TouchedPath> touchedFiles;
+		private List<TouchedFile> touchedFiles;
 		
 		[SetUp]
 		public override void SetUp()
 		{
 			base.SetUp();
-			touchedFiles = new List<TouchedPath>();
-			logStub.Stub(x => x.TouchedPaths)
+			touchedFiles = new List<TouchedFile>();
+			logStub.Stub(x => x.TouchedFiles)
 				.Return(touchedFiles);
 			scmData.Stub(x => x.Log("10"))
 				.Return(logStub);
@@ -164,15 +164,15 @@ namespace MSR.Data.Entities.Mapping
 		
 		private void AddFile(string path)
 		{
-			TouchPath(path, TouchedPath.TouchedPathAction.ADDED, null, null);
+			TouchPath(path, TouchedFile.TouchedFileAction.ADDED, null, null);
 		}
 		private void ModifyFile(string path)
 		{
-			TouchPath(path, TouchedPath.TouchedPathAction.MODIFIED, null, null);
+			TouchPath(path, TouchedFile.TouchedFileAction.MODIFIED, null, null);
 		}
 		private void CopyFile(string path, string sourcePath, string sourceRevision)
 		{
-			TouchPath(path, TouchedPath.TouchedPathAction.ADDED, sourcePath, sourceRevision);
+			TouchPath(path, TouchedFile.TouchedFileAction.ADDED, sourcePath, sourceRevision);
 		}
 		private void RenameFile(string path, string sourcePath)
 		{
@@ -181,11 +181,11 @@ namespace MSR.Data.Entities.Mapping
 		}
 		private void DeleteFile(string path)
 		{
-			TouchPath(path, TouchedPath.TouchedPathAction.DELETED, null, null);
+			TouchPath(path, TouchedFile.TouchedFileAction.DELETED, null, null);
 		}
-		private void TouchPath(string path, TouchedPath.TouchedPathAction action, string sourcePath, string sourceRevision)
+		private void TouchPath(string path, TouchedFile.TouchedFileAction action, string sourcePath, string sourceRevision)
 		{
-			touchedFiles.Add(new TouchedPath()
+			touchedFiles.Add(new TouchedFile()
 			{
 				Path = path,
 				Action = action,

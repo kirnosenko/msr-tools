@@ -96,7 +96,7 @@
     <Compile Include="Data\VersionControl\Git\GitBlame.cs" />
     <Compile Include="Data\VersionControl\Git\GitData.cs" />
     <Compile Include="Data\VersionControl\Git\GitLog.cs" />
-    <Compile Include="Data\VersionControl\Git\TouchedPathGitAction.cs" />
+    <Compile Include="Data\VersionControl\Git\TouchedFileGitAction.cs" />
     <Compile Include="Data\VersionControl\Git\IGitClient.cs" />
     <Compile Include="Data\VersionControl\IBlame.cs" />
     <Compile Include="Data\VersionControl\IDiff.cs" />
@@ -114,7 +114,7 @@
     <Compile Include="Data\Entities\Mapping\EntityMapper.cs" />
     <Compile Include="Data\Entities\Mapping\ProjectFileMapper.cs" />
     <Compile Include="Data\VersionControl\Svn\SvnTouchedPath.cs" />
-    <Compile Include="Data\VersionControl\TouchedPath.cs" />
+    <Compile Include="Data\VersionControl\TouchedFile.cs" />
     <Compile Include="Data\Entities\Modification.cs" />
     <Compile Include="Data\Entities\ProjectFile.cs" />
     <Compile Include="Data\Entities\DSL\Selection\Metrics\TraditionalDefectDensity.cs" />

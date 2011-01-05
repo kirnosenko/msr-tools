@@ -9,14 +9,14 @@ using System;
 namespace MSR.Data.VersionControl
 {
 	/// <summary>
-	/// Touched path in commit.
+	/// Touched file in commit.
 	/// </summary>
-	public class TouchedPath
+	public class TouchedFile
 	{
 		/// <summary>
 		/// Action on touched path.
 		/// </summary>
-		public enum TouchedPathAction
+		public enum TouchedFileAction
 		{
 			/// <summary>
 			/// Addition of a new file.
@@ -33,15 +33,15 @@ namespace MSR.Data.VersionControl
 		}
 		
 		/// <summary>
-		/// Touched path.
+		/// Path to the touched file.
 		/// </summary>
 		public string Path;
 		/// <summary>
-		/// Action on touched path.
+		/// Action on the touched file.
 		/// </summary>
-		public TouchedPathAction Action;
+		public TouchedFileAction Action;
 		/// <summary>
-		/// The source path for a copied path.
+		/// The source path for a copied file.
 		/// Null for a file created from scratch.
 		/// </summary>
 		public string SourcePath;

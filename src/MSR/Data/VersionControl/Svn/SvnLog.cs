@@ -18,8 +18,6 @@ namespace MSR.Data.VersionControl.Svn
 		private ISvnClient svn;
 		private XElement logXml;
 		
-		private bool touchedPathsInfoParsed = false;
-		
 		public SvnLog(ISvnClient svn, string revision)
 		{
 			this.svn = svn;
@@ -29,16 +27,15 @@ namespace MSR.Data.VersionControl.Svn
 			}
 			ParseCommitInfo();
 		}
-		public override IEnumerable<TouchedPath> TouchedPaths
+		public override IEnumerable<TouchedFile> TouchedFiles
 		{
 			get
 			{
-				if (! touchedPathsInfoParsed)
+				if (touchedFiles == null)
 				{
 					ParseTouchedPathsInfo();
-					touchedPathsInfoParsed = true;
 				}
-				return touchedPaths;
+				return touchedFiles;
 			}
 		}
 		
@@ -51,11 +48,12 @@ namespace MSR.Data.VersionControl.Svn
 		}
 		private void ParseTouchedPathsInfo()
 		{
+			touchedFiles = new List<TouchedFile>();
 			foreach (var touchedPath in SvnTouchedPaths())
 			{
 				TouchPath(touchedPath);
 			}
-			touchedPaths.Sort((x, y) => string.CompareOrdinal(x.Path.ToLower(), y.Path.ToLower()));
+			touchedFiles.Sort((x, y) => string.CompareOrdinal(x.Path.ToLower(), y.Path.ToLower()));
 		}
 		private IEnumerable<SvnTouchedPath> SvnTouchedPaths()
 		{
@@ -122,17 +120,17 @@ namespace MSR.Data.VersionControl.Svn
 				switch (touchedPath.Action)
 				{
 					case SvnTouchedPath.SvnTouchedPathAction.MODIFIED:
-						TouchPath(TouchedPath.TouchedPathAction.MODIFIED, touchedPath.Path);
+						TouchFile(TouchedFile.TouchedFileAction.MODIFIED, touchedPath.Path);
 						break;
 					case SvnTouchedPath.SvnTouchedPathAction.ADDED:
-						TouchPath(TouchedPath.TouchedPathAction.ADDED, touchedPath.Path, touchedPath.SourcePath, touchedPath.SourceRevision);
+						TouchFile(TouchedFile.TouchedFileAction.ADDED, touchedPath.Path, touchedPath.SourcePath, touchedPath.SourceRevision);
 						break;
 					case SvnTouchedPath.SvnTouchedPathAction.DELETED:
-						TouchPath(TouchedPath.TouchedPathAction.DELETED, touchedPath.Path);
+						TouchFile(TouchedFile.TouchedFileAction.DELETED, touchedPath.Path);
 						break;
 					case SvnTouchedPath.SvnTouchedPathAction.REPLACED:
-						TouchPath(TouchedPath.TouchedPathAction.DELETED, touchedPath.Path);
-						TouchPath(TouchedPath.TouchedPathAction.ADDED, touchedPath.Path, touchedPath.SourcePath, touchedPath.SourceRevision);
+						TouchFile(TouchedFile.TouchedFileAction.DELETED, touchedPath.Path);
+						TouchFile(TouchedFile.TouchedFileAction.ADDED, touchedPath.Path, touchedPath.SourcePath, touchedPath.SourceRevision);
 						break;
 					default:
 						break;
@@ -142,17 +140,17 @@ namespace MSR.Data.VersionControl.Svn
 			{
 				foreach (var deletedFile in PathList(touchedPath.Path, PreviousRevision()))
 				{
-					TouchPath(TouchedPath.TouchedPathAction.DELETED, deletedFile);
+					TouchFile(TouchedFile.TouchedFileAction.DELETED, deletedFile);
 				}
 			}
 		}
-		private void TouchPath(TouchedPath.TouchedPathAction action, string path)
+		private void TouchFile(TouchedFile.TouchedFileAction action, string path)
 		{
-			TouchPath(action, path, null, null);
+			TouchFile(action, path, null, null);
 		}
-		private void TouchPath(TouchedPath.TouchedPathAction action, string path, string sourcePath, string sourceRevision)
+		private void TouchFile(TouchedFile.TouchedFileAction action, string path, string sourcePath, string sourceRevision)
 		{
-			touchedPaths.Add(new TouchedPath()
+			touchedFiles.Add(new TouchedFile()
 			{
 				Action = action,
 				Path = path,

@@ -34,7 +34,7 @@ namespace MSR.Data.Entities.Mapping
 			
 			ILog log = scmData.Log(expression.CurrentEntity<Commit>().Revision);
 			
-			foreach (var touchedFile in log.TouchedPaths)
+			foreach (var touchedFile in log.TouchedFiles)
 			{
 				if (! ShouldProcessPath(touchedFile.Path))
 				{
@@ -45,13 +45,13 @@ namespace MSR.Data.Entities.Mapping
 				
 				switch (touchedFile.Action)
 				{
-					case TouchedPath.TouchedPathAction.MODIFIED:
+					case TouchedFile.TouchedFileAction.MODIFIED:
 						fileExp = expression.File(touchedFile.Path);
 						break;
-					case TouchedPath.TouchedPathAction.ADDED:
+					case TouchedFile.TouchedFileAction.ADDED:
 						fileExp = expression.AddFile(touchedFile.Path);
 						break;
-					case TouchedPath.TouchedPathAction.DELETED:
+					case TouchedFile.TouchedFileAction.DELETED:
 						fileExp = expression.File(touchedFile.Path);
 						fileExp.Delete();
 						break;
