@@ -62,7 +62,7 @@ namespace MSR.Tools.StatGenerator
 					s.SelectionDSL()
 						.Files().Exist()
 						.Modifications().InFiles()
-						.CodeBlocks().InModifications().CalculateTraditionalDefectDensity().ToString("F02");
+						.CodeBlocks().InModifications().CalculateTraditionalDefectDensity().ToString("F02")
 				);
 			}
 		}
