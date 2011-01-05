@@ -10,6 +10,7 @@
 			<th>Removed LOC</th>
 			<th>Removed LOC in fixes</th>
 			<th>Current LOC</th>
+			<th>Contribution (%)</th>
 		</tr>
 		#foreach($author in $authors)
 		#each
@@ -22,6 +23,7 @@
 			<td>$author.deleted</td>
 			<td>$author.deletedInFixes</td>
 			<td>$author.current</td>
+			<td>$author.contribution</td>
 		</tr>
 		#end
 	</table>

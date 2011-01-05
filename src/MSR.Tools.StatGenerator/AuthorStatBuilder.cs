@@ -31,6 +31,7 @@ namespace MSR.Tools.StatGenerator
 				var authors = s.Repository<Commit>()
 					.Select(x => x.Author)
 					.Distinct();
+				double totalLoc = s.SelectionDSL().CodeBlocks().CalculateLOC();
 
 				Dictionary<string, CodeBlockSelectionExpression> codeByAuthor = new Dictionary<string, CodeBlockSelectionExpression>();
 				foreach (var author in authors)
@@ -50,6 +51,7 @@ namespace MSR.Tools.StatGenerator
 					let author = a.Key
 					let code = a.Value
 					let authorCommits = code.Commits().Again().Count()
+					let authorLoc = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
 					select new
 					{
 						name = author,
@@ -59,7 +61,8 @@ namespace MSR.Tools.StatGenerator
 						addedInFixes = code.Added().InBugFixes().CalculateLOC(),
 						deleted = - code.Deleted().CalculateLOC(),
 						deletedInFixes = - code.Deleted().InBugFixes().CalculateLOC(),
-						current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
+						current = authorLoc,
+						contribution = ((authorLoc / totalLoc) * 100).ToString("F02")
 					};
 
 				context.Put("authors", statByAuthor.OrderBy(x => x.name).ToArray());
