@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -17,35 +17,6 @@ namespace MSR.Data.Entities.DSL.Selection
 	[TestFixture]
 	public class ProjectFileSelectionExpressionTest : BaseRepositoryTest
 	{
-		[Test]
-		public void Should_get_unique_files_touched_in_specified_commits()
-		{
-			mappingDSL
-				.AddCommit("1")
-					.AddFile("file1").Modified()
-			.Submit()
-				.AddCommit("2")
-					.File("file1").Modified()
-					.AddFile("file2").Modified()
-			.Submit();
-
-			selectionDSL
-				.Commits().Reselect(s => s.Where(c => c.Revision == "1"))
-				.Files().TouchedInCommits()
-				.Select(f => f.Path).ToArray()
-					.Should().Have.SameSequenceAs(new string[] { "file1" });
-			
-			selectionDSL
-				.Commits().Reselect(s => s.Where(c => c.Revision == "2"))
-				.Files().TouchedInCommits()
-				.Select(f => f.Path).ToArray()
-					.Should().Have.SameSequenceAs(new string[] { "file1", "file2" });
-
-			selectionDSL
-				.Files().TouchedInCommits()
-				.Select(f => f.Path).ToArray()
-					.Should().Have.SameSequenceAs(new string[] { "file1", "file2" });
-		}
 		[Test]
 		public void Should_get_files_added_in_specified_commits()
 		{

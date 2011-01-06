@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -270,88 +270,136 @@ namespace MSR.Tools.Mapper
 		}
 		private void CheckLinesContent(IRepositoryResolver repositories, IScmData scmData, string testRevision)
 		{
-			var selectionDSL = new RepositorySelectionExpression(repositories);
-
-			var existentFiles = selectionDSL.Files()
+			var existentFiles = repositories.SelectionDSL().Files()
 				.ExistInRevision(testRevision);
 
 			foreach (var existentFile in existentFiles)
 			{
-				IBlame fileBlame = null;
-				try
+				CheckLinesContent(repositories, scmData, testRevision, existentFile, false);
+			}
+		}
+		private bool CheckLinesContent(IRepositoryResolver repositories, IScmData scmData, string testRevision, ProjectFile file, bool resultOnly)
+		{
+			IBlame fileBlame = null;
+			try
+			{
+				fileBlame = scmData.Blame(testRevision, file.Path);
+			}
+			catch
+			{
+			}
+			if (fileBlame == null)
+			{
+				if (! resultOnly)
 				{
-					fileBlame = scmData.Blame(testRevision, existentFile.Path);
+					Console.WriteLine("File {0} does not exist.", file.Path);
 				}
-				catch
-				{
-					Console.WriteLine("File {0} does not exist.", existentFile.Path);
-				}
-				if (fileBlame == null)
-				{
-					continue;
-				}
-
-				double currentLOC = selectionDSL
+				return false;
+			}
+			
+			double currentLOC = repositories.SelectionDSL()
 					.Commits().TillRevision(testRevision)
-					.Files().PathIs(existentFile.Path).ExistInRevision(testRevision)
+					.Files().PathIs(file.Path).ExistInRevision(testRevision)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications()
 					.CalculateLOC();
 
-				if ((int)currentLOC != fileBlame.Count)
-				{
-					Console.WriteLine("Incorrect number of lines in file {0}. {1} should be {2}",
-						existentFile.Path, currentLOC, fileBlame.Count
-					);
-				}
+			if ((int)currentLOC != fileBlame.Count)
+			{
+				Console.WriteLine("Incorrect number of lines in file {0}. {1} should be {2}",
+					file.Path, currentLOC, fileBlame.Count
+				);
+			}
 
-				SmartDictionary<string, int> linesByRevision = new SmartDictionary<string, int>(x => 0);
-				foreach (var line in fileBlame)
-				{
-					linesByRevision[line.Value]++;
-				}
+			SmartDictionary<string, int> linesByRevision = new SmartDictionary<string, int>(x => 0);
+			foreach (var line in fileBlame)
+			{
+				linesByRevision[line.Value]++;
+			}
 
-				var codeBySourceRevision =
+			var codeBySourceRevision =
+			(
+				from f in repositories.Repository<ProjectFile>()
+				join m in repositories.Repository<Modification>() on f.ID equals m.FileID
+				join cb in repositories.Repository<CodeBlock>() on m.ID equals cb.ModificationID
+				join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
+				let addedCodeBlock = repositories.Repository<CodeBlock>()
+					.Single(x => x.ID == (cb.Size < 0 ? cb.TargetCodeBlockID : cb.ID))
+				let codeAddedInitiallyInRevision = repositories.Repository<Commit>()
+					.Single(x => x.ID == addedCodeBlock.AddedInitiallyInCommitID)
+					.Revision
+				let testRevisionNumber = repositories.Repository<Commit>()
+					.Single(x => x.Revision == testRevision)
+					.OrderedNumber
+				where
+					f.ID == file.ID
+					&&
+					c.OrderedNumber <= testRevisionNumber
+				group cb.Size by codeAddedInitiallyInRevision into g
+				select new { FromRevision = g.Key, CodeSize = g.Sum() }
+			).Where(x => x.CodeSize != 0).ToList();
+			
+			var errorCode =
 				(
-					from f in repositories.Repository<ProjectFile>()
-					join m in repositories.Repository<Modification>() on f.ID equals m.FileID
-					join cb in repositories.Repository<CodeBlock>() on m.ID equals cb.ModificationID
-					join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
-					let addedCodeBlock = repositories.Repository<CodeBlock>()
-						.Single(x => x.ID == (cb.Size < 0 ? cb.TargetCodeBlockID : cb.ID))
-					let codeAddedInitiallyInRevision = repositories.Repository<Commit>()
-						.Single(x => x.ID == addedCodeBlock.AddedInitiallyInCommitID)
-						.Revision
-					let testRevisionNumber = repositories.Repository<Commit>()
-						.Single(x => x.Revision == testRevision)
-						.OrderedNumber
+					from codeFromRevision in codeBySourceRevision
 					where
-						f.ID == existentFile.ID
-						&&
-						c.OrderedNumber <= testRevisionNumber
-					group cb.Size by codeAddedInitiallyInRevision into g
-					select new { FromRevision = g.Key, CodeSize = g.Sum() }
-				).Where(x => x.CodeSize != 0);
+						codeFromRevision.CodeSize != linesByRevision[codeFromRevision.FromRevision]
+					select new
+					{
+						SourceRevision = codeFromRevision.FromRevision,
+						CodeSize = codeFromRevision.CodeSize,
+						RealCodeSize = linesByRevision[codeFromRevision.FromRevision]
+					}
+				).ToList();
 
+			bool correct =
+				codeBySourceRevision.Count() == linesByRevision.Count
+				&&
+				errorCode.Count == 0;
+			
+			if (! resultOnly)
+			{
 				if (codeBySourceRevision.Count() != linesByRevision.Count)
 				{
 					Console.WriteLine("Number of revisions file {0} contains code from is incorrect. {1} should be {2}",
-						existentFile.Path, codeBySourceRevision.Count(), linesByRevision.Count
+						file.Path, codeBySourceRevision.Count(), linesByRevision.Count
 					);
 				}
-				foreach (var codeForRevision in codeBySourceRevision)
+				foreach (var error in errorCode)
 				{
-					if (codeForRevision.CodeSize != linesByRevision[codeForRevision.FromRevision])
+					Console.WriteLine("Incorrect number of lines in file {0} from revision {1}. {2} should be {3}",
+						file.Path,
+						error.SourceRevision,
+						error.CodeSize,
+						error.RealCodeSize
+					);
+				}
+				if (! correct)
+				{
+					string latestCodeRevision = repositories.LastRevision(errorCode.Select(x => x.SourceRevision));
+
+					var commitsFileTouchedIn = repositories.SelectionDSL()
+						.Files().IdIs(file.ID)
+						.Commits().AfterRevision(latestCodeRevision).TouchFiles()
+						.OrderBy(c => c.OrderedNumber);
+					
+					foreach (var commit in commitsFileTouchedIn)
 					{
-						Console.WriteLine("Incorrect number of lines in file {0} from revision {1}. {2} should be {3}",
-							existentFile.Path,
-							codeForRevision.FromRevision,
-							codeForRevision.CodeSize,
-							linesByRevision[codeForRevision.FromRevision]
-						);
+						if (! CheckLinesContent(repositories, scmData, commit.Revision, file, true))
+						{
+							Console.WriteLine("{0} - bad commit", commit.Revision);
+							if (errorCode.Sum(x => x.CodeSize - x.RealCodeSize) == 0)
+							{
+								// fix diff error
+							}
+							break;
+						}
 					}
+					
 				}
 			}
+			
+			return correct;
 		}
 	}
 }

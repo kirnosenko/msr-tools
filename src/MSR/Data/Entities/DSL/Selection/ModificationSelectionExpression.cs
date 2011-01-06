@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -31,6 +31,28 @@ namespace MSR.Data.Entities.DSL.Selection
 				(
 					from f in s
 					join m in parentExp.Selection<Modification>() on f.ID equals m.FileID
+					select f
+				).Distinct()
+			);
+		}
+		public static CommitSelectionExpression TouchFiles(this CommitSelectionExpression parentExp)
+		{
+			return parentExp.Reselect(s =>
+				(
+					from c in s
+					join m in parentExp.Repository<Modification>() on c.ID equals m.CommitID
+					join f in parentExp.Selection<ProjectFile>() on m.FileID equals f.ID
+					select c
+				).Distinct()
+			);
+		}
+		public static ProjectFileSelectionExpression TouchedInCommits(this ProjectFileSelectionExpression parentExp)
+		{
+			return parentExp.Reselect(s =>
+				(
+					from f in s
+					join m in parentExp.Repository<Modification>() on f.ID equals m.FileID
+					join c in parentExp.Selection<Commit>() on m.CommitID equals c.ID
 					select f
 				).Distinct()
 			);
