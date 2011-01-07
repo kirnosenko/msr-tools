@@ -16,6 +16,7 @@ namespace MSR.Tools.Mapper
 			string cmd;
 			bool createSchema = false;
 			int numberOfRevisions = 0;
+			bool automaticallyFixDiffErrors = false;
 			
 			try
 			{
@@ -28,6 +29,9 @@ namespace MSR.Tools.Mapper
 					{
 						case "-c":
 							createSchema = true;
+							break;
+						case "-f":
+							automaticallyFixDiffErrors = true;
 							break;
 						case "-n":
 							i++;
@@ -47,6 +51,7 @@ namespace MSR.Tools.Mapper
 				Console.WriteLine("    -c		create data base");
 				Console.WriteLine("    -n N		map commits from first to N incrementally");
 				Console.WriteLine("  check		check validity of mapped data");
+				Console.WriteLine("    -f		automatically fix diff errors");
 				Console.WriteLine("    -n N		check data till revision N");
 				
 				return;
@@ -68,7 +73,7 @@ namespace MSR.Tools.Mapper
 					mapper.Map(createSchema, numberOfRevisions);
 					break;
 				case "check":
-					mapper.Check(numberOfRevisions);
+					mapper.Check(numberOfRevisions, automaticallyFixDiffErrors);
 					break;
 				default:
 					Console.WriteLine("Unknown command {0}", cmd);

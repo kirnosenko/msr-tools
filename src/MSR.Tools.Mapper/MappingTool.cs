@@ -22,6 +22,8 @@ namespace MSR.Tools.Mapper
 {
 	public class MappingTool : Tool
 	{
+		private bool automaticallyFixDiffErrors;
+		
 		public MappingTool(string configFile)
 			: base(configFile)
 		{
@@ -92,7 +94,12 @@ namespace MSR.Tools.Mapper
 		}
 		public void Check(int stopRevisionNumber)
 		{
+			Check(stopRevisionNumber, false);
+		}
+		public void Check(int stopRevisionNumber, bool automaticallyFixDiffErrors)
+		{
 			string stopRevision = scmData.RevisionByNumber(stopRevisionNumber);
+			this.automaticallyFixDiffErrors = automaticallyFixDiffErrors;
 			
 			using (ConsoleTimeLogger.Start("checking time"))
 			using (var s = data.OpenSession())
@@ -109,6 +116,10 @@ namespace MSR.Tools.Mapper
 				CheckTargetsForCodeBlocks(s, testRevision);
 				CheckDeletedCodeBlocksVsAdded(s, testRevision);
 				CheckLinesContent(s, scmDataNoCache, testRevision);
+				if (automaticallyFixDiffErrors)
+				{
+					s.SubmitChanges();
+				}
 			}
 		}
 
@@ -304,11 +315,20 @@ namespace MSR.Tools.Mapper
 					.CodeBlocks().InModifications()
 					.CalculateLOC();
 
-			if ((int)currentLOC != fileBlame.Count)
+			bool correct = currentLOC == fileBlame.Count;
+			
+			if (! correct)
 			{
-				Console.WriteLine("Incorrect number of lines in file {0}. {1} should be {2}",
-					file.Path, currentLOC, fileBlame.Count
-				);
+				if (! resultOnly)
+				{
+					Console.WriteLine("Incorrect number of lines in file {0}. {1} should be {2}",
+						file.Path, currentLOC, fileBlame.Count
+					);
+				}
+				else
+				{
+					return false;
+				}
 			}
 
 			SmartDictionary<string, int> linesByRevision = new SmartDictionary<string, int>(x => 0);
@@ -336,7 +356,11 @@ namespace MSR.Tools.Mapper
 					&&
 					c.OrderedNumber <= testRevisionNumber
 				group cb.Size by codeAddedInitiallyInRevision into g
-				select new { FromRevision = g.Key, CodeSize = g.Sum() }
+				select new
+				{
+					FromRevision = g.Key,
+					CodeSize = g.Sum()
+				}
 			).Where(x => x.CodeSize != 0).ToList();
 			
 			var errorCode =
@@ -352,7 +376,9 @@ namespace MSR.Tools.Mapper
 					}
 				).ToList();
 
-			bool correct =
+			correct =
+				correct
+				&&
 				codeBySourceRevision.Count() == linesByRevision.Count
 				&&
 				errorCode.Count == 0;
@@ -387,10 +413,38 @@ namespace MSR.Tools.Mapper
 					{
 						if (! CheckLinesContent(repositories, scmData, commit.Revision, file, true))
 						{
-							Console.WriteLine("{0} - bad commit", commit.Revision);
-							if (errorCode.Sum(x => x.CodeSize - x.RealCodeSize) == 0)
+							Console.WriteLine("{0} - incorrectly mapped commit.", commit.Revision);
+							if ((automaticallyFixDiffErrors) && (errorCode.Sum(x => x.CodeSize - x.RealCodeSize) == 0))
 							{
-								// fix diff error
+								var incorrectDeleteCodeBlocks =
+									from cb in repositories.SelectionDSL()
+										.Commits().RevisionIs(commit.Revision)
+										.Files().PathIs(file.Path)
+										.Modifications().InCommits().InFiles()
+										.CodeBlocks().InModifications().Deleted()
+									join tcb in repositories.Repository<CodeBlock>() on cb.TargetCodeBlockID equals tcb.ID
+									join m in repositories.Repository<Modification>() on tcb.ModificationID equals m.ID
+									join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
+									where
+										errorCode.Select(x => x.SourceRevision).Contains(c.Revision)
+									select new
+									{
+										Code = cb,
+										TargetRevision = c.Revision
+									};
+								
+								foreach (var codeBlock in incorrectDeleteCodeBlocks)
+								{
+									var ec = errorCode.Single(x => x.SourceRevision == codeBlock.TargetRevision);
+									Console.WriteLine("Fix code block size for file {0} in revision {1}:", file.Path, commit.Revision);
+									Console.Write("Was {0}", codeBlock.Code.Size);
+									codeBlock.Code.Size -= ec.CodeSize - ec.RealCodeSize;
+									if (codeBlock.Code.Size == 0)
+									{
+										repositories.Repository<CodeBlock>().Delete(codeBlock.Code);
+									}
+									Console.WriteLine(", now {0}", codeBlock.Code.Size);
+								}
 							}
 							break;
 						}
