@@ -23,6 +23,7 @@ namespace MSR.Tools.Mapper
 	public class MappingTool : Tool
 	{
 		private bool automaticallyFixDiffErrors;
+		private Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression> pathFilter;
 		
 		public MappingTool(string configFile)
 			: base(configFile)
@@ -94,11 +95,12 @@ namespace MSR.Tools.Mapper
 		}
 		public void Check(int stopRevisionNumber)
 		{
-			Check(stopRevisionNumber, false);
+			Check(stopRevisionNumber, null, false);
 		}
-		public void Check(int stopRevisionNumber, bool automaticallyFixDiffErrors)
+		public void Check(int stopRevisionNumber, string path, bool automaticallyFixDiffErrors)
 		{
 			string stopRevision = scmData.RevisionByNumber(stopRevisionNumber);
+			pathFilter = e => path == null ? e : e.PathIs(path);
 			this.automaticallyFixDiffErrors = automaticallyFixDiffErrors;
 			
 			using (ConsoleTimeLogger.Start("checking time"))
@@ -281,8 +283,10 @@ namespace MSR.Tools.Mapper
 		}
 		private void CheckLinesContent(IRepositoryResolver repositories, IScmData scmData, string testRevision)
 		{
-			var existentFiles = repositories.SelectionDSL().Files()
-				.ExistInRevision(testRevision);
+			var existentFiles = repositories.SelectionDSL()
+				.Files()
+					.Reselect(pathFilter)
+					.ExistInRevision(testRevision);
 
 			foreach (var existentFile in existentFiles)
 			{
