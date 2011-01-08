@@ -437,23 +437,48 @@ namespace MSR.Tools.Mapper
 										TargetRevision = c.Revision
 									};
 								
-								foreach (var codeBlock in incorrectDeleteCodeBlocks)
+								foreach (var error in errorCode)
 								{
-									var ec = errorCode.Single(x => x.SourceRevision == codeBlock.TargetRevision);
-									Console.WriteLine("Fix code block size for file {0} in revision {1}:", file.Path, commit.Revision);
-									Console.Write("Was {0}", codeBlock.Code.Size);
-									codeBlock.Code.Size -= ec.CodeSize - ec.RealCodeSize;
-									if (codeBlock.Code.Size == 0)
+									var incorrectDeleteCodeBlock = incorrectDeleteCodeBlocks.SingleOrDefault(x => x.TargetRevision == error.SourceRevision);
+									var codeBlock = incorrectDeleteCodeBlock == null ? null : incorrectDeleteCodeBlock.Code;
+									double difference = error.CodeSize - error.RealCodeSize;
+									if (codeBlock == null)
 									{
-										repositories.Repository<CodeBlock>().Delete(codeBlock.Code);
+										codeBlock = new CodeBlock()
+										{
+											Size = 0,
+											Modification = repositories.SelectionDSL()
+												.Commits().RevisionIs(commit.Revision)
+												.Files().PathIs(file.Path)
+												.Modifications().InCommits().InFiles().Single(),
+										};
+										repositories.Repository<CodeBlock>().Add(codeBlock);
 									}
-									Console.WriteLine(", now {0}", codeBlock.Code.Size);
+									Console.WriteLine("Fix code block size for file {0} in revision {1}:", file.Path, commit.Revision);
+									Console.Write("Was {0}", codeBlock.Size);
+									codeBlock.Size -= difference;
+									if (codeBlock.Size == 0)
+									{
+										repositories.Repository<CodeBlock>().Delete(codeBlock);
+									}
+									else if ((codeBlock.Size > 0) && (codeBlock.AddedInitiallyInCommitID == null))
+									{
+										codeBlock.AddedInitiallyInCommit = commit;
+									}
+									else if ((codeBlock.Size < 0) && (codeBlock.TargetCodeBlockID == null))
+									{
+										codeBlock.TargetCodeBlock = repositories.SelectionDSL()
+											.Commits().RevisionIs(error.SourceRevision)
+											.Files().PathIs(file.Path)
+											.Modifications().InFiles()
+											.CodeBlocks().InModifications().AddedInitiallyInCommits().Single();
+									}
+									Console.WriteLine(", now {0}", codeBlock.Size);
 								}
 							}
 							break;
 						}
-					}
-					
+					}					
 				}
 			}
 			
