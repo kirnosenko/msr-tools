@@ -56,21 +56,30 @@ namespace MSR.Data.Entities.DSL.Mapping
 			Commit sourceCommit = Repository<Commit>().Single(x => x.Revision == sourceRevision);
 			
 			entity.SourceCommit = sourceCommit;
-			entity.SourceFile = Repository<ProjectFile>().Single(x =>
-				x.Path == sourseFilePath
-				&&
-				Repository<Commit>()
-					.Single(c => c.ID == x.AddedInCommitID)
-					.OrderedNumber <= sourceCommit.OrderedNumber
-				&&
-				(
-					(x.DeletedInCommitID == null)
-					||
+			try
+			{
+				entity.SourceFile = Repository<ProjectFile>().Single(x =>
+					x.Path == sourseFilePath
+					&&
 					Repository<Commit>()
-						.Single(c => c.ID == x.DeletedInCommitID)
-						.OrderedNumber > sourceCommit.OrderedNumber
-				)
-			);
+						.Single(c => c.ID == x.AddedInCommitID)
+						.OrderedNumber <= sourceCommit.OrderedNumber
+					&&
+					(
+						(x.DeletedInCommitID == null)
+						||
+						Repository<Commit>()
+							.Single(c => c.ID == x.DeletedInCommitID)
+							.OrderedNumber > sourceCommit.OrderedNumber
+					)
+				);
+			}
+			catch
+			{
+				throw new MsrMappingDslException(
+					string.Format("Could not find file {0} in revision {1}.", sourseFilePath, sourceRevision)
+				);
+			}
 			return this;
 		}
 	}

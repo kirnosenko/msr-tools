@@ -73,17 +73,24 @@ namespace MSR.Tools.Mapper
 				Console.WriteLine(e.Message);
 			}
 			
-			switch (cmd)
+			try
 			{
-				case "map":
-					mapper.Map(createSchema, numberOfRevisions);
-					break;
-				case "check":
-					mapper.Check(numberOfRevisions, path, automaticallyFixDiffErrors);
-					break;
-				default:
-					Console.WriteLine("Unknown command {0}", cmd);
-					break;
+				switch (cmd)
+				{
+					case "map":
+						mapper.Map(createSchema, numberOfRevisions);
+						break;
+					case "check":
+						mapper.Check(numberOfRevisions, path, automaticallyFixDiffErrors);
+						break;
+					default:
+						Console.WriteLine("Unknown command {0}", cmd);
+						break;
+				}
+			}
+			catch (MsrException e)
+			{
+				Console.WriteLine(e.Message);
 			}
 		}
 	}
