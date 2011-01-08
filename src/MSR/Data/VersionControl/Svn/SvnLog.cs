@@ -67,7 +67,7 @@ namespace MSR.Data.VersionControl.Svn
 			int repositoryPathLength = svn.RepositoryPath.Length;
 
 			IEnumerable<string> replacedPaths = logXml.Descendants("path")
-				.Where(x => x.Attribute("action").Value == "R")
+				.Where(x => x.Attribute("action").Value == "R" && x.Attribute("copyfrom-path") != null)
 				.Select(x => x.Value);
 
 			foreach (var diffPath in diffSumXml.Descendants("path"))
