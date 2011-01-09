@@ -11,7 +11,7 @@ namespace MSR.Tools.StatGenerator
 	public class GeneratingTool : Tool
 	{
 		public GeneratingTool(string configFile)
-			: base(configFile)
+			: base(configFile, "generatingtool")
 		{
 			data.ReadOnly = true;
 		}

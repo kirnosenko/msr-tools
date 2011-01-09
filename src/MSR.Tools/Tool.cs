@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -23,9 +23,9 @@ namespace MSR.Tools
 		protected IScmData scmData;
 		protected IScmData scmDataNoCache;
 		
-		public Tool(string configFileName)
+		public Tool(string configFileName, params string[] additionalConfigSections)
 		{
-			container = GetContainer(configFileName);
+			container = GetContainer(configFileName, additionalConfigSections);
 			
 			data = GetConfiguredType<PersistentDataStore>();
 			scmData = GetConfiguredType<IScmData>();
@@ -39,14 +39,18 @@ namespace MSR.Tools
 		{
 			return container.Resolve<T>(name);
 		}
-		private static IUnityContainer GetContainer(string configFile)
+		private static IUnityContainer GetContainer(string configFile, params string[] additionalConfigSections)
 		{
 			var map = new ExeConfigurationFileMap();
 			map.ExeConfigFilename = configFile;
 			var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
 			var section = (UnityConfigurationSection)config.GetSection("unity");
 			var container = new UnityContainer();
-			section.Configure(container, "container");
+			section.Configure(container, "tool");
+			foreach (var configSection in additionalConfigSections)
+			{
+				section.Configure(container, configSection);
+			}
 
 			return container;
 		}
