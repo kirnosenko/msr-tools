@@ -1,11 +1,13 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
 using System.Linq;
+
+using MSR.Data.Entities.DSL.Selection;
 
 namespace MSR.Data.Entities.DSL.Mapping
 {
@@ -123,18 +125,11 @@ namespace MSR.Data.Entities.DSL.Mapping
 		}
 		public ICodeBlockMappingExpression ForCodeAddedInitiallyInRevision(string revision)
 		{
-			entity.TargetCodeBlock =
-			(
-				from tcb in Repository<CodeBlock>()
-				join m in Repository<Modification>() on tcb.ModificationID equals m.ID
-				where
-					tcb.AddedInitiallyInCommitID == Repository<Commit>()
-						.Single(c => c.Revision == revision)
-						.ID
-					&&
-					m.FileID == CurrentEntity<Modification>().File.ID
-				select tcb
-			).Single();
+			entity.TargetCodeBlock = this.SelectionDSL()
+				.Commits().RevisionIs(revision)
+				.Files().IdIs(CurrentEntity<Modification>().File.ID)
+				.Modifications().InFiles()
+				.CodeBlocks().InModifications().AddedInitiallyInCommits().Single();
 			
 			return this;
 		}

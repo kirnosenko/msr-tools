@@ -1,11 +1,13 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
 using System.Linq;
+
+using MSR.Data.Entities.DSL.Selection;
 
 namespace MSR.Data.Entities.DSL.Mapping
 {
@@ -53,26 +55,12 @@ namespace MSR.Data.Entities.DSL.Mapping
 		}
 		public IProjectFileMappingExpression CopiedFrom(string sourseFilePath, string sourceRevision)
 		{
-			Commit sourceCommit = Repository<Commit>().Single(x => x.Revision == sourceRevision);
-			
-			entity.SourceCommit = sourceCommit;
+			entity.SourceCommit = Repository<Commit>()
+				.Single(x => x.Revision == sourceRevision);
 			try
 			{
-				entity.SourceFile = Repository<ProjectFile>().Single(x =>
-					x.Path == sourseFilePath
-					&&
-					Repository<Commit>()
-						.Single(c => c.ID == x.AddedInCommitID)
-						.OrderedNumber <= sourceCommit.OrderedNumber
-					&&
-					(
-						(x.DeletedInCommitID == null)
-						||
-						Repository<Commit>()
-							.Single(c => c.ID == x.DeletedInCommitID)
-							.OrderedNumber > sourceCommit.OrderedNumber
-					)
-				);
+				entity.SourceFile = this.SelectionDSL()
+					.Files().PathIs(sourseFilePath).ExistInRevision(sourceRevision).Single();
 			}
 			catch
 			{
