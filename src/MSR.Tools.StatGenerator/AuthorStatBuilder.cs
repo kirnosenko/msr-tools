@@ -30,37 +30,36 @@ namespace MSR.Tools.StatGenerator
 				int commits = s.Repository<Commit>().Count();
 				var authors = s.Repository<Commit>()
 					.Select(x => x.Author)
-					.Distinct();
+					.Distinct().ToList();
 				double totalLoc = s.SelectionDSL().CodeBlocks().CalculateLOC();
 
-				Dictionary<string, CodeBlockSelectionExpression> codeByAuthor = new Dictionary<string, CodeBlockSelectionExpression>();
-				foreach (var author in authors)
+				var codeByAuthor = (from author in authors select new
 				{
-					codeByAuthor.Add(
-						author,
-						s.SelectionDSL()
-							.Commits().AuthorIs(author)
-							.Modifications().InCommits()
-							.CodeBlocks().InModifications()
-							.Fixed()
-					);
-				}
-
+					Name = author,
+					AddedCode = s.SelectionDSL()
+						.Commits().AuthorIs(author)
+						.CodeBlocks().AddedInitiallyInCommits()
+						.Fixed(),
+					RemovedCode = s.SelectionDSL()
+						.Commits().AuthorIs(author)
+						.Modifications().InCommits()
+						.CodeBlocks().InModifications().Deleted()
+						.Fixed()
+				}).ToList();
+				
 				var statByAuthor =
 					from a in codeByAuthor
-					let author = a.Key
-					let code = a.Value
-					let authorCommits = code.Commits().Again().Count()
-					let authorLoc = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
+					let authorCommits = a.AddedCode.Commits().Again().Count()
+					let authorLoc = a.AddedCode.CalculateLOC() + a.AddedCode.ModifiedBy().CalculateLOC()
 					select new
 					{
-						name = author,
+						name = a.Name,
 						commits = string.Format("{0} ({1}%)", authorCommits, (((double)authorCommits / commits) * 100).ToString("F02")),
-						dd = code.CalculateTraditionalDefectDensity().ToString("F02"),
-						added = code.Added().CalculateLOC(),
-						addedInFixes = code.Added().InBugFixes().CalculateLOC(),
-						deleted = - code.Deleted().CalculateLOC(),
-						deletedInFixes = - code.Deleted().InBugFixes().CalculateLOC(),
+						dd = a.AddedCode.CalculateTraditionalDefectDensity().ToString("F02"),
+						added = a.AddedCode.CalculateLOC(),
+						addedInFixes = a.AddedCode.InBugFixes().CalculateLOC(),
+						deleted = - a.RemovedCode.CalculateLOC(),
+						deletedInFixes = - a.RemovedCode.InBugFixes().CalculateLOC(),
 						current = authorLoc,
 						contribution = ((authorLoc / totalLoc) * 100).ToString("F02")
 					};
