@@ -415,6 +415,34 @@ private string list_5_2 =
 		</diff>
 		";
 		
+		private string logXml_8 =
+		@"<?xml version='1.0'?>
+		<log>
+		<logentry
+		   revision='4166'>
+		<author>darioquintana</author>
+		<date>2009-03-29T15:36:13.952775Z</date>
+		<paths>
+		<path
+		   kind='file'
+		   copyfrom-path='/trunk/nhibernate/src/NHibernate.Test/TypesTest/TimeSpanInt64Class.cs'
+		   copyfrom-rev='4165'
+		   action='R'>/trunk/nhibernate/src/NHibernate.Test/TypesTest/TimeSpanClass.cs</path>
+		</paths>
+		<msg>- the actual TimeSpan type moved to TimeAsTimeSpan.
+		- TimeSpanInt64 type moved back to TimeSpan (related to NH-1617)
+		</msg>
+		</logentry>
+		</log>";
+		
+		private string diffSumXml_8 =
+		@"<?xml version='1.0'?>
+		<diff>
+		<paths>
+		</paths>
+		</diff>
+		";
+		
 		private string repositoryPath = "file:///E:/repo/gnome-terminal/svn";
 		
 		private SvnLog log;
@@ -430,6 +458,7 @@ private string list_5_2 =
 			logXml_5 = logXml_5.Replace('\'', '"');
 			logXml_6 = logXml_6.Replace('\'', '"');
 			logXml_7 = logXml_7.Replace('\'', '"');
+			logXml_8 = logXml_8.Replace('\'', '"');
 			diffSumXml_1 = diffSumXml_1.Replace('\'', '"');
 			diffSumXml_2 = diffSumXml_2.Replace('\'', '"');
 			diffSumXml_3 = diffSumXml_3.Replace('\'', '"');
@@ -437,6 +466,7 @@ private string list_5_2 =
 			diffSumXml_5 = diffSumXml_5.Replace('\'', '"');
 			diffSumXml_6 = diffSumXml_6.Replace('\'', '"');
 			diffSumXml_7 = diffSumXml_7.Replace('\'', '"');
+			diffSumXml_8 = diffSumXml_8.Replace('\'', '"');
 		}
 		[SetUp]
 		public void SetUp()
@@ -616,6 +646,11 @@ private string list_5_2 =
 				.Should().Be(1);
 			log.TouchedFiles.Single().Action
 				.Should().Be(TouchedFile.TouchedFileAction.MODIFIED);
+		}
+		[Test]
+		public void Should_be_able_to_process_strange_situation_when_no_path_in_diff()
+		{
+			log = CreateLog("4166", logXml_8.ToStream(), diffSumXml_8.ToStream(), "file:///E:/repo/nhibernate/svn");
 		}
 		private SvnLog CreateLog(string revision, Stream log, Stream diffSum, string repositoryPath)
 		{

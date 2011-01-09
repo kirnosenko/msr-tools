@@ -113,9 +113,13 @@ namespace MSR.Data.VersionControl.Svn
 				.OrderBy(x => x.Path)
 			)
 			{
-				var touchedPath = svnTouchedPaths.Single(x =>
+				var touchedPath = svnTouchedPaths.SingleOrDefault(x =>
 					x.Path == pathInfo.Path
 				);
+				if (touchedPath == null)
+				{
+					continue;
+				}
 				if (! touchedPath.IsFile)
 				{
 					foreach (var copiedFile in svnTouchedPaths
