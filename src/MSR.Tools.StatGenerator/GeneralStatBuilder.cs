@@ -30,10 +30,13 @@ namespace MSR.Tools.StatGenerator
 				int commits_count = s.Repository<Commit>().Count();
 				int commits_fix_count = s.SelectionDSL().Commits().AreBugFixes().Count();
 				string commits_fix_percent = ((double)commits_fix_count / commits_count * 100).ToString("F02");
+				DateTime statfrom = s.Repository<Commit>().Min(x => x.Date);
+				DateTime statto = s.Repository<Commit>().Max(x => x.Date);
 				
 				context.Put("stat_date", DateTime.Now.ToString());
-				context.Put("stat_period_from", s.Repository<Commit>().Min(x => x.Date));
-				context.Put("stat_period_to", s.Repository<Commit>().Max(x => x.Date));
+				context.Put("stat_period_from", statfrom);
+				context.Put("stat_period_to", statto);
+				context.Put("stat_period_days", (statto - statfrom).Days);
 				context.Put("authors_count",
 					s.Repository<Commit>().Select(x => x.Author).Distinct().Count()
 				);
