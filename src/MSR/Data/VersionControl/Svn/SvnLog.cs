@@ -65,18 +65,40 @@ namespace MSR.Data.VersionControl.Svn
 				diffSumXml = XElement.Load(new StreamReader(diffSum));
 			}
 			int repositoryPathLength = svn.RepositoryPath.Length;
-
-			IEnumerable<string> replacedPaths = logXml.Descendants("path")
-				.Where(x => x.Attribute("action").Value == "R" && x.Attribute("copyfrom-path") != null)
-				.Select(x => x.Value);
-
-			foreach (var diffPath in diffSumXml.Descendants("path"))
+			
+			var logPathInfo = (from x in logXml.Descendants("path") select new
+			{
+				Path = x.Value,
+				Action = ParsePathAction(x.Attribute("action").Value),
+				SourcePath = x.Attribute("copyfrom-path") == null ?
+					null
+					:
+					x.Attribute("copyfrom-path").Value,
+				SourceRevision = x.Attribute("copyfrom-rev") == null ?
+					null
+					:
+					x.Attribute("copyfrom-rev").Value
+			}).ToList();
+			var diffSumPathInfo = (from x in diffSumXml.Descendants("path") select new
+			{
+				Path = x.Value.Substring(repositoryPathLength),
+				Action = ParsePathAction(x.Attribute("item").Value),
+				IsFile = x.Attribute("kind").Value == "file"
+			}).ToList();
+			
+			var replacedPaths = logPathInfo.Where(x =>
+				x.Action == SvnTouchedPath.SvnTouchedPathAction.REPLACED
+				&&
+				x.SourcePath != null
+			).Select(x => x.Path);
+			
+			foreach (var pathInfo in diffSumPathInfo)
 			{
 				var touchedPath = new SvnTouchedPath()
 				{
-					Path = diffPath.Value.Substring(repositoryPathLength),
-					IsFile = diffPath.Attribute("kind").Value == "file",
-					Action = ParsePathAction(diffPath.Attribute("item").Value)
+					Path = pathInfo.Path,
+					IsFile = pathInfo.IsFile,
+					Action = pathInfo.Action
 				};
 
 				if (touchedPath.Action == SvnTouchedPath.SvnTouchedPathAction.MODIFIED && replacedPaths.Contains(touchedPath.Path))
@@ -86,28 +108,36 @@ namespace MSR.Data.VersionControl.Svn
 
 				svnTouchedPaths.Add(touchedPath);
 			}
-			foreach (var logPath in logXml.Descendants("path")
-				.Where(x => x.Attribute("copyfrom-path") != null)
-				.OrderBy(x => x.Value)
+			foreach (var pathInfo in logPathInfo
+				.Where(x => x.SourcePath != null)
+				.OrderBy(x => x.Path)
 			)
 			{
 				var touchedPath = svnTouchedPaths.Single(x =>
-					x.Path == logPath.Value
+					x.Path == pathInfo.Path
 				);
 				if (! touchedPath.IsFile)
 				{
 					foreach (var copiedFile in svnTouchedPaths
-						.Where(x => x.Path.StartsWith(logPath.Value + "/"))
+						.Where(x => x.Path.StartsWith(pathInfo.Path + "/"))
 					)
 					{
-						copiedFile.SourcePath = copiedFile.Path.Replace(logPath.Value, logPath.Attribute("copyfrom-path").Value);
-						copiedFile.SourceRevision = logPath.Attribute("copyfrom-rev").Value;
+						var copiedFileLogInfo = logPathInfo.SingleOrDefault(x => x.Path == copiedFile.Path);
+						if (
+							(copiedFileLogInfo == null)
+							||
+							(copiedFileLogInfo.Action != SvnTouchedPath.SvnTouchedPathAction.ADDED)
+						)
+						{
+							copiedFile.SourcePath = copiedFile.Path.Replace(pathInfo.Path, pathInfo.SourcePath);
+							copiedFile.SourceRevision = pathInfo.SourceRevision;
+						}
 					}
 				}
 				else
 				{
-					touchedPath.SourcePath = touchedPath.Path.Replace(logPath.Value, logPath.Attribute("copyfrom-path").Value);
-					touchedPath.SourceRevision = logPath.Attribute("copyfrom-rev").Value;
+					touchedPath.SourcePath = touchedPath.Path.Replace(pathInfo.Path, pathInfo.SourcePath);
+					touchedPath.SourceRevision = pathInfo.SourceRevision;
 				}
 			}
 			

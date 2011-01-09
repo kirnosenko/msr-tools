@@ -369,6 +369,52 @@ private string list_5_2 =
 		</diff>
 		";
 		
+		private string logXml_7 =
+		@"<?xml version='1.0'?>
+		<log>
+		<logentry
+		   revision='3868'>
+		<author>fabiomaulo</author>
+		<date>2008-10-20T15:43:09.135722Z</date>
+		<paths>
+		<path
+		   kind='file'
+		   action='A'>/trunk/nhibernate/src/NHibernate.Test/HQL/HqlFixture.cs</path>
+		<path
+		   kind='dir'
+		   copyfrom-path='/trunk/nhibernate/src/NHibernate.Test/HQLFunctionTest'
+		   copyfrom-rev='3865'
+		   action='A'>/trunk/nhibernate/src/NHibernate.Test/HQL</path>
+		<path
+		   kind='file'
+		   action='M'>/trunk/nhibernate/src/NHibernate.Test/HQL/Animal.cs</path>
+		</paths>
+		<msg>- Fix NH-1538, NH-1537 (new feature comments)
+		- Refactoring in tests (to have only one namespace for various HQL tests)</msg>
+		</logentry>
+		</log>
+		";
+		
+		private string diffSumXml_7 =
+		@"<?xml version='1.0'?>
+		<diff>
+		<paths>
+		<path
+		   props='modified'
+		   kind='file'
+		   item='added'>file:///E:/repo/nhibernate/svn/trunk/nhibernate/src/NHibernate.Test/HQL/HqlFixture.cs</path>
+		<path
+		   props='none'
+		   kind='file'
+		   item='added'>file:///E:/repo/nhibernate/svn/trunk/nhibernate/src/NHibernate.Test/HQL/Animal.cs</path>
+		<path
+		   props='modified'
+		   kind='dir'
+		   item='added'>file:///E:/repo/nhibernate/svn/trunk/nhibernate/src/NHibernate.Test/HQL</path>
+		</paths>
+		</diff>
+		";
+		
 		private string repositoryPath = "file:///E:/repo/gnome-terminal/svn";
 		
 		private SvnLog log;
@@ -382,11 +428,15 @@ private string list_5_2 =
 			logXml_3 = logXml_3.Replace('\'', '"');
 			logXml_4 = logXml_4.Replace('\'', '"');
 			logXml_5 = logXml_5.Replace('\'', '"');
+			logXml_6 = logXml_6.Replace('\'', '"');
+			logXml_7 = logXml_7.Replace('\'', '"');
 			diffSumXml_1 = diffSumXml_1.Replace('\'', '"');
 			diffSumXml_2 = diffSumXml_2.Replace('\'', '"');
 			diffSumXml_3 = diffSumXml_3.Replace('\'', '"');
 			diffSumXml_4 = diffSumXml_4.Replace('\'', '"');
 			diffSumXml_5 = diffSumXml_5.Replace('\'', '"');
+			diffSumXml_6 = diffSumXml_6.Replace('\'', '"');
+			diffSumXml_7 = diffSumXml_7.Replace('\'', '"');
 		}
 		[SetUp]
 		public void SetUp()
@@ -461,6 +511,26 @@ private string list_5_2 =
 				.Should().Be(2);
 			log.TouchedFiles.Where(x => x.Action == TouchedFile.TouchedFileAction.MODIFIED).Count()
 				.Should().Be(0);
+		}
+		[Test]
+		public void Should_keep_files_added_in_copied_directory()
+		{
+			log = CreateLog("3868", logXml_7.ToStream(), diffSumXml_7.ToStream(), "file:///E:/repo/nhibernate/svn");
+			
+			log.TouchedFiles.Where(x => x.Action == TouchedFile.TouchedFileAction.ADDED).Count()
+				.Should().Be(2);
+			log.TouchedFiles.Single(x => x.Path == "/trunk/nhibernate/src/NHibernate.Test/HQL/Animal.cs")
+				.Satisfy(x =>
+					x.SourcePath == "/trunk/nhibernate/src/NHibernate.Test/HQLFunctionTest/Animal.cs"
+					&&
+					x.SourceRevision == "3865"
+				);
+			log.TouchedFiles.Single(x => x.Path == "/trunk/nhibernate/src/NHibernate.Test/HQL/HqlFixture.cs")
+				.Satisfy(x =>
+					x.SourcePath == null
+					&&
+					x.SourceRevision == null
+				);
 		}
 		[Test]
 		public void Should_not_take_sumdiff_if_touched_paths_were_not_requested()
