@@ -32,6 +32,7 @@ namespace MSR.Tools.StatGenerator
 		public void GenerateStat(IDataStore data, string outputDir, string templateDir)
 		{
 			Velocity.Init();
+			
 			var menu = builders.Select(x => new
 			{
 				url = x.PageTemplate,

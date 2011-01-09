@@ -15,7 +15,7 @@ namespace MSR.Tools.StatGenerator
 			string configFile;
 			string cmd;
 			string outputDir = Environment.CurrentDirectory;
-			string templateDir = Environment.CurrentDirectory + "/teplates/html";
+			string templateDir = "./templates/html";
 			
 			try
 			{
@@ -45,8 +45,8 @@ namespace MSR.Tools.StatGenerator
 				Console.WriteLine("usage: MSR.Tools.Calculator CONFIG_FILE_NAME COMMAND [ARGS]");
 				Console.WriteLine("Commands:");
 				Console.WriteLine("  stat		create stat using templates");
-				Console.WriteLine("    -o DIR	output directory");
-				Console.WriteLine("    -t DIR	templates directory");
+				Console.WriteLine("    -o DIR	path to output directory");
+				Console.WriteLine("    -t DIR	relative path to templates directory");
 				
 				return;
 			}
