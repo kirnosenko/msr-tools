@@ -104,7 +104,7 @@ namespace MSR.Data.VersionControl.Svn
 		   kind=''
 		   action='M'>/trunk/src/terminal-widget.h</path>
 		</paths>
-		<msg>2004-06-07 Mariano SuÃ¡rez-Alvarez &lt;msuarezalvarez@arnet.com.ar&gt;
+		<msg>2004-06-07 Mariano SuA?rez-Alvarez &lt;msuarezalvarez@arnet.com.ar&gt;
 		</msg>
 		</logentry>
 		</log>
