@@ -26,7 +26,7 @@ namespace MSR.Tools.Mapper
 		private Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression> pathFilter;
 		
 		public MappingTool(string configFile)
-			: base(configFile)
+			: base(configFile, "mappingtool")
 		{
 		}
 		public void Map(bool createSchema, int revisionCount)

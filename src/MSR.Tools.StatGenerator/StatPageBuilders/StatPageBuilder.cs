@@ -9,7 +9,7 @@ using NVelocity;
 
 using MSR.Data;
 
-namespace MSR.Tools.StatGenerator
+namespace MSR.Tools.StatGenerator.StatPageBuilders
 {
 	public abstract class StatPageBuilder : IStatPageBuilder
 	{

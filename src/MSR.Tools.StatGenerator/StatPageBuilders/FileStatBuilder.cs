@@ -15,7 +15,7 @@ using MSR.Data.Entities;
 using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
 
-namespace MSR.Tools.StatGenerator
+namespace MSR.Tools.StatGenerator.StatPageBuilders
 {
 	public class FileStatBuilder : StatPageBuilder
 	{
