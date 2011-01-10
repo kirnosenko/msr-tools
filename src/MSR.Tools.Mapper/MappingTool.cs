@@ -410,7 +410,7 @@ namespace MSR.Tools.Mapper
 
 					var commitsFileTouchedIn = repositories.SelectionDSL()
 						.Files().IdIs(file.ID)
-						.Commits().AfterRevision(latestCodeRevision).TouchFiles()
+						.Commits().FromRevision(latestCodeRevision).TouchFiles()
 						.OrderBy(c => c.OrderedNumber);
 					
 					foreach (var commit in commitsFileTouchedIn)
