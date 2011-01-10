@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NVelocity;
 
 using MSR.Data;
 using MSR.Data.Entities;
@@ -23,51 +22,53 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			PageName = "General";
 			PageTemplate = "general.html";
 		}
-		public override void AddData(IDataStore data, VelocityContext context)
+		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories)
 		{
-			using (var s = data.OpenSession())
-			{
-				int commits_count = s.Repository<Commit>().Count();
-				int commits_fix_count = s.SelectionDSL().Commits().AreBugFixes().Count();
-				string commits_fix_percent = ((double)commits_fix_count / commits_count * 100).ToString("F02");
-				DateTime statfrom = s.Repository<Commit>().Min(x => x.Date);
-				DateTime statto = s.Repository<Commit>().Max(x => x.Date);
-				
-				context.Put("stat_date", DateTime.Now.ToString());
-				context.Put("stat_period_from", statfrom);
-				context.Put("stat_period_to", statto);
-				context.Put("stat_period_days", (statto - statfrom).Days);
-				context.Put("authors_count",
-					s.Repository<Commit>().Select(x => x.Author).Distinct().Count()
-				);
-				context.Put("commits_count", commits_count);
-				context.Put("commits_fix_count", commits_fix_count);
-				context.Put("commits_fix_percent", commits_fix_percent);
-				context.Put("files_current",
-					s.SelectionDSL().Files().Exist().Count()
-				);
-				context.Put("files_added",
-					s.Repository<ProjectFile>().Count()
-				);
-				context.Put("files_removed",
-					s.SelectionDSL().Files().Deleted().Count()
-				);
-				context.Put("loc_current",
-					s.SelectionDSL().CodeBlocks().CalculateLOC()
-				);
-				context.Put("loc_added",
-					s.SelectionDSL().CodeBlocks().Added().CalculateLOC()
-				);
-				context.Put("loc_removed",
-					- s.SelectionDSL().CodeBlocks().Deleted().CalculateLOC()
-				);
-				context.Put("dd",
-					s.SelectionDSL()
-						.Files().Exist()
-						.Modifications().InFiles()
-						.CodeBlocks().InModifications().CalculateTraditionalDefectDensity().ToString("F02")
-				);
-			}
+			Dictionary<string,object> result = new Dictionary<string,object>();
+
+			int commits_count = repositories.Repository<Commit>().Count();
+			int commits_fix_count = repositories.SelectionDSL().Commits().AreBugFixes().Count();
+			string commits_fix_percent = ((double)commits_fix_count / commits_count * 100).ToString("F02");
+			DateTime statfrom = repositories.Repository<Commit>().Min(x => x.Date);
+			DateTime statto = repositories.Repository<Commit>().Max(x => x.Date);
+
+			result.Add("stat_date", DateTime.Now.ToString());
+			result.Add("stat_period_from", statfrom);
+			result.Add("stat_period_to", statto);
+			result.Add("stat_period_days", (statto - statfrom).Days);
+			result.Add("authors_count",
+				repositories.Repository<Commit>().Select(x => x.Author).Distinct().Count()
+			);
+			result.Add("commits_count", commits_count);
+			result.Add("commits_fix_count", commits_fix_count);
+			result.Add("commits_fix_percent", commits_fix_percent);
+			result.Add("files_current",
+				repositories.SelectionDSL().Files().Exist().Count()
+			);
+			result.Add("files_added",
+				repositories.Repository<ProjectFile>().Count()
+			);
+			result.Add("files_removed",
+				repositories.SelectionDSL().Files().Deleted().Count()
+			);
+			result.Add("loc_current",
+				repositories.SelectionDSL().CodeBlocks().CalculateLOC()
+			);
+			result.Add("loc_added",
+				repositories.SelectionDSL().CodeBlocks().Added().CalculateLOC()
+			);
+			result.Add("loc_removed",
+				- repositories.SelectionDSL().CodeBlocks().Deleted().CalculateLOC()
+			);
+			result.Add("dd",
+				repositories.SelectionDSL()
+					.Files().Exist()
+					.Modifications().InFiles()
+					.CodeBlocks().InModifications().CalculateTraditionalDefectDensity().ToString("F02")
+			);
+			
+			
+			return result;
 		}
 	}
 }

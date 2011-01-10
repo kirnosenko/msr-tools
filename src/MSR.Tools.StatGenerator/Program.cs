@@ -14,6 +14,7 @@ namespace MSR.Tools.StatGenerator
 		{
 			string configFile;
 			string cmd;
+			string dir = null;
 			string outputDir = Environment.CurrentDirectory;
 			string templateDir = "./templates/html";
 			
@@ -26,13 +27,14 @@ namespace MSR.Tools.StatGenerator
 				{
 					switch (args[i])
 					{
+						case "-d":
+							dir = args[++i];
+							break;
 						case "-o":
-							i++;
-							outputDir = args[i];
+							outputDir = args[++i];
 							break;
 						case "-t":
-							i++;
-							templateDir = args[i];
+							templateDir = args[++i];
 							break;
 						default:
 							break;
@@ -45,6 +47,7 @@ namespace MSR.Tools.StatGenerator
 				Console.WriteLine("usage: MSR.Tools.Calculator CONFIG_FILE_NAME COMMAND [ARGS]");
 				Console.WriteLine("Commands:");
 				Console.WriteLine("  stat		create stat using templates");
+				Console.WriteLine("    -d DIR	directory to generate statistics for");
 				Console.WriteLine("    -o DIR	path to output directory");
 				Console.WriteLine("    -t DIR	relative path to templates directory");
 				
@@ -64,7 +67,7 @@ namespace MSR.Tools.StatGenerator
 			switch (cmd)
 			{
 				case "stat":
-					generator.GenerateStat(outputDir, templateDir);
+					generator.GenerateStat(dir, outputDir, templateDir);
 					break;
 				default:
 					Console.WriteLine("Unknown command {0}", cmd);

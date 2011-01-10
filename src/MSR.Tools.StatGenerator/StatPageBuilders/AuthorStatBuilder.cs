@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using NVelocity;
 
 using MSR.Data;
 using MSR.Data.Entities;
@@ -23,49 +22,51 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			PageName = "Authors";
 			PageTemplate = "authors.html";
 		}
-		public override void AddData(IDataStore data, VelocityContext context)
+		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories)
 		{
-			using (var s = data.OpenSession())
+			Dictionary<string,object> result = new Dictionary<string,object>();
+
+			int commits = repositories.Repository<Commit>().Count();
+			var authors = repositories.Repository<Commit>()
+				.Select(x => x.Author)
+				.Distinct().ToList();
+			double totalLoc = repositories.SelectionDSL().CodeBlocks().CalculateLOC();
+
+			var codeByAuthor = (from author in authors select new
 			{
-				int commits = s.Repository<Commit>().Count();
-				var authors = s.Repository<Commit>()
-					.Select(x => x.Author)
-					.Distinct().ToList();
-				double totalLoc = s.SelectionDSL().CodeBlocks().CalculateLOC();
-
-				var codeByAuthor = (from author in authors select new
+				Name = author,
+				AddedCode = repositories.SelectionDSL()
+					.Commits().AuthorIs(author)
+					.CodeBlocks().AddedInitiallyInCommits()
+					.Fixed(),
+				RemovedCode = repositories.SelectionDSL()
+					.Commits().AuthorIs(author)
+					.Modifications().InCommits()
+					.CodeBlocks().InModifications().Deleted()
+					.Fixed()
+			}).ToList();
+			
+			var statByAuthor =
+				from a in codeByAuthor
+				let authorCommits = a.AddedCode.Commits().Again().Count()
+				let authorLoc = a.AddedCode.CalculateLOC() + a.AddedCode.ModifiedBy().CalculateLOC()
+				select new
 				{
-					Name = author,
-					AddedCode = s.SelectionDSL()
-						.Commits().AuthorIs(author)
-						.CodeBlocks().AddedInitiallyInCommits()
-						.Fixed(),
-					RemovedCode = s.SelectionDSL()
-						.Commits().AuthorIs(author)
-						.Modifications().InCommits()
-						.CodeBlocks().InModifications().Deleted()
-						.Fixed()
-				}).ToList();
-				
-				var statByAuthor =
-					from a in codeByAuthor
-					let authorCommits = a.AddedCode.Commits().Again().Count()
-					let authorLoc = a.AddedCode.CalculateLOC() + a.AddedCode.ModifiedBy().CalculateLOC()
-					select new
-					{
-						name = a.Name,
-						commits = string.Format("{0} ({1}%)", authorCommits, (((double)authorCommits / commits) * 100).ToString("F02")),
-						dd = a.AddedCode.CalculateTraditionalDefectDensity().ToString("F02"),
-						added = a.AddedCode.CalculateLOC(),
-						addedInFixes = a.AddedCode.InBugFixes().CalculateLOC(),
-						deleted = - a.RemovedCode.CalculateLOC(),
-						deletedInFixes = - a.RemovedCode.InBugFixes().CalculateLOC(),
-						current = authorLoc,
-						contribution = ((authorLoc / totalLoc) * 100).ToString("F02")
-					};
+					name = a.Name,
+					commits = string.Format("{0} ({1}%)", authorCommits, (((double)authorCommits / commits) * 100).ToString("F02")),
+					dd = a.AddedCode.CalculateTraditionalDefectDensity().ToString("F02"),
+					added = a.AddedCode.CalculateLOC(),
+					addedInFixes = a.AddedCode.InBugFixes().CalculateLOC(),
+					deleted = - a.RemovedCode.CalculateLOC(),
+					deletedInFixes = - a.RemovedCode.InBugFixes().CalculateLOC(),
+					current = authorLoc,
+					contribution = ((authorLoc / totalLoc) * 100).ToString("F02")
+				};
 
-				context.Put("authors", statByAuthor.OrderBy(x => x.name).ToArray());
-			}
+			result.Add("authors", statByAuthor.OrderBy(x => x.name).ToArray());
+			
+			
+			return result;
 		}
 	}
 }

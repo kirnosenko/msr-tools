@@ -5,7 +5,7 @@
  */
 
 using System;
-using NVelocity;
+using System.Collections.Generic;
 
 using MSR.Data;
 
@@ -13,7 +13,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 {
 	public abstract class StatPageBuilder : IStatPageBuilder
 	{
-		public abstract void AddData(IDataStore data, VelocityContext context);
+		public abstract IDictionary<string,object> BuildData(IRepositoryResolver repositories);
 		public string PageName
 		{
 			get; set;

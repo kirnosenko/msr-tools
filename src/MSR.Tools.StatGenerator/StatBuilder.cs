@@ -29,7 +29,7 @@ namespace MSR.Tools.StatGenerator
 				"stats.css", "sortable.js"
 			};
 		}
-		public void GenerateStat(IDataStore data, string outputDir, string templateDir)
+		public void GenerateStat(IDataStore data, string dir, string outputDir, string templateDir)
 		{
 			Velocity.Init();
 			
@@ -38,12 +38,18 @@ namespace MSR.Tools.StatGenerator
 				url = x.PageTemplate,
 				name = x.PageName
 			});
-
+			
 			foreach (var builder in builders)
 			{
 				VelocityContext context = new VelocityContext();
 				context.Put("menu", menu);
-				builder.AddData(data, context);
+				using (var s = data.OpenSession())
+				{
+					foreach (var obj in builder.BuildData(s))
+					{
+						context.Put(obj.Key, obj.Value);
+					}
+				}
 				
 				using (MemoryStream pageContent = new MemoryStream())
 				using (TextWriter writer = new StreamWriter(pageContent))
