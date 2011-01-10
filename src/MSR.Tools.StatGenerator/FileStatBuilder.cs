@@ -19,10 +19,13 @@ namespace MSR.Tools.StatGenerator
 {
 	public class FileStatBuilder : StatPageBuilder
 	{
+		private static char[] pathSeparators = new char[] { '/' };
+		
 		public FileStatBuilder()
 		{
 			PageName = "Files";
 			PageTemplate = "files.html";
+			PathDepthToKeep = new int[] { 1, 2, 3 };
 		}
 		public override void AddData(IDataStore data, VelocityContext context)
 		{
@@ -70,7 +73,7 @@ namespace MSR.Tools.StatGenerator
 				foreach (var path in paths)
 				{
 					string dir = Path.GetDirectoryName(path).Replace("\\", "/");
-					if (! dirs.Contains(dir))
+					if ((PathDepthToKeep.Contains(dir.Split(pathSeparators).Length - 1)) && (! dirs.Contains(dir)))
 					{
 						dirs.Add(dir);
 					}
@@ -100,6 +103,10 @@ namespace MSR.Tools.StatGenerator
 				}
 				context.Put("dirs", dirObjects);
 			}
+		}
+		public int[] PathDepthToKeep
+		{
+			get; set;
 		}
 	}
 }
