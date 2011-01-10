@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -51,6 +51,18 @@ namespace MSR.Data.Entities.Mapping
 		public void Can_detect_bugfix_for_winmerge(string message, bool isBugFix)
 		{
 			commit.Message = message;
+			detector.IsBugFix(commit)
+				.Should().Be(isBugFix);
+		}
+		[TestCase("this is error", true)]
+		[TestCase("this is not error", false)]
+		public void Can_be_configured_with_keywords_and_stopwords(string message, bool isBugFix)
+		{
+			commit.Message = message;
+			
+			detector.KeyWords = "bug error";
+			detector.StopWords = "not no";
+			
 			detector.IsBugFix(commit)
 				.Should().Be(isBugFix);
 		}
