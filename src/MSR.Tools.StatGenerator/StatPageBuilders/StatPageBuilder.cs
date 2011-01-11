@@ -16,11 +16,11 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 		public abstract IDictionary<string,object> BuildData(IRepositoryResolver repositories, string targetDir);
 		public string PageName
 		{
-			get; set;
+			get; protected set;
 		}
 		public string PageTemplate
 		{
-			get; set;
+			get; protected set;
 		}
 	}
 }

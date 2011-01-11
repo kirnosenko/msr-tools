@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -15,37 +15,41 @@ using MSR.Data.Entities.DSL.Selection.Metrics;
 
 namespace MSR.Tools.Visualizer.Visualizations
 {
-	public class DefectDensityToFileSize : IVisualization
+	public class DefectDensityToFileSize : Visualization
 	{
-		public void Visualize(IDataStore data, IGraphView graph)
+		public DefectDensityToFileSize()
 		{
-			using (var s = data.OpenSession())
+			Title = "Defect density to file size";
+		}
+		public override void Visualize(IRepositoryResolver repositories, IGraphView graph)
+		{
+			var fileIDs = repositories.SelectionDSL()
+				.Files().Exist()
+				.Select(f => f.ID).ToList();
+			
+			List<double> x = new List<double>(fileIDs.Count);
+			List<double> y = new List<double>(fileIDs.Count);
+			
+			foreach (var fileID in fileIDs)
 			{
-				var fileIDs = s.SelectionDSL().Files()
-					.Exist()
-					.Select(f => f.ID)
-					.ToList();
-
-				double[] x = new double[fileIDs.Count()];
-				double[] y = new double[fileIDs.Count()];
-				int i = 0;
-				foreach (var fileID in fileIDs)
-				{
-					var code = s.SelectionDSL().Files()
-						.IdIs(fileID)
-						.Modifications().InFiles()
-						.CodeBlocks().InModifications();
-					
-					x[i] = code.CalculateLOC();
-					y[i] = code.CalculateTraditionalDefectDensity();
-					i++;
-				}
+				var code = repositories.SelectionDSL()
+					.Files().IdIs(fileID)
+					.Modifications().InFiles()
+					.CodeBlocks().InModifications()
+					.Fixed();
 				
-				graph.Title = "Defect density to file size";
-				graph.XAxisTitle = "File size (LOC)";
-				graph.YAxisTitle = "Defect density (defects per KLOC)";
-				graph.ShowPoints("", x, y);
+				var dd = code.CalculateTraditionalDefectDensity();
+				if (dd > 0)
+				{
+					x.Add(code.CalculateLOC());
+					y.Add(dd);
+				}
 			}
+			
+			graph.Title = "Defect density to file size";
+			graph.XAxisTitle = "File size (LOC)";
+			graph.YAxisTitle = "Defect density (defects per KLOC)";
+			graph.ShowPoints("", x.ToArray(), y.ToArray());
 		}
 	}
 }

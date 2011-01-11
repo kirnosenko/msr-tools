@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -15,30 +15,31 @@ using MSR.Data.Entities.DSL.Selection.Metrics;
 
 namespace MSR.Tools.Visualizer.Visualizations
 {
-	public class BugLifeTimeDistribution : IVisualization
+	public class BugLifeTimeDistribution : Visualization
 	{
-		public void Visualize(IDataStore data, IGraphView graph)
+		public BugLifeTimeDistribution()
 		{
-			using (var s = data.OpenSession())
-			{
-				var bugLiveTimes = s.SelectionDSL()
-					.BugFixes().CalculateMaxBugLifetime();
+			Title = "Bug lifetime distribution";
+		}
+		public override void Visualize(IRepositoryResolver repositories, IGraphView graph)
+		{
+			var bugLiveTimes = repositories.SelectionDSL()
+				.BugFixes().CalculateMaxBugLifetime();
 
-				double[] x = new double[bugLiveTimes.Count()];
-				double[] y = new double[bugLiveTimes.Count()];
-				int i = 0;
-				foreach (var bugLiveTime in bugLiveTimes)
-				{
-					x[i] = bugLiveTime;
-					y[i] = bugLiveTimes.Where(t => t <= bugLiveTime).Count();
-					i++;
-				}
-				
-				graph.Title = "Bug lifetime distribution";
-				graph.XAxisTitle = "Days";
-				graph.YAxisTitle = "Total number of fixed bugs";
-				graph.ShowPoints("", x, y);
+			double[] x = new double[bugLiveTimes.Count()];
+			double[] y = new double[bugLiveTimes.Count()];
+			int i = 0;
+			foreach (var bugLiveTime in bugLiveTimes)
+			{
+				x[i] = bugLiveTime;
+				y[i] = bugLiveTimes.Where(t => t <= bugLiveTime).Count();
+				i++;
 			}
+			
+			graph.Title = "Bug lifetime distribution";
+			graph.XAxisTitle = "Days";
+			graph.YAxisTitle = "Total number of fixed bugs";
+			graph.ShowPoints("", x, y);
 		}
 	}
 }

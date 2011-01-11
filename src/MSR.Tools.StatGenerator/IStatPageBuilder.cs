@@ -14,7 +14,7 @@ namespace MSR.Tools.StatGenerator
 	public interface IStatPageBuilder
 	{
 		IDictionary<string,object> BuildData(IRepositoryResolver repositories, string targetDir);
-		string PageName { get; set; }
-		string PageTemplate { get; set; }
+		string PageName { get; }
+		string PageTemplate { get; }
 	}
 }

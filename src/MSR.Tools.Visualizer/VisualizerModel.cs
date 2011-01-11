@@ -1,11 +1,12 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using MSR.Tools.Visualizer.Visualizations;
 
@@ -14,13 +15,13 @@ namespace MSR.Tools.Visualizer
 	public class VisualizerModel
 	{
 		private VisualizationTool visualizer;
-		private Dictionary<string,IVisualization> visualizations = new Dictionary<string,IVisualization>();
+		private List<IVisualization> visualizations = new List<IVisualization>();
 		
 		public VisualizerModel()
 		{
-			visualizations.Add("bugs", new BugLifeTimeDistribution());
-			visualizations.Add("ddToFileSize", new DefectDensityToFileSize());
-			visualizations.Add("LOC", new CodeSizeToDate());
+			visualizations.Add(new BugLifeTimeDistribution());
+			visualizations.Add(new DefectDensityToFileSize());
+			visualizations.Add(new CodeSizeToDate());
 			
 			AutomaticallyCleanUp = true;
 		}
@@ -34,7 +35,10 @@ namespace MSR.Tools.Visualizer
 			{
 				graph.CleanUp();
 			}
-			visualizer.Visualize(visualizations[visualizationName], graph);
+			visualizer.Visualize(
+				visualizations.Single(x => x.Title == visualizationName),
+				graph
+			);
 		}
 		public string LastVisualizationProfiling
 		{
@@ -42,46 +46,11 @@ namespace MSR.Tools.Visualizer
 		}
 		public IEnumerable<string> Visualizations
 		{
-			get { return visualizations.Keys; }
+			get { return visualizations.Select(x => x.Title); }
 		}
 		public bool AutomaticallyCleanUp
 		{
 			get; set;
 		}
-		/*
-		public IEnumerable<PointPairList> BugLifeTimes()
-		{
-			List<PointPairList> pointsList = new List<PointPairList>();
-
-			using (var s = Data.OpenSession())
-			{
-				RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(s);
-				Dictionary<string,string> revPairs = new Dictionary<string,string>()
-				{
-					{ "1", "999" },
-					{ "1000", "1999" },
-					{ "2000", "2999" },
-				};
-				
-				foreach (var revPair in revPairs)
-				{
-					var code = selectionDSL
-						.Commits()
-							.FromRevision(revPair.Key)
-							.TillRevision(revPair.Value)
-						.Files()
-							.InDirectory("/trunk")
-							.Exist()
-						.Modifications()
-							.InFiles().InCommits()
-						.CodeBlocks()
-							.InModifications();
-					
-					pointsList.Add(BugLifeTimeForCode(code));
-				}
-			}
-
-			return pointsList;
-		}*/
 	}
 }

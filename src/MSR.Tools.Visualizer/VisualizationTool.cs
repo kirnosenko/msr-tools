@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -19,7 +19,10 @@ namespace MSR.Tools.Visualizer
 		{
 			PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(Data);
 			prof.Start();
-			visualization.Visualize(data, graph);
+			using (var s = data.OpenSession())
+			{
+				visualization.Visualize(s, graph);
+			}
 			prof.Stop();
 			LastVisualizationProfiling = string.Format(
 				"Last visualization: queries = {0} time = {1}",

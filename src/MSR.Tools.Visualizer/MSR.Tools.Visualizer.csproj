@@ -64,6 +64,7 @@
     <Compile Include="Visualizations\BugLifeTimeDistribution.cs" />
     <Compile Include="Visualizations\CodeSizeToDate.cs" />
     <Compile Include="Visualizations\DefectDensityToFileSize.cs" />
+    <Compile Include="Visualizations\Visualization.cs" />
     <Compile Include="VisualizerView.cs">
       <SubType>Form</SubType>
     </Compile>

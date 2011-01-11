@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -12,6 +12,7 @@ namespace MSR.Tools.Visualizer
 {
 	public interface IVisualization
 	{
-		void Visualize(IDataStore data, IGraphView graph);
+		void Visualize(IRepositoryResolver repositories, IGraphView graph);
+		string Title { get; }
 	}
 }
