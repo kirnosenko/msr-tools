@@ -15,10 +15,10 @@ namespace MSR.Tools.StatGenerator
 		{
 			data.ReadOnly = true;
 		}
-		public void GenerateStat(string dir, string outputDir, string templateDir)
+		public void GenerateStat(string targetDir, string outputDir, string templateDir)
 		{
 			StatBuilder builder = GetConfiguredType<StatBuilder>();
-			builder.GenerateStat(data, dir, outputDir, templateDir);
+			builder.GenerateStat(data, targetDir, outputDir, templateDir);
 		}
 	}
 }

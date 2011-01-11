@@ -22,7 +22,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			PageName = "General";
 			PageTemplate = "general.html";
 		}
-		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories)
+		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories, string targetDir)
 		{
 			Dictionary<string,object> result = new Dictionary<string,object>();
 
@@ -42,31 +42,35 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			result.Add("commits_count", commits_count);
 			result.Add("commits_fix_count", commits_fix_count);
 			result.Add("commits_fix_percent", commits_fix_percent);
+			var files = repositories.SelectionDSL()
+				.Files().InDirectory(targetDir)
+				.Fixed();
 			result.Add("files_current",
-				repositories.SelectionDSL().Files().Exist().Count()
+				files.Exist().Count()
 			);
 			result.Add("files_added",
-				repositories.Repository<ProjectFile>().Count()
+				files.Count()
 			);
 			result.Add("files_removed",
-				repositories.SelectionDSL().Files().Deleted().Count()
+				files.Deleted().Count()
 			);
+			var code = repositories.SelectionDSL()
+				.Files().InDirectory(targetDir)
+				.Modifications().InFiles()
+				.CodeBlocks().InModifications()
+				.Fixed();
 			result.Add("loc_current",
-				repositories.SelectionDSL().CodeBlocks().CalculateLOC()
+				code.CalculateLOC()
 			);
 			result.Add("loc_added",
-				repositories.SelectionDSL().CodeBlocks().Added().CalculateLOC()
+				code.Added().CalculateLOC()
 			);
 			result.Add("loc_removed",
-				- repositories.SelectionDSL().CodeBlocks().Deleted().CalculateLOC()
+				- code.Deleted().CalculateLOC()
 			);
 			result.Add("dd",
-				repositories.SelectionDSL()
-					.Files().Exist()
-					.Modifications().InFiles()
-					.CodeBlocks().InModifications().CalculateTraditionalDefectDensity().ToString("F02")
-			);
-			
+				code.CalculateTraditionalDefectDensity().ToString("F02")
+			);			
 			
 			return result;
 		}

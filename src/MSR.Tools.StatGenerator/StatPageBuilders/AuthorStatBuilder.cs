@@ -22,7 +22,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			PageName = "Authors";
 			PageTemplate = "authors.html";
 		}
-		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories)
+		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories, string targetDir)
 		{
 			Dictionary<string,object> result = new Dictionary<string,object>();
 
@@ -30,18 +30,24 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			var authors = repositories.Repository<Commit>()
 				.Select(x => x.Author)
 				.Distinct().ToList();
-			double totalLoc = repositories.SelectionDSL().CodeBlocks().CalculateLOC();
+			double totalLoc = repositories.SelectionDSL()
+				.Files().InDirectory(targetDir)
+				.Modifications().InFiles()
+				.CodeBlocks().InModifications().CalculateLOC();
 
 			var codeByAuthor = (from author in authors select new
 			{
 				Name = author,
 				AddedCode = repositories.SelectionDSL()
 					.Commits().AuthorIs(author)
-					.CodeBlocks().AddedInitiallyInCommits()
+					.Files().InDirectory(targetDir)
+					.Modifications().InFiles()
+					.CodeBlocks().InModifications().AddedInitiallyInCommits()
 					.Fixed(),
 				RemovedCode = repositories.SelectionDSL()
 					.Commits().AuthorIs(author)
-					.Modifications().InCommits()
+					.Files().InDirectory(targetDir)
+					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().Deleted()
 					.Fixed()
 			}).ToList();
@@ -64,7 +70,6 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				};
 
 			result.Add("authors", statByAuthor.OrderBy(x => x.name).ToArray());
-			
 			
 			return result;
 		}

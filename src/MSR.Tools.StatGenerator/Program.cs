@@ -14,7 +14,7 @@ namespace MSR.Tools.StatGenerator
 		{
 			string configFile;
 			string cmd;
-			string dir = null;
+			string targetDir = "/";
 			string outputDir = Environment.CurrentDirectory;
 			string templateDir = "./templates/html";
 			
@@ -28,7 +28,7 @@ namespace MSR.Tools.StatGenerator
 					switch (args[i])
 					{
 						case "-d":
-							dir = args[++i];
+							targetDir = args[++i];
 							break;
 						case "-o":
 							outputDir = args[++i];
@@ -67,7 +67,7 @@ namespace MSR.Tools.StatGenerator
 			switch (cmd)
 			{
 				case "stat":
-					generator.GenerateStat(dir, outputDir, templateDir);
+					generator.GenerateStat(targetDir, outputDir, templateDir);
 					break;
 				default:
 					Console.WriteLine("Unknown command {0}", cmd);

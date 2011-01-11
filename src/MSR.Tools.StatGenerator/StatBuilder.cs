@@ -29,7 +29,7 @@ namespace MSR.Tools.StatGenerator
 				"stats.css", "sortable.js"
 			};
 		}
-		public void GenerateStat(IDataStore data, string dir, string outputDir, string templateDir)
+		public void GenerateStat(IDataStore data, string targetDir, string outputDir, string templateDir)
 		{
 			Velocity.Init();
 			
@@ -45,7 +45,7 @@ namespace MSR.Tools.StatGenerator
 				context.Put("menu", menu);
 				using (var s = data.OpenSession())
 				{
-					foreach (var obj in builder.BuildData(s))
+					foreach (var obj in builder.BuildData(s, targetDir))
 					{
 						context.Put(obj.Key, obj.Value);
 					}
