@@ -29,6 +29,17 @@ namespace MSR.Tools.Mapper
 			: base(configFile, "mappingtool")
 		{
 		}
+		public void Info()
+		{
+			Console.WriteLine("Database info:");
+			using (var s = data.OpenSession())
+			{
+				Console.WriteLine("Revisions: {0}", s.Repository<Commit>().Count());
+				Console.WriteLine("Last revision: {0}", s.LastRevision());
+				Console.WriteLine("Files: {0}", s.Repository<ProjectFile>().Count());
+				Console.WriteLine("CodeBlocks: {0}", s.Repository<CodeBlock>().Count());
+			}
+		}
 		public void Map(bool createSchema, int revisionCount)
 		{
 			if (createSchema)
@@ -314,7 +325,7 @@ namespace MSR.Tools.Mapper
 			
 			double currentLOC = repositories.SelectionDSL()
 					.Commits().TillRevision(testRevision)
-					.Files().PathIs(file.Path).ExistInRevision(testRevision)
+					.Files().IdIs(file.ID)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications()
 					.CalculateLOC();

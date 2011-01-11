@@ -52,6 +52,7 @@ namespace MSR.Tools.Mapper
 			{
 				Console.WriteLine("usage: MSR.Tools.Mapper CONFIG_FILE_NAME COMMAND [ARGS]");
 				Console.WriteLine("Commands:");
+				Console.WriteLine("  info		print general information about database");
 				Console.WriteLine("  map		map data from software repositories to database");
 				Console.WriteLine("    -c		create data base");
 				Console.WriteLine("    -n N		map commits from first to N incrementally");
@@ -77,6 +78,9 @@ namespace MSR.Tools.Mapper
 			{
 				switch (cmd)
 				{
+					case "info":
+						mapper.Info();
+						break;
 					case "map":
 						mapper.Map(createSchema, numberOfRevisions);
 						break;
