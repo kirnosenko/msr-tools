@@ -17,7 +17,8 @@ namespace MSR.Tools.Visualizer
 		public VisualizerPresenter(VisualizerModel model, IVisualizerView view, IPresenterFactory presenters)
 		{
 			this.model = model;
-			model.OnVisializationListUpdated += () => CreateVisualizationsMenu();
+			model.OnVisualizationListUpdated += () => CreateVisualizationsMenu();
+			model.OnVisualizationNeedsConfig += () => presenters.ConfigDialog().GetConfig();
 			this.view = view;
 			this.presenters = presenters;
 			

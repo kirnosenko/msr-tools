@@ -12,6 +12,7 @@ namespace MSR.Tools.Visualizer
 	{
 		IFileDialogPresenter FileDialog();
 		IMessageDialogPresenter MessageDialog();
+		IVisualizationConfigPresenter ConfigDialog();
 	}
 	public class PresenterFactory : IPresenterFactory
 	{
@@ -29,6 +30,9 @@ namespace MSR.Tools.Visualizer
 		{
 			return new MessageDialogPresenter(views.MessageDialog());
 		}
+		public IVisualizationConfigPresenter ConfigDialog()
+		{
+			return new VisualizationConfigPresenter(views.ConfigDialog());
+		}
 	}
-
 }

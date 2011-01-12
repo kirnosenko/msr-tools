@@ -48,12 +48,14 @@
     <Compile Include="IMainMenuView.cs">
     </Compile>
     <Compile Include="IMenuItemView.cs" />
+    <Compile Include="IVisualizationConfigView.cs" />
     <Compile Include="IVisualizerView.cs" />
     <Compile Include="MessageDialogPresenter.cs" />
     <Compile Include="IMessageDialogView.cs" />
     <Compile Include="PresenterFactory.cs" />
     <Compile Include="IStatusBarView.cs">
     </Compile>
+    <Compile Include="VisualizationConfigPresenter.cs" />
     <Compile Include="Visualizations\BugLifeTimeDistribution.cs" />
     <Compile Include="Visualizations\CodeSizeToDate.cs" />
     <Compile Include="Visualizations\DefectDensityToFileSize.cs" />

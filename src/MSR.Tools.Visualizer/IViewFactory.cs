@@ -6,6 +6,7 @@ namespace MSR.Tools.Visualizer
 	{
 		IMessageDialogView MessageDialog();
 		IFileDialogView FileDialog();
+		IVisualizationConfigView ConfigDialog();
 
 		IVisualizerView Visualizer();
 	}
