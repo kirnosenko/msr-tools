@@ -7,15 +7,8 @@
 using System;
 using System.Windows.Forms;
 
-namespace MSR.Tools.Visualizer
+namespace MSR.Tools.Visualizer.WinForms
 {
-	public interface IFileDialogView
-	{
-		bool Open();
-		bool Save();
-		string FileName { get; set; }
-	}
-	
 	public class FileDialogView : IFileDialogView
 	{
 		private string fileName;

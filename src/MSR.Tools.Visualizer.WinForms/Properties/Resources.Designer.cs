@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MSR.Tools.Visualizer.Properties
+namespace MSR.Tools.Visualizer.WinForms.Properties
 {
 
 
@@ -44,7 +44,7 @@ namespace MSR.Tools.Visualizer.Properties
 			{
 				if ((resourceMan == null))
 				{
-					global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MSR.Tools.Visualizer.Properties.Resources", typeof(Resources).Assembly);
+					global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MSR.Tools.Visualizer.WinForms.Properties.Resources", typeof(Resources).Assembly);
 					resourceMan = temp;
 				}
 				return resourceMan;

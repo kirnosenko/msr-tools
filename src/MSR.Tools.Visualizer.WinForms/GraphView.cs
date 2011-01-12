@@ -9,20 +9,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using ZedGraph;
 
-namespace MSR.Tools.Visualizer
+namespace MSR.Tools.Visualizer.WinForms
 {
-	public interface IGraphView
-	{
-		void ShowPoints(string legend, double[] x, double[] y);
-		void CleanUp();
-		
-		string Title { get; set; }
-		string XAxisTitle { get; set; }
-		string YAxisTitle { get; set; }
-		bool XAxisLogScale { get; set; }
-		bool YAxisLogScale { get; set; }
-	}
-	
 	public class GraphView : ZedGraphControl, IGraphView
 	{
 		public GraphView(Control parent)

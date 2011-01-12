@@ -7,17 +7,8 @@
 using System;
 using System.Windows.Forms;
 
-namespace MSR.Tools.Visualizer
+namespace MSR.Tools.Visualizer.WinForms
 {
-	public interface IMenuItemView
-	{
-		event Action<IMenuItemView> OnClick;
-		string Name { get; }
-		string Text { get; set; }
-		bool Enabled { get; set; }
-		bool Checked { get; set; }
-	}
-	
 	public class MenuItemView : IMenuItemView
 	{
 		private ToolStripMenuItem menuItem;

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MSR.Tools.Visualizer.Properties
+namespace MSR.Tools.Visualizer.WinForms.Properties
 {
 
 

@@ -7,16 +7,8 @@
 using System;
 using System.Windows.Forms;
 
-namespace MSR.Tools.Visualizer
+namespace MSR.Tools.Visualizer.WinForms
 {
-	public interface IViewFactory
-	{
-		IMessageDialogView MessageDialog();
-		IFileDialogView FileDialog();
-		
-		IVisualizerView Visualizer();
-	}
-	
 	public class WinFormsViewFactory : IViewFactory
 	{
 		public WinFormsViewFactory()

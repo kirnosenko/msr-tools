@@ -9,18 +9,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MSR.Tools.Visualizer
+namespace MSR.Tools.Visualizer.WinForms
 {
-	public interface IVisualizerView
-	{
-		void ShowView();
-		
-		string Title { get; set; }
-		IMainMenuView MainMenu { get; }
-		IGraphView Graph { get; }
-		IStatusBarView StatusBar { get; }
-	}
-
 	public partial class VisualizerView : Form, IVisualizerView
 	{
 		private const int WindowHeight = 500;

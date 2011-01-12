@@ -7,13 +7,8 @@
 using System;
 using System.Windows.Forms;
 
-namespace MSR.Tools.Visualizer
+namespace MSR.Tools.Visualizer.WinForms
 {
-	public interface IStatusBarView
-	{
-		string Status { get; set; }
-	}
-	
 	public class StatusBarView : StatusStrip, IStatusBarView
 	{
 		private ToolStripStatusLabel label;

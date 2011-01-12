@@ -7,14 +7,8 @@
 using System;
 using System.Windows.Forms;
 
-namespace MSR.Tools.Visualizer
+namespace MSR.Tools.Visualizer.WinForms
 {
-	public interface IMessageDialogView
-	{
-		bool ShowYesNo(string title, string text);
-		void ShowError(string title, string text);
-	}
-	
 	public class MessageDialogView : IMessageDialogView
 	{
 		public bool ShowYesNo(string title, string text)

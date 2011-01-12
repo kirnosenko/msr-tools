@@ -6,7 +6,7 @@
 
 using System;
 
-namespace MSR.Tools.Visualizer
+namespace MSR.Tools.Visualizer.WinForms
 {
 	public class Program
 	{

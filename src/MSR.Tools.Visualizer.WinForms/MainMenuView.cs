@@ -9,15 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MSR.Tools.Visualizer
+namespace MSR.Tools.Visualizer.WinForms
 {
-	public interface IMainMenuView
-	{
-		IMenuItemView AddCommand(string name);
-		IMenuItemView AddCommand(string name, string parentName);
-		void DeleteCommand(string name);
-	}
-	
 	public class MainMenuView : MenuStrip, IMainMenuView
 	{
 		private Dictionary<string,ToolStripMenuItem> items = new Dictionary<string,ToolStripMenuItem>();
