@@ -23,16 +23,17 @@ namespace MSR.Tools.Debugger
 		{
 			Console.BufferHeight = 10000;
 
-			//configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
+			configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
 			//configFile = @"E:\repo\dia\dia.config"; // 4384 revisions
 			//configFile = @"E:\repo\gnome-vfs\gnome-vfs.config"; // 5550 revisions
 			//configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
 			//configFile = @"E:\repo\git\git.config";
 			//configFile = @"E:\repo\linux-2.6\linux-2.6.config";
 			//configFile = @"E:\repo\jquery\jquery.config";
-			configFile = @"E:\repo\django\django.config";
+			//configFile = @"E:\repo\django\django.config";
 			//configFile = @"E:\repo\postgresql\postgresql.config";
-			//configFile = @"E:\repo\msr\msr.config"; // 184 revisions
+			//configFile = @"E:\repo\nhibernate\nhibernate.config";
+			//configFile = @"E:\repo\msr\msr.config";
 
 			//Debug();
 			//Mapping();
@@ -51,10 +52,11 @@ namespace MSR.Tools.Debugger
 		static void Mapping()
 		{
 			MappingTool mapper = new MappingTool(configFile);
-
-			mapper.Map(true, 19);
-			//mapper.Truncate(964);
-			//mapper.Check(19);
+			
+			//mapper.Info();
+			//mapper.Map(false, 756);
+			//mapper.Truncate(755);
+			mapper.Check(756);
 		}
 		static void Predict()
 		{
@@ -101,7 +103,7 @@ namespace MSR.Tools.Debugger
 			using (ConsoleTimeLogger.Start("stat generating"))
 			{
 				GeneratingTool generator = new GeneratingTool(configFile);
-				generator.GenerateStat("d:/temp", "../../../MSR.Tools.StatGenerator/templates/html");
+				generator.GenerateStat("/trunk", "d:/temp/2", "../../../MSR.Tools.StatGenerator/templates/html");
 			}
 		}
 	}
