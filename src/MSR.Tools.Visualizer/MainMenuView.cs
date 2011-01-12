@@ -1,11 +1,12 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace MSR.Tools.Visualizer
@@ -14,6 +15,7 @@ namespace MSR.Tools.Visualizer
 	{
 		IMenuItemView AddCommand(string name);
 		IMenuItemView AddCommand(string name, string parentName);
+		void DeleteCommand(string name);
 	}
 	
 	public class MainMenuView : MenuStrip, IMainMenuView
@@ -43,6 +45,21 @@ namespace MSR.Tools.Visualizer
 			}
 
 			return new MenuItemView(newItem, name);
+		}
+		public void DeleteCommand(string name)
+		{
+			if (items.ContainsKey(name))
+			{
+				foreach (var child in items.Where(x => items[name].DropDownItems.Contains(x.Value)).ToList())
+				{
+					DeleteCommand(child.Key);
+				}
+			}
+			if (items.ContainsKey(name))
+			{
+				items[name].Owner.Items.Remove(items[name]);
+				items.Remove(name);
+			}
 		}
 	}
 }

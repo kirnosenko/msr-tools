@@ -8,26 +8,22 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using MSR.Tools.Visualizer.Visualizations;
-
 namespace MSR.Tools.Visualizer
 {
 	public class VisualizerModel
 	{
+		public event Action OnVisializationListUpdated;
+		
 		private VisualizationTool visualizer;
-		private List<IVisualization> visualizations = new List<IVisualization>();
 		
 		public VisualizerModel()
 		{
-			visualizations.Add(new BugLifeTimeDistribution());
-			visualizations.Add(new DefectDensityToFileSize());
-			visualizations.Add(new CodeSizeToDate());
-			
 			AutomaticallyCleanUp = true;
 		}
 		public void OpenConfig(string fileName)
 		{
 			visualizer = new VisualizationTool(fileName);
+			OnVisializationListUpdated();
 		}
 		public void Visualize(string visualizationName, IGraphView graph)
 		{
@@ -35,10 +31,7 @@ namespace MSR.Tools.Visualizer
 			{
 				graph.CleanUp();
 			}
-			visualizer.Visualize(
-				visualizations.Single(x => x.Title == visualizationName),
-				graph
-			);
+			visualizer.Visualize(visualizationName, graph);
 		}
 		public string LastVisualizationProfiling
 		{
@@ -46,7 +39,14 @@ namespace MSR.Tools.Visualizer
 		}
 		public IEnumerable<string> Visualizations
 		{
-			get { return visualizations.Select(x => x.Title); }
+			get
+			{
+				if (visualizer != null)
+				{
+					return visualizer.Visualizations;
+				}
+				return Enumerable.Empty<string>();
+			}
 		}
 		public bool AutomaticallyCleanUp
 		{

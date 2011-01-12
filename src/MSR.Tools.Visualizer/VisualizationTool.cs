@@ -5,23 +5,33 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using MSR.Data.Persistent;
+using MSR.Tools.Visualizer.Visualizations;
 
 namespace MSR.Tools.Visualizer
 {
 	public class VisualizationTool : Tool
 	{
+		private List<IVisualization> visualizations = new List<IVisualization>();
+		
 		public VisualizationTool(string configFile)
-			: base(configFile)
+			: base(configFile, "visualizationtool")
 		{
+			visualizations.Add(new BugLifeTimeDistribution());
+			visualizations.Add(new DefectDensityToFileSize());
+			visualizations.Add(new CodeSizeToDate());
 		}
-		public void Visualize(IVisualization visualization, IGraphView graph)
+		public void Visualize(string visualizationName, IGraphView graph)
 		{
-			PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(Data);
+			PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(data);
 			prof.Start();
 			using (var s = data.OpenSession())
 			{
-				visualization.Visualize(s, graph);
+				visualizations.Single(x => x.Title == visualizationName)
+					.Visualize(s, graph);
 			}
 			prof.Stop();
 			LastVisualizationProfiling = string.Format(
@@ -29,13 +39,13 @@ namespace MSR.Tools.Visualizer
 				prof.NumberOfQueries, prof.ElapsedTime.ToFormatedString()
 			);
 		}
+		public IEnumerable<string> Visualizations
+		{
+			get { return visualizations.Select(x => x.Title); }
+		}
 		public string LastVisualizationProfiling
 		{
 			get; private set;
-		}
-		public PersistentDataStore Data
-		{
-			get { return data; }
 		}
 	}
 }

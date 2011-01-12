@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -17,6 +17,7 @@ namespace MSR.Tools.Visualizer
 		public VisualizerPresenter(VisualizerModel model, IVisualizerView view, IPresenterFactory presenters)
 		{
 			this.model = model;
+			model.OnVisializationListUpdated += () => CreateVisualizationsMenu();
 			this.view = view;
 			this.presenters = presenters;
 			
@@ -82,7 +83,12 @@ namespace MSR.Tools.Visualizer
 			{
 				view.Graph.CleanUp();
 			};
+		}
+		private void CreateVisualizationsMenu()
+		{
+			view.MainMenu.DeleteCommand("Visualizations");
 			view.MainMenu.AddCommand("Visualizations");
+			
 			foreach (var visualization in model.Visualizations)
 			{
 				view.MainMenu.AddCommand(visualization, "Visualizations").OnClick += i =>
