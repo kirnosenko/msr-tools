@@ -23,6 +23,7 @@ namespace MSR.Tools.Visualizer
 			visualizations.Add(new BugLifeTimeDistribution());
 			visualizations.Add(new DefectDensityToFileSize());
 			visualizations.Add(new CodeSizeToDate());
+			visualizations.AddRange(GetConfiguredTypes<IVisualization>());
 		}
 		public void Visualize(string visualizationName, IGraphView graph)
 		{

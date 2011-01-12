@@ -5,6 +5,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Configuration;
@@ -34,6 +35,10 @@ namespace MSR.Tools
 		protected T GetConfiguredType<T>()
 		{
 			return container.Resolve<T>();
+		}
+		protected IEnumerable<T> GetConfiguredTypes<T>()
+		{
+			return container.ResolveAll<T>();
 		}
 		protected T GetConfiguredType<T>(string name)
 		{
