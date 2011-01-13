@@ -13,7 +13,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 {
 	public abstract class StatPageBuilder : IStatPageBuilder
 	{
-		public abstract IDictionary<string,object> BuildData(IRepositoryResolver repositories, string targetDir);
+		public abstract IDictionary<string,object> BuildData(IRepositoryResolver repositories);
 		public string PageName
 		{
 			get; protected set;
@@ -21,6 +21,10 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 		public string PageTemplate
 		{
 			get; protected set;
+		}
+		public string TargetDir
+		{
+			get; set;
 		}
 	}
 }

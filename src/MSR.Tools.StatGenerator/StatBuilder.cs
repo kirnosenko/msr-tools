@@ -28,8 +28,11 @@ namespace MSR.Tools.StatGenerator
 			{
 				"stats.css", "sortable.js"
 			};
+			TargetDir = "/";
+			OutputDir = Environment.CurrentDirectory;
+			TemplateDir = "./templates/html";
 		}
-		public void GenerateStat(IDataStore data, string targetDir, string outputDir, string templateDir)
+		public void GenerateStat(IDataStore data)
 		{
 			Velocity.Init();
 			
@@ -41,11 +44,13 @@ namespace MSR.Tools.StatGenerator
 			
 			foreach (var builder in builders)
 			{
+				builder.TargetDir = TargetDir;
+				
 				VelocityContext context = new VelocityContext();
 				context.Put("menu", menu);
 				using (var s = data.OpenSession())
 				{
-					foreach (var obj in builder.BuildData(s, targetDir))
+					foreach (var obj in builder.BuildData(s))
 					{
 						context.Put(obj.Key, obj.Value);
 					}
@@ -55,7 +60,7 @@ namespace MSR.Tools.StatGenerator
 				using (TextWriter writer = new StreamWriter(pageContent))
 				{
 					Velocity.MergeTemplate(
-						templateDir + "/" + builder.PageTemplate,
+						TemplateDir + "/" + builder.PageTemplate,
 						Encoding.UTF8.WebName,
 						context,
 						writer
@@ -64,10 +69,10 @@ namespace MSR.Tools.StatGenerator
 
 					pageContent.Seek(0, SeekOrigin.Begin);
 					context.Put("content", new StreamReader(pageContent).ReadToEnd());
-					using (TextWriter writer2 = new StreamWriter(outputDir + "/" + builder.PageTemplate))
+					using (TextWriter writer2 = new StreamWriter(OutputDir + "/" + builder.PageTemplate))
 					{
 						Velocity.MergeTemplate(
-							templateDir + "/" + SharedPageTemplate,
+							TemplateDir + "/" + SharedPageTemplate,
 							Encoding.UTF8.WebName,
 							context,
 							writer2
@@ -77,7 +82,7 @@ namespace MSR.Tools.StatGenerator
 			}
 			foreach (var fileToCopy in FilesToCopy)
 			{
-				File.Copy(templateDir + "/" + fileToCopy, outputDir + "/" + fileToCopy, true);
+				File.Copy(TemplateDir + "/" + fileToCopy, OutputDir + "/" + fileToCopy, true);
 			}
 		}
 		public string SharedPageTemplate
@@ -85,6 +90,18 @@ namespace MSR.Tools.StatGenerator
 			get; set;
 		}
 		public string[] FilesToCopy
+		{
+			get; set;
+		}
+		public string TargetDir
+		{
+			get; set;
+		}
+		public string OutputDir
+		{
+			get; set;
+		}
+		public string TemplateDir
 		{
 			get; set;
 		}

@@ -33,8 +33,8 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			get { return true; }
 		}
-		[DescriptionAttribute("Target path")]
-		public string TargetPath
+		[DescriptionAttribute("Target directory")]
+		public string TargetDir
 		{
 			get { return targetPath; }
 			set { targetPath = value; }

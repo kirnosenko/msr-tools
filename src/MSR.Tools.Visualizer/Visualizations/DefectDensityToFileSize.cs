@@ -25,7 +25,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 		public override void Calc(IRepositoryResolver repositories)
 		{
 			var fileIDs = repositories.SelectionDSL()
-				.Files().InDirectory(TargetPath).Exist()
+				.Files().InDirectory(TargetDir).Exist()
 				.Select(f => f.ID).ToList();
 
 			List<double> xlist = new List<double>(fileIDs.Count);

@@ -22,7 +22,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			PageName = "Authors";
 			PageTemplate = "authors.html";
 		}
-		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories, string targetDir)
+		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories)
 		{
 			Dictionary<string,object> result = new Dictionary<string,object>();
 
@@ -31,7 +31,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				.Select(x => x.Author)
 				.Distinct().ToList();
 			double totalLoc = repositories.SelectionDSL()
-				.Files().InDirectory(targetDir)
+				.Files().InDirectory(TargetDir)
 				.Modifications().InFiles()
 				.CodeBlocks().InModifications().CalculateLOC();
 
@@ -40,13 +40,13 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				Name = author,
 				AddedCode = repositories.SelectionDSL()
 					.Commits().AuthorIs(author)
-					.Files().InDirectory(targetDir)
+					.Files().InDirectory(TargetDir)
 					.Modifications().InFiles()
 					.CodeBlocks().InModifications().AddedInitiallyInCommits()
 					.Fixed(),
 				RemovedCode = repositories.SelectionDSL()
 					.Commits().AuthorIs(author)
-					.Files().InDirectory(targetDir)
+					.Files().InDirectory(TargetDir)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().Deleted()
 					.Fixed()

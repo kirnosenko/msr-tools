@@ -22,7 +22,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			PageName = "General";
 			PageTemplate = "general.html";
 		}
-		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories, string targetDir)
+		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories)
 		{
 			Dictionary<string,object> result = new Dictionary<string,object>();
 
@@ -43,7 +43,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			result.Add("commits_fix_count", commits_fix_count);
 			result.Add("commits_fix_percent", commits_fix_percent);
 			var files = repositories.SelectionDSL()
-				.Files().InDirectory(targetDir)
+				.Files().InDirectory(TargetDir)
 				.Fixed();
 			result.Add("files_current",
 				files.Exist().Count()
@@ -55,7 +55,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				files.Deleted().Count()
 			);
 			var code = repositories.SelectionDSL()
-				.Files().InDirectory(targetDir)
+				.Files().InDirectory(TargetDir)
 				.Modifications().InFiles()
 				.CodeBlocks().InModifications()
 				.Fixed();

@@ -41,7 +41,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 				x[i] = (from - min).Days;
 				totalCodeSize += repositories.SelectionDSL()
 					.Commits().DateIsGreaterOrEquelThan(from).DateIsLesserThan(to)
-					.Files().InDirectory(TargetPath)
+					.Files().InDirectory(TargetDir)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().CalculateLOC();
 				y[i] = totalCodeSize;

@@ -18,7 +18,19 @@ namespace MSR.Tools.StatGenerator
 		public void GenerateStat(string targetDir, string outputDir, string templateDir)
 		{
 			StatBuilder builder = GetConfiguredType<StatBuilder>();
-			builder.GenerateStat(data, targetDir, outputDir, templateDir);
+			if (targetDir != null)
+			{
+				builder.TargetDir = targetDir;
+			}
+			if (outputDir != null)
+			{
+				builder.OutputDir = outputDir;
+			}
+			if (templateDir != null)
+			{
+				builder.TargetDir = templateDir;
+			}
+			builder.GenerateStat(data);
 		}
 	}
 }

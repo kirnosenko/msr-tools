@@ -103,7 +103,7 @@ namespace MSR.Tools.Debugger
 			using (ConsoleTimeLogger.Start("stat generating"))
 			{
 				GeneratingTool generator = new GeneratingTool(configFile);
-				generator.GenerateStat("/trunk", "d:/temp/2", "../../../MSR.Tools.StatGenerator/templates/html");
+				generator.GenerateStat(null, "d:/temp", null);
 			}
 		}
 	}

@@ -14,9 +14,9 @@ namespace MSR.Tools.StatGenerator
 		{
 			string configFile;
 			string cmd;
-			string targetDir = "/";
-			string outputDir = Environment.CurrentDirectory;
-			string templateDir = "./templates/html";
+			string targetDir = null;
+			string outputDir = null;
+			string templateDir = null;
 			
 			try
 			{
