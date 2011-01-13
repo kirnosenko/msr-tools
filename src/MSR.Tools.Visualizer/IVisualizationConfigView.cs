@@ -11,9 +11,7 @@ namespace MSR.Tools.Visualizer
 {
 	public interface IVisualizationConfigView
 	{
-		void AddTextOption(string name, string value);
-		void AddSelectionOption(string name, object[] values, object selected);
-		object GetOption(string name);
+		void Add(object obj);
 		
 		bool ShowDialog();
 	}

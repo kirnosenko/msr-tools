@@ -26,7 +26,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			base.SetUp();
 			visualization = new CodeSizeToDate();
-			visualization.DaysPerStep = "1";
+			visualization.DaysPerStep = 1;
 			graphStub = MockRepository.GenerateStub<IGraphView>();
 			graphStub.Stub(x => x.ShowPoints(null, null, null))
 				.IgnoreArguments()
@@ -74,7 +74,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 		[Test]
 		public void Should_use_number_of_points_to_keep_all_period()
 		{
-			visualization.DaysPerStep = "10";
+			visualization.DaysPerStep = 10;
 			
 			mappingDSL
 				.AddCommit("1").At(DateTime.Today.AddDays(-22))

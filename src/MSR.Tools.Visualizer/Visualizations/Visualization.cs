@@ -18,5 +18,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			get; protected set;
 		}
+		public virtual bool Configurable
+		{
+			get { return false; }
+		}
 	}
 }

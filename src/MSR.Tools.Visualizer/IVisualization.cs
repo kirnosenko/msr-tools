@@ -15,5 +15,6 @@ namespace MSR.Tools.Visualizer
 	{
 		void Visualize(IRepositoryResolver repositories, IGraphView graph);
 		string Title { get; }
+		bool Configurable { get; }
 	}
 }

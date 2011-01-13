@@ -32,7 +32,8 @@ namespace MSR.Tools.Visualizer
 				graph.CleanUp();
 			}
 			
-			if (config.Config(visualizer.Visualization(visualizationName)))
+			IVisualization visualization = visualizer.Visualization(visualizationName);
+			if (! visualization.Configurable || config.Config(visualization))
 			{
 				visualizer.Visualize(visualizationName, graph);
 			}

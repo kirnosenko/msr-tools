@@ -6,13 +6,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 using MSR.Data;
 using MSR.Data.Entities;
 using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
-using MSR.Tools.Visualizer.VisualizationOptions;
 
 namespace MSR.Tools.Visualizer.Visualizations
 {
@@ -21,7 +21,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 		public CodeSizeToDate()
 		{
 			Title = "Code size to date";
-			DaysPerStep = "30";
+			DaysPerStep = 30;
 		}
 		public override void Visualize(IRepositoryResolver repositories, IGraphView graph)
 		{
@@ -55,8 +55,12 @@ namespace MSR.Tools.Visualizer.Visualizations
 			graph.YAxisTitle = "LOC";
 			graph.ShowPoints("", x, y);
 		}
-		[VisualizationSelectionOption("Days per step", Values = new string[] { "1", "7", "30" })]
-		public string DaysPerStep
+		public override bool Configurable
+		{
+			get { return true; }
+		}
+		[DescriptionAttribute("Days per step")]
+		public int DaysPerStep
 		{
 			get; set;
 		}

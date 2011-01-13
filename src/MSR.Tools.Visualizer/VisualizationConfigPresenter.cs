@@ -26,27 +26,11 @@ namespace MSR.Tools.Visualizer
 		}
 		public bool Config(IVisualization visualization)
 		{
-			Dictionary<string,PropertyInfo> optionProperties = new Dictionary<string,PropertyInfo>();
-			
-			var type = visualization.GetType();
-			var properties = type.GetProperties();
-			foreach (var property in properties)
-			{
-				var options = property.GetCustomAttributes(true)
-					.Where(x => typeof(VisualizationOptionAttribute).IsAssignableFrom(x.GetType()));
-				foreach (VisualizationOptionAttribute option in options)
-				{
-					option.MapOption(view, property.GetValue(visualization, null));
-					optionProperties.Add(option.Name, property);
-				}
-			}
+			view.Add(visualization);
 			
 			if (view.ShowDialog())
 			{
-				foreach (var option in optionProperties)
-				{
-					option.Value.SetValue(visualization, view.GetOption(option.Key), null);
-				}
+				
 				return true;
 			}
 			return false;

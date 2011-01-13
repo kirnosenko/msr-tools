@@ -12,29 +12,18 @@ namespace MSR.Tools.Visualizer.WinForms
 {
 	public class VisualizationConfigView : Form, IVisualizationConfigView
 	{
-		private Dictionary<string,Func<object>> options = new Dictionary<string,Func<object>>();
+		private PropertyGrid properties;
 		
-		public void AddTextOption(string name, string value)
+		public VisualizationConfigView()
 		{
-			TextBox text = new TextBox();
-			text.Parent = this;
-			text.Text = value;
-			options.Add(name, () => text.Text);
+			properties = new PropertyGrid();
+			properties.Parent = this;
+			properties.PropertySort = PropertySort.NoSort;
+			properties.Dock = DockStyle.Fill;
 		}
-		public void AddSelectionOption(string name, object[] values, object selected)
+		public void Add(object obj)
 		{
-			ComboBox combo = new ComboBox();
-			combo.Parent = this;
-			foreach (var value in values)
-			{
-				combo.Items.Add(value);
-			}
-			combo.SelectedItem = selected;
-			options.Add(name, () => combo.SelectedItem);
-		}
-		public object GetOption(string name)
-		{
-			return options[name]();
+			properties.SelectedObject = obj;
 		}
 		public new bool ShowDialog()
 		{
