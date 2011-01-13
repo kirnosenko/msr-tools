@@ -25,14 +25,13 @@ namespace MSR.Tools.Visualizer
 			visualizations.Add(new CodeSizeToDate());
 			visualizations.AddRange(GetConfiguredTypes<IVisualization>());
 		}
-		public void Visualize(string visualizationName, IGraphView graph)
+		public void CalcVisualization(IVisualization visualization)
 		{
 			PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(data);
 			prof.Start();
 			using (var s = data.OpenSession())
 			{
-				visualizations.Single(x => x.Title == visualizationName)
-					.Visualize(s, graph);
+				visualization.Calc(s);
 			}
 			prof.Stop();
 			LastVisualizationProfiling = string.Format(

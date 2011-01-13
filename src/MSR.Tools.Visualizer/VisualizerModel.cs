@@ -12,8 +12,6 @@ namespace MSR.Tools.Visualizer
 {
 	public class VisualizerModel
 	{
-		public event Action OnVisualizationListUpdated;
-		
 		private VisualizationTool visualizer;
 		
 		public VisualizerModel()
@@ -23,20 +21,14 @@ namespace MSR.Tools.Visualizer
 		public void OpenConfig(string fileName)
 		{
 			visualizer = new VisualizationTool(fileName);
-			OnVisualizationListUpdated();
 		}
-		public void Visualize(string visualizationName, IGraphView graph, IVisualizationConfigPresenter config)
+		public IVisualization Visualization(string visualizationName)
 		{
-			if (AutomaticallyCleanUp)
-			{
-				graph.CleanUp();
-			}
-			
-			IVisualization visualization = visualizer.Visualization(visualizationName);
-			if (! visualization.Configurable || config.Config(visualization))
-			{
-				visualizer.Visualize(visualizationName, graph);
-			}
+			return visualizer.Visualization(visualizationName);
+		}
+		public void CalcVisualization(IVisualization visualization)
+		{	
+			visualizer.CalcVisualization(visualization);
 		}
 		public string LastVisualizationProfiling
 		{

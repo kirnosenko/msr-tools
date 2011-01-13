@@ -10,11 +10,11 @@ using System.Windows.Forms;
 
 namespace MSR.Tools.Visualizer.WinForms
 {
-	public class VisualizationConfigView : Form, IVisualizationConfigView
+	public class ConfigView : Form, IConfigView
 	{
 		private PropertyGrid properties;
 		
-		public VisualizationConfigView()
+		public ConfigView()
 		{
 			properties = new PropertyGrid();
 			properties.Parent = this;

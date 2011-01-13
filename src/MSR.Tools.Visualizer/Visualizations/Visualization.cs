@@ -13,7 +13,10 @@ namespace MSR.Tools.Visualizer.Visualizations
 {
 	public abstract class Visualization : IVisualization
 	{
-		public abstract void Visualize(IRepositoryResolver repositories, IGraphView graph);
+		protected double[] x,y;
+		
+		public abstract void Calc(IRepositoryResolver repositories);
+		public abstract void Draw(IGraphView graph);
 		public string Title
 		{
 			get; protected set;

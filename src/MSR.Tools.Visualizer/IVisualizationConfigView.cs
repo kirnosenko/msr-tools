@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace MSR.Tools.Visualizer
 {
-	public interface IVisualizationConfigView
+	public interface IConfigView
 	{
 		void Add(object obj);
 		

@@ -18,9 +18,9 @@ namespace MSR.Tools.Visualizer
 
 	public class VisualizationConfigPresenter : IVisualizationConfigPresenter
 	{
-		private IVisualizationConfigView view;
+		private IConfigView view;
 		
-		public VisualizationConfigPresenter(IVisualizationConfigView view)
+		public VisualizationConfigPresenter(IConfigView view)
 		{
 			this.view = view;
 		}

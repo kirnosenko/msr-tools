@@ -21,13 +21,13 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			Title = "Bug lifetime distribution";
 		}
-		public override void Visualize(IRepositoryResolver repositories, IGraphView graph)
+		public override void Calc(IRepositoryResolver repositories)
 		{
 			var bugLiveTimes = repositories.SelectionDSL()
 				.BugFixes().CalculateMaxBugLifetime();
 
-			double[] x = new double[bugLiveTimes.Count()];
-			double[] y = new double[bugLiveTimes.Count()];
+			x = new double[bugLiveTimes.Count()];
+			y = new double[bugLiveTimes.Count()];
 			int i = 0;
 			foreach (var bugLiveTime in bugLiveTimes)
 			{
@@ -35,7 +35,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 				y[i] = bugLiveTimes.Where(t => t <= bugLiveTime).Count();
 				i++;
 			}
-			
+		}
+		public override void Draw(IGraphView graph)
+		{
 			graph.Title = "Bug lifetime distribution";
 			graph.XAxisTitle = "Days";
 			graph.YAxisTitle = "Total number of fixed bugs";

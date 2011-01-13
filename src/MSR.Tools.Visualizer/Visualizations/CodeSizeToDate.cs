@@ -23,15 +23,15 @@ namespace MSR.Tools.Visualizer.Visualizations
 			Title = "Code size to date";
 			DaysPerStep = 30;
 		}
-		public override void Visualize(IRepositoryResolver repositories, IGraphView graph)
+		public override void Calc(IRepositoryResolver repositories)
 		{
 			int daysPerStep = Convert.ToInt32(DaysPerStep);
-			
+
 			DateTime min = repositories.Repository<Commit>().Min(c => c.Date);
 			DateTime max = repositories.Repository<Commit>().Max(c => c.Date);
-			double[] x = new double[(max - min).Days / daysPerStep + 1];
-			double[] y = new double[x.Length];
-			
+			x = new double[(max - min).Days / daysPerStep + 1];
+			y = new double[x.Length];
+
 			DateTime from = min;
 			DateTime to = from.AddDays(daysPerStep);
 			int i = 0;
@@ -44,12 +44,14 @@ namespace MSR.Tools.Visualizer.Visualizations
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().CalculateLOC();
 				y[i] = totalCodeSize;
-					
+
 				from = from.AddDays(daysPerStep);
 				to = to.AddDays(daysPerStep);
 				i++;
 			}
-
+		}
+		public override void Draw(IGraphView graph)
+		{
 			graph.Title = "Code size to date";
 			graph.XAxisTitle = "Days";
 			graph.YAxisTitle = "LOC";

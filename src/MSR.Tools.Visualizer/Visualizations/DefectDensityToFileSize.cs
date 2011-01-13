@@ -21,15 +21,15 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			Title = "Defect density to file size";
 		}
-		public override void Visualize(IRepositoryResolver repositories, IGraphView graph)
+		public override void Calc(IRepositoryResolver repositories)
 		{
 			var fileIDs = repositories.SelectionDSL()
 				.Files().Exist()
 				.Select(f => f.ID).ToList();
-			
-			List<double> x = new List<double>(fileIDs.Count);
-			List<double> y = new List<double>(fileIDs.Count);
-			
+
+			List<double> xlist = new List<double>(fileIDs.Count);
+			List<double> ylist = new List<double>(fileIDs.Count);
+
 			foreach (var fileID in fileIDs)
 			{
 				var code = repositories.SelectionDSL()
@@ -37,19 +37,24 @@ namespace MSR.Tools.Visualizer.Visualizations
 					.Modifications().InFiles()
 					.CodeBlocks().InModifications()
 					.Fixed();
-				
+
 				var dd = code.CalculateTraditionalDefectDensity();
 				if (dd > 0)
 				{
-					x.Add(code.CalculateLOC());
-					y.Add(dd);
+					xlist.Add(code.CalculateLOC());
+					ylist.Add(dd);
 				}
 			}
 			
+			x = xlist.ToArray();
+			y = ylist.ToArray();
+		}
+		public override void Draw(IGraphView graph)
+		{
 			graph.Title = "Defect density to file size";
 			graph.XAxisTitle = "File size (LOC)";
 			graph.YAxisTitle = "Defect density (defects per KLOC)";
-			graph.ShowPoints("", x.ToArray(), y.ToArray());
+			graph.ShowPoints("", x, y);
 		}
 	}
 }

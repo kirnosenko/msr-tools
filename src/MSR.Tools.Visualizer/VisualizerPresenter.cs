@@ -17,7 +17,6 @@ namespace MSR.Tools.Visualizer
 		public VisualizerPresenter(VisualizerModel model, IVisualizerView view, IPresenterFactory presenters)
 		{
 			this.model = model;
-			model.OnVisualizationListUpdated += () => CreateVisualizationsMenu();
 			this.view = view;
 			this.presenters = presenters;
 			
@@ -52,6 +51,7 @@ namespace MSR.Tools.Visualizer
 					{
 						model.OpenConfig(fileName);
 						Title = fileName;
+						CreateVisualizationsMenu();
 					}
 					catch (Exception e)
 					{
@@ -89,12 +89,22 @@ namespace MSR.Tools.Visualizer
 			view.MainMenu.DeleteCommand("Visualizations");
 			view.MainMenu.AddCommand("Visualizations");
 			
-			foreach (var visualization in model.Visualizations)
+			foreach (var visualizationName in model.Visualizations)
 			{
-				view.MainMenu.AddCommand(visualization, "Visualizations").OnClick += i =>
+				view.MainMenu.AddCommand(visualizationName, "Visualizations").OnClick += i =>
 				{
-					model.Visualize(i.Name, view.Graph, presenters.ConfigDialog());
-					view.StatusBar.Status = model.LastVisualizationProfiling;
+					IVisualization visualization = model.Visualization(i.Name);
+					if (! visualization.Configurable || presenters.ConfigDialog().Config(visualization))
+					{
+						if (model.AutomaticallyCleanUp)
+						{
+							view.Graph.CleanUp();
+						}
+						
+						model.CalcVisualization(visualization);
+						visualization.Draw(view.Graph);
+						view.StatusBar.Status = model.LastVisualizationProfiling;
+					}
 				};
 			}
 		}

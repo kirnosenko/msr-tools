@@ -24,9 +24,9 @@ namespace MSR.Tools.Visualizer.WinForms
 		{
 			return new FileDialogView();
 		}
-		public IVisualizationConfigView ConfigDialog()
+		public IConfigView ConfigDialog()
 		{
-			return new VisualizationConfigView();
+			return new ConfigView();
 		}
 				
 		public IVisualizerView Visualizer()
