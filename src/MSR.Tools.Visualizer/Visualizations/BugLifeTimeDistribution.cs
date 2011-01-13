@@ -24,7 +24,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 		public override void Calc(IRepositoryResolver repositories)
 		{
 			var bugLiveTimes = repositories.SelectionDSL()
-				.BugFixes().CalculateMaxBugLifetime();
+				.BugFixes().CalculateAvarageBugLifetime();
 
 			x = new double[bugLiveTimes.Count()];
 			y = new double[bugLiveTimes.Count()];
@@ -42,6 +42,10 @@ namespace MSR.Tools.Visualizer.Visualizations
 			graph.XAxisTitle = "Days";
 			graph.YAxisTitle = "Total number of fixed bugs";
 			graph.ShowPoints("", x, y);
+		}
+		public override bool Configurable
+		{
+			get { return false; }
 		}
 	}
 }

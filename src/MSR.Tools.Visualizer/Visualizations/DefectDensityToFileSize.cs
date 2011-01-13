@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 using MSR.Data;
@@ -24,7 +25,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 		public override void Calc(IRepositoryResolver repositories)
 		{
 			var fileIDs = repositories.SelectionDSL()
-				.Files().Exist()
+				.Files().InDirectory(TargetPath).Exist()
 				.Select(f => f.ID).ToList();
 
 			List<double> xlist = new List<double>(fileIDs.Count);

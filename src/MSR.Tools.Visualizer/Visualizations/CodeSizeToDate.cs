@@ -41,7 +41,8 @@ namespace MSR.Tools.Visualizer.Visualizations
 				x[i] = (from - min).Days;
 				totalCodeSize += repositories.SelectionDSL()
 					.Commits().DateIsGreaterOrEquelThan(from).DateIsLesserThan(to)
-					.Modifications().InCommits()
+					.Files().InDirectory(TargetPath)
+					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().CalculateLOC();
 				y[i] = totalCodeSize;
 
@@ -56,10 +57,6 @@ namespace MSR.Tools.Visualizer.Visualizations
 			graph.XAxisTitle = "Days";
 			graph.YAxisTitle = "LOC";
 			graph.ShowPoints("", x, y);
-		}
-		public override bool Configurable
-		{
-			get { return true; }
 		}
 		[DescriptionAttribute("Days per step")]
 		public int DaysPerStep
