@@ -18,7 +18,6 @@ namespace MSR.Tools.Visualizer
 		{
 			this.model = model;
 			model.OnVisualizationListUpdated += () => CreateVisualizationsMenu();
-			model.OnVisualizationNeedsConfig += () => presenters.ConfigDialog().GetConfig();
 			this.view = view;
 			this.presenters = presenters;
 			
@@ -94,7 +93,7 @@ namespace MSR.Tools.Visualizer
 			{
 				view.MainMenu.AddCommand(visualization, "Visualizations").OnClick += i =>
 				{
-					model.Visualize(i.Name, view.Graph);
+					model.Visualize(i.Name, view.Graph, presenters.ConfigDialog());
 					view.StatusBar.Status = model.LastVisualizationProfiling;
 				};
 			}

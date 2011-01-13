@@ -56,6 +56,9 @@
     <Compile Include="IStatusBarView.cs">
     </Compile>
     <Compile Include="VisualizationConfigPresenter.cs" />
+    <Compile Include="VisualizationOptionAttribute.cs" />
+    <Compile Include="VisualizationOptions\VisualizationSelectionOptionAttribute.cs" />
+    <Compile Include="VisualizationOptions\VisualizationTextOptionAttribute.cs" />
     <Compile Include="Visualizations\BugLifeTimeDistribution.cs" />
     <Compile Include="Visualizations\CodeSizeToDate.cs" />
     <Compile Include="Visualizations\DefectDensityToFileSize.cs" />

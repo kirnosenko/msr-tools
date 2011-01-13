@@ -44,6 +44,10 @@ namespace MSR.Tools.Visualizer
 		{
 			get { return visualizations.Select(x => x.Title); }
 		}
+		public IVisualization Visualization(string visualizationName)
+		{
+			return visualizations.Single(x => x.Title == visualizationName);
+		}
 		public string LastVisualizationProfiling
 		{
 			get; private set;

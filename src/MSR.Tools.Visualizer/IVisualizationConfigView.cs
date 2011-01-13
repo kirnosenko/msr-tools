@@ -11,6 +11,10 @@ namespace MSR.Tools.Visualizer
 {
 	public interface IVisualizationConfigView
 	{
-		IDictionary<string,object> Show();
+		void AddTextOption(string name, string value);
+		void AddSelectionOption(string name, object[] values, object selected);
+		object GetOption(string name);
+		
+		bool ShowDialog();
 	}
 }

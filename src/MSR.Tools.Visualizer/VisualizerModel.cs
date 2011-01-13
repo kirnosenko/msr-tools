@@ -13,7 +13,6 @@ namespace MSR.Tools.Visualizer
 	public class VisualizerModel
 	{
 		public event Action OnVisualizationListUpdated;
-		public event Action OnVisualizationNeedsConfig;
 		
 		private VisualizationTool visualizer;
 		
@@ -26,14 +25,17 @@ namespace MSR.Tools.Visualizer
 			visualizer = new VisualizationTool(fileName);
 			OnVisualizationListUpdated();
 		}
-		public void Visualize(string visualizationName, IGraphView graph)
+		public void Visualize(string visualizationName, IGraphView graph, IVisualizationConfigPresenter config)
 		{
 			if (AutomaticallyCleanUp)
 			{
 				graph.CleanUp();
 			}
-			OnVisualizationNeedsConfig();
-			visualizer.Visualize(visualizationName, graph);
+			
+			if (config.Config(visualizer.Visualization(visualizationName)))
+			{
+				visualizer.Visualize(visualizationName, graph);
+			}
 		}
 		public string LastVisualizationProfiling
 		{
