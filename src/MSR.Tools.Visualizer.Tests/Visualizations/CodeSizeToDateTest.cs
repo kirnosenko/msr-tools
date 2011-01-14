@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -43,20 +43,20 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			mappingDSL
 				.AddCommit("1").At(DateTime.Today.AddDays(-9))
-					.AddFile("file1").Modified()
+					.AddFile("/file1").Modified()
 						.Code(100)
 			.Submit()
 				.AddCommit("2").At(DateTime.Today.AddDays(-8))
-					.File("file1").Modified()
+					.File("/file1").Modified()
 						.Code(-20).ForCodeAddedInitiallyInRevision("1")
 						.Code(10)
-					.AddFile("file2").Modified()
+					.AddFile("/file2").Modified()
 						.Code(50)
 			.Submit()
 				.AddCommit("3").At(DateTime.Today.AddDays(-7))
-					.File("file1").Modified()
+					.File("/file1").Modified()
 						.Code(40)
-					.File("file2").Delete().Modified()
+					.File("/file2").Delete().Modified()
 						.DeleteCode()
 			.Submit();
 			
