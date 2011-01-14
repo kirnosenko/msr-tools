@@ -57,8 +57,7 @@ namespace MSR.Tools.Mapper
 				for (int revision = startRevision; revision <= stopRevision; revision++)
 				{
 					Console.WriteLine("mapping of revision {0}", revision);
-					mapping.RevisionNumber = revision;
-					mapping.Map();
+					mapping.Map(scmData.RevisionByNumber(revision));
 				}
 			}
 		}
@@ -110,7 +109,14 @@ namespace MSR.Tools.Mapper
 		}
 		public void Check(int stopRevisionNumber, string path, bool automaticallyFixDiffErrors)
 		{
-			string stopRevision = scmData.RevisionByNumber(stopRevisionNumber);
+			Check(
+				scmData.RevisionByNumber(stopRevisionNumber),
+				path,
+				automaticallyFixDiffErrors
+			);
+		}
+		public void Check(string stopRevision, string path, bool automaticallyFixDiffErrors)
+		{
 			pathFilter = e => path == null ? e : e.PathIs(path);
 			this.automaticallyFixDiffErrors = automaticallyFixDiffErrors;
 			

@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -19,7 +19,6 @@ namespace MSR.Data.Entities.Mapping
 	public class MappingControllerTest : BaseRepositoryTest
 	{
 		private MappingController mapper;
-		private IScmData scmDataStub;
 		private CommitMapper commitMapperStub;
 		private BugFixMapper bugFixMapperStub;
 		private ProjectFileMapper fileMapperStub;
@@ -28,8 +27,7 @@ namespace MSR.Data.Entities.Mapping
 		public override void SetUp()
 		{
 			base.SetUp();
-			scmDataStub = MockRepository.GenerateStub<IScmData>();
-			mapper = new MappingController(data, scmDataStub, new IMapper[] {});
+			mapper = new MappingController(data, new IMapper[] {});
 			commitMapperStub = MockRepository.GenerateStub<CommitMapper>(null as IScmData);
 			bugFixMapperStub = MockRepository.GenerateStub<BugFixMapper>(null, null);
 			fileMapperStub = MockRepository.GenerateStub<ProjectFileMapper>(null as IScmData);
@@ -44,25 +42,22 @@ namespace MSR.Data.Entities.Mapping
 			
 			mapper.RegisterMapper<RepositoryMappingExpression,CommitMappingExpression>(commitMapperStub);
 			
-			mapper.Map();
+			mapper.Map("1");
 			
 			commitMapperStub.VerifyAllExpectations();
 		}
 		[Test]
 		public void Should_set_revision_being_mapped()
 		{
-			scmDataStub.Stub(x => x.RevisionByNumber(10))
-				.Return("revision id");
 			commitMapperStub.Expect(x => x.Map(null))
 				.IgnoreArguments()
 				.Constraints(Rhino.Mocks.Constraints.Is.Matching(
-					(RepositoryMappingExpression e) => e.Revision == "revision id"
+					(RepositoryMappingExpression e) => e.Revision == "10"
 				))
 				.Return(Enumerable.Empty<CommitMappingExpression>());
 
 			mapper.RegisterMapper<RepositoryMappingExpression, CommitMappingExpression>(commitMapperStub);
-			mapper.RevisionNumber = 10;
-			mapper.Map();
+			mapper.Map("10");
 
 			commitMapperStub.VerifyAllExpectations();
 		}
@@ -81,7 +76,7 @@ namespace MSR.Data.Entities.Mapping
 			mapper.RegisterMapper<RepositoryMappingExpression, CommitMappingExpression>(commitMapperStub);
 			mapper.RegisterMapper<CommitMappingExpression, BugFixMappingExpression>(bugFixMapperStub);
 
-			mapper.Map();
+			mapper.Map("1");
 			
 			bugFixMapperStub.AssertWasCalled(x => x.Map(commitExp));
 		}
@@ -104,7 +99,7 @@ namespace MSR.Data.Entities.Mapping
 			mapper.RegisterMapper<CommitMappingExpression, BugFixMappingExpression>(bugFixMapperStub);
 			mapper.RegisterMapper<CommitMappingExpression, ProjectFileMappingExpression>(fileMapperStub);
 
-			mapper.Map();
+			mapper.Map("1");
 
 			fileMapperStub.AssertWasCalled(x => x.Map(commitExp));
 		}
@@ -119,8 +114,8 @@ namespace MSR.Data.Entities.Mapping
 				.Repeat.Twice();
 			mapper.RegisterMapper<RepositoryMappingExpression, CommitMappingExpression>(commitMapperStub);
 			
-			mapper.Map();
-			mapper.Map();
+			mapper.Map("1");
+			mapper.Map("1");
 		}
 	}
 }

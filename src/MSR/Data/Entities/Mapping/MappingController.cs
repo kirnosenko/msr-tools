@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -15,31 +15,28 @@ namespace MSR.Data.Entities.Mapping
 {
 	public class MappingController : IMappingHost
 	{
-		private IDataStore dataStore;
-		private ISession session;
-		private IScmData scmData;
+		private IDataStore data;
 		
 		private List<object> availableExpressions;
 		private List<Action> mappers = new List<Action>();
 		
-		public MappingController(IDataStore dataStore, IScmData scmData, IMapper[] mappers)
+		public MappingController(IDataStore data, IMapper[] mappers)
 		{
-			this.dataStore = dataStore;
-			this.scmData = scmData;
+			this.data = data;
 			foreach (var mapper in mappers)
 			{
 				mapper.RegisterHost(this);
 			}
 		}
-		public void Map()
+		public void Map(string revision)
 		{
-			using (session = dataStore.OpenSession())
+			using (var s = data.OpenSession())
 			{
 				availableExpressions = new List<object>()
 				{ 
-					new RepositoryMappingExpression(session)
+					new RepositoryMappingExpression(s)
 					{
-						Revision = scmData.RevisionByNumber(RevisionNumber)
+						Revision = revision
 					}
 				};
 				
@@ -48,7 +45,7 @@ namespace MSR.Data.Entities.Mapping
 					mapper();
 				}
 				
-				session.SubmitChanges();
+				s.SubmitChanges();
 			}
 		}
 		public void RegisterMapper<IME,OME>(EntityMapper<IME,OME> mapper)
@@ -70,10 +67,6 @@ namespace MSR.Data.Entities.Mapping
 					availableExpressions.Add(exp);
 				}
 			});
-		}
-		public int RevisionNumber
-		{
-			get; set;
 		}
 	}
 }
