@@ -44,7 +44,10 @@ namespace MSR.Tools.StatGenerator
 			
 			foreach (var builder in builders)
 			{
-				builder.TargetDir = TargetDir;
+				if (builder.TargetDir == null)
+				{
+					builder.TargetDir = TargetDir;
+				}
 				
 				VelocityContext context = new VelocityContext();
 				context.Put("menu", menu);
