@@ -16,10 +16,12 @@ namespace MSR.Data.VersionControl.Svn
 		private ISvnClient svn;
 		private string fullDiffRevision;
 		private SvnFullUniDiff fullDiff;
+		private int numberOfRevisions;
 		
 		public SvnData(ISvnClient svn)
 		{
 			this.svn = svn;
+			numberOfRevisions = GetNumberOfRevisions();
 		}
 		public ILog Log(string revision)
 		{
@@ -53,7 +55,32 @@ namespace MSR.Data.VersionControl.Svn
 		}
 		public string RevisionByNumber(int revisionNumber)
 		{
-			return revisionNumber.ToString();
+			if (revisionNumber <= numberOfRevisions)
+			{
+				return revisionNumber.ToString();
+			}
+			return null;
+		}
+		public string NextRevision(string revision)
+		{
+			return RevisionByNumber(Convert.ToInt32(revision) + 1);
+		}
+		private int GetNumberOfRevisions()
+		{
+			using (var info = svn.Info())
+			{
+				TextReader reader = new StreamReader(info);
+
+				string line;
+				while ((line = reader.ReadLine()) != null)
+				{
+					if (line.StartsWith("Revision: "))
+					{
+						return Convert.ToInt32(line.Replace("Revision: ", ""));
+					}
+				}
+			}
+			return 0;
 		}
 	}
 }

@@ -5,6 +5,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using SharpTestsEx;
@@ -19,6 +20,7 @@ namespace MSR.Data.Entities.Mapping
 	public class MappingControllerTest : BaseRepositoryTest
 	{
 		private MappingController mapper;
+		private IScmData scmDataStub;
 		private CommitMapper commitMapperStub;
 		private BugFixMapper bugFixMapperStub;
 		private ProjectFileMapper fileMapperStub;
@@ -27,7 +29,8 @@ namespace MSR.Data.Entities.Mapping
 		public override void SetUp()
 		{
 			base.SetUp();
-			mapper = new MappingController(data, new IMapper[] {});
+			scmDataStub = MockRepository.GenerateStub<IScmData>();
+			mapper = new MappingController(scmDataStub, new IMapper[] {});
 			commitMapperStub = MockRepository.GenerateStub<CommitMapper>(null as IScmData);
 			bugFixMapperStub = MockRepository.GenerateStub<BugFixMapper>(null, null);
 			fileMapperStub = MockRepository.GenerateStub<ProjectFileMapper>(null as IScmData);
@@ -42,7 +45,7 @@ namespace MSR.Data.Entities.Mapping
 			
 			mapper.RegisterMapper<RepositoryMappingExpression,CommitMappingExpression>(commitMapperStub);
 			
-			mapper.Map("1");
+			mapper.Map(data, "1");
 			
 			commitMapperStub.VerifyAllExpectations();
 		}
@@ -57,7 +60,7 @@ namespace MSR.Data.Entities.Mapping
 				.Return(Enumerable.Empty<CommitMappingExpression>());
 
 			mapper.RegisterMapper<RepositoryMappingExpression, CommitMappingExpression>(commitMapperStub);
-			mapper.Map("10");
+			mapper.Map(data, "10");
 
 			commitMapperStub.VerifyAllExpectations();
 		}
@@ -76,7 +79,7 @@ namespace MSR.Data.Entities.Mapping
 			mapper.RegisterMapper<RepositoryMappingExpression, CommitMappingExpression>(commitMapperStub);
 			mapper.RegisterMapper<CommitMappingExpression, BugFixMappingExpression>(bugFixMapperStub);
 
-			mapper.Map("1");
+			mapper.Map(data, "1");
 			
 			bugFixMapperStub.AssertWasCalled(x => x.Map(commitExp));
 		}
@@ -99,7 +102,7 @@ namespace MSR.Data.Entities.Mapping
 			mapper.RegisterMapper<CommitMappingExpression, BugFixMappingExpression>(bugFixMapperStub);
 			mapper.RegisterMapper<CommitMappingExpression, ProjectFileMappingExpression>(fileMapperStub);
 
-			mapper.Map("1");
+			mapper.Map(data, "1");
 
 			fileMapperStub.AssertWasCalled(x => x.Map(commitExp));
 		}
@@ -114,8 +117,54 @@ namespace MSR.Data.Entities.Mapping
 				.Repeat.Twice();
 			mapper.RegisterMapper<RepositoryMappingExpression, CommitMappingExpression>(commitMapperStub);
 			
-			mapper.Map("1");
-			mapper.Map("1");
+			mapper.Map(data, "1");
+			mapper.Map(data, "1");
+		}
+		[Test]
+		public void Should_map_until_last_revision()
+		{
+			List<string> revisions = new List<string>();
+			
+			scmDataStub.Stub(x => x.NextRevision("8"))
+				.Return("9");
+			scmDataStub.Stub(x => x.NextRevision("9"))
+				.Return("10");
+			scmDataStub.Stub(x => x.NextRevision("10"))
+				.Return("11");
+			
+			mapper.NextRevision = "8";
+			mapper.StopRevision = "10";
+			mapper.OnRevisionMapping += r => revisions.Add(r);
+			
+			mapper.Map(data);
+			
+			revisions.ToArray()
+				.Should().Have.SameSequenceAs(new string[]
+				{
+					"8", "9", "10"
+				});
+		}
+		[Test]
+		public void Should_stop_if_no_more_revisions()
+		{
+			List<string> revisions = new List<string>();
+
+			scmDataStub.Stub(x => x.NextRevision("8"))
+				.Return("9");
+			scmDataStub.Stub(x => x.NextRevision("9"))
+				.Return(null);
+
+			mapper.NextRevision = "8";
+			mapper.StopRevision = null;
+			mapper.OnRevisionMapping += r => revisions.Add(r);
+
+			mapper.Map(data);
+
+			revisions.ToArray()
+				.Should().Have.SameSequenceAs(new string[]
+				{
+					"8", "9"
+				});
 		}
 	}
 }

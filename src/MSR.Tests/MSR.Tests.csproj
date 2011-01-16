@@ -86,9 +86,11 @@
     <Compile Include="Data\Entities\BaseRepositoryTest.cs" />
     <Compile Include="Data\VersionControl\FileUniDiffTest.cs" />
     <Compile Include="Data\VersionControl\Git\GitBlameTest.cs" />
+    <Compile Include="Data\VersionControl\Git\GitDataTest.cs" />
     <Compile Include="Data\VersionControl\Git\GitLogTest.cs" />
     <Compile Include="Data\VersionControl\ScmDataCacheTest.cs" />
     <Compile Include="Data\VersionControl\Svn\SvnBlameTest.cs" />
+    <Compile Include="Data\VersionControl\Svn\SvnDataTest.cs" />
     <Compile Include="Data\VersionControl\Svn\SvnFullUniDiffTest.cs" />
     <Compile Include="Data\VersionControl\Svn\SvnLogTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -12,6 +12,7 @@ namespace MSR.Data.VersionControl.Svn
 	public interface ISvnClient
 	{
 		string RepositoryPath { get; }
+		Stream Info();
 		Stream Log(string revision);
 		Stream DiffSum(string revision);
 		Stream List(string revision, string dirPath);

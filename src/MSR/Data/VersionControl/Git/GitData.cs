@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -54,7 +54,23 @@ namespace MSR.Data.VersionControl.Git
 			{
 				GetAllRevisions();
 			}
-			return revisions[revisionNumber - 1];
+			if (revisionNumber - 1 < revisions.Count)
+			{
+				return revisions[revisionNumber - 1];
+			}
+			else
+			{
+				return null;
+			}
+		}
+		public string NextRevision(string revision)
+		{
+			if (revisions == null)
+			{
+				GetAllRevisions();
+			}
+			int revisionNumber = revisions.IndexOf(revision) + 1;
+			return RevisionByNumber(revisionNumber + 1);
 		}
 		private void GetAllRevisions()
 		{

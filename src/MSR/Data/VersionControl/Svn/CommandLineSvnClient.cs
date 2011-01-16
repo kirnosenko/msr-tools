@@ -17,6 +17,10 @@ namespace MSR.Data.VersionControl.Svn
 			RepositoryPath = repositoryPath;
 			UseMergeHistory = true;
 		}
+		public Stream Info()
+		{
+			return RunSvnCommand("info \"{0}\"", RepositoryPath);
+		}
 		public Stream Log(string revision)
 		{
 			return RunSvnCommand("log \"{0}\"@{1} -c {1} -v --xml", RepositoryPath, revision);

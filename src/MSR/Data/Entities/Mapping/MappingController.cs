@@ -15,21 +15,43 @@ namespace MSR.Data.Entities.Mapping
 {
 	public class MappingController : IMappingHost
 	{
-		private IDataStore data;
+		public event Action<string> OnRevisionMapping;
+		
+		private IScmData scmData;
 		
 		private List<object> availableExpressions;
 		private List<Action> mappers = new List<Action>();
 		
-		public MappingController(IDataStore data, IMapper[] mappers)
+		public MappingController(IScmData scmData, IMapper[] mappers)
 		{
-			this.data = data;
+			this.scmData = scmData;
 			foreach (var mapper in mappers)
 			{
 				mapper.RegisterHost(this);
 			}
 		}
-		public void Map(string revision)
+		public void Map(IDataStore data)
 		{
+			if (RevisionExists(data, StopRevision))
+			{
+				return;
+			}
+			
+			do
+			{
+				Map(data, NextRevision);
+				NextRevision = NextRevision == StopRevision ?
+					null
+					:
+					scmData.NextRevision(NextRevision);
+			} while (NextRevision != null);
+		}
+		public void Map(IDataStore data, string revision)
+		{
+			if (OnRevisionMapping != null)
+			{
+				OnRevisionMapping(revision);
+			}
 			using (var s = data.OpenSession())
 			{
 				availableExpressions = new List<object>()
@@ -67,6 +89,21 @@ namespace MSR.Data.Entities.Mapping
 					availableExpressions.Add(exp);
 				}
 			});
+		}
+		public string NextRevision
+		{
+			get; set;
+		}
+		public string StopRevision
+		{
+			get; set;
+		}
+		private bool RevisionExists(IDataStore data, string revision)
+		{
+			using (var s = data.OpenSession())
+			{
+				return s.Repository<Commit>().SingleOrDefault(c => c.Revision == revision) != null;
+			}
 		}
 	}
 }

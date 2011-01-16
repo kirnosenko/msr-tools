@@ -50,15 +50,11 @@ namespace MSR.Tools.Mapper
 			using (ConsoleTimeLogger.Start("mapping time"))
 			{
 				MappingController mapping = GetConfiguredType<MappingController>();
-
-				int startRevision = MappingStartRevision(data);
-				int stopRevision = revisionCount;
-
-				for (int revision = startRevision; revision <= stopRevision; revision++)
-				{
-					Console.WriteLine("mapping of revision {0}", revision);
-					mapping.Map(scmData.RevisionByNumber(revision));
-				}
+				mapping.NextRevision = scmData.RevisionByNumber(MappingStartRevision(data));
+				mapping.StopRevision = scmData.RevisionByNumber(revisionCount);
+				mapping.OnRevisionMapping += r => Console.WriteLine("mapping of revision {0}", r);
+				
+				mapping.Map(data);
 			}
 		}
 		public void Truncate(int numberOfRevisionsToKeep)
