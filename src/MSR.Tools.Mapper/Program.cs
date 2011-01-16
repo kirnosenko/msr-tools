@@ -15,7 +15,8 @@ namespace MSR.Tools.Mapper
 			string configFile;
 			string cmd;
 			bool createSchema = false;
-			int numberOfRevisions = 0;
+			int stopRevisionNumber = 0;
+			string stopRevision = null;
 			bool automaticallyFixDiffErrors = false;
 			string path = null;
 			
@@ -35,12 +36,13 @@ namespace MSR.Tools.Mapper
 							automaticallyFixDiffErrors = true;
 							break;
 						case "-n":
-							i++;
-							numberOfRevisions = Convert.ToInt32(args[i]);
+							stopRevisionNumber = Convert.ToInt32(args[++i]);
+							break;
+						case "-r":
+							stopRevision = args[++i];
 							break;
 						case "-p":
-							i++;
-							path = args[i];
+							path = args[++i];
 							break;
 						default:
 							break;
@@ -53,9 +55,10 @@ namespace MSR.Tools.Mapper
 				Console.WriteLine("usage: MSR.Tools.Mapper CONFIG_FILE_NAME COMMAND [ARGS]");
 				Console.WriteLine("Commands:");
 				Console.WriteLine("  info		print general information about database");
-				Console.WriteLine("  map		map data from software repositories to database");
-				Console.WriteLine("    -c		create data base");
-				Console.WriteLine("    -n N		map commits from first to N incrementally");
+				Console.WriteLine("  map		map data incrementally from software repositories to database");
+				Console.WriteLine("    -c		create database");
+				Console.WriteLine("    -n N		map data till commit number N");
+				Console.WriteLine("    -r R		map data till revision R");
 				Console.WriteLine("  check		check validity of mapped data");
 				Console.WriteLine("    -n N		check data till revision N");
 				Console.WriteLine("    -p PATH	check the file on path");
@@ -82,10 +85,24 @@ namespace MSR.Tools.Mapper
 						mapper.Info();
 						break;
 					case "map":
-						mapper.Map(createSchema, numberOfRevisions);
+						if (stopRevisionNumber != 0)
+						{
+							mapper.Map(createSchema, stopRevisionNumber);
+						}
+						else
+						{
+							mapper.Map(createSchema, stopRevision);
+						}
 						break;
 					case "check":
-						mapper.Check(numberOfRevisions, path, automaticallyFixDiffErrors);
+						if (stopRevisionNumber != 0)
+						{
+							mapper.Check(stopRevisionNumber, path, automaticallyFixDiffErrors);
+						}
+						else
+						{
+							mapper.Check(stopRevision, path, automaticallyFixDiffErrors);
+						}
 						break;
 					default:
 						Console.WriteLine("Unknown command {0}", cmd);

@@ -40,7 +40,11 @@ namespace MSR.Tools.Mapper
 				Console.WriteLine("CodeBlocks: {0}", s.Repository<CodeBlock>().Count());
 			}
 		}
-		public void Map(bool createSchema, int revisionCount)
+		public void Map(bool createSchema, int stopRevisionNumber)
+		{
+			Map(createSchema, scmData.RevisionByNumber(stopRevisionNumber));
+		}
+		public void Map(bool createSchema, string stopRevision)
 		{
 			if (createSchema)
 			{
@@ -51,7 +55,7 @@ namespace MSR.Tools.Mapper
 			{
 				MappingController mapping = GetConfiguredType<MappingController>();
 				mapping.NextRevision = scmData.RevisionByNumber(MappingStartRevision(data));
-				mapping.StopRevision = scmData.RevisionByNumber(revisionCount);
+				mapping.StopRevision = stopRevision;
 				mapping.OnRevisionMapping += r => Console.WriteLine("mapping of revision {0}", r);
 				
 				mapping.Map(data);
