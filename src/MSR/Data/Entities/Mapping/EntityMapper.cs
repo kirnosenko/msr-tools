@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -13,7 +13,7 @@ using MSR.Data.Entities.DSL.Selection;
 
 namespace MSR.Data.Entities.Mapping
 {
-	public abstract class EntityMapper<IME,OME> : IMapper
+	public abstract class EntityMapper<T,IME,OME> : IMapper
 	{
 		protected IScmData scmData;
 		
@@ -25,6 +25,10 @@ namespace MSR.Data.Entities.Mapping
 		public void RegisterHost(IMappingHost host)
 		{
 			host.RegisterMapper(this);
+		}
+		public Type Type
+		{
+			get { return typeof(T); }
 		}
 	}
 }

@@ -10,6 +10,6 @@ namespace MSR.Data.Entities.Mapping
 {
 	public interface IMappingHost
 	{
-		void RegisterMapper<IME,OME>(EntityMapper<IME,OME> mapper);
+		void RegisterMapper<T,IME,OME>(EntityMapper<T,IME,OME> mapper);
 	}
 }

@@ -13,7 +13,7 @@ using MSR.Data.Entities.DSL.Mapping;
 
 namespace MSR.Data.Entities.Mapping
 {
-	public class ModificationMapper : EntityMapper<ProjectFileMappingExpression,ModificationMappingExpression>
+	public class ModificationMapper : EntityMapper<Modification,ProjectFileMappingExpression,ModificationMappingExpression>
 	{
 		public ModificationMapper(IScmData scmData)
 			: base(scmData)

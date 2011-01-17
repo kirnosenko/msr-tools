@@ -14,7 +14,7 @@ namespace MSR.Tools.Mapper
 		{
 			string configFile;
 			string cmd;
-			bool createSchema = false;
+			bool createDataBase = false;
 			int stopRevisionNumber = 0;
 			string stopRevision = null;
 			bool automaticallyFixDiffErrors = false;
@@ -30,7 +30,7 @@ namespace MSR.Tools.Mapper
 					switch (args[i])
 					{
 						case "-c":
-							createSchema = true;
+							createDataBase = true;
 							break;
 						case "-f":
 							automaticallyFixDiffErrors = true;
@@ -87,11 +87,11 @@ namespace MSR.Tools.Mapper
 					case "map":
 						if (stopRevisionNumber != 0)
 						{
-							mapper.Map(createSchema, stopRevisionNumber);
+							mapper.Map(createDataBase, stopRevisionNumber);
 						}
 						else
 						{
-							mapper.Map(createSchema, stopRevision);
+							mapper.Map(createDataBase, stopRevision);
 						}
 						break;
 					case "check":

@@ -44,16 +44,12 @@ namespace MSR.Tools.Mapper
 		{
 			Map(createSchema, scmData.RevisionByNumber(stopRevisionNumber));
 		}
-		public void Map(bool createSchema, string stopRevision)
+		public void Map(bool createDataBase, string stopRevision)
 		{
-			if (createSchema)
-			{
-				CreateSchema();
-			}
-
 			using (ConsoleTimeLogger.Start("mapping time"))
 			{
 				MappingController mapping = GetConfiguredType<MappingController>();
+				mapping.CreateDataBase = createDataBase;
 				mapping.NextRevision = scmData.RevisionByNumber(MappingStartRevision(data));
 				mapping.StopRevision = stopRevision;
 				mapping.OnRevisionMapping += r => Console.WriteLine("mapping of revision {0}", r);
@@ -142,16 +138,6 @@ namespace MSR.Tools.Mapper
 			}
 		}
 
-		private void CreateSchema()
-		{
-			data.CreateSchema(
-				typeof(Commit),
-				typeof(BugFix),
-				typeof(ProjectFile),
-				typeof(Modification),
-				typeof(CodeBlock)
-			);
-		}
 		private int MappingStartRevision(IDataStore data)
 		{
 			using (var s = data.OpenSession())

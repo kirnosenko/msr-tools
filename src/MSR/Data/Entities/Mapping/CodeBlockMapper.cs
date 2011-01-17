@@ -14,7 +14,7 @@ using MSR.Data.Entities.DSL.Selection;
 
 namespace MSR.Data.Entities.Mapping
 {
-	public class CodeBlockMapper : EntityMapper<ModificationMappingExpression,CodeBlockMappingExpression>
+	public class CodeBlockMapper : EntityMapper<CodeBlock,ModificationMappingExpression,CodeBlockMappingExpression>
 	{
 		public CodeBlockMapper(IScmData scmData)
 			: base(scmData)

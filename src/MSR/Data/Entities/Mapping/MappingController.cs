@@ -21,6 +21,7 @@ namespace MSR.Data.Entities.Mapping
 		
 		private List<object> availableExpressions;
 		private List<Action> mappers = new List<Action>();
+		private List<Type> mapperTypes = new List<Type>();
 		
 		public MappingController(IScmData scmData, IMapper[] mappers)
 		{
@@ -32,7 +33,11 @@ namespace MSR.Data.Entities.Mapping
 		}
 		public void Map(IDataStore data)
 		{
-			if (RevisionExists(data, StopRevision))
+			if (CreateDataBase)
+			{
+				CreateSchema(data);
+			}
+			else if (RevisionExists(data, StopRevision))
 			{
 				return;
 			}
@@ -70,8 +75,9 @@ namespace MSR.Data.Entities.Mapping
 				s.SubmitChanges();
 			}
 		}
-		public void RegisterMapper<IME,OME>(EntityMapper<IME,OME> mapper)
+		public void RegisterMapper<T,IME,OME>(EntityMapper<T,IME,OME> mapper)
 		{
+			mapperTypes.Add(typeof(T));
 			mappers.Add(() =>
 			{
 				List<object> newExpressions = new List<object>();
@@ -90,6 +96,10 @@ namespace MSR.Data.Entities.Mapping
 				}
 			});
 		}
+		public bool CreateDataBase
+		{
+			get; set;
+		}
 		public string NextRevision
 		{
 			get; set;
@@ -97,6 +107,10 @@ namespace MSR.Data.Entities.Mapping
 		public string StopRevision
 		{
 			get; set;
+		}
+		private void CreateSchema(IDataStore data)
+		{
+			data.CreateSchema(mapperTypes.ToArray());
 		}
 		private bool RevisionExists(IDataStore data, string revision)
 		{

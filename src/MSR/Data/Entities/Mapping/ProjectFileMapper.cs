@@ -15,7 +15,7 @@ using MSR.Data.Entities.DSL.Selection;
 
 namespace MSR.Data.Entities.Mapping
 {
-	public class ProjectFileMapper : EntityMapper<CommitMappingExpression, ProjectFileMappingExpression>
+	public class ProjectFileMapper : EntityMapper<ProjectFile,CommitMappingExpression,ProjectFileMappingExpression>
 	{
 		private IEnumerable<IPathSelector> pathSelectors;
 		

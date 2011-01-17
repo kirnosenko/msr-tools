@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -13,6 +13,9 @@ namespace MSR.Data
 	{
 		private Dictionary<Type, object> repositories = new Dictionary<Type, object>();
 		
+		public void CreateSchema(params Type[] tables)
+		{
+		}
 		public ISession OpenSession()
 		{
 			return new InMemorySession(this);

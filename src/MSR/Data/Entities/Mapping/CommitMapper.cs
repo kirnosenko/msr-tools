@@ -16,7 +16,7 @@ using MSR.Data.Entities.DSL.Mapping;
 
 namespace MSR.Data.Entities.Mapping
 {
-	public class CommitMapper : EntityMapper<RepositoryMappingExpression, CommitMappingExpression>
+	public class CommitMapper : EntityMapper<Commit,RepositoryMappingExpression,CommitMappingExpression>
 	{
 		public CommitMapper(IScmData scmData)
 			: base(scmData)

@@ -14,7 +14,7 @@ using MSR.Data.Entities.DSL.Mapping;
 
 namespace MSR.Data.Entities.Mapping
 {
-	public class BugFixMapper : EntityMapper<CommitMappingExpression, BugFixMappingExpression>
+	public class BugFixMapper : EntityMapper<BugFix,CommitMappingExpression,BugFixMappingExpression>
 	{
 		private IBugFixDetector bugFixDetector;
 		

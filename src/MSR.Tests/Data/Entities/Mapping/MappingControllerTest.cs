@@ -43,7 +43,7 @@ namespace MSR.Data.Entities.Mapping
 				.Constraints(Rhino.Mocks.Constraints.Is.NotNull())
 				.Return(Enumerable.Empty<CommitMappingExpression>());
 			
-			mapper.RegisterMapper<RepositoryMappingExpression,CommitMappingExpression>(commitMapperStub);
+			mapper.RegisterMapper(commitMapperStub);
 			
 			mapper.Map(data, "1");
 			
@@ -59,7 +59,7 @@ namespace MSR.Data.Entities.Mapping
 				))
 				.Return(Enumerable.Empty<CommitMappingExpression>());
 
-			mapper.RegisterMapper<RepositoryMappingExpression, CommitMappingExpression>(commitMapperStub);
+			mapper.RegisterMapper(commitMapperStub);
 			mapper.Map(data, "10");
 
 			commitMapperStub.VerifyAllExpectations();
@@ -76,8 +76,8 @@ namespace MSR.Data.Entities.Mapping
 				.IgnoreArguments()
 				.Return(Enumerable.Empty<BugFixMappingExpression>());
 			
-			mapper.RegisterMapper<RepositoryMappingExpression, CommitMappingExpression>(commitMapperStub);
-			mapper.RegisterMapper<CommitMappingExpression, BugFixMappingExpression>(bugFixMapperStub);
+			mapper.RegisterMapper(commitMapperStub);
+			mapper.RegisterMapper(bugFixMapperStub);
 
 			mapper.Map(data, "1");
 			
@@ -98,9 +98,9 @@ namespace MSR.Data.Entities.Mapping
 				.IgnoreArguments()
 				.Return(Enumerable.Empty<ProjectFileMappingExpression>());
 
-			mapper.RegisterMapper<RepositoryMappingExpression, CommitMappingExpression>(commitMapperStub);
-			mapper.RegisterMapper<CommitMappingExpression, BugFixMappingExpression>(bugFixMapperStub);
-			mapper.RegisterMapper<CommitMappingExpression, ProjectFileMappingExpression>(fileMapperStub);
+			mapper.RegisterMapper(commitMapperStub);
+			mapper.RegisterMapper(bugFixMapperStub);
+			mapper.RegisterMapper(fileMapperStub);
 
 			mapper.Map(data, "1");
 
@@ -115,7 +115,7 @@ namespace MSR.Data.Entities.Mapping
 				.IgnoreArguments()
 				.Return(new CommitMappingExpression[] { commitExp })
 				.Repeat.Twice();
-			mapper.RegisterMapper<RepositoryMappingExpression, CommitMappingExpression>(commitMapperStub);
+			mapper.RegisterMapper(commitMapperStub);
 			
 			mapper.Map(data, "1");
 			mapper.Map(data, "1");
@@ -165,6 +165,38 @@ namespace MSR.Data.Entities.Mapping
 				{
 					"8", "9"
 				});
+		}
+		[Test]
+		public void Should_create_schema_for_registered_expressions()
+		{
+			IDataStore dataStub = MockRepository.GenerateStub<IDataStore>();
+			dataStub.Stub(x => x.CreateSchema(null))
+				.IgnoreArguments()
+				.Callback(new Func<Type[],bool>((t) =>
+				{
+					t.Should().Have.SameValuesAs(new Type[]
+					{
+						typeof(Commit), typeof(BugFix), typeof(ProjectFile)
+					});
+					return true;
+				}));
+
+			CommitMappingExpression commitExp = mappingDSL.AddCommit("1");
+			commitMapperStub.Stub(x => x.Map(null))
+				.IgnoreArguments()
+				.Return(new CommitMappingExpression[] { commitExp });
+			bugFixMapperStub.Stub(x => x.Map(null))
+				.IgnoreArguments()
+				.Return(Enumerable.Empty<BugFixMappingExpression>());
+			fileMapperStub.Stub(x => x.Map(null))
+				.IgnoreArguments()
+				.Return(Enumerable.Empty<ProjectFileMappingExpression>());
+			mapper.RegisterMapper(commitMapperStub);
+			mapper.RegisterMapper(bugFixMapperStub);
+			mapper.RegisterMapper(fileMapperStub);
+			mapper.CreateDataBase = true;
+			
+			mapper.Map(data, "1");
 		}
 	}
 }
