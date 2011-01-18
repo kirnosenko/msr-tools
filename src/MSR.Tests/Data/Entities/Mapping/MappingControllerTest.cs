@@ -125,6 +125,9 @@ namespace MSR.Data.Entities.Mapping
 		{
 			List<string> revisions = new List<string>();
 			
+			scmDataStub.Stub(x => x.RevisionByNumber(0))
+				.IgnoreArguments()
+				.Return("8");
 			scmDataStub.Stub(x => x.NextRevision("8"))
 				.Return("9");
 			scmDataStub.Stub(x => x.NextRevision("9"))
@@ -132,7 +135,6 @@ namespace MSR.Data.Entities.Mapping
 			scmDataStub.Stub(x => x.NextRevision("10"))
 				.Return("11");
 			
-			mapper.NextRevision = "8";
 			mapper.StopRevision = "10";
 			mapper.OnRevisionMapping += r => revisions.Add(r);
 			
@@ -149,12 +151,14 @@ namespace MSR.Data.Entities.Mapping
 		{
 			List<string> revisions = new List<string>();
 
+			scmDataStub.Stub(x => x.RevisionByNumber(0))
+				.IgnoreArguments()
+				.Return("8");
 			scmDataStub.Stub(x => x.NextRevision("8"))
 				.Return("9");
 			scmDataStub.Stub(x => x.NextRevision("9"))
 				.Return(null);
 
-			mapper.NextRevision = "8";
 			mapper.StopRevision = null;
 			mapper.OnRevisionMapping += r => revisions.Add(r);
 

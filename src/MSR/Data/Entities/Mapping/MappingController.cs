@@ -41,15 +41,16 @@ namespace MSR.Data.Entities.Mapping
 			{
 				return;
 			}
+			string nextRevision = scmData.RevisionByNumber(MappingStartRevision(data));
 			
 			do
 			{
-				Map(data, NextRevision);
-				NextRevision = NextRevision == StopRevision ?
+				Map(data, nextRevision);
+				nextRevision = nextRevision == StopRevision ?
 					null
 					:
-					scmData.NextRevision(NextRevision);
-			} while (NextRevision != null);
+					scmData.NextRevision(nextRevision);
+			} while (nextRevision != null);
 		}
 		public void Map(IDataStore data, string revision)
 		{
@@ -100,10 +101,6 @@ namespace MSR.Data.Entities.Mapping
 		{
 			get; set;
 		}
-		public string NextRevision
-		{
-			get; set;
-		}
 		public string StopRevision
 		{
 			get; set;
@@ -117,6 +114,13 @@ namespace MSR.Data.Entities.Mapping
 			using (var s = data.OpenSession())
 			{
 				return s.Repository<Commit>().SingleOrDefault(c => c.Revision == revision) != null;
+			}
+		}
+		private int MappingStartRevision(IDataStore data)
+		{
+			using (var s = data.OpenSession())
+			{
+				return s.Repository<Commit>().Count() + 1;
 			}
 		}
 	}

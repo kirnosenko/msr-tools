@@ -50,7 +50,6 @@ namespace MSR.Tools.Mapper
 			{
 				MappingController mapping = GetConfiguredType<MappingController>();
 				mapping.CreateDataBase = createDataBase;
-				mapping.NextRevision = scmData.RevisionByNumber(MappingStartRevision(data));
 				mapping.StopRevision = stopRevision;
 				mapping.OnRevisionMapping += r => Console.WriteLine("mapping of revision {0}", r);
 				
@@ -138,13 +137,6 @@ namespace MSR.Tools.Mapper
 			}
 		}
 
-		private int MappingStartRevision(IDataStore data)
-		{
-			using (var s = data.OpenSession())
-			{
-				return s.Repository<Commit>().Count() + 1;
-			}
-		}
 		private void CheckEmptyCodeBlocks(IRepositoryResolver repositories, string testRevision)
 		{
 			foreach (var zeroCodeBlock in
