@@ -23,11 +23,12 @@ namespace MSR.Tools.Debugger
 		{
 			Console.BufferHeight = 10000;
 
-			configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
+			//configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
 			//configFile = @"E:\repo\dia\dia.config"; // 4384 revisions
 			//configFile = @"E:\repo\gnome-vfs\gnome-vfs.config"; // 5550 revisions
 			//configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
-			//configFile = @"E:\repo\git\git.config";
+			configFile = @"E:\repo\git\git.config";
+			//configFile = @"E:\repo\gitstats\gitstats.config";
 			//configFile = @"E:\repo\linux-2.6\linux-2.6.config";
 			//configFile = @"E:\repo\jquery\jquery.config";
 			//configFile = @"E:\repo\django\django.config";
@@ -35,28 +36,27 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\nhibernate\nhibernate.config";
 			//configFile = @"E:\repo\msr\msr.config";
 
-			//Debug();
+			Debug();
 			//Mapping();
 			//Predict();
 			//LocStat();
-			GenerateStat();
+			//GenerateStat();
 
 			Console.ReadKey();
 		}
 		static void Debug()
 		{
 			DebuggingTool debugger = new DebuggingTool(configFile);
-
-			
+			debugger.FindDiffError(272);
 		}
 		static void Mapping()
 		{
 			MappingTool mapper = new MappingTool(configFile);
 			
 			//mapper.Info();
-			//mapper.Map(false, 756);
+			//mapper.Map(false, 217);
 			//mapper.Truncate(755);
-			mapper.Check(756);
+			mapper.Check(120);
 		}
 		static void Predict()
 		{

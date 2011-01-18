@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -23,6 +23,59 @@ namespace MSR.Tools.Debugger
 		public DebuggingTool(string configFile)
 			: base(configFile)
 		{
+		}
+		public void FindDiffError(int startRevision)
+		{
+			int revisionNumber = startRevision;
+			string revision = scmDataNoCache.RevisionByNumber(revisionNumber);
+			
+			do
+			{
+				Console.WriteLine("Searching for diff errors in commit {0}({1})...", revision, revisionNumber);
+				
+				List<string> fileErrors = new List<string>();
+				foreach (var file in scmDataNoCache.Log(revision).TouchedFiles.Select(x => x.Path))
+				{
+					var diff = scmDataNoCache.Diff(revision, file);
+					if (diff.AddedLines.Count() > 0)
+					{
+						var blame = scmDataNoCache.Blame(revision, file);
+						
+						foreach (var line in diff.AddedLines)
+						{
+							if (blame[line] != revision)
+							{
+								fileErrors.Add(string.Format(
+									"Line {0}: added in diff, but blame say otherwise.", line
+								));
+							}
+						}
+						foreach (var line in blame.Where(x => x.Value == revision).Select(x => x.Key))
+						{
+							if (! diff.AddedLines.Contains(line))
+							{
+								fileErrors.Add(string.Format(
+									"Line {0}: not added in diff, but blame say otherwise.", line
+								));
+							}
+						}
+					}
+					if (fileErrors.Count > 0)
+					{
+						Console.WriteLine("Diff error in revision {0} in file {1}.", revision, file);
+						foreach (var error in fileErrors)
+						{
+							Console.WriteLine(error);
+						}
+						return;
+					}
+				}
+				
+				revisionNumber++;
+				revision = scmDataNoCache.RevisionByNumber(revisionNumber);
+			} while (revision != null);
+			
+			Console.WriteLine("No diff errors.");
 		}
 		public void Predict(string previousReleaseRevision, string releaseRevision)
 		{
