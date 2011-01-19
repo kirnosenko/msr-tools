@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -42,7 +42,7 @@ namespace MSR.Data.Entities.DSL.Selection
 					.Should().Be(1);
 		}
 		[Test]
-		public void Should_select_commits_are_bugfixes()
+		public void Should_select_commits_are_bugfixes_or_not()
 		{
 			mappingDSL
 				.AddCommit("1")
@@ -56,6 +56,10 @@ namespace MSR.Data.Entities.DSL.Selection
 				.Commits().AreBugFixes()
 				.Select(x => x.Revision).ToArray()
 					.Should().Have.SameSequenceAs(new string[] { "2", "3" });
+			selectionDSL
+				.Commits().AreNotBugFixes()
+				.Select(x => x.Revision).ToArray()
+					.Should().Have.SameSequenceAs(new string[] { "1" });
 		}
 	}
 }

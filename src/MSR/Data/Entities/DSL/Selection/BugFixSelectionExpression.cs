@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -20,6 +20,17 @@ namespace MSR.Data.Entities.DSL.Selection
 			return parentExp.Reselect(s =>
 				from c in s
 				join bf in parentExp.Repository<BugFix>() on c.ID equals bf.CommitID
+				select c
+			);
+		}
+		public static CommitSelectionExpression AreNotBugFixes(this CommitSelectionExpression parentExp)
+		{
+			return parentExp.Reselect(s =>
+				from c in s
+				join bf in parentExp.Repository<BugFix>() on c.ID equals bf.CommitID into j
+				from x in j.DefaultIfEmpty()
+				where
+					x == null
 				select c
 			);
 		}
