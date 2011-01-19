@@ -60,9 +60,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					files_percent = ((double)ext_files_count / files_count * 100).ToString("F02"),
 					dd = code.CalculateTraditionalDefectDensity().ToString("F02"),
 					added = code.Added().CalculateLOC(),
-					addedInFixes = code.Added().InBugFixes().CalculateLOC(),
 					deleted = - code.Deleted().CalculateLOC(),
-					deletedInFixes = - code.Deleted().InBugFixes().CalculateLOC(),
 					current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
 				});
 			}
@@ -94,9 +92,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					files_percent = ((double)dir_files_count / files_count * 100).ToString("F02"),
 					dd = code.CalculateTraditionalDefectDensity().ToString("F02"),
 					added = code.Added().CalculateLOC(),
-					addedInFixes = code.Added().InBugFixes().CalculateLOC(),
 					deleted = - code.Deleted().CalculateLOC(),
-					deletedInFixes = -code.Deleted().InBugFixes().CalculateLOC(),
 					current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
 				});
 			}

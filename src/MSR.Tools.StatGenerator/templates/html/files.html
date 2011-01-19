@@ -6,9 +6,7 @@
 			<th>Number of files (%)</th>
 			<th>Defect density (defects per KLOC)</th>
 			<th>Added LOC</th>
-			<th>Added LOC in fixes</th>
 			<th>Removed LOC</th>
-			<th>Removed LOC in fixes</th>
 			<th>Current LOC</th>
 		</tr>
 		#foreach($ext in $exts)
@@ -18,9 +16,7 @@
 			<td>$ext.files ($ext.files_percent %)</td>
 			<td>$ext.dd</td>
 			<td>$ext.added</td>
-			<td>$ext.addedInFixes</td>
 			<td>$ext.deleted</td>
-			<td>$ext.deletedInFixes</td>
 			<td>$ext.current</td>
 		</tr>
 		#end
@@ -33,9 +29,7 @@
 			<th>Number of files (%)</th>
 			<th>Defect density (defects per KLOC)</th>
 			<th>Added LOC</th>
-			<th>Added LOC in fixes</th>
 			<th>Removed LOC</th>
-			<th>Removed LOC in fixes</th>
 			<th>Current LOC</th>
 		</tr>
 		#foreach($dir in $dirs)
@@ -45,9 +39,7 @@
 			<td>$dir.files ($dir.files_percent %)</td>
 			<td>$dir.dd</td>
 			<td>$dir.added</td>
-			<td>$dir.addedInFixes</td>
 			<td>$dir.deleted</td>
-			<td>$dir.deletedInFixes</td>
 			<td>$dir.current</td>
 		</tr>
 		#end
