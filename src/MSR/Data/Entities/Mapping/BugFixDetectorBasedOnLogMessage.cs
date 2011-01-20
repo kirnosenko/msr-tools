@@ -20,7 +20,7 @@ namespace MSR.Data.Entities.Mapping
 		public BugFixDetectorBasedOnLogMessage()
 		{
 			MessageRegExp = @"(\P{L}|^)(fix|fixes|bug|bugs|bugfix|bugfixes|fixed)(\P{L}|$)";
-			stopWords = new string[] { "warning" };
+			stopWords = new string[] { "warning", "typo" };
 		}
 		public bool IsBugFix(Commit commit)
 		{
