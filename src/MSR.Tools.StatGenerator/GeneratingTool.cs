@@ -5,6 +5,7 @@
  */
 
 using System;
+using System.Diagnostics;
 
 namespace MSR.Tools.StatGenerator
 {
@@ -17,20 +18,23 @@ namespace MSR.Tools.StatGenerator
 		}
 		public void GenerateStat(string targetDir, string outputDir, string templateDir)
 		{
-			StatBuilder builder = GetConfiguredType<StatBuilder>();
-			if (targetDir != null)
+			using (ConsoleTimeLogger.Start("generating statistics time"))
 			{
-				builder.TargetDir = targetDir;
+				StatBuilder builder = GetConfiguredType<StatBuilder>();
+				if (targetDir != null)
+				{
+					builder.TargetDir = targetDir;
+				}
+				if (outputDir != null)
+				{
+					builder.OutputDir = outputDir;
+				}
+				if (templateDir != null)
+				{
+					builder.TargetDir = templateDir;
+				}
+				builder.GenerateStat(data);
 			}
-			if (outputDir != null)
-			{
-				builder.OutputDir = outputDir;
-			}
-			if (templateDir != null)
-			{
-				builder.TargetDir = templateDir;
-			}
-			builder.GenerateStat(data);
 		}
 	}
 }

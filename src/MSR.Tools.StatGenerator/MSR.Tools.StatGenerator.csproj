@@ -56,6 +56,10 @@
       <Project>{B6039F7F-3580-4FAC-A929-E9CA05C1A113}</Project>
       <Name>MSR.Tools</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MSR.Util\MSR.Util.csproj">
+      <Project>{8F9A4FAD-4EEB-4590-BEF5-034CDE2BFFBB}</Project>
+      <Name>MSR.Util</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MSR\MSR.csproj">
       <Project>{25E8A69D-6400-423F-8B83-C22C096E9D72}</Project>
       <Name>MSR</Name>
