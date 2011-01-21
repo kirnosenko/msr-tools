@@ -42,6 +42,9 @@ class Deploy
 			"./src/MSR.Tools.Visualizer/bin/Release/MSR.Tools.Visualizer.pdb",
 			"./src/MSR.Tools.Visualizer.WinForms/bin/Release/MSR.Tools.Visualizer.WinForms.exe",
 			"./src/MSR.Tools.Visualizer.WinForms/bin/Release/MSR.Tools.Visualizer.WinForms.pdb",
+			
+			"./LICENSE.TXT",
+			"./README.TXT",
 		};
 		List<string> dirs = new List<string>()
 		{
