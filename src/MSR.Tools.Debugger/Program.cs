@@ -23,11 +23,11 @@ namespace MSR.Tools.Debugger
 		{
 			Console.BufferHeight = 10000;
 
-			//configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
+			configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
 			//configFile = @"E:\repo\dia\dia.config"; // 4384 revisions
 			//configFile = @"E:\repo\gnome-vfs\gnome-vfs.config"; // 5550 revisions
 			//configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
-			configFile = @"E:\repo\git\git.config";
+			//configFile = @"E:\repo\git\git.config";
 			//configFile = @"E:\repo\gitstats\gitstats.config";
 			//configFile = @"E:\repo\linux-2.6\linux-2.6.config";
 			//configFile = @"E:\repo\jquery\jquery.config";
@@ -36,9 +36,9 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\nhibernate\nhibernate.config";
 			//configFile = @"E:\repo\msr\msr.config";
 
-			Debug();
+			//Debug();
 			//Mapping();
-			//Predict();
+			Predict();
 			//LocStat();
 			//GenerateStat();
 
@@ -60,38 +60,22 @@ namespace MSR.Tools.Debugger
 		}
 		static void Predict()
 		{
-			// gnome-terminal
-
-			string gnome_terminal_r_2_0_0 = "386";
-			string gnome_terminal_r_2_2_0 = "689";
-			string gnome_terminal_r_2_4_0 = "951";
-			string gnome_terminal_r_2_6_0 = "1198";
-			string gnome_terminal_r_2_8_0 = "1365";
-
-			// dia
-
-			string dia_r_0_90 = "1617";
-			string dia_r_0_91 = "2154";
-			string dia_r_0_92 = "2437";
-			string dia_r_0_94 = "2859";
-			string dia_r_0_95 = "3413";
-			string dia_r_0_96 = "3652";
-
-			// gnome-vfs
-
-			string gnome_vfs_r_2_0_0 = "2440";
-			string gnome_vfs_r_2_2_0 = "2782";
-			string gnome_vfs_r_2_4_0 = "3129";
-			string gnome_vfs_r_2_6_0 = "3633";
-			string gnome_vfs_r_2_8_0 = "4095";
-			string gnome_vfs_r_2_10_0 = "4366";
-			string gnome_vfs_r_2_12_0 = "4593";
-
+			string[] gnome_terminal_releases =
+			{
+				"386", "689", "951", "1198", "1365"
+			};
+			
+			string[] dia_releases =
+			{
+				"1617", "2154", "2437", "2859", "3413", "3652"
+			};
+			
 			DebuggingTool debugger = new DebuggingTool(configFile);
-			string previousReleaseRevision = gnome_terminal_r_2_6_0;
-			string releaseRevision = gnome_terminal_r_2_8_0;
-
-			debugger.Predict(previousReleaseRevision, releaseRevision);
+			
+			debugger.Predict(
+				gnome_terminal_releases.Take(4).ToArray(),
+				gnome_terminal_releases.Last()
+			);
 		}
 		static void LocStat()
 		{

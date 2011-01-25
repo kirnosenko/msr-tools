@@ -26,15 +26,14 @@ namespace MSR.Models
 		{
 			this.repositories = repositories;
 		}
-		public EvaluationResult Evaluate(IPostReleaseDefectFilePrediction prediction)
+		public EvaluationResult Evaluate(PostReleaseDefectFilePrediction prediction)
 		{
 			if (allFiles == null)
 			{
 				Calc();
 			}
-			IEnumerable<string> predictedDefectFiles = prediction.Predict(
-				PreviousReleaseRevision, ReleaseRevision, FileSelector
-			);
+			prediction.FileSelector = FileSelector;
+			IEnumerable<string> predictedDefectFiles = prediction.Predict(PreviousReleaseRevisions, ReleaseRevision);
 			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(predictedDefectFiles);
 
 			IEnumerable<string> P = defectFiles;
@@ -50,7 +49,7 @@ namespace MSR.Models
 		{
 			get; set;
 		}
-		public string PreviousReleaseRevision
+		public string[] PreviousReleaseRevisions
 		{
 			get; set;
 		}
@@ -69,7 +68,7 @@ namespace MSR.Models
 			
 			defectFiles = selectionDSL
 				.Commits()
-					.AfterRevision(PreviousReleaseRevision)
+					.AfterRevision(PreviousReleaseRevisions.Last())
 					.TillRevision(ReleaseRevision)
 				.Files()
 					.Reselect(FileSelector)

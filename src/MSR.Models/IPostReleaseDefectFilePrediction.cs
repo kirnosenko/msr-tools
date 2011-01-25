@@ -13,10 +13,7 @@ namespace MSR.Models
 {
 	public interface IPostReleaseDefectFilePrediction
 	{
-		IEnumerable<string> Predict(
-			string previousReleaseRevision,
-			string releaseRevision,
-			Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression> fileSelector
-		);
+		IEnumerable<string> Predict(string previousReleaseRevision, string releaseRevision);
+		Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression> FileSelector { get; set; }
 	}
 }

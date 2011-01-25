@@ -23,11 +23,7 @@ namespace MSR.Models
 		{
 			this.repositories = repositories;
 		}
-		public IEnumerable<string> Predict(
-			string previousReleaseRevision,
-			string releaseRevision,
-			Func<ProjectFileSelectionExpression, ProjectFileSelectionExpression> fileSelector
-		)
+		public IEnumerable<string> Predict(string previousReleaseRevision, string releaseRevision)
 		{
 			RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(repositories);
 			
@@ -37,7 +33,7 @@ namespace MSR.Models
 				.Commits()
 					.TillRevision(releaseRevision)
 				.Files()
-					.Reselect(fileSelector)
+					.Reselect(FileSelector)
 					.ExistInRevision(releaseRevision)
 						.Do(e => filesInRelease = e.Count())
 				.Modifications()
@@ -61,6 +57,10 @@ namespace MSR.Models
 				.OrderByDescending(x => x.Size)
 				.Select(x => x.Path)
 				.TakeNoMoreThan((int)(filesInRelease * 0.2));
+		}
+		public Func<ProjectFileSelectionExpression, ProjectFileSelectionExpression> FileSelector
+		{
+			get; set;
 		}
 	}
 }

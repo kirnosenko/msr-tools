@@ -23,11 +23,7 @@ namespace MSR.Models
 		{
 			this.repositories = repositories;
 		}
-		public IEnumerable<string> Predict(
-			string previousReleaseRevision,
-			string releaseRevision,
-			Func<ProjectFileSelectionExpression, ProjectFileSelectionExpression> fileSelector
-		)
+		public IEnumerable<string> Predict(string previousReleaseRevision, string releaseRevision)
 		{
 			RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(repositories);
 
@@ -35,7 +31,7 @@ namespace MSR.Models
 				.Commits()
 					.TillRevision(previousReleaseRevision)
 				.Files()
-					.Reselect(fileSelector)
+					.Reselect(FileSelector)
 					.ExistInRevision(previousReleaseRevision)
 				.Modifications()
 					.InCommits()
@@ -49,7 +45,7 @@ namespace MSR.Models
 					.AfterRevision(previousReleaseRevision)
 					.TillRevision(releaseRevision)
 				.Files()
-					.Reselect(fileSelector)
+					.Reselect(FileSelector)
 					.ExistInRevision(releaseRevision)
 				.Modifications()
 					.InCommits()
@@ -72,6 +68,10 @@ namespace MSR.Models
 			return files
 				.Where(x => x.predictedDCD >= DefectCodeDensityForCodeBeforePreviousRelease)
 				.Select(x => x.path);
+		}
+		public Func<ProjectFileSelectionExpression, ProjectFileSelectionExpression> FileSelector
+		{
+			get; set;
 		}
 	}
 }

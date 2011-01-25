@@ -6,25 +6,25 @@
 
 using System;
 using System.Collections.Generic;
-using Accord.Statistics.Analysis;
+using Accord.Statistics.Models.Regression.Linear;
 
 namespace MSR.Models.Regressions
 {
-	public class LogisticRegression : MultipleRegression
+	public class LinearRegression : MultipleRegression
 	{
-		private LogisticRegressionAnalysis regression;
-		
+		private MultipleLinearRegression regression;
+
 		public override void Train()
 		{
-			regression = new LogisticRegressionAnalysis(
+			regression = new MultipleLinearRegression(predictorsList[0].Length, true);
+			regression.Regress(
 				predictorsList.ToArray(),
 				resultList.ToArray()
 			);
-			regression.Compute();
 		}
 		public override double Predict(double[] predictors)
 		{
-			return regression.Regression.Compute(predictors);
+			return regression.Compute(predictors);
 		}
 	}
 }

@@ -23,6 +23,7 @@ namespace MSR.Models
 		public PostReleaseDefectFilePrediction(IRepositoryResolver repositories)
 		{
 			this.repositories = repositories;
+			FilePortionLimit = 0.2;
 		}
 		public void AddPredictor()
 		{
@@ -67,7 +68,7 @@ namespace MSR.Models
 
 			return faultProneFiles
 				.Select(x => x.Path)
-				.TakeNoMoreThan((int)(filesInRelease * 0.2));
+				.TakeNoMoreThan((int)(filesInRelease * FilePortionLimit));
 		}
 		public Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression> FileSelector
 		{

@@ -81,12 +81,14 @@ namespace MSR.Tools.Debugger
 			
 			Console.WriteLine("No diff errors.");
 		}
-		public void Predict(string previousReleaseRevision, string releaseRevision)
+		public void Predict(string[] previousReleaseRevisions, string releaseRevision)
 		{
 			using (ConsoleTimeLogger.Start("prediction"))
 			using (var s = data.OpenSession())
 			{
 				PostReleaseDefectFilePredictionEvaluation evaluator = new PostReleaseDefectFilePredictionEvaluation(s);
+				
+				/*
 				Dictionary<string, IPostReleaseDefectFilePrediction> predictors = new Dictionary<string, IPostReleaseDefectFilePrediction>()
 				{
 					{ "random", new RandomPostReleaseDefectFilePrediction(s) },
@@ -96,9 +98,15 @@ namespace MSR.Tools.Debugger
 					{ "dd based", new DefectDensityBasedDefectFilePrediction(s) },
 					{ "dcd based", new DefectCodeDensityBasedDefectFilePrediction(s) }
 				};
+				*/
 
+				Dictionary<string,PostReleaseDefectFilePrediction> predictors = new Dictionary<string,PostReleaseDefectFilePrediction>()
+				{
+					{ "base", new PostReleaseDefectFilePrediction(s) },
+				};
+				
 				evaluator.PostReleasePeriod = 30 * 6;
-				evaluator.PreviousReleaseRevision = previousReleaseRevision;
+				evaluator.PreviousReleaseRevisions = previousReleaseRevisions;
 				evaluator.ReleaseRevision = releaseRevision;
 				evaluator.FileSelector = fe => fe.InDirectory("/trunk");
 
