@@ -14,8 +14,8 @@ using MSR.Data.Entities;
 using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
 using MSR.Data.Persistent;
-using MSR.Models;
 using MSR.Data.VersionControl;
+using MSR.Models.Prediction;
 
 namespace MSR.Tools.Debugger
 {

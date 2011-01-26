@@ -13,7 +13,7 @@ using MSR.Data.Entities;
 using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
 
-namespace MSR.Models
+namespace MSR.Models.Prediction
 {
 	public class PostReleaseDefectFilePredictionEvaluation
 	{

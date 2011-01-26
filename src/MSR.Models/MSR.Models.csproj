@@ -43,16 +43,17 @@
   <ItemGroup>
     <Compile Include="DefectCodeDensityBasedDefectFilePrediction.cs" />
     <Compile Include="DefectDensityBasedDefectFilePrediction.cs" />
-    <Compile Include="EvaluationResult.cs" />
+    <Compile Include="Prediction\EvaluationResult.cs" />
     <Compile Include="IPostReleaseDefectFilePrediction.cs" />
-    <Compile Include="PostReleaseDefectFilePrediction.cs" />
+    <Compile Include="Prediction\PostReleaseDefectFilePrediction.cs" />
+    <Compile Include="Prediction\Prediction.cs" />
     <Compile Include="Regressions\LinearRegression.cs" />
     <Compile Include="Regressions\LogisticRegression.cs" />
     <Compile Include="LogisticRegressionPostReleaseDefectFilePrediction.cs" />
     <Compile Include="MaxAddedLocPostReleaseDefectFilePrediction.cs" />
     <Compile Include="MaxLocPostReleaseDefectFilePrediction.cs" />
     <Compile Include="MaxTouchCountPostReleaseDefectFilePrediction.cs" />
-    <Compile Include="PostReleaseDefectFilePredictionEvaluation.cs" />
+    <Compile Include="Prediction\PostReleaseDefectFilePredictionEvaluation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomPostReleaseDefectFilePrediction.cs" />
     <Compile Include="Regressions\MultipleRegression.cs" />

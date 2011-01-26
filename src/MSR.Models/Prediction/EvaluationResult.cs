@@ -6,7 +6,7 @@
 
 using System;
 
-namespace MSR.Models
+namespace MSR.Models.Prediction
 {
 	public class EvaluationResult
 	{
