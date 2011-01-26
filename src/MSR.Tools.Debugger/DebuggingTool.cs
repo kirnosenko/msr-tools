@@ -16,6 +16,7 @@ using MSR.Data.Entities.DSL.Selection.Metrics;
 using MSR.Data.Persistent;
 using MSR.Data.VersionControl;
 using MSR.Models.Prediction;
+using MSR.Models.Prediction.Predictors;
 
 namespace MSR.Tools.Debugger
 {
@@ -99,10 +100,15 @@ namespace MSR.Tools.Debugger
 					{ "dcd based", new DefectCodeDensityBasedDefectFilePrediction(s) }
 				};
 				*/
-
+				
+				var p = new PostReleaseDefectFilePrediction(s);
+				p
+					.AddFileTouchCountPredictor()
+					.AddLocPredictor();
+					
 				Dictionary<string,PostReleaseDefectFilePrediction> predictors = new Dictionary<string,PostReleaseDefectFilePrediction>()
 				{
-					{ "base", new PostReleaseDefectFilePrediction(s) },
+					{ "base", p },
 				};
 				
 				evaluator.PostReleasePeriod = 30 * 6;

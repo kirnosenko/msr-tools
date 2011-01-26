@@ -22,34 +22,22 @@ namespace MSR.Models.Prediction
 			: base(repositories)
 		{
 			FilePortionLimit = 0.2;
-
-			AddPredictor((Func<ProjectFileSelectionExpression,double>)(files =>
-			{
-				return files
-					.Commits().Again().TouchFiles().Count();
-			}));
-			AddPredictor((Func<CodeBlockSelectionExpression,double>)(code =>
-			{
-				return code.CalculateLOC();
-			}));
-			AddPredictor((Func<CodeBlockSelectionExpression,double>)(code =>
-			{
-				return code.CalculateNumberOfDefects();
-			}));
 		}
 		public IEnumerable<string> Predict(string[] previousReleaseRevisions, string releaseRevision)
 		{
 			LogisticRegression lr = new LogisticRegression();
 			
+			string previousRevision = null;
 			foreach (var revision in previousReleaseRevisions)
 			{
 				foreach (var file in FilesInRevision(revision))
 				{
 					lr.AddTrainingData(
-						GetPredictorValues(file.ID, revision),
-						FileHasDefects(file.ID, revision)
+						GetPredictorValues(file.ID, revision, previousRevision),
+						FileHasDefects(file.ID, revision, previousRevision)
 					);
 				}
+				previousRevision = revision;
 			}
 			
 			lr.Train();
@@ -63,7 +51,7 @@ namespace MSR.Models.Prediction
 					{
 						Path = f.Path,
 						FaultProneProbability = lr.Predict(
-							GetPredictorValues(f.ID, releaseRevision)
+							GetPredictorValues(f.ID, releaseRevision, previousReleaseRevisions.Last())
 						)
 					}
 				).Where(x => x.FaultProneProbability > 0.5)
@@ -81,20 +69,24 @@ namespace MSR.Models.Prediction
 		{
 			get; set;
 		}
-		private double[] GetPredictorValues(int fileID, string revision)
+		private double[] GetPredictorValues(int fileID, string revision, string previousRevision)
 		{
 			List<double> predictorValues = new List<double>();
 
 			predictorValues.AddRange(
 				GetPredictorValuesFor(
 					repositories.SelectionDSL()
-						.Commits().TillRevision(revision)
+						.Commits()
+							.Reselect(e => previousRevision == null ? e : e.AfterRevision(previousRevision))
+							.TillRevision(revision)
 						.Files().IdIs(fileID)
 				)
 			);
 			var code = repositories.SelectionDSL()
 				.Files().IdIs(fileID)
-				.Commits().TillRevision(revision)
+				.Commits()
+					.Reselect(e => previousRevision == null ? e : e.AfterRevision(previousRevision))
+					.TillRevision(revision)
 				.Modifications().InCommits().InFiles()
 				.CodeBlocks().InModifications();
 			predictorValues.AddRange(GetPredictorValuesFor(code));
@@ -109,11 +101,13 @@ namespace MSR.Models.Prediction
 					.ExistInRevision(revision)
 					.ToList();
 		}
-		private double FileHasDefects(int fileID, string revision)
+		private double FileHasDefects(int fileID, string revision, string previousRevision)
 		{
 			return repositories.SelectionDSL()
 				.Files().IdIs(fileID)
-				.Commits().TillRevision(revision)
+				.Commits()
+					.Reselect(e => previousRevision == null ? e : e.AfterRevision(previousRevision))
+					.TillRevision(revision)
 				.Modifications().InCommits().InFiles()
 				.CodeBlocks().InModifications().CalculateNumberOfDefects() > 0 ? 1 : 0;
 		}

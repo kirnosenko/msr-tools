@@ -47,6 +47,8 @@
     <Compile Include="IPostReleaseDefectFilePrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFilePrediction.cs" />
     <Compile Include="Prediction\Prediction.cs" />
+    <Compile Include="Prediction\Predictors\CodeBlockPredictors.cs" />
+    <Compile Include="Prediction\Predictors\ProjectFilePredictors.cs" />
     <Compile Include="Regressions\LinearRegression.cs" />
     <Compile Include="Regressions\LogisticRegression.cs" />
     <Compile Include="LogisticRegressionPostReleaseDefectFilePrediction.cs" />
