@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSR.Tools.StatGenerator", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSR.Tools.Visualizer.WinForms", "MSR.Tools.Visualizer.WinForms\MSR.Tools.Visualizer.WinForms.csproj", "{6E9BB4BA-0B59-49A5-9332-56119D56200B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSR.Models.Tests", "MSR.Models.Tests\MSR.Models.Tests.csproj", "{AFFC4E83-0C23-4DEC-90C0-0286144AD5A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{6E9BB4BA-0B59-49A5-9332-56119D56200B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E9BB4BA-0B59-49A5-9332-56119D56200B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E9BB4BA-0B59-49A5-9332-56119D56200B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFFC4E83-0C23-4DEC-90C0-0286144AD5A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFFC4E83-0C23-4DEC-90C0-0286144AD5A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFFC4E83-0C23-4DEC-90C0-0286144AD5A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFFC4E83-0C23-4DEC-90C0-0286144AD5A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

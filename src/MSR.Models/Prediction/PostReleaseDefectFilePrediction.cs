@@ -32,8 +32,13 @@ namespace MSR.Models.Prediction
 			{
 				foreach (var file in FilesInRevision(revision))
 				{
+					context
+						.SetValue("file_id", file.ID)
+						.SetValue("after_revision", previousRevision)
+						.SetValue("till_revision", revision);
+					
 					lr.AddTrainingData(
-						GetPredictorValues(file.ID, revision, previousRevision),
+						GetPredictorValuesFor(context),
 						FileHasDefects(file.ID, revision, previousRevision)
 					);
 				}
@@ -44,6 +49,11 @@ namespace MSR.Models.Prediction
 
 			var files = FilesInRevision(releaseRevision);
 			int filesInRelease = files.Count();
+			
+			context
+				.SetValue("after_revision", previousReleaseRevisions.Last())
+				.SetValue("till_revision", releaseRevision);
+			
 			var faultProneFiles =
 				(
 					from f in files
@@ -51,7 +61,7 @@ namespace MSR.Models.Prediction
 					{
 						Path = f.Path,
 						FaultProneProbability = lr.Predict(
-							GetPredictorValues(f.ID, releaseRevision, previousReleaseRevisions.Last())
+							GetPredictorValuesFor(context.SetValue("file_id", f.ID))
 						)
 					}
 				).Where(x => x.FaultProneProbability > 0.5)
@@ -68,30 +78,6 @@ namespace MSR.Models.Prediction
 		public double FilePortionLimit
 		{
 			get; set;
-		}
-		private double[] GetPredictorValues(int fileID, string revision, string previousRevision)
-		{
-			List<double> predictorValues = new List<double>();
-
-			predictorValues.AddRange(
-				GetPredictorValuesFor(
-					repositories.SelectionDSL()
-						.Commits()
-							.Reselect(e => previousRevision == null ? e : e.AfterRevision(previousRevision))
-							.TillRevision(revision)
-						.Files().IdIs(fileID)
-				)
-			);
-			var code = repositories.SelectionDSL()
-				.Files().IdIs(fileID)
-				.Commits()
-					.Reselect(e => previousRevision == null ? e : e.AfterRevision(previousRevision))
-					.TillRevision(revision)
-				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications();
-			predictorValues.AddRange(GetPredictorValuesFor(code));
-
-			return predictorValues.ToArray();
 		}
 		private IEnumerable<ProjectFile> FilesInRevision(string revision)
 		{

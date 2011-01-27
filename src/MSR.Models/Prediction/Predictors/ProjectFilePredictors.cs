@@ -14,12 +14,20 @@ namespace MSR.Models.Prediction.Predictors
 {
 	public static class ProjectFilePredictors
 	{
-		public static Prediction AddFileTouchCountPredictor(this Prediction p)
+		public static Prediction AddFileTouchCountInRevisionsPredictor(this Prediction p)
 		{
-			p.AddPredictor((Func<ProjectFileSelectionExpression, double>)(files =>
+			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
-				return files
-					.Commits().Again().TouchFiles().Count();
+				return c.SelectionDSL()
+					.Files().IdIs(c.GetValue<int>("file_id"))
+					.Commits()
+						.Reselect(e =>
+						{
+							string afterRevision = c.GetValue<string>("after_revision");
+							return afterRevision == null ? e : e.AfterRevision(afterRevision);
+						})
+						.TillRevision(c.GetValue<string>("till_revision"))
+						.TouchFiles().Count();
 			}));
 			return p;
 		}

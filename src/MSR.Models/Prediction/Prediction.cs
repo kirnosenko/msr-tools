@@ -14,24 +14,24 @@ using MSR.Data.Entities.DSL.Selection;
 
 namespace MSR.Models.Prediction
 {
-	public abstract class Prediction
+	public class Prediction
 	{
 		protected IRepositoryResolver repositories;
-		private Dictionary<object,Type> predictors = new Dictionary<object,Type>();
+		private List<Func<PredictorContext,double>> predictors = new List<Func<PredictorContext,double>>();
+		protected PredictorContext context;
 		
 		public Prediction(IRepositoryResolver repositories)
 		{
 			this.repositories = repositories;
+			context = new PredictorContext(repositories);
 		}
-		public void AddPredictor<Exp>(Func<Exp,double> predictor)
+		public void AddPredictor(Func<PredictorContext,double> predictor)
 		{
-			predictors.Add(predictor, typeof(Exp));
+			predictors.Add(predictor);
 		}
-		protected IEnumerable<double> GetPredictorValuesFor<Exp>(Exp exp)
+		public double[] GetPredictorValuesFor(PredictorContext c)
 		{
-			return predictors
-				.Where(p => exp.GetType() == p.Value)
-				.Select(p => (p.Key as Func<Exp,double>)(exp));
+			return predictors.Select(p => p(c)).ToArray();
 		}
 	}
 }

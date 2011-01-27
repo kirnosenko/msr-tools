@@ -102,10 +102,10 @@ namespace MSR.Tools.Debugger
 				*/
 				
 				var p = new PostReleaseDefectFilePrediction(s);
-				p
-					.AddFileTouchCountPredictor()
-					.AddLocPredictor();
-					
+				p.AddFileTouchCountInRevisionsPredictor()
+				.AddNumberOfBugsTouchFileInRevisionsFixedTillRevisionPredictor()
+				.AddTotalLocInFileInRevisionPredictor();
+				
 				Dictionary<string,PostReleaseDefectFilePrediction> predictors = new Dictionary<string,PostReleaseDefectFilePrediction>()
 				{
 					{ "base", p },

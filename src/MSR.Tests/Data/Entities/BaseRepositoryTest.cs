@@ -15,7 +15,7 @@ using MSR.Data.Entities.DSL.Selection;
 
 namespace MSR.Data.Entities
 {
-	public class BaseRepositoryTest
+	public class BaseRepositoryTest : IRepositoryResolver
 	{
 		protected RepositoryMappingExpression mappingDSL;
 		protected RepositorySelectionExpression selectionDSL;
