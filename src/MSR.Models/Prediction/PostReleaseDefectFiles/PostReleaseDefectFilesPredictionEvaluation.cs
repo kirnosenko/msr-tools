@@ -13,20 +13,20 @@ using MSR.Data.Entities;
 using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
 
-namespace MSR.Models.Prediction
+namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
-	public class PostReleaseDefectFilePredictionEvaluation
+	public class PostReleaseDefectFilesPredictionEvaluation
 	{
 		private IRepositoryResolver repositories;
 
 		private IEnumerable<string> allFiles;
 		private IEnumerable<string> defectFiles;
 		
-		public PostReleaseDefectFilePredictionEvaluation(IRepositoryResolver repositories)
+		public PostReleaseDefectFilesPredictionEvaluation(IRepositoryResolver repositories)
 		{
 			this.repositories = repositories;
 		}
-		public EvaluationResult Evaluate(PostReleaseDefectFilePrediction prediction)
+		public EvaluationResult Evaluate(PostReleaseDefectFilesPrediction prediction)
 		{
 			if (allFiles == null)
 			{

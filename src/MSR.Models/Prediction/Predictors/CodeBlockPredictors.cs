@@ -30,17 +30,8 @@ namespace MSR.Models.Prediction.Predictors
 		{
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
-				return c.SelectionDSL()
-					.Commits()
-						.Reselect(e => 
-						{
-							string afterRevision = c.GetValue<string>("after_revision");
-							return afterRevision == null ? e : e.AfterRevision(afterRevision);
-						})
-						.TillRevision(c.GetValue<string>("till_revision"))
-					.Files().IdIs(c.GetValue<int>("file_id"))
-					.Modifications().InCommits().InFiles()
-					.CodeBlocks().InModifications().Added().CalculateLOC();
+				return c.CodeInFileInRevisions()
+					.Added().CalculateLOC();
 			}));
 			return p;
 		}
@@ -48,20 +39,42 @@ namespace MSR.Models.Prediction.Predictors
 		{
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
-				return c.SelectionDSL()
-					.Commits()
-						.Reselect(e =>
-						{
-							string afterRevision = c.GetValue<string>("after_revision");
-							return afterRevision == null ? e : e.AfterRevision(afterRevision);
-						})
-						.TillRevision(c.GetValue<string>("till_revision"))
-					.Files().IdIs(c.GetValue<int>("file_id"))
-					.Modifications().InCommits().InFiles()
-					.CodeBlocks().InModifications()
+				return c.CodeInFileInRevisions()
 					.CalculateNumberOfDefectsFixedTillRevision(c.GetValue<string>("till_revision"));
 			}));
 			return p;
+		}
+		public static Prediction AddDefectDensityForCodeInFileInRevisionsPredictor(this Prediction p)
+		{
+			p.AddPredictor((Func<PredictorContext, double>)(c =>
+			{
+				return c.CodeInFileInRevisions()
+					.CalculateTraditionalDefectDensity();
+			}));
+			return p;
+		}
+		public static Prediction AddDefectCodeDensityForCodeInFileInRevisionsPredictor(this Prediction p)
+		{
+			p.AddPredictor((Func<PredictorContext, double>)(c =>
+			{
+				return c.CodeInFileInRevisions()
+					.CalculateDefectCodeDensity();
+			}));
+			return p;
+		}
+		private static CodeBlockSelectionExpression CodeInFileInRevisions(this PredictorContext c)
+		{
+			return c.SelectionDSL()
+				.Commits()
+					.Reselect(e =>
+					{
+						string afterRevision = c.GetValue<string>("after_revision");
+						return afterRevision == null ? e : e.AfterRevision(afterRevision);
+					})
+					.TillRevision(c.GetValue<string>("till_revision"))
+				.Files().IdIs(c.GetValue<int>("file_id"))
+				.Modifications().InCommits().InFiles()
+				.CodeBlocks().InModifications();
 		}
 	}
 }

@@ -16,6 +16,7 @@ using MSR.Data.Entities.DSL.Selection.Metrics;
 using MSR.Data.Persistent;
 using MSR.Data.VersionControl;
 using MSR.Models.Prediction;
+using MSR.Models.Prediction.PostReleaseDefectFiles;
 using MSR.Models.Prediction.Predictors;
 
 namespace MSR.Tools.Debugger
@@ -87,28 +88,12 @@ namespace MSR.Tools.Debugger
 			using (ConsoleTimeLogger.Start("prediction"))
 			using (var s = data.OpenSession())
 			{
-				PostReleaseDefectFilePredictionEvaluation evaluator = new PostReleaseDefectFilePredictionEvaluation(s);
+				PostReleaseDefectFilesPredictionEvaluation evaluator = new PostReleaseDefectFilesPredictionEvaluation(s);
 				
-				/*
-				Dictionary<string, IPostReleaseDefectFilePrediction> predictors = new Dictionary<string, IPostReleaseDefectFilePrediction>()
+				Dictionary<string,PostReleaseDefectFilesPrediction> predictors = new Dictionary<string,PostReleaseDefectFilesPrediction>()
 				{
-					{ "random", new RandomPostReleaseDefectFilePrediction(s) },
-					{ "max loc", new MaxLocPostReleaseDefectFilePrediction(s) },
-					{ "max added loc", new MaxAddedLocPostReleaseDefectFilePrediction(s) },
-					{ "max touch", new MaxTouchCountPostReleaseDefectFilePrediction(s) },
-					{ "dd based", new DefectDensityBasedDefectFilePrediction(s) },
-					{ "dcd based", new DefectCodeDensityBasedDefectFilePrediction(s) }
-				};
-				*/
-				
-				var p = new PostReleaseDefectFilePrediction(s);
-				p.AddFileTouchCountInRevisionsPredictor()
-				.AddNumberOfBugsTouchFileInRevisionsFixedTillRevisionPredictor()
-				.AddTotalLocInFileInRevisionPredictor();
-				
-				Dictionary<string,PostReleaseDefectFilePrediction> predictors = new Dictionary<string,PostReleaseDefectFilePrediction>()
-				{
-					{ "base", p },
+					{ "random", new RandomPostReleaseDefectFilesPrediction(s) },
+					{ "loc", new SimpleLocPostReleaseDefectFilesPrediction(s) },
 				};
 				
 				evaluator.PostReleasePeriod = 30 * 6;

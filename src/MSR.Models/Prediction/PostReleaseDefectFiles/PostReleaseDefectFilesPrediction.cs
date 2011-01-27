@@ -14,16 +14,16 @@ using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
 using MSR.Models.Regressions;
 
-namespace MSR.Models.Prediction
+namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
-	public class PostReleaseDefectFilePrediction : Prediction
+	public class PostReleaseDefectFilesPrediction : Prediction
 	{
-		public PostReleaseDefectFilePrediction(IRepositoryResolver repositories)
+		public PostReleaseDefectFilesPrediction(IRepositoryResolver repositories)
 			: base(repositories)
 		{
 			FilePortionLimit = 0.2;
 		}
-		public IEnumerable<string> Predict(string[] previousReleaseRevisions, string releaseRevision)
+		public virtual IEnumerable<string> Predict(string[] previousReleaseRevisions, string releaseRevision)
 		{
 			LogisticRegression lr = new LogisticRegression();
 			
@@ -79,7 +79,7 @@ namespace MSR.Models.Prediction
 		{
 			get; set;
 		}
-		private IEnumerable<ProjectFile> FilesInRevision(string revision)
+		protected IEnumerable<ProjectFile> FilesInRevision(string revision)
 		{
 			return repositories.SelectionDSL()
 				.Files()
@@ -87,7 +87,7 @@ namespace MSR.Models.Prediction
 					.ExistInRevision(revision)
 					.ToList();
 		}
-		private double FileHasDefects(int fileID, string revision, string previousRevision)
+		protected double FileHasDefects(int fileID, string revision, string previousRevision)
 		{
 			return repositories.SelectionDSL()
 				.Files().IdIs(fileID)
