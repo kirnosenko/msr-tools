@@ -100,11 +100,8 @@ namespace MSR.Tools.Debugger
 		}
 		static void GenerateStat()
 		{
-			using (ConsoleTimeLogger.Start("stat generating"))
-			{
-				GeneratingTool generator = new GeneratingTool(configFile);
-				generator.GenerateStat(null, "d:/temp", null);
-			}
+			GeneratingTool generator = new GeneratingTool(configFile);
+			generator.GenerateStat(null, "d:/temp", null);
 		}
 	}
 }

@@ -15,31 +15,35 @@ using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
 using MSR.Data.Persistent;
 using MSR.Models;
+using MSR.Data.VersionControl;
 
 namespace MSR.Tools.Debugger
 {
 	public class DebuggingTool : Tool
 	{
+		private IScmData scmDataWithoutCache;
+		
 		public DebuggingTool(string configFile)
-			: base(configFile)
+			: base(configFile, "mappingtool", "generatingtool")
 		{
+			scmDataWithoutCache = GetScmDataWithoutCache();
 		}
 		public void FindDiffError(int startRevision)
 		{
 			int revisionNumber = startRevision;
-			string revision = scmDataNoCache.RevisionByNumber(revisionNumber);
+			string revision = scmDataWithoutCache.RevisionByNumber(revisionNumber);
 			
 			do
 			{
 				Console.WriteLine("Searching for diff errors in commit {0}({1})...", revision, revisionNumber);
 				
 				List<string> fileErrors = new List<string>();
-				foreach (var file in scmDataNoCache.Log(revision).TouchedFiles.Select(x => x.Path))
+				foreach (var file in scmDataWithoutCache.Log(revision).TouchedFiles.Select(x => x.Path))
 				{
-					var diff = scmDataNoCache.Diff(revision, file);
+					var diff = scmDataWithoutCache.Diff(revision, file);
 					if (diff.AddedLines.Count() > 0)
 					{
-						var blame = scmDataNoCache.Blame(revision, file);
+						var blame = scmDataWithoutCache.Blame(revision, file);
 						
 						foreach (var line in diff.AddedLines)
 						{
@@ -72,7 +76,7 @@ namespace MSR.Tools.Debugger
 				}
 				
 				revisionNumber++;
-				revision = scmDataNoCache.RevisionByNumber(revisionNumber);
+				revision = scmDataWithoutCache.RevisionByNumber(revisionNumber);
 			} while (revision != null);
 			
 			Console.WriteLine("No diff errors.");
@@ -157,7 +161,7 @@ namespace MSR.Tools.Debugger
 		
 		public void Blame(string path, string revision)
 		{
-			var blame = scmDataNoCache.Blame(revision, path);
+			var blame = scmDataWithoutCache.Blame(revision, path);
 			
 			SmartDictionary<string, IEnumerable<int>> output =
 				new SmartDictionary<string,IEnumerable<int>>((x) => new List<int>());

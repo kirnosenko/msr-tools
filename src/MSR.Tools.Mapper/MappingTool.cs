@@ -22,12 +22,17 @@ namespace MSR.Tools.Mapper
 {
 	public class MappingTool : Tool
 	{
+		private IScmData scmData;
+		private IScmData scmDataWithoutCache;
+		
 		private bool automaticallyFixDiffErrors;
 		private Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression> pathFilter;
 		
 		public MappingTool(string configFile)
 			: base(configFile, "mappingtool")
 		{
+			scmData = GetScmData();
+			scmDataWithoutCache = GetScmDataWithoutCache();
 		}
 		public void Info()
 		{
@@ -129,7 +134,7 @@ namespace MSR.Tools.Mapper
 				CheckCodeSizeForDeletedFiles(s, testRevision);
 				CheckTargetsForCodeBlocks(s, testRevision);
 				CheckDeletedCodeBlocksVsAdded(s, testRevision);
-				CheckLinesContent(s, scmDataNoCache, testRevision);
+				CheckLinesContent(s, scmDataWithoutCache, testRevision);
 				if (automaticallyFixDiffErrors)
 				{
 					s.SubmitChanges();

@@ -21,16 +21,12 @@ namespace MSR.Tools
 		private IUnityContainer container;
 		
 		protected PersistentDataStore data;
-		protected IScmData scmData;
-		protected IScmData scmDataNoCache;
 		
 		public Tool(string configFileName, params string[] additionalConfigSections)
 		{
 			container = GetContainer(configFileName, additionalConfigSections);
 			
 			data = GetConfiguredType<PersistentDataStore>();
-			scmData = GetConfiguredType<IScmData>();
-			scmDataNoCache = GetConfiguredType<IScmData>("nocache");
 		}
 		protected T GetConfiguredType<T>()
 		{
@@ -43,6 +39,14 @@ namespace MSR.Tools
 		protected T GetConfiguredType<T>(string name)
 		{
 			return container.Resolve<T>(name);
+		}
+		protected IScmData GetScmData()
+		{
+			return GetConfiguredType<IScmData>();
+		}
+		protected IScmData GetScmDataWithoutCache()
+		{
+			return GetConfiguredType<IScmData>("nocache");
 		}
 		private static IUnityContainer GetContainer(string configFile, params string[] additionalConfigSections)
 		{

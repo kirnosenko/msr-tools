@@ -45,6 +45,7 @@ class Deploy
 			
 			"./LICENSE.TXT",
 			"./README.TXT",
+			"./CHANGELOG.TXT",
 		};
 		List<string> dirs = new List<string>()
 		{
