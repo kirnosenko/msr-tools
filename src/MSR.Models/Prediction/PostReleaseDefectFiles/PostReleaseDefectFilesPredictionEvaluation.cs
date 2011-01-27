@@ -64,9 +64,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 
 		private void Calc()
 		{
-			RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(repositories);
-			
-			defectFiles = selectionDSL
+			defectFiles = repositories.SelectionDSL()
 				.Commits()
 					.AfterRevision(PreviousReleaseRevisions.Last())
 					.TillRevision(ReleaseRevision)

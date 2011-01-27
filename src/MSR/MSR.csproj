@@ -56,6 +56,7 @@
     <Compile Include="Data\Entities\DSL\Mapping\MsrMappingDslException.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\ProjectFileMappingExpression.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\RepositoryMappingExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Mapping\SessionHelper.cs" />
     <Compile Include="Data\Entities\DSL\Selection\BugFixSelectionExpression.cs" />
     <Compile Include="Data\Entities\DSL\Selection\CodeBlockSelectionExpression.cs" />
     <Compile Include="Data\Entities\DSL\Selection\CommitSelectionExpression.cs" />

@@ -86,9 +86,7 @@ namespace MSR.Data.Entities.Mapping
 		}
 		private IEnumerable<string> ExistentFilesInDir(IRepositoryResolver repositories, string path)
 		{
-			RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(repositories);
-			
-			return selectionDSL
+			return repositories.SelectionDSL()
 				.Files().Exist().InDirectory(path)
 				.Select(x => x.Path);
 		}

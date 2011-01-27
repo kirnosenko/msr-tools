@@ -66,7 +66,7 @@ namespace MSR.Tools.Mapper
 			using (ConsoleTimeLogger.Start("truncating time"))
 			using (var s = data.OpenSession())
 			{
-				var selectionDSL = new RepositorySelectionExpression(s);
+				var selectionDSL = s.SelectionDSL();
 
 				var addedCommits = selectionDSL.Commits().AfterRevision(numberOfRevisionsToKeep);
 				var addedBugFixes = addedCommits.BugFixes().InCommits();

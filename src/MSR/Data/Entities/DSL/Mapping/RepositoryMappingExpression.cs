@@ -32,7 +32,7 @@ namespace MSR.Data.Entities.DSL.Mapping
 		public IRepositoryMappingExpression Submit()
 		{
 			session.SubmitChanges();
-			return new RepositoryMappingExpression(session);
+			return session.MappingDSL();
 		}
 		public T CurrentEntity<T>() where T : class
 		{

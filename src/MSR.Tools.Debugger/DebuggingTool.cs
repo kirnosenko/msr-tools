@@ -123,9 +123,7 @@ namespace MSR.Tools.Debugger
 		{
 			using (var s = data.OpenSession())
 			{
-				RepositorySelectionExpression selectionDSL = new RepositorySelectionExpression(s);
-
-				var code = selectionDSL
+				var code = s.SelectionDSL()
 					.Files()
 						.Exist()
 					.Modifications()

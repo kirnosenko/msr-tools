@@ -28,8 +28,8 @@ namespace MSR.Data.Entities
 		{
 			data = new InMemoryDataStore();
 			session = data.OpenSession();
-			mappingDSL = new RepositoryMappingExpression(session);
-			selectionDSL = new RepositorySelectionExpression(session);
+			mappingDSL = session.MappingDSL();
+			selectionDSL = session.SelectionDSL();
 		}
 		public IRepository<T> Repository<T>() where T : class
 		{
