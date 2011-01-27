@@ -21,7 +21,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 		public void Should_be_zero_for_empty_code()
 		{
 			selectionDSL
-				.CodeBlocks().CalculateTraditionalDefectDensity()
+				.CodeBlocks().CalculateLOC()
 					.Should().Be(0);
 		}
 		[Test]
