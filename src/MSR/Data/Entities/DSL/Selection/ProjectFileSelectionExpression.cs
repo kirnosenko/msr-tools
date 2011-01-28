@@ -56,6 +56,12 @@ namespace MSR.Data.Entities.DSL.Selection
 				s.Where(x => x.ID == id)
 			);
 		}
+		public ProjectFileSelectionExpression IdIn(int[] ids)
+		{
+			return Reselect(s =>
+				s.Where(x => ids.Contains(x.ID))
+			);
+		}
 		public ProjectFileSelectionExpression PathIs(string filePath)
 		{
 			return Reselect(s =>

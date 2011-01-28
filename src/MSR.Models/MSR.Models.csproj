@@ -45,6 +45,9 @@
     <Compile Include="Prediction\PostReleaseDefectFiles\PostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\RandomPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\SimpleLocPostReleaseDefectFilesPrediction.cs" />
+    <Compile Include="Prediction\PostReleaseMetric\PostReleaseDefectsPrediction.cs" />
+    <Compile Include="Prediction\PostReleaseMetric\PostReleaseMetricPrediction.cs" />
+    <Compile Include="Prediction\PostReleaseMetric\PostReleaseMetricPredictionEvaluation.cs" />
     <Compile Include="Prediction\Prediction.cs" />
     <Compile Include="Prediction\PredictorContext.cs" />
     <Compile Include="Prediction\Predictors\CodeBlockPredictors.cs" />
@@ -52,7 +55,7 @@
     <Compile Include="Prediction\SRGM\ExponentialSRGM.cs" />
     <Compile Include="Prediction\SRGM\ISRGM.cs" />
     <Compile Include="Prediction\SRGM\LogarithmicSRGM.cs" />
-    <Compile Include="Regressions\LinearRegression.cs" />
+    <Compile Include="Regressions\MultipleLinearRegression.cs" />
     <Compile Include="Regressions\LogisticRegression.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\PostReleaseDefectFilesPredictionEvaluation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

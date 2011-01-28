@@ -71,6 +71,30 @@ namespace MSR.Data.Entities.DSL.Selection
 					.Should().Have.SameSequenceAs(new string[] { "file3" });
 		}
 		[Test]
+		public void Should_get_files_by_id()
+		{
+			mappingDSL
+				.AddCommit("1")
+					.AddFile("file1").Modified()
+					.AddFile("file2").Modified()
+			.Submit()
+				.AddCommit("2")
+					.File("file2").Modified()
+					.AddFile("file3").Modified()
+			.Submit();
+			
+			var ids = selectionDSL.Files().Select(f => f.ID);
+			
+			selectionDSL
+				.Files().IdIs(ids.Last())
+				.Select(f => f.Path).ToArray()
+					.Should().Have.SameValuesAs(new string[] { "file3" });
+			selectionDSL
+				.Files().IdIn(ids.Take(2).ToArray())
+				.Select(f => f.Path).ToArray()
+					.Should().Have.SameValuesAs(new string[] { "file1", "file2" });
+		}
+		[Test]
 		public void Should_get_files_by_name()
 		{
 			mappingDSL

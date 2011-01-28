@@ -6,17 +6,19 @@
 
 using System;
 using System.Collections.Generic;
+using AccordMultipleLinearRegression = Accord.Statistics.Models.Regression.Linear.MultipleLinearRegression;
+
 using Accord.Statistics.Models.Regression.Linear;
 
 namespace MSR.Models.Regressions
 {
-	public class LinearRegression : MultipleRegression
+	public class MultipleLinearRegression : MultipleRegression
 	{
-		private MultipleLinearRegression regression;
+		private AccordMultipleLinearRegression regression;
 
 		public override void Train()
 		{
-			regression = new MultipleLinearRegression(predictorsList[0].Length, true);
+			regression = new AccordMultipleLinearRegression(predictorsList[0].Length, true);
 			regression.Regress(
 				predictorsList.ToArray(),
 				resultList.ToArray()
@@ -25,6 +27,13 @@ namespace MSR.Models.Regressions
 		public override double Predict(double[] predictors)
 		{
 			return regression.Compute(predictors);
+		}
+		public double R2()
+		{
+			return regression.CoefficientOfDetermination(
+				predictorsList.ToArray(),
+				resultList.ToArray()
+			);
 		}
 	}
 }
