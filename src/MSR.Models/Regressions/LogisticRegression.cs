@@ -10,21 +10,21 @@ using Accord.Statistics.Analysis;
 
 namespace MSR.Models.Regressions
 {
-	public class LogisticRegression : MultipleRegression
+	public class LogisticRegression : Regression<double[]>
 	{
 		private LogisticRegressionAnalysis regression;
 		
 		public override void Train()
 		{
 			regression = new LogisticRegressionAnalysis(
-				predictorsList.ToArray(),
+				predictorList.ToArray(),
 				resultList.ToArray()
 			);
 			regression.Compute();
 		}
-		public override double Predict(double[] predictors)
+		public override double Predict(double[] predictor)
 		{
-			return regression.Regression.Compute(predictors);
+			return regression.Regression.Compute(predictor);
 		}
 	}
 }

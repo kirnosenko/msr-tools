@@ -10,7 +10,7 @@ using AccordPolynomialRegression = Accord.Statistics.Models.Regression.Linear.Po
 
 namespace MSR.Models.Regressions
 {
-	public class PolynomialRegression
+	public class PolynomialRegression : Regression<double>
 	{
 		private AccordPolynomialRegression regression;
 		
@@ -18,14 +18,23 @@ namespace MSR.Models.Regressions
 		{
 			Degree = 3;
 		}
-		public void Train(double[] inputs, double[] outputs)
+		public override void Train()
 		{
 			regression = new AccordPolynomialRegression(Degree);
-			regression.Regress(inputs, outputs);
+			regression.Regress(predictorList.ToArray(), resultList.ToArray());
 		}
-		public double Predict(double predictor)
+		public override double Predict(double predictor)
 		{
 			return regression.Compute(predictor);
+		}
+		public double R2
+		{
+			get
+			{
+				return regression.CoefficientOfDetermination(
+					predictorList.ToArray(), resultList.ToArray()
+				);
+			}
 		}
 		public int Degree
 		{

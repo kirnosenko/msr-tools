@@ -6,25 +6,20 @@
 
 using System;
 using System.Collections.Generic;
-using AccordMultipleLinearRegression = Accord.Statistics.Models.Regression.Linear.MultipleLinearRegression;
-
 using Accord.Statistics.Models.Regression.Linear;
 
 namespace MSR.Models.Regressions
 {
-	public class MultipleLinearRegression : Regression<double[]>
+	public class LinearRegression : Regression<double>
 	{
-		private AccordMultipleLinearRegression regression;
-
+		private SimpleLinearRegression regression;
+		
 		public override void Train()
 		{
-			regression = new AccordMultipleLinearRegression(predictorList[0].Length, true);
-			regression.Regress(
-				predictorList.ToArray(),
-				resultList.ToArray()
-			);
+			regression = new SimpleLinearRegression();
+			regression.Regress(predictorList.ToArray(), resultList.ToArray());
 		}
-		public override double Predict(double[] predictor)
+		public override double Predict(double predictor)
 		{
 			return regression.Compute(predictor);
 		}
