@@ -31,6 +31,10 @@ namespace MSR.Models.Regressions
 		{
 			get
 			{
+				if (regression == null)
+				{
+					regression = new AccordPolynomialRegression(Degree);
+				}
 				return regression.CoefficientOfDetermination(
 					predictorList.ToArray(), resultList.ToArray()
 				);

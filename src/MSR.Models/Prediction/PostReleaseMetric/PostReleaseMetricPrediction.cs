@@ -23,6 +23,7 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 		public PostReleaseMetricPrediction(IRepositoryResolver repositories)
 			: base(repositories)
 		{
+			context.SetFiles(e => e);
 		}
 		public virtual void Train(string[] revisions)
 		{
@@ -31,12 +32,11 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 			string previousRevision = null;
 			foreach (var revision in revisions)
 			{
-				context
-					.SetValue("after_revision", previousRevision)
-					.SetValue("till_revision", revision);
+				context.SetCommits(previousRevision, revision);
+				
 				regression.AddTrainingData(
 					GetPredictorValuesFor(context),
-					PostReleaseMetric(revision, previousRevision)
+					PostReleaseMetric(previousRevision, revision)
 				);
 				previousRevision = revision;
 			}
@@ -45,9 +45,7 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 		}
 		public virtual double Predict(string previousReleaseRevision, string releaseRevision)
 		{
-			context
-				.SetValue("after_revision", previousReleaseRevision)
-				.SetValue("till_revision", releaseRevision);
+			context.SetCommits(previousReleaseRevision, releaseRevision);
 			
 			return regression.Predict(
 				GetPredictorValuesFor(context)
@@ -57,6 +55,6 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 		{
 			get; set;
 		}
-		protected abstract double PostReleaseMetric(string releaseRevision, string previousReleaseRevision);
+		public abstract double PostReleaseMetric(string previousReleaseRevision, string releaseRevision);
 	}
 }

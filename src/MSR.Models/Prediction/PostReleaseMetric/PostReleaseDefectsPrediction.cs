@@ -21,7 +21,7 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 			: base(repositories)
 		{
 		}
-		protected override double PostReleaseMetric(string releaseRevision, string previousReleaseRevision)
+		public override double PostReleaseMetric(string previousReleaseRevision, string releaseRevision)
 		{
 			return repositories.SelectionDSL()
 				.Commits()

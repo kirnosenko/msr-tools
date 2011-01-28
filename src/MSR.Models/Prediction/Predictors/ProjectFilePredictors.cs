@@ -14,7 +14,7 @@ namespace MSR.Models.Prediction.Predictors
 {
 	public static class ProjectFilePredictors
 	{
-		public static Prediction AddFilesTouchCountInCommitsPredictor(this Prediction p)
+		public static T AddFilesTouchCountInCommitsPredictor<T>(this T p) where T : Prediction
 		{
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{

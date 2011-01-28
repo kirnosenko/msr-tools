@@ -12,6 +12,7 @@ using MSR.Data;
 using MSR.Data.Entities;
 using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
+using MSR.Models.Regressions;
 
 namespace MSR.Models.Prediction.PostReleaseMetric
 {
@@ -35,14 +36,23 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 					.ExistInRevision(ReleaseRevision)
 				.Select(f => f.ID).ToArray();
 			
+			LinearRegression regression = new LinearRegression();
 			for (int i = 1; i <= NumberOfPredictions; i++)
 			{
 				PrepareSets();
 				
+				prediction.FileSelector = e => e.IdIn(trainSet);
+				prediction.Train(PreviousReleaseRevisions);
 				
+				prediction.FileSelector = e => e.IdIn(predictSet);
+				
+				regression.AddTrainingData(
+					prediction.Predict(PreviousReleaseRevisions.Last(), ReleaseRevision),
+					prediction.PostReleaseMetric(PreviousReleaseRevisions.Last(), ReleaseRevision)
+				);
 			}
 			
-			return 0;
+			return regression.R2;
 		}
 		public string ReleaseRevision
 		{
@@ -62,8 +72,8 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 		}
 		private void PrepareSets()
 		{
-			trainSet = fileIDs.TakeRandomly((int)(fileIDs.Count() * 2d/3)).ToArray();
-			predictSet = fileIDs.Except(trainSet).ToArray();
+			predictSet = fileIDs.TakeRandomly((int)(fileIDs.Count() * 1d/3)).ToArray();
+			trainSet = fileIDs.Except(predictSet).ToArray();
 		}
 	}
 }

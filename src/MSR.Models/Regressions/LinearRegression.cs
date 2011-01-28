@@ -27,8 +27,12 @@ namespace MSR.Models.Regressions
 		{
 			get
 			{
+				if (regression == null)
+				{
+					Train();
+				}
 				return regression.CoefficientOfDetermination(
-					predictorList.ToArray(), resultList.ToArray()
+					predictorList.ToArray(), resultList.ToArray(), true
 				);
 			}
 		}

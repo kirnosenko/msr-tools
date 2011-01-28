@@ -17,6 +17,7 @@ using MSR.Data.Persistent;
 using MSR.Data.VersionControl;
 using MSR.Models.Prediction;
 using MSR.Models.Prediction.PostReleaseDefectFiles;
+using MSR.Models.Prediction.PostReleaseMetric;
 using MSR.Models.Prediction.Predictors;
 
 namespace MSR.Tools.Debugger
@@ -86,16 +87,23 @@ namespace MSR.Tools.Debugger
 		public void Predict(string[] previousReleaseRevisions, string releaseRevision)
 		{
 			using (ConsoleTimeLogger.Start("prediction"))
+			{
+				//PostReleaseDefectFiles(previousReleaseRevisions, releaseRevision);
+				PostReleaseMetric(previousReleaseRevisions, releaseRevision);
+			}
+		}
+		public void PostReleaseDefectFiles(string[] previousReleaseRevisions, string releaseRevision)
+		{
 			using (var s = data.OpenSession())
 			{
 				PostReleaseDefectFilesPredictionEvaluation evaluator = new PostReleaseDefectFilesPredictionEvaluation(s);
-				
+
 				Dictionary<string,PostReleaseDefectFilesPrediction> predictors = new Dictionary<string,PostReleaseDefectFilesPrediction>()
 				{
 					{ "random", new RandomPostReleaseDefectFilesPrediction(s) },
 					{ "loc", new SimpleLocPostReleaseDefectFilesPrediction(s) },
 				};
-				
+
 				evaluator.PostReleasePeriod = 30 * 6;
 				evaluator.PreviousReleaseRevisions = previousReleaseRevisions;
 				evaluator.ReleaseRevision = releaseRevision;
@@ -106,6 +114,31 @@ namespace MSR.Tools.Debugger
 					Console.WriteLine(predictor.Key + ":");
 					EvaluationResult result = evaluator.Evaluate(predictor.Value);
 					Console.WriteLine(result);
+				}
+			}
+		}
+		public void PostReleaseMetric(string[] previousReleaseRevisions, string releaseRevision)
+		{
+			using (var s = data.OpenSession())
+			{
+				PostReleaseMetricPredictionEvaluation evaluator = new PostReleaseMetricPredictionEvaluation(s);
+				Dictionary<string,PostReleaseMetricPrediction> predictors = new Dictionary<string,PostReleaseMetricPrediction>()
+				{
+					{
+						"defects",
+						new PostReleaseDefectsPrediction(s)
+							.AddTotalLocInFilesTillRevisionPredictor()
+					},
+				};
+
+				evaluator.PreviousReleaseRevisions = previousReleaseRevisions;
+				evaluator.ReleaseRevision = releaseRevision;
+				evaluator.FileSelector = fe => fe.InDirectory("/trunk");
+
+				foreach (var predictor in predictors)
+				{
+					Console.WriteLine(predictor.Key + ":");
+					Console.WriteLine("R2 = {0}", evaluator.Evaluate(predictor.Value));
 				}
 			}
 		}

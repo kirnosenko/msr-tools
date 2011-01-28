@@ -14,7 +14,7 @@ namespace MSR.Models.Prediction.Predictors
 {
 	public static class CodeBlockPredictors
 	{
-		public static Prediction AddTotalLocInFilesTillRevisionPredictor(this Prediction p)
+		public static T AddTotalLocInFilesTillRevisionPredictor<T>(this T p) where T : Prediction
 		{
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
@@ -22,7 +22,7 @@ namespace MSR.Models.Prediction.Predictors
 			}));
 			return p;
 		}
-		public static Prediction AddAddedLocInFilesInCommitsPredictor(this Prediction p)
+		public static T AddAddedLocInFilesInCommitsPredictor<T>(this T p) where T : Prediction
 		{
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
@@ -31,7 +31,7 @@ namespace MSR.Models.Prediction.Predictors
 			}));
 			return p;
 		}
-		public static Prediction AddNumberOfBugsTouchFilesInCommitsFixedTillRevisionPredictor(this Prediction p)
+		public static T AddNumberOfBugsTouchFilesInCommitsFixedTillRevisionPredictor<T>(this T p) where T : Prediction
 		{
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
@@ -40,7 +40,7 @@ namespace MSR.Models.Prediction.Predictors
 			}));
 			return p;
 		}
-		public static Prediction AddDefectDensityForCodeInFilesInCommitsPredictor(this Prediction p)
+		public static T AddDefectDensityForCodeInFilesInCommitsPredictor<T>(this T p) where T : Prediction
 		{
 			p.AddPredictor((Func<PredictorContext, double>)(c =>
 			{
@@ -49,7 +49,7 @@ namespace MSR.Models.Prediction.Predictors
 			}));
 			return p;
 		}
-		public static Prediction AddDefectCodeDensityForCodeInFileInRevisionsPredictor(this Prediction p)
+		public static T AddDefectCodeDensityForCodeInFileInRevisionsPredictor<T>(this T p) where T : Prediction
 		{
 			p.AddPredictor((Func<PredictorContext, double>)(c =>
 			{
