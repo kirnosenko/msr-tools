@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 
 using MSR.Data;
+using MSR.Data.Entities.DSL.Selection;
 
 namespace MSR.Models.Prediction
 {
@@ -43,6 +44,36 @@ namespace MSR.Models.Prediction
 		public void Clear()
 		{
 			data.Clear();
+		}
+
+		public PredictorContext SetCommits(Func<CommitSelectionExpression,CommitSelectionExpression> selector)
+		{
+			SetValue("commits", (Func<CommitSelectionExpression,CommitSelectionExpression>)(e =>
+				e.Reselect(selector)
+			));
+			return this;
+		}
+		public PredictorContext SetCommits(string afterRevision, string tillRevision)
+		{
+			SetCommits(e =>
+				e.AfterRevision(afterRevision).TillRevision(tillRevision)
+			);
+			if (afterRevision != null)
+			{
+				SetValue("after_revision", afterRevision);
+			}
+			if (tillRevision != null)
+			{
+				SetValue("till_revision", tillRevision);
+			}
+			return this;
+		}
+		public PredictorContext SetFiles(Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression> selector)
+		{
+			SetValue("files", (Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression>)(e =>
+				e.Reselect(selector)
+			));
+			return this;
 		}
 	}
 }

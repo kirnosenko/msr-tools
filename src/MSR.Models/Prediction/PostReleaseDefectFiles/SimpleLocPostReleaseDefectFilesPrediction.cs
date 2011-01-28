@@ -16,7 +16,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public SimpleLocPostReleaseDefectFilesPrediction(IRepositoryResolver repositories)
 			: base(repositories)
 		{
-			this.AddTotalLocInFileInRevisionPredictor();
+			this.AddTotalLocInFilesTillRevisionPredictor();
 		}
 	}
 }

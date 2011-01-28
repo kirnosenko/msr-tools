@@ -28,7 +28,7 @@ namespace MSR.Models.Prediction.Predictors
 			base.SetUp();
 			context = new PredictorContext(this);
 			p = new Prediction(this)
-				.AddFileTouchCountInRevisionsPredictor();
+				.AddFilesTouchCountInCommitsPredictor();
 		}
 		[Test]
 		public void Should_count_number_of_touches_for_file()
@@ -47,14 +47,20 @@ namespace MSR.Models.Prediction.Predictors
 			.Submit();
 			
 			context
-				.SetValue("file_id", selectionDSL.Files().PathIs("file1").Single().ID)
-				.SetValue("after_revision", null)
-				.SetValue("till_revision", "2");
-			
+				.SetValue("files", (Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression>)(e =>
+					e.IdIs(selectionDSL.Files().PathIs("file1").Single().ID)
+				))
+				.SetValue("commits", (Func<CommitSelectionExpression,CommitSelectionExpression>)(e =>
+					e.TillRevision("2")
+				));
+				
 			PredictorValue()
 				.Should().Be(2);
 
-			context.SetValue("after_revision", "1");
+			context
+				.SetValue("commits", (Func<CommitSelectionExpression,CommitSelectionExpression>)(e =>
+					e.AfterRevision("1").TillRevision("2")
+				));
 
 			PredictorValue()
 				.Should().Be(1);

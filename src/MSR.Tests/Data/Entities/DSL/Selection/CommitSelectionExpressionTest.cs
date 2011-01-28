@@ -122,6 +122,26 @@ namespace MSR.Data.Entities.DSL.Selection
 					.Should().Be(0);
 		}
 		[Test]
+		public void Should_ignore_null_values_for_commit_relative_selection()
+		{
+			mappingDSL
+				.AddCommit("abc")
+			.Submit()
+				.AddCommit("abcd")
+			.Submit()
+				.AddCommit("abcde")
+			.Submit();
+			
+			selectionDSL
+				.Commits()
+					.AfterRevision(null)
+					.FromRevision(null)
+					.TillRevision(null)
+					.BeforeRevision(null)
+					.Count()
+						.Should().Be(3);
+		}
+		[Test]
 		public void Should_take_specified_selection()
 		{
 			mappingDSL

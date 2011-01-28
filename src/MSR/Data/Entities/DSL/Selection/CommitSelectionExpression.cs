@@ -58,6 +58,10 @@ namespace MSR.Data.Entities.DSL.Selection
 		}
 		public CommitSelectionExpression BeforeRevision(string revision)
 		{
+			if (revision == null)
+			{
+				return this;
+			}
 			return Reselect(s =>
 				from c in s
 				let revisionNumber = Repository<Commit>()
@@ -79,6 +83,10 @@ namespace MSR.Data.Entities.DSL.Selection
 		}
 		public CommitSelectionExpression TillRevision(string revision)
 		{
+			if (revision == null)
+			{
+				return this;
+			}
 			return Reselect(s =>
 				from c in s
 				let revisionNumber = Repository<Commit>()
@@ -100,6 +108,10 @@ namespace MSR.Data.Entities.DSL.Selection
 		}
 		public CommitSelectionExpression FromRevision(string revision)
 		{
+			if (revision == null)
+			{
+				return this;
+			}
 			return Reselect(s =>
 				from c in s
 				let revisionNumber = Repository<Commit>()
@@ -121,6 +133,10 @@ namespace MSR.Data.Entities.DSL.Selection
 		}
 		public CommitSelectionExpression AfterRevision(string revision)
 		{
+			if (revision == null)
+			{
+				return this;
+			}
 			return Reselect(s =>
 				from c in s
 				let revisionNumber = Repository<Commit>()

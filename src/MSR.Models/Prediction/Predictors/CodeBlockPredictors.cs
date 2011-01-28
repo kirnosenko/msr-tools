@@ -14,41 +14,37 @@ namespace MSR.Models.Prediction.Predictors
 {
 	public static class CodeBlockPredictors
 	{
-		public static Prediction AddTotalLocInFileInRevisionPredictor(this Prediction p)
+		public static Prediction AddTotalLocInFilesTillRevisionPredictor(this Prediction p)
 		{
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
-				return c.SelectionDSL()
-					.Commits().TillRevision(c.GetValue<string>("till_revision"))
-					.Files().IdIs(c.GetValue<int>("file_id"))
-					.Modifications().InCommits().InFiles()
-					.CodeBlocks().InModifications().CalculateLOC();
+				return c.CodeInFilesTillRevision().CalculateLOC();
 			}));
 			return p;
 		}
-		public static Prediction AddAddedLocInFileInRevisionsPredictor(this Prediction p)
+		public static Prediction AddAddedLocInFilesInCommitsPredictor(this Prediction p)
 		{
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
-				return c.CodeInFileInRevisions()
+				return c.CodeInCommitsInFiles()
 					.Added().CalculateLOC();
 			}));
 			return p;
 		}
-		public static Prediction AddNumberOfBugsTouchFileInRevisionsFixedTillRevisionPredictor(this Prediction p)
+		public static Prediction AddNumberOfBugsTouchFilesInCommitsFixedTillRevisionPredictor(this Prediction p)
 		{
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
-				return c.CodeInFileInRevisions()
+				return c.CodeInCommitsInFiles()
 					.CalculateNumberOfDefectsFixedTillRevision(c.GetValue<string>("till_revision"));
 			}));
 			return p;
 		}
-		public static Prediction AddDefectDensityForCodeInFileInRevisionsPredictor(this Prediction p)
+		public static Prediction AddDefectDensityForCodeInFilesInCommitsPredictor(this Prediction p)
 		{
 			p.AddPredictor((Func<PredictorContext, double>)(c =>
 			{
-				return c.CodeInFileInRevisions()
+				return c.CodeInCommitsInFiles()
 					.CalculateTraditionalDefectDensity();
 			}));
 			return p;
@@ -57,24 +53,30 @@ namespace MSR.Models.Prediction.Predictors
 		{
 			p.AddPredictor((Func<PredictorContext, double>)(c =>
 			{
-				return c.CodeInFileInRevisions()
+				return c.CodeInCommitsInFiles()
 					.CalculateDefectCodeDensity();
 			}));
 			return p;
 		}
-		private static CodeBlockSelectionExpression CodeInFileInRevisions(this PredictorContext c)
+		private static CodeBlockSelectionExpression CodeInCommitsInFiles(this PredictorContext c)
 		{
 			return c.SelectionDSL()
-				.Commits()
-					.Reselect(e =>
-					{
-						string afterRevision = c.GetValue<string>("after_revision");
-						return afterRevision == null ? e : e.AfterRevision(afterRevision);
-					})
-					.TillRevision(c.GetValue<string>("till_revision"))
-				.Files().IdIs(c.GetValue<int>("file_id"))
+				.Commits().Reselect(
+					c.GetValue<Func<CommitSelectionExpression,CommitSelectionExpression>>("commits")
+				)
+				.Files().Reselect(
+					c.GetValue<Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression>>("files")
+				)
 				.Modifications().InCommits().InFiles()
 				.CodeBlocks().InModifications();
+		}
+		private static CodeBlockSelectionExpression CodeInFilesTillRevision(this PredictorContext c)
+		{
+			c.SetValue("commits",(Func<CommitSelectionExpression,CommitSelectionExpression>)(e =>
+				e.TillRevision(c.GetValue<string>("till_revision"))
+			));
+			
+			return CodeInCommitsInFiles(c);
 		}
 	}
 }

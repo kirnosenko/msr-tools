@@ -33,9 +33,8 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				foreach (var file in FilesInRevision(revision))
 				{
 					context
-						.SetValue("file_id", file.ID)
-						.SetValue("after_revision", previousRevision)
-						.SetValue("till_revision", revision);
+						.SetCommits(previousRevision, revision)
+						.SetFiles(e => e.IdIs(file.ID));
 					
 					lr.AddTrainingData(
 						GetPredictorValuesFor(context),
@@ -50,9 +49,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			var files = FilesInRevision(releaseRevision);
 			int filesInRelease = files.Count();
 			
-			context
-				.SetValue("after_revision", previousReleaseRevisions.Last())
-				.SetValue("till_revision", releaseRevision);
+			context.SetCommits(previousReleaseRevisions.Last(), releaseRevision);
 			
 			var faultProneFiles =
 				(
@@ -61,7 +58,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					{
 						Path = f.Path,
 						FaultProneProbability = lr.Predict(
-							GetPredictorValuesFor(context.SetValue("file_id", f.ID))
+							GetPredictorValuesFor(context.SetFiles(e => e.IdIs(f.ID)))
 						)
 					}
 				).Where(x => x.FaultProneProbability > 0.5)
