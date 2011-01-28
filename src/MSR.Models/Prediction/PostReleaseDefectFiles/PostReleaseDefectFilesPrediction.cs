@@ -89,7 +89,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			return repositories.SelectionDSL()
 				.Files().IdIs(fileID)
 				.Commits()
-					.Reselect(e => previousRevision == null ? e : e.AfterRevision(previousRevision))
+					.AfterRevision(previousRevision)
 					.TillRevision(revision)
 				.Modifications().InCommits().InFiles()
 				.CodeBlocks().InModifications().CalculateNumberOfDefects() > 0 ? 1 : 0;
