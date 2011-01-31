@@ -23,16 +23,18 @@ namespace MSR.Tools.Visualizer.Visualizations
 		}
 		public override void Calc(IRepositoryResolver repositories)
 		{
-			var bugLiveTimes = repositories.SelectionDSL()
-				.BugFixes().CalculateAvarageBugLifetime();
-
-			x = new double[bugLiveTimes.Count()];
-			y = new double[bugLiveTimes.Count()];
+			var distribution = repositories.SelectionDSL()
+				.BugFixes()
+				.CalculateBugLifetimeDistribution(b => b.CalculateAvarageBugLifetime());
+			
+			x = new double[distribution.Count];
+			y = new double[distribution.Count];
 			int i = 0;
-			foreach (var bugLiveTime in bugLiveTimes)
+			
+			foreach (var point in distribution)
 			{
-				x[i] = bugLiveTime;
-				y[i] = bugLiveTimes.Where(t => t <= bugLiveTime).Count();
+				x[i] = point.Key;
+				y[i] = point.Value;
 				i++;
 			}
 		}
