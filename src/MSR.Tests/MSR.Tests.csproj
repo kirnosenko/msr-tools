@@ -70,6 +70,7 @@
     <Compile Include="Data\Entities\DSL\Selection\Metrics\DefectCodeDensityTest.cs" />
     <Compile Include="Data\Entities\DSL\Selection\Metrics\DefectsTest.cs" />
     <Compile Include="Data\Entities\DSL\Selection\Metrics\LocTest.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\Metrics\RemainingCodeTest.cs" />
     <Compile Include="Data\Entities\DSL\Selection\Metrics\TraditionalDefectDensityTest.cs" />
     <Compile Include="Data\Entities\DSL\Selection\ModificationSelectionExpressionTest.cs" />
     <Compile Include="Data\Entities\DSL\Selection\ProjectFileSelectionExpressionTest.cs" />
