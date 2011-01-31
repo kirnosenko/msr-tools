@@ -88,8 +88,8 @@ namespace MSR.Tools.Debugger
 		{
 			using (ConsoleTimeLogger.Start("prediction"))
 			{
-				//PostReleaseDefectFiles(previousReleaseRevisions, releaseRevision);
-				PostReleaseMetric(previousReleaseRevisions, releaseRevision);
+				PostReleaseDefectFiles(previousReleaseRevisions, releaseRevision);
+				//PostReleaseMetric(previousReleaseRevisions, releaseRevision);
 			}
 		}
 		public void PostReleaseDefectFiles(string[] previousReleaseRevisions, string releaseRevision)
@@ -100,8 +100,11 @@ namespace MSR.Tools.Debugger
 
 				Dictionary<string,PostReleaseDefectFilesPrediction> predictors = new Dictionary<string,PostReleaseDefectFilesPrediction>()
 				{
-					{ "random", new RandomPostReleaseDefectFilesPrediction(s) },
-					{ "loc", new SimpleLocPostReleaseDefectFilesPrediction(s) },
+					//{ "random", new RandomPostReleaseDefectFilesPrediction(s) },
+					//{ "loc", new SimpleLocPostReleaseDefectFilesPrediction(s) },
+					{
+						"custom", new CodeStabilityPostReleaseDefectFilesPrediction(s)
+					},
 				};
 
 				evaluator.PostReleasePeriod = 30 * 6;

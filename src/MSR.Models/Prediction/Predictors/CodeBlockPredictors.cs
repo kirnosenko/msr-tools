@@ -31,6 +31,15 @@ namespace MSR.Models.Prediction.Predictors
 			}));
 			return p;
 		}
+		public static T AddDeletedLocInFilesInCommitsPredictor<T>(this T p) where T : Prediction
+		{
+			p.AddPredictor((Func<PredictorContext, double>)(c =>
+			{
+				return - c.CodeInCommitsInFiles()
+					.Deleted().CalculateLOC();
+			}));
+			return p;
+		}
 		public static T AddNumberOfBugsTouchFilesInCommitsFixedTillRevisionPredictor<T>(this T p) where T : Prediction
 		{
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
