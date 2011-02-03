@@ -120,7 +120,7 @@
     <Compile Include="Data\VersionControl\TouchedFile.cs" />
     <Compile Include="Data\Entities\Modification.cs" />
     <Compile Include="Data\Entities\ProjectFile.cs" />
-    <Compile Include="Data\Entities\DSL\Selection\Metrics\TraditionalDefectDensity.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\Metrics\DefectDensity.cs" />
     <Compile Include="Data\Entities\DSL\Selection\Metrics\Loc.cs" />
     <Compile Include="MsrException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

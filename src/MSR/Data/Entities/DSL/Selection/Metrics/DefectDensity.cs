@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -15,15 +15,15 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 	/// <summary>
 	/// Calculates defect density as number of defects
 	/// per 1000 LOC.
-	/// Total code size is LOC at the moment 
-	/// (added code minus removed code)
 	/// </summary>
-	public static class TraditionalDefectDensity
+	public static class DefectDensity
 	{
 		public const double KLOC = 1000;
 		
 		/// <summary>
-		/// Calculates defect density for specified code set.
+		/// Calculates traditional defect density for specified code.
+		/// Total code size is LOC at the moment 
+		/// (added code minus removed code).
 		/// </summary>
 		/// <param name="code">Code set to calc metric for.</param>
 		/// <returns>Defect density.</returns>
@@ -31,7 +31,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 		{
 			code = code.Added().Fixed();
 			
-			return CalculateTraditionalDefectDensity(
+			return CalculateDefectDensity(
 				code.CalculateLOC() + code.ModifiedBy().Deleted().CalculateLOC(),
 				code.CalculateNumberOfDefects()
 			);
@@ -42,7 +42,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				.Commits().TillRevision(revision)
 				.CodeBlocks().Again().AddedInitiallyInCommits().Fixed();
 			
-			return CalculateTraditionalDefectDensity(
+			return CalculateDefectDensity(
 				code.CalculateLOC()
 				+
 				code
@@ -51,8 +51,36 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				code.CalculateNumberOfDefectsAtRevision(revision)
 			);
 		}
-		private static double CalculateTraditionalDefectDensity(double codeSize, double numberOfDefects)
+		/// <summary>
+		/// Calculates alternative defect density for specified code.
+		/// Total code size is added LOC at the moment.
+		/// </summary>
+		/// <param name="code"></param>
+		/// <returns></returns>
+		public static double CalculateDefectDensity(this CodeBlockSelectionExpression code)
 		{
+			code = code.Added().Fixed();
+
+			return CalculateDefectDensity(
+				code.CalculateLOC(),
+				code.CalculateNumberOfDefects()
+			);
+		}
+		public static double CalculateDefectDensityAtRevision(this CodeBlockSelectionExpression code, string revision)
+		{
+			code = code
+				.Commits().TillRevision(revision)
+				.CodeBlocks().Again().AddedInitiallyInCommits().Fixed();
+
+			return CalculateDefectDensity(
+				code.CalculateLOC(),
+				code.CalculateNumberOfDefectsAtRevision(revision)
+			);
+		}
+		private static double CalculateDefectDensity(double codeSize, double numberOfDefects)
+		{
+			Console.WriteLine(codeSize);
+			Console.WriteLine(numberOfDefects);
 			if (codeSize == 0)
 			{
 				return 0;
