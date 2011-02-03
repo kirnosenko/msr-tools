@@ -79,7 +79,7 @@ namespace MSR.Data.Entities.DSL.Selection
 				from cb in s
 				join m in Repository<Modification>() on cb.ModificationID equals m.ID
 				join c in Repository<Commit>() on m.CommitID equals c.ID
-				join bf in Repository<BugFix>() on c.ID equals bf.CommitID
+				join bf in Selection<BugFix>() on c.ID equals bf.CommitID
 				select cb
 			);
 		}

@@ -45,7 +45,7 @@ namespace MSR.Models.Prediction.Predictors
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
 				return c.CodeInCommitsInFiles()
-					.CalculateNumberOfDefectsFixedTillRevision(c.GetValue<string>("till_revision"));
+					.CalculateNumberOfDefectsAtRevision(c.GetValue<string>("till_revision"));
 			}));
 			return p;
 		}

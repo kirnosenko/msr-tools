@@ -1,7 +1,7 @@
 ﻿/*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -86,6 +86,38 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				.CodeBlocks()
 				.CalculateDefectCodeDensity()
 					.Should().Be(17d / 8020);
+		}
+		[Test]
+		public void Should_ignore_fixes_after_specified_revision()
+		{
+			mappingDSL
+				.AddCommit("1")
+					.AddFile("file1").Modified()
+						.Code(100)
+			.Submit()
+				.AddCommit("2").IsBugFix()
+					.File("file1").Modified()
+						.Code(-5).ForCodeAddedInitiallyInRevision("1")
+						.Code(5)
+			.Submit()
+				.AddCommit("3").IsBugFix()
+					.File("file1").Modified()
+						.Code(-5).ForCodeAddedInitiallyInRevision("1")
+						.Code(-1).ForCodeAddedInitiallyInRevision("2")
+						.Code(5)
+			.Submit();
+			
+			var code = selectionDSL
+				.Files().PathIs("file1")
+				.Modifications().InFiles()
+				.CodeBlocks().InModifications();
+
+			code.CalculateDefectCodeDensityAtRevision("1")
+				.Should().Be(0);
+			code.CalculateDefectCodeDensityAtRevision("2")
+				.Should().Be(5d / 105);
+			code.CalculateDefectCodeDensityAtRevision("3")
+				.Should().Be(11d / 110);
 		}
 	}
 }

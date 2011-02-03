@@ -36,6 +36,21 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				code.CalculateNumberOfDefects()
 			);
 		}
+		public static double CalculateTraditionalDefectDensityAtRevision(this CodeBlockSelectionExpression code, string revision)
+		{
+			code = code
+				.Commits().TillRevision(revision)
+				.CodeBlocks().Again().AddedInitiallyInCommits().Fixed();
+			
+			return CalculateTraditionalDefectDensity(
+				code.CalculateLOC()
+				+
+				code
+					.Modifications().InCommits()
+					.CodeBlocks().Again().ModifiedBy().Deleted().InModifications().CalculateLOC(),
+				code.CalculateNumberOfDefectsAtRevision(revision)
+			);
+		}
 		private static double CalculateTraditionalDefectDensity(double codeSize, double numberOfDefects)
 		{
 			if (codeSize == 0)

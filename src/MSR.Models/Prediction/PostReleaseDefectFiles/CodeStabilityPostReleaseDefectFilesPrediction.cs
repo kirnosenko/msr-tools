@@ -71,9 +71,16 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				//}
 				
 				double currentLoc = codeByAge.Sum(x => x.CodeSize);
+				double dcdForFileAtReleaseTime = repositories.SelectionDSL()
+					.Files().IdIs(file.ID)
+					.Commits().TillRevision(releaseRevision)
+					.Modifications().InCommits().InFiles()
+					.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(releaseRevision);
+				double fileHasErrorsProbability = 
+					Math.Pow(1 - defectLineProbability, currentLoc) * defectLineProbability;// - dcdForFileAtReleaseTime;
 				
 				double codeStability = codeByAge.Sum(x =>
-					Math.Pow(1 - defectLineProbability, currentLoc) * defectLineProbability
+					fileHasErrorsProbability
 					*
 					(double)bugLifetimes.Where(t => t <= x.Age).Count() / bugLifetimes.Count()
 				);

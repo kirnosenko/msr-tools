@@ -32,7 +32,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 		/// <param name="code"></param>
 		/// <param name="revision"></param>
 		/// <returns></returns>
-		public static int CalculateNumberOfDefectsFixedTillRevision(this CodeBlockSelectionExpression code, string revision)
+		public static int CalculateNumberOfDefectsAtRevision(this CodeBlockSelectionExpression code, string revision)
 		{
 			return code.ModifiedBy()
 				.Modifications().ContainCodeBlocks()

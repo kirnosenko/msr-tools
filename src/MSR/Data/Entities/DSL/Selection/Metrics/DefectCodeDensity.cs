@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -21,6 +21,19 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 			return CalculateDefectCodeDensity(
 				code.CalculateLOC(),
 				- code.ModifiedBy().InBugFixes().CalculateLOC()
+			);
+		}
+		public static double CalculateDefectCodeDensityAtRevision(this CodeBlockSelectionExpression code, string revision)
+		{
+			code = code
+				.Commits().TillRevision(revision)
+				.CodeBlocks().Again().AddedInitiallyInCommits().Fixed();
+
+			return CalculateDefectCodeDensity(
+				code.CalculateLOC(),
+				- code
+					.BugFixes().InCommits()
+					.CodeBlocks().ModifiedBy().InBugFixes().CalculateLOC()
 			);
 		}
 		private static double CalculateDefectCodeDensity(double addedCodeSize, double defectCodeSize)

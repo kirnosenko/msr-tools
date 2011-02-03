@@ -96,19 +96,30 @@ namespace MSR.Data.Entities.DSL.Selection
 			.Submit()
 				.AddCommit("2").IsBugFix()
 					.File("file1").Modified()
-						.Code(-5)
+						.Code(-5).ForCodeAddedInitiallyInRevision("1")
 						.Code(5)
 			.Submit()
 				.AddCommit("3")
 					.File("file1").Modified()
-						.Code(-10)
+						.Code(-10).ForCodeAddedInitiallyInRevision("1")
 						.Code(20)
+			.Submit()
+				.AddCommit("4").IsBugFix()
+					.File("file1").Modified()
+						.Code(-3)
+						.Code(3)
 			.Submit();
 			
-			selectionDSL.CodeBlocks()
-				.InBugFixes()
+			selectionDSL
+				.CodeBlocks().InBugFixes()
 				.Select(x => x.Size).ToArray()
-					.Should().Have.SameSequenceAs(new double[] { -5, 5 });
+					.Should().Have.SameSequenceAs(new double[] { -5, 5, -3, 3 });
+			selectionDSL
+				.Commits().BeforeRevision("4")
+				.BugFixes().InCommits()
+				.CodeBlocks().InBugFixes()
+				.Select(x => x.Size).ToArray()
+					.Should().Have.SameSequenceAs(new double[] { -5, 5});
 		}
 		[Test]
 		public void Should_select_code_added_initially_in_commit()

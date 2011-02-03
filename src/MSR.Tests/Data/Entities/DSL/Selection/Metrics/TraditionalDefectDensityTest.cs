@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -86,6 +86,38 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				.CodeBlocks()
 				.CalculateTraditionalDefectDensity()
 					.Should().Be(3d / (7903 / TraditionalDefectDensity.KLOC));
+		}
+		[Test]
+		public void Should_ignore_fixes_after_specified_revision()
+		{
+			mappingDSL
+				.AddCommit("1")
+					.AddFile("file1").Modified()
+						.Code(100)
+			.Submit()
+				.AddCommit("2").IsBugFix()
+					.File("file1").Modified()
+						.Code(-5).ForCodeAddedInitiallyInRevision("1")
+						.Code(5)
+			.Submit()
+				.AddCommit("3").IsBugFix()
+					.File("file1").Modified()
+						.Code(-5).ForCodeAddedInitiallyInRevision("1")
+						.Code(-1).ForCodeAddedInitiallyInRevision("2")
+						.Code(5)
+			.Submit();
+
+			var code = selectionDSL
+				.Files().PathIs("file1")
+				.Modifications().InFiles()
+				.CodeBlocks().InModifications();
+
+			code.CalculateTraditionalDefectDensityAtRevision("1")
+				.Should().Be(0);
+			code.CalculateTraditionalDefectDensityAtRevision("2")
+				.Should().Be(1d / (100 / TraditionalDefectDensity.KLOC));
+			code.CalculateTraditionalDefectDensityAtRevision("3")
+				.Should().Be(2d / (99 / TraditionalDefectDensity.KLOC));
 		}
 	}
 }

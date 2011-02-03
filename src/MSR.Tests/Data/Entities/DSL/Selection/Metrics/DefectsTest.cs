@@ -60,7 +60,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 			selectionDSL
 				.Files().PathIs("file1")
 				.Modifications().InFiles()
-				.CodeBlocks().InModifications().CalculateNumberOfDefectsFixedTillRevision("3")
+				.CodeBlocks().InModifications().CalculateNumberOfDefectsAtRevision("3")
 					.Should().Be(1);
 			selectionDSL
 				.Files().PathIs("file2")
