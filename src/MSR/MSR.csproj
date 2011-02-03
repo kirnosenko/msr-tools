@@ -62,7 +62,6 @@
     <Compile Include="Data\Entities\DSL\Selection\CommitSelectionExpression.cs" />
     <Compile Include="Data\Entities\DSL\Selection\EntitySelectionExpression.cs" />
     <Compile Include="Data\Entities\DSL\Selection\Metrics\BugLifetime.cs" />
-    <Compile Include="Data\Entities\DSL\Selection\Metrics\BugLifetimeDistribution.cs" />
     <Compile Include="Data\Entities\DSL\Selection\Metrics\Defects.cs" />
     <Compile Include="Data\Entities\DSL\Selection\Metrics\DefectCodeDensity.cs" />
     <Compile Include="Data\Entities\DSL\Selection\Metrics\RemainingCode.cs" />

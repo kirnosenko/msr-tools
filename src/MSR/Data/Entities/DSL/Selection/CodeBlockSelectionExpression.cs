@@ -73,36 +73,6 @@ namespace MSR.Data.Entities.DSL.Selection
 				select cb
 			);
 		}
-		public CodeBlockSelectionExpression ExistFullyOrPartiallyInRevision(string revision)
-		{
-			return Added().Reselect(s =>
-				(
-					from cb in s
-					join m in Repository<Modification>() on cb.ModificationID equals m.ID
-					join c in Repository<Commit>() on m.CommitID equals c.ID
-					let revisionNumber = Repository<Commit>()
-						.Single(x => x.Revision == revision).OrderedNumber
-					where
-						c.OrderedNumber <= revisionNumber
-					select cb
-				)
-				.Except(
-					(
-						from cb in s
-						join dcb in Repository<CodeBlock>() on cb.ID equals dcb.TargetCodeBlockID
-						join m in Repository<Modification>() on dcb.ModificationID equals m.ID
-						join c in Repository<Commit>() on m.CommitID equals c.ID
-							let revisionNumber = Repository<Commit>()
-								.Single(x => x.Revision == revision).OrderedNumber
-						where
-							dcb.Size < 0
-							&&
-							c.OrderedNumber <= revisionNumber
-						group dcb by cb
-					).Where(x => x.Key.Size + x.Sum(y => y.Size) == 0).Select(x => x.Key)
-				)
-			);
-		}
 		public CodeBlockSelectionExpression InBugFixes()
 		{
 			return Reselect(s =>

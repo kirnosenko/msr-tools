@@ -157,38 +157,5 @@ namespace MSR.Data.Entities.DSL.Selection
 				.Modifications().ContainCodeBlocks().Count()
 					.Should().Be(2);
 		}
-		[Test]
-		public void Should_select_codeblocks_code_from_exists_in_revision()
-		{
-			mappingDSL
-				.AddCommit("1")
-					.AddFile("file1").Modified()
-						.Code(10)
-			.Submit()
-				.AddCommit("2")
-					.File("file1").Modified()
-						.Code(-5).ForCodeAddedInitiallyInRevision("1")
-						.Code(10)
-			.Submit()
-				.AddCommit("3")
-					.File("file1").Modified()
-						.Code(-5).ForCodeAddedInitiallyInRevision("1")
-						.Code(-5).ForCodeAddedInitiallyInRevision("2")
-						.Code(10)
-			.Submit();
-			
-			selectionDSL.CodeBlocks()
-				.ExistFullyOrPartiallyInRevision("1")
-				.Select(cb => cb.AddedInitiallyInCommit.Revision).ToArray()
-					.Should().Have.SameSequenceAs(new string[] { "1" });
-			selectionDSL.CodeBlocks()
-				.ExistFullyOrPartiallyInRevision("2")
-				.Select(cb => cb.AddedInitiallyInCommit.Revision).ToArray()
-					.Should().Have.SameSequenceAs(new string[] { "1", "2" });
-			selectionDSL.CodeBlocks()
-				.ExistFullyOrPartiallyInRevision("3")
-				.Select(cb => cb.AddedInitiallyInCommit.Revision).ToArray()
-					.Should().Have.SameSequenceAs(new string[] { "2", "3" });
-		}
 	}
 }

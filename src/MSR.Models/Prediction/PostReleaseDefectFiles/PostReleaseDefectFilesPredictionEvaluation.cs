@@ -66,23 +66,15 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			defectFiles = repositories.SelectionDSL()
 				.Commits()
-					.AfterRevision(PreviousReleaseRevisions.Last())
-					.TillRevision(ReleaseRevision)
+					.AfterRevision(ReleaseRevision)
+					.DateIsLesserOrEquelThan(PostReleasePeriodEnd())
+					.AreBugFixes()
 				.Files()
 					.Reselect(FileSelector)
 					.ExistInRevision(ReleaseRevision)
-					.Do(e => allFiles = e.Select(f => f.Path))
-				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().Added().ModifiedBy()
-				.Modifications().ContainCodeBlocks()
-				.Commits()
-					.AfterRevision(ReleaseRevision)
-					.DateIsLesserOrEquelThan(PostReleasePeriodEnd())
-					.ContainModifications()
-					.AreBugFixes()
-				.Files().Again().TouchedInCommits()
-				.Select(x => x.Path)
-				.ToList();
+						.Do(e => allFiles = e.Select(f => f.Path))
+					.TouchedInCommits()
+				.Select(x => x.Path).ToList();
 		}
 		private DateTime PostReleasePeriodEnd()
 		{

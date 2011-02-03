@@ -26,34 +26,15 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		public override IEnumerable<string> Predict(string[] previousReleaseRevisions, string releaseRevision)
 		{
-			var bld = repositories.SelectionDSL()
+			var bugLifetimes = repositories.SelectionDSL()
 				.Commits().TillRevision(previousReleaseRevisions.Last())
-				.BugFixes().InCommits().CalculateBugLifetimeDistribution(b =>
-					b.CalculateAvarageBugLifetime()
-				);
+				.BugFixes().InCommits().CalculateAvarageBugLifetime();
 			
-			double dd = repositories.SelectionDSL()
+			double defectLineProbability = repositories.SelectionDSL()
 				.Commits().TillRevision(previousReleaseRevisions.Last())
 				.Files().Reselect(FileSelector)
 				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().CalculateTraditionalDefectDensity();
-			/*
-			double xxy = bld.Sum(x => x.Key * x.Key * x.Value);
-			double xy = bld.Sum(x => x.Key * x.Value);
-			double y = bld.Sum(x => x.Value);
-			double ylny = bld.Sum(x => x.Value * Math.Log(x.Value));
-			double xylny = bld.Sum(x => x.Key * x.Value * Math.Log(x.Value));
-			double p1 = 1;
-			double p2 = (y * xylny - xy * ylny) / (y * xxy - xy * xy);
-			ExponentialSRGM srgm = new ExponentialSRGM(p1, p1);
-			*/
-			
-			PolynomialRegression regression = new PolynomialRegression();
-			foreach (var x in bld)
-			{
-				regression.AddTrainingData(x.Key, x.Value);
-			}
-			regression.Train();
+				.CodeBlocks().InModifications().CalculateDefectCodeDensity();
 			
 			var files = FilesInRevision(releaseRevision);
 			int filesInRelease = files.Count();
@@ -90,18 +71,19 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				//}
 				
 				double currentLoc = codeByAge.Sum(x => x.CodeSize);
-				double codeStability = codeByAge.Sum(x => regression.Predict(x.Age) * (x.CodeSize / currentLoc) );
-				//if (codeStability > 1)
-				//{
-				//	Console.WriteLine();
-				//}
+				
+				double codeStability = codeByAge.Sum(x =>
+					Math.Pow(1 - defectLineProbability, currentLoc) * defectLineProbability
+					*
+					(double)bugLifetimes.Where(t => t <= x.Age).Count() / bugLifetimes.Count()
+				);
 				faultProneFiles.Add(file.Path, codeStability);
 			}
 			
 			return faultProneFiles
 				.OrderBy(x => x.Value)
 				.Select(x => x.Key)
-				.TakeNoMoreThan((int)0.2d * faultProneFiles.Count);
+				.TakeNoMoreThan((int)(0.2d * faultProneFiles.Count));
 		}
 	}
 }
