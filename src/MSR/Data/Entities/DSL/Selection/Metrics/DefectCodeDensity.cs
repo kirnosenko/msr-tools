@@ -33,7 +33,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				code.CalculateLOC(),
 				- code
 					.BugFixes().InCommits()
-					.CodeBlocks().ModifiedBy().InBugFixes().CalculateLOC()
+					.CodeBlocks().Again().ModifiedBy().InBugFixes().CalculateLOC()
 			);
 		}
 		private static double CalculateDefectCodeDensity(double addedCodeSize, double defectCodeSize)

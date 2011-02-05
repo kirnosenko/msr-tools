@@ -106,6 +106,19 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 						.Code(-1).ForCodeAddedInitiallyInRevision("2")
 						.Code(5)
 			.Submit();
+
+			selectionDSL
+				.Commits().RevisionIs("1")
+				.Modifications().InCommits()
+				.CodeBlocks().InModifications()
+				.CalculateDefectCodeDensityAtRevision("2")
+					.Should().Be(5d / 100);
+			selectionDSL
+				.Commits().RevisionIs("1")
+				.Modifications().InCommits()
+				.CodeBlocks().InModifications()
+				.CalculateDefectCodeDensityAtRevision("3")
+					.Should().Be(10d / 100);
 			
 			var code = selectionDSL
 				.Files().PathIs("file1")
