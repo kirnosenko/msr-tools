@@ -33,7 +33,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				Calc();
 			}
 			prediction.FileSelector = FileSelector;
-			IEnumerable<string> predictedDefectFiles = prediction.Predict(PreviousReleaseRevisions, ReleaseRevision);
+			IEnumerable<string> predictedDefectFiles = prediction.Predict(Revisions);
 			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(predictedDefectFiles);
 
 			IEnumerable<string> P = defectFiles;
@@ -45,13 +45,13 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			
 			return new EvaluationResult(TP, TN, FP, FN);
 		}
-		public string ReleaseRevision
+		public string[] Revisions
 		{
 			get; set;
 		}
-		public string[] PreviousReleaseRevisions
+		public string ReleaseRevision
 		{
-			get; set;
+			get { return Revisions.Last(); }
 		}
 		public int PostReleasePeriod
 		{

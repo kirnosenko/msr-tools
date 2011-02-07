@@ -56,25 +56,43 @@ namespace MSR.Tools.Debugger
 			//mapper.Info();
 			//mapper.Map(false, 217);
 			//mapper.Truncate(755);
-			mapper.Check(120);
+			mapper.Check(1365);
 		}
 		static void Predict()
 		{
 			string[] gnome_terminal_releases =
 			{
-				"386", "689", "951", "1198", "1365"
+				"386", // 2.0
+				"534", // 2.1
+				"689", // 2.2
+				"951", // 2.4
+				"1004", // 2.5
+				"1198", // 2.6
+				"1365", // 2.8
+				"1513", // 2.10
+				"1628", // 2.12
+				"1943", // 2.14
 			};
 			
-			string[] dia_releases =
+			string[] django_releases =
 			{
-				"1617", "2154", "2437", "2859", "3413", "3652"
+				"1e3c3934bda6625d381599d2d373087733235c91", // 1.0
+				"55876d49e89f74365a9c737370e58567bd1eabff", // 1.1
+				"e5f9122545127e539b50fa57d8ec8520dc9123ac", // 1.2
+			};
+			
+			string[] nhibernate_releases =
+			{
+				"1750", // 1.0
+				"2657", // 1.2
+				"3728", // 2.0
+				"4655", // 2.1
 			};
 			
 			DebuggingTool debugger = new DebuggingTool(configFile);
 			
 			debugger.Predict(
-				gnome_terminal_releases.Take(4).ToArray(),
-				gnome_terminal_releases.Last()
+				gnome_terminal_releases.Take(3).ToArray()
 			);
 		}
 		static void LocStat()

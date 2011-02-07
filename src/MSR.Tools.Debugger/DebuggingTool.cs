@@ -84,15 +84,15 @@ namespace MSR.Tools.Debugger
 			
 			Console.WriteLine("No diff errors.");
 		}
-		public void Predict(string[] previousReleaseRevisions, string releaseRevision)
+		public void Predict(string[] revisions)
 		{
 			using (ConsoleTimeLogger.Start("prediction"))
 			{
-				PostReleaseDefectFiles(previousReleaseRevisions, releaseRevision);
-				//PostReleaseMetric(previousReleaseRevisions, releaseRevision);
+				PostReleaseDefectFiles(revisions);
+				//PostReleaseMetric(revisions);
 			}
 		}
-		public void PostReleaseDefectFiles(string[] previousReleaseRevisions, string releaseRevision)
+		public void PostReleaseDefectFiles(string[] revisions)
 		{
 			using (var s = data.OpenSession())
 			{
@@ -101,15 +101,19 @@ namespace MSR.Tools.Debugger
 				Dictionary<string,PostReleaseDefectFilesPrediction> predictors = new Dictionary<string,PostReleaseDefectFilesPrediction>()
 				{
 					//{ "random", new RandomPostReleaseDefectFilesPrediction(s) },
-					//{ "loc", new SimpleLocPostReleaseDefectFilesPrediction(s) },
-					{
-						"custom", new CodeStabilityPostReleaseDefectFilesPrediction(s)
-					},
+					{ "loc", new SimpleLocPostReleaseDefectFilesPrediction(s) },
+					{ "touch count", new PostReleaseDefectFilesPrediction(s).AddFilesTouchCountInCommitsPredictor() },
+					{ "tdd", new PostReleaseDefectFilesPrediction(s).AddTraditionalDefectDensityForCodeInCommitsInFilesPredictor() },
+					{ "dd", new PostReleaseDefectFilesPrediction(s).AddDefectDensityForCodeInCommitsInFilesPredictor() },
+					{ "dcd", new PostReleaseDefectFilesPrediction(s).AddDefectCodeDensityForCodeInCommitsInFilesPredictor() },
+					{ "code stability", new CodeStabilityPostReleaseDefectFilesPrediction(s) },
+					//{
+					//	"custom", new PostReleaseDefectFilesPrediction(s)
+					//}
 				};
 
 				evaluator.PostReleasePeriod = 30 * 6;
-				evaluator.PreviousReleaseRevisions = previousReleaseRevisions;
-				evaluator.ReleaseRevision = releaseRevision;
+				evaluator.Revisions = revisions;
 				evaluator.FileSelector = fe => fe.InDirectory("/trunk");
 
 				foreach (var predictor in predictors)
@@ -120,7 +124,7 @@ namespace MSR.Tools.Debugger
 				}
 			}
 		}
-		public void PostReleaseMetric(string[] previousReleaseRevisions, string releaseRevision)
+		public void PostReleaseMetric(string[] revisions)
 		{
 			using (var s = data.OpenSession())
 			{
@@ -134,8 +138,7 @@ namespace MSR.Tools.Debugger
 					},
 				};
 
-				evaluator.PreviousReleaseRevisions = previousReleaseRevisions;
-				evaluator.ReleaseRevision = releaseRevision;
+				evaluator.Revisions = revisions;
 				evaluator.FileSelector = fe => fe.InDirectory("/trunk");
 
 				foreach (var predictor in predictors)

@@ -19,8 +19,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			: base(repositories)
 		{
 		}
-		public override IEnumerable<string> Predict(string[] previousReleaseRevisions, string releaseRevision)
+		public override IEnumerable<string> Predict(string[] revisions)
 		{
+			string releaseRevision = revisions.Last();
+			
 			var files = FilesInRevision(releaseRevision);
 			int filesInRelease = files.Count();
 			

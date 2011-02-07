@@ -49,18 +49,27 @@ namespace MSR.Models.Prediction.Predictors
 			}));
 			return p;
 		}
-		public static T AddDefectDensityForCodeInFilesInCommitsPredictor<T>(this T p) where T : Prediction
+		public static T AddTraditionalDefectDensityForCodeInCommitsInFilesPredictor<T>(this T p) where T : Prediction
 		{
-			p.AddPredictor((Func<PredictorContext, double>)(c =>
+			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
 				return c.CodeInCommitsInFiles()
 					.CalculateTraditionalDefectDensity();
 			}));
 			return p;
 		}
-		public static T AddDefectCodeDensityForCodeInFileInRevisionsPredictor<T>(this T p) where T : Prediction
+		public static T AddDefectDensityForCodeInCommitsInFilesPredictor<T>(this T p) where T : Prediction
 		{
 			p.AddPredictor((Func<PredictorContext, double>)(c =>
+			{
+				return c.CodeInCommitsInFiles()
+					.CalculateDefectDensity();
+			}));
+			return p;
+		}
+		public static T AddDefectCodeDensityForCodeInCommitsInFilesPredictor<T>(this T p) where T : Prediction
+		{
+			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
 				return c.CodeInCommitsInFiles()
 					.CalculateDefectCodeDensity();

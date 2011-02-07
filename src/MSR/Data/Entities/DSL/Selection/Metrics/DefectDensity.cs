@@ -79,8 +79,6 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 		}
 		private static double CalculateDefectDensity(double codeSize, double numberOfDefects)
 		{
-			Console.WriteLine(codeSize);
-			Console.WriteLine(numberOfDefects);
 			if (codeSize == 0)
 			{
 				return 0;

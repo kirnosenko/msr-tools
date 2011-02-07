@@ -24,8 +24,11 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			: base(repositories)
 		{
 		}
-		public override IEnumerable<string> Predict(string[] previousReleaseRevisions, string releaseRevision)
+		public override IEnumerable<string> Predict(string[] revisions)
 		{
+			IEnumerable<string> previousReleaseRevisions = revisions.Take(revisions.Count() - 1);
+			string releaseRevision = revisions.Last();
+			
 			var bugLifetimes = repositories.SelectionDSL()
 				.Commits().TillRevision(previousReleaseRevisions.Last())
 				.BugFixes().InCommits().CalculateAvarageBugLifetime();
@@ -34,11 +37,11 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				.Commits().TillRevision(previousReleaseRevisions.Last())
 				.Files().Reselect(FileSelector)
 				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().CalculateDefectCodeDensity();
+				.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(previousReleaseRevisions.Last());
 			
 			var files = FilesInRevision(releaseRevision);
 			int filesInRelease = files.Count();
-			Dictionary<string,double> faultProneFiles = new Dictionary<string, double>();
+			Dictionary<string,double> faultProneFiles = new Dictionary<string,double>();
 			
 			foreach (var file in files)
 			{
@@ -65,10 +68,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 						CodeSize = cb.Value
 					}).ToList();
 				
-				//if (q.Count() == 0)
-				//{
-				//	Console.WriteLine(file.Path)
-				//}
+				if (codeByAge.Count == 0)
+				{
+					Console.WriteLine(file.Path);
+				}
 				
 				double currentLoc = codeByAge.Sum(x => x.CodeSize);
 				double dcdForFileAtReleaseTime = repositories.SelectionDSL()
@@ -77,7 +80,11 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(releaseRevision);
 				double fileHasErrorsProbability = 
-					Math.Pow(1 - defectLineProbability, currentLoc) * defectLineProbability;// - dcdForFileAtReleaseTime;
+					Math.Pow(1 - defectLineProbability, currentLoc) * defectLineProbability - dcdForFileAtReleaseTime;
+				if (fileHasErrorsProbability < 0)
+				{
+					fileHasErrorsProbability = 0;
+				}
 				
 				double codeStability = codeByAge.Sum(x =>
 					fileHasErrorsProbability
@@ -88,6 +95,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			}
 			
 			return faultProneFiles
+				//.Where(x => x.Value < 0.95)
 				.OrderBy(x => x.Value)
 				.Select(x => x.Key)
 				.TakeNoMoreThan((int)(0.2d * faultProneFiles.Count));

@@ -54,13 +54,17 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 			
 			return regression.R2;
 		}
-		public string ReleaseRevision
+		public string[] Revisions
 		{
 			get; set;
 		}
 		public string[] PreviousReleaseRevisions
 		{
-			get; set;
+			get { return Revisions.Take(Revisions.Count() - 1).ToArray(); }
+		}
+		public string ReleaseRevision
+		{
+			get { return Revisions.Last(); }
 		}
 		public Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression> FileSelector
 		{
