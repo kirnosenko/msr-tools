@@ -168,5 +168,37 @@ namespace MSR.Data.Entities.DSL.Selection
 				.Modifications().ContainCodeBlocks().Count()
 					.Should().Be(2);
 		}
+		[Test]
+		public void Should_select_refactoring_commits()
+		{
+			mappingDSL
+				.AddCommit("1")
+					.AddFile("file1").Modified()
+						.Code(100)
+			.Submit()
+				.AddCommit("2")
+					.File("file1").Modified()
+						.Code(-10).ForCodeAddedInitiallyInRevision("1")
+						.Code(10)
+			.Submit()
+				.AddCommit("3").IsBugFix()
+					.File("file1").Modified()
+						.Code(-5).ForCodeAddedInitiallyInRevision("1")
+						.Code(10)
+			.Submit()
+				.AddCommit("4")
+					.File("file1").Modified()
+						.Code(-5).ForCodeAddedInitiallyInRevision("1")
+						.Code(15)
+			.Submit();
+			
+			selectionDSL
+				.Commits().AreRefactorings()
+				.Select(c => c.Revision).ToArray()
+					.Should().Have.SameValuesAs(new string[]
+					{
+						"2"
+					});
+		}
 	}
 }

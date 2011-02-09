@@ -58,7 +58,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					name = ext,
 					files = ext_files_count,
 					files_percent = ((double)ext_files_count / files_count * 100).ToString("F02"),
-					dd = code.CalculateTraditionalDefectDensity().ToString("F02"),
+					dd = code.CalculateDefectDensity().ToString("F03"),
 					added = code.Added().CalculateLOC(),
 					deleted = - code.Deleted().CalculateLOC(),
 					current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
@@ -90,7 +90,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					name = dir,
 					files = dir_files_count,
 					files_percent = ((double)dir_files_count / files_count * 100).ToString("F02"),
-					dd = code.CalculateTraditionalDefectDensity().ToString("F02"),
+					dd = code.CalculateDefectDensity().ToString("F03"),
 					added = code.Added().CalculateLOC(),
 					deleted = - code.Deleted().CalculateLOC(),
 					current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()

@@ -56,18 +56,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				from a in codeByAuthor
 				let authorCommits = a.AddedCode.Commits().Again().Count()
 				let authorFixes = a.AddedCode.Commits().Again().AreBugFixes().Count()
-				let authorRefactorings =
-					(
-						from c in a.AddedCode.Commits().Again().AreNotBugFixes()
-						join m in repositories.Repository<Modification>() on c.ID equals m.CommitID
-						join cb in repositories.Repository<CodeBlock>() on m.ID equals cb.ModificationID
-						group cb by c into g
-						select new
-						{
-							Added = g.Where(x => x.Size > 0).Sum(x => x.Size),
-							Removed = - g.Where(x => x.Size < 0).Sum(x => x.Size)
-						}
-					).Where(x => x.Removed / x.Added >= 1/2).Count()
+				let authorRefactorings = a.AddedCode.Commits().Again().AreRefactorings().Count()
 				let authorLoc = a.AddedCode.CalculateLOC() + a.AddedCode.ModifiedBy().CalculateLOC()
 				select new
 				{
@@ -75,7 +64,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					commits = string.Format("{0} ({1}%)", authorCommits, (((double)authorCommits / commits) * 100).ToString("F02")),
 					fixes = string.Format("{0} ({1}%)", authorFixes, (((double)authorFixes / authorCommits) * 100).ToString("F02")),
 					refactorings = string.Format("{0} ({1}%)", authorRefactorings, (((double)authorRefactorings / authorCommits) * 100).ToString("F02")),
-					dd = a.AddedCode.CalculateTraditionalDefectDensity().ToString("F02"),
+					dd = a.AddedCode.CalculateDefectDensity().ToString("F03"),
 					added = a.AddedCode.CalculateLOC(),
 					deleted = - a.RemovedCode.CalculateLOC(),
 					current = authorLoc,

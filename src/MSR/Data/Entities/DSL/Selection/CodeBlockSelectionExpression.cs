@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -23,6 +23,23 @@ namespace MSR.Data.Entities.DSL.Selection
 					join cb in parentExp.Selection<CodeBlock>() on m.ID equals cb.ModificationID
 					select m
 				).Distinct()
+			);
+		}
+		public static CommitSelectionExpression AreRefactorings(this CommitSelectionExpression parentExp)
+		{
+			return parentExp.AreNotBugFixes().Reselect(s =>
+				(
+					from c in s
+					join m in parentExp.Repository<Modification>() on c.ID equals m.CommitID
+					join cb in parentExp.Repository<CodeBlock>() on m.ID equals cb.ModificationID
+					group cb by c into g
+					select new
+					{
+						Commit = g.Key,
+						Added = g.Where(x => x.Size > 0).Sum(x => x.Size),
+						Removed = -g.Where(x => x.Size < 0).Sum(x => x.Size)
+					}
+				).Where(x => x.Removed / x.Added >= 1d / 2).Select(x => x.Commit)
 			);
 		}
 	}

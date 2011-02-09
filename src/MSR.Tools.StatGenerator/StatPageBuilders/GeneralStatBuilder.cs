@@ -29,6 +29,9 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			int commits_count = repositories.Repository<Commit>().Count();
 			int commits_fix_count = repositories.SelectionDSL().Commits().AreBugFixes().Count();
 			string commits_fix_percent = ((double)commits_fix_count / commits_count * 100).ToString("F02");
+			int commits_refactoring_count = repositories.SelectionDSL().Commits().AreRefactorings().Count();
+			string commits_refactoring_percent = ((double)commits_refactoring_count / commits_count * 100).ToString("F02");
+			
 			DateTime statfrom = repositories.Repository<Commit>().Min(x => x.Date);
 			DateTime statto = repositories.Repository<Commit>().Max(x => x.Date);
 
@@ -42,6 +45,8 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			result.Add("commits_count", commits_count);
 			result.Add("commits_fix_count", commits_fix_count);
 			result.Add("commits_fix_percent", commits_fix_percent);
+			result.Add("commits_refactoring_count", commits_refactoring_count);
+			result.Add("commits_refactoring_percent", commits_refactoring_percent);
 			var files = repositories.SelectionDSL()
 				.Files().InDirectory(TargetDir)
 				.Fixed();
@@ -68,9 +73,12 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			result.Add("loc_removed",
 				- code.Deleted().CalculateLOC()
 			);
+			result.Add("tdd",
+				code.CalculateTraditionalDefectDensity().ToString("F03")
+			);
 			result.Add("dd",
-				code.CalculateTraditionalDefectDensity().ToString("F02")
-			);			
+				code.CalculateDefectDensity().ToString("F03")
+			);
 			
 			return result;
 		}
