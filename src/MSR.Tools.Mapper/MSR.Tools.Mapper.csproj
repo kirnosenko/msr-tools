@@ -37,9 +37,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\MSR\Properties\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="MappingTool.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MSR.Tools\MSR.Tools.csproj">

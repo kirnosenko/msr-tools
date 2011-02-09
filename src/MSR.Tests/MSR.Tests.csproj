@@ -95,7 +95,6 @@
     <Compile Include="Data\VersionControl\Svn\SvnDataTest.cs" />
     <Compile Include="Data\VersionControl\Svn\SvnFullUniDiffTest.cs" />
     <Compile Include="Data\VersionControl\Svn\SvnLogTest.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MSR.Util\MSR.Util.csproj">
@@ -106,6 +105,9 @@
       <Project>{25E8A69D-6400-423F-8B83-C22C096E9D72}</Project>
       <Name>MSR</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

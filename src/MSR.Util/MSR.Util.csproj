@@ -37,12 +37,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\MSR\Properties\SharedAssemblyInfo.cs">
+      <Link>Properties\SharedAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Collections\Generic\FixedSizeDictionary.cs" />
     <Compile Include="Collections\Generic\SmartDictionary.cs" />
     <Compile Include="Diagnostics\ConsoleTimeLogger.cs" />
     <Compile Include="Diagnostics\TimeLogger.cs" />
     <Compile Include="IO\Shell.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtension.cs" />
     <Compile Include="TimeSpanExtension.cs" />
   </ItemGroup>
