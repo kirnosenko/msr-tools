@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using NVelocity;
 using NVelocity.App;
@@ -41,6 +42,7 @@ namespace MSR.Tools.StatGenerator
 				url = x.PageTemplate,
 				name = x.PageName
 			});
+			string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 			
 			foreach (var builder in builders)
 			{
@@ -51,6 +53,7 @@ namespace MSR.Tools.StatGenerator
 				
 				VelocityContext context = new VelocityContext();
 				context.Put("menu", menu);
+				context.Put("version", version);
 				using (var s = data.OpenSession())
 				{
 					foreach (var obj in builder.BuildData(s))
