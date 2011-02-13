@@ -11,6 +11,8 @@
 			<th>Removed LOC</th>
 			<th>Current LOC</th>
 			<th>Contribution (%)</th>
+			<th>Specialization (%)</th>
+			<th>Specialization Uniqueness (%)</th>
 		</tr>
 		#foreach($author in $authors)
 		#each
@@ -24,6 +26,8 @@
 			<td>$author.deleted</td>
 			<td>$author.current</td>
 			<td>$author.contribution</td>
+			<td>$author.specialization</td>
+			<td>$author.specializationUniqueness</td>
 		</tr>
 		#end
 	</table>

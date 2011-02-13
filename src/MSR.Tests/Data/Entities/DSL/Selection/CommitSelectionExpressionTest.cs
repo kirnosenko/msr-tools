@@ -36,6 +36,10 @@ namespace MSR.Data.Entities.DSL.Selection
 				.Commits().AuthorIs("bob")
 				.Select(c => c.Revision).ToArray()
 					.Should().Have.SameSequenceAs(new string[] { "2", });
+			selectionDSL
+				.Commits().AuthorIsNot("alan")
+				.Select(c => c.Revision).ToArray()
+					.Should().Have.SameSequenceAs(new string[] { "2", });
 		}
 		[Test]
 		public void Should_select_commits_by_date()

@@ -43,6 +43,7 @@ namespace MSR.Tools.StatGenerator
 				name = x.PageName
 			});
 			string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			version = version.Substring(0, version.LastIndexOf('.'));
 			
 			foreach (var builder in builders)
 			{

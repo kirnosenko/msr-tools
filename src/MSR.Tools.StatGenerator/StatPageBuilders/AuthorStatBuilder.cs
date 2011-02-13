@@ -34,6 +34,9 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				.Files().InDirectory(TargetDir)
 				.Modifications().InFiles()
 				.CodeBlocks().InModifications().CalculateLOC();
+			int totalFiles = repositories.SelectionDSL()
+				.Files().InDirectory(TargetDir).Exist()
+				.Count();
 
 			var codeByAuthor = (from author in authors select new
 			{
@@ -49,7 +52,10 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					.Files().InDirectory(TargetDir)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().Deleted()
-					.Fixed()
+					.Fixed(),
+				TouchedFiles = repositories.SelectionDSL()
+					.Commits().AuthorIs(author)
+					.Files().InDirectory(TargetDir).Exist().TouchedInCommits()
 			}).ToList();
 			
 			var statByAuthor =
@@ -58,6 +64,10 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				let authorFixes = a.AddedCode.Commits().Again().AreBugFixes().Count()
 				let authorRefactorings = a.AddedCode.Commits().Again().AreRefactorings().Count()
 				let authorLoc = a.AddedCode.CalculateLOC() + a.AddedCode.ModifiedBy().CalculateLOC()
+				let authorTouchedFiles = a.TouchedFiles.Count()
+				let authorFilesTouchedByOtherAuthors = a.TouchedFiles
+					.Commits().AuthorIsNot(a.Name)
+					.Files().Again().TouchedInCommits().Count()
 				select new
 				{
 					name = a.Name,
@@ -68,7 +78,12 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					added = a.AddedCode.CalculateLOC(),
 					deleted = - a.RemovedCode.CalculateLOC(),
 					current = authorLoc,
-					contribution = ((authorLoc / totalLoc) * 100).ToString("F02")
+					contribution = ((authorLoc / totalLoc) * 100).ToString("F02"),
+					specialization = ((double)authorTouchedFiles / totalFiles * 100).ToString("F02"),
+					specializationUniqueness = (authorTouchedFiles > 0 ?
+						((double)(authorTouchedFiles - authorFilesTouchedByOtherAuthors) / authorTouchedFiles * 100)
+						:
+						0).ToString("F02")
 				};
 
 			result.Add("authors", statByAuthor.OrderBy(x => x.name).ToArray());
