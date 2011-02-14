@@ -80,8 +80,8 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					current = authorLoc,
 					contribution = ((authorLoc / totalLoc) * 100).ToString("F02"),
 					specialization = ((double)authorTouchedFiles / totalFiles * 100).ToString("F02"),
-					specializationUniqueness = (authorTouchedFiles > 0 ?
-						((double)(authorTouchedFiles - authorFilesTouchedByOtherAuthors) / authorTouchedFiles * 100)
+					uniqueSpecialization = (authorTouchedFiles > 0 ?
+						((double)(authorTouchedFiles - authorFilesTouchedByOtherAuthors) / totalFiles * 100)
 						:
 						0).ToString("F02")
 				};
