@@ -50,7 +50,8 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.Files().IdIs(file.ID)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().CalculateRemainingCodeSize(releaseRevision);
-				var codeByAge = (
+				
+				var codeByRevision = (
 					from cb in codeBlocks
 					let CommitID = repositories.Repository<CodeBlock>()
 						.Single(x => x.ID == cb.Key)
@@ -68,37 +69,72 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 						CodeSize = cb.Value
 					}).ToList();
 				
-				if (codeByAge.Count == 0)
-				{
-					Console.WriteLine(file.Path);
-				}
-				
-				double currentLoc = codeByAge.Sum(x => x.CodeSize);
-				double dcdForFileAtReleaseTime = repositories.SelectionDSL()
+				double addedLoc = codeByRevision.Where(x => x.CodeSize > 0).Sum(x => x.CodeSize);
+				double currentLoc = codeByRevision.Sum(x => x.CodeSize);
+				var fileCodeInRelease = repositories.SelectionDSL()
 					.Files().IdIs(file.ID)
 					.Commits().TillRevision(releaseRevision)
 					.Modifications().InCommits().InFiles()
-					.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(releaseRevision);
-				double fileHasErrorsProbability = 
+					.CodeBlocks().InModifications().Fixed();
+				double defectLoc = fileCodeInRelease.CalculateDefectCodeSize(releaseRevision);
+				double dcdForFileAtReleaseTime = fileCodeInRelease.CalculateDefectCodeDensityAtRevision(releaseRevision);
+				/*
+				double fileHasErrorsProbability =
 					Math.Pow(1 - defectLineProbability, currentLoc) * defectLineProbability - dcdForFileAtReleaseTime;
 				if (fileHasErrorsProbability < 0)
 				{
 					fileHasErrorsProbability = 0;
 				}
+				/*
+				fileHasErrorsProbability = defectLoc == 0 ?
+					1 - Math.Pow(1 - defectLineProbability, currentLoc)
+					:
+					LaplaceIntegralTheorem(defectLineProbability, defectLoc + currentLoc, defectLoc + 1, defectLoc + currentLoc);
+				*/
 				
-				double codeStability = codeByAge.Sum(x =>
-					fileHasErrorsProbability
-					*
-					(double)bugLifetimes.Where(t => t <= x.Age).Count() / bugLifetimes.Count()
-				);
-				faultProneFiles.Add(file.Path, codeStability);
+				double errorProneProbability = 0;
+				
+				foreach (var codeFromRevision in codeByRevision)
+				{
+					double codeFromRevisionHasErrorsProbability = 
+						1 - Math.Pow(1 - defectLineProbability, codeFromRevision.CodeSize);
+						
+					errorProneProbability += 
+						codeFromRevisionHasErrorsProbability
+						*
+						(double)bugLifetimes.Where(t => t <= codeFromRevision.Age).Count() / bugLifetimes.Count();
+				}
+				faultProneFiles.Add(file.Path, errorProneProbability);
 			}
+			
+			var q = faultProneFiles
+				.OrderBy(x => x.Value);
 			
 			return faultProneFiles
 				//.Where(x => x.Value < 0.95)
-				.OrderBy(x => x.Value)
+				.OrderByDescending(x => x.Value)
 				.Select(x => x.Key)
 				.TakeNoMoreThan((int)(0.2d * faultProneFiles.Count));
+		}
+		private double LaplaceIntegralTheorem(double p, double n, double k1, double k2)
+		{
+			double q = 1 - p;
+			double from = (k1 - n * p)/Math.Sqrt(n * p * q);
+			double to = (k2 - n * p)/Math.Sqrt(n * p * q);
+			
+			return (1 / Math.Sqrt(2 * Math.PI)) * Integral(x => Math.Exp(-Math.Pow(x,2)/2), from, to);
+		}
+		private double Integral(Func<double,double> func, double from, double to)
+		{
+			double delta = 0.0001;
+			double sum = 0;
+			
+			for (double x = from; x < to; x += delta)
+			{
+				sum += func(x + delta/2) * delta;
+			}
+			
+			return sum;
 		}
 	}
 }
