@@ -20,7 +20,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 			
 			return CalculateDefectCodeDensity(
 				code.CalculateLOC(),
-				- code.ModifiedBy().InBugFixes().CalculateLOC()
+				code.CalculateDefectCodeSize()
 			);
 		}
 		public static double CalculateDefectCodeDensityAtRevision(this CodeBlockSelectionExpression code, string revision)
@@ -31,9 +31,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 
 			return CalculateDefectCodeDensity(
 				code.CalculateLOC(),
-				- code
-					.BugFixes().InCommits()
-					.CodeBlocks().Again().ModifiedBy().InBugFixes().CalculateLOC()
+				code.CalculateDefectCodeSize(revision)
 			);
 		}
 		private static double CalculateDefectCodeDensity(double addedCodeSize, double defectCodeSize)
