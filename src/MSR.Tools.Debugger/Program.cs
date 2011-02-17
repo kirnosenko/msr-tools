@@ -23,7 +23,7 @@ namespace MSR.Tools.Debugger
 		{
 			Console.BufferHeight = 10000;
 
-			configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
+			//configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
 			//configFile = @"E:\repo\dia\dia.config"; // 4384 revisions
 			//configFile = @"E:\repo\gnome-vfs\gnome-vfs.config"; // 5550 revisions
 			//configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
@@ -35,10 +35,11 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\postgresql\postgresql.config";
 			//configFile = @"E:\repo\nhibernate\nhibernate.config";
 			//configFile = @"E:\repo\msr\msr.config";
+			configFile = @"E:\repo\wordpress\wordpress.config"; // 13998 revisions
 
 			//Debug();
-			//Mapping();
-			Predict();
+			Mapping();
+			//Predict();
 			//LocStat();
 			//GenerateStat();
 
@@ -47,16 +48,16 @@ namespace MSR.Tools.Debugger
 		static void Debug()
 		{
 			DebuggingTool debugger = new DebuggingTool(configFile);
-			debugger.FindDiffError(272);
+			debugger.QueryUnderProfiler();
 		}
 		static void Mapping()
 		{
 			MappingTool mapper = new MappingTool(configFile);
 			
 			//mapper.Info();
-			//mapper.Map(false, 217);
-			//mapper.Truncate(755);
-			mapper.Check(1365);
+			//mapper.Map(false, 13998);
+			//mapper.Truncate(600);
+			mapper.Check(13998);
 		}
 		static void Predict()
 		{
@@ -91,9 +92,12 @@ namespace MSR.Tools.Debugger
 			
 			DebuggingTool debugger = new DebuggingTool(configFile);
 			
-			debugger.Predict(
-				gnome_terminal_releases.Take(3).ToArray()
-			);
+			for (int i = 3; i <= 4; i++)
+			{
+				debugger.Predict(
+					nhibernate_releases.Take(i).ToArray()
+				);
+			}
 		}
 		static void LocStat()
 		{
@@ -103,7 +107,7 @@ namespace MSR.Tools.Debugger
 		static void GenerateStat()
 		{
 			GeneratingTool generator = new GeneratingTool(configFile);
-			generator.GenerateStat(null, "d:/temp", null);
+			generator.GenerateStat(null, "d:/temp/1", null);
 		}
 	}
 }

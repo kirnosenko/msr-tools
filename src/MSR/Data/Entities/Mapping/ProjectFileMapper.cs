@@ -17,7 +17,8 @@ namespace MSR.Data.Entities.Mapping
 {
 	public class ProjectFileMapper : EntityMapper<ProjectFile,CommitMappingExpression,ProjectFileMappingExpression>
 	{
-		private IEnumerable<IPathSelector> pathSelectors;
+		private List<Func<IEnumerable<TouchedFile>,IRepositoryResolver,IEnumerable<TouchedFile>>> fileFilters =
+			new List<Func<IEnumerable<TouchedFile>,IRepositoryResolver,IEnumerable<TouchedFile>>>();
 		
 		public ProjectFileMapper(IScmData scmData)
 			: this(scmData, new IPathSelector[] {})
@@ -26,21 +27,30 @@ namespace MSR.Data.Entities.Mapping
 		public ProjectFileMapper(IScmData scmData, IPathSelector[] pathSelectors)
 			: base(scmData)
 		{
-			this.pathSelectors = pathSelectors;
+			if (pathSelectors.Length > 0)
+			{
+				fileFilters.Add((f,r) => f.Where(x =>
+				{
+					foreach (var selector in pathSelectors)
+					{
+						if (! selector.InSelection(x.Path))
+						{
+							return false;
+						}
+					}
+					return true;
+				}));
+			}
 		}
 		public override IEnumerable<ProjectFileMappingExpression> Map(CommitMappingExpression expression)
 		{
 			List<ProjectFileMappingExpression> fileExpressions = new List<ProjectFileMappingExpression>();
 			
 			ILog log = scmData.Log(expression.CurrentEntity<Commit>().Revision);
+			var touchedFiles = FilterTouchedFiles(log.TouchedFiles, expression);
 			
-			foreach (var touchedFile in log.TouchedFiles)
+			foreach (var touchedFile in touchedFiles)
 			{
-				if (! ShouldProcessPath(touchedFile.Path))
-				{
-					continue;
-				}
-				
 				ProjectFileMappingExpression fileExp = null;
 				
 				switch (touchedFile.Action)
@@ -73,22 +83,14 @@ namespace MSR.Data.Entities.Mapping
 			
 			return fileExpressions;
 		}
-		private bool ShouldProcessPath(string path)
+		private IEnumerable<TouchedFile> FilterTouchedFiles(IEnumerable<TouchedFile> touchedFiles, IRepositoryResolver repositories)
 		{
-			foreach (var selector in pathSelectors)
+			var files = touchedFiles;
+			foreach (var filter in fileFilters)
 			{
-				if (! selector.InSelection(path))
-				{
-					return false;
-				}
+				files = filter(files, repositories);
 			}
-			return true;
-		}
-		private IEnumerable<string> ExistentFilesInDir(IRepositoryResolver repositories, string path)
-		{
-			return repositories.SelectionDSL()
-				.Files().Exist().InDirectory(path)
-				.Select(x => x.Path);
+			return files;
 		}
 	}
 }
