@@ -38,8 +38,8 @@ namespace MSR.Tools.Debugger
 			configFile = @"E:\repo\wordpress\wordpress.config"; // 13998 revisions
 
 			//Debug();
-			Mapping();
-			//Predict();
+			//Mapping();
+			Predict();
 			//LocStat();
 			//GenerateStat();
 
@@ -89,13 +89,27 @@ namespace MSR.Tools.Debugger
 				"3728", // 2.0
 				"4655", // 2.1
 			};
+
+			string[] wordpress_releases =
+			{
+				"80069b8aacb093d7c03ec9d822a29f0bbadc0166", // 1.0
+				"ad2fa731f98a9225ccac7d72e281b43bd924ca78", // 1.2
+				"a4320c095bcb95a41b03eccededa7fcecdcd868f", // 1.5
+				"98c489aa325de994e5e0e6d4cb079c4e47cfb5ae", // 2.0
+				"6a84e1edd354933daf7b36173652301ea01f7fa8", // 2.1
+				"6c5275d6365b64e5e363d99f221d586b6420003b", // 2.3
+				"7e443e150792a862fdb3028ccf327cd6a95e656e", // 2.5
+				"c7b9966b872b43dd3a82ff272b312be5bc1dcda7", // 2.6
+				"e4aef4c98c8d99807b089a71a2a8530878826d8b", // 2.7
+				"8638b546f0fb863c54d7b7434c140677e555a52a", // 2.8
+			};
 			
 			DebuggingTool debugger = new DebuggingTool(configFile);
-			
-			for (int i = 3; i <= 4; i++)
+
+			for (int i = 3; i <= wordpress_releases.Length; i++)
 			{
 				debugger.Predict(
-					nhibernate_releases.Take(i).ToArray()
+					wordpress_releases.Take(i).ToArray()
 				);
 			}
 		}

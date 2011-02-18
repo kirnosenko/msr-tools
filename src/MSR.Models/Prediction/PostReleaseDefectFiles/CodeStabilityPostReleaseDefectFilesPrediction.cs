@@ -41,7 +41,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			
 			var files = FilesInRevision(releaseRevision);
 			int filesInRelease = files.Count();
-			Dictionary<string,double> faultProneFiles = new Dictionary<string,double>();
+			Dictionary<string,double> fileStability = new Dictionary<string,double>();
 			
 			foreach (var file in files)
 			{
@@ -68,53 +68,24 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 						Age = (releaseDate - c.Date).TotalDays,
 						CodeSize = cb.Value
 					}).ToList();
-				
-				double addedLoc = codeByRevision.Where(x => x.CodeSize > 0).Sum(x => x.CodeSize);
-				double currentLoc = codeByRevision.Sum(x => x.CodeSize);
-				var fileCodeInRelease = repositories.SelectionDSL()
-					.Files().IdIs(file.ID)
-					.Commits().TillRevision(releaseRevision)
-					.Modifications().InCommits().InFiles()
-					.CodeBlocks().InModifications().Fixed();
-				double defectLoc = fileCodeInRelease.CalculateDefectCodeSize(releaseRevision);
-				double dcdForFileAtReleaseTime = fileCodeInRelease.CalculateDefectCodeDensityAtRevision(releaseRevision);
-				/*
-				double fileHasErrorsProbability =
-					Math.Pow(1 - defectLineProbability, currentLoc) * defectLineProbability - dcdForFileAtReleaseTime;
-				if (fileHasErrorsProbability < 0)
-				{
-					fileHasErrorsProbability = 0;
-				}
-				/*
-				fileHasErrorsProbability = defectLoc == 0 ?
-					1 - Math.Pow(1 - defectLineProbability, currentLoc)
-					:
-					LaplaceIntegralTheorem(defectLineProbability, defectLoc + currentLoc, defectLoc + 1, defectLoc + currentLoc);
-				*/
-				
-				double errorProneProbability = 0;
+
+				double fileHasNoErrorsProbability = 1;
 				
 				foreach (var codeFromRevision in codeByRevision)
 				{
-					double codeFromRevisionHasErrorsProbability = 
-						1 - Math.Pow(1 - defectLineProbability, codeFromRevision.CodeSize);
+					// Code from revision has errors probability
+					double ep = 1 - Math.Pow(1 - defectLineProbability, codeFromRevision.CodeSize);
+					// Code from revision has errors that should be detected probability
+					double dep = (double)bugLifetimes.Where(t => t <= codeFromRevision.Age).Count() / bugLifetimes.Count();
 						
-					errorProneProbability += 
-						codeFromRevisionHasErrorsProbability
-						*
-						(double)bugLifetimes.Where(t => t <= codeFromRevision.Age).Count() / bugLifetimes.Count();
+					fileHasNoErrorsProbability *= 1 - (ep * dep);
 				}
-				faultProneFiles.Add(file.Path, errorProneProbability);
+				fileStability.Add(file.Path, fileHasNoErrorsProbability);
 			}
-			
-			var q = faultProneFiles
-				.OrderBy(x => x.Value);
-			
-			return faultProneFiles
-				//.Where(x => x.Value < 0.95)
-				.OrderByDescending(x => x.Value)
-				.Select(x => x.Key)
-				.TakeNoMoreThan((int)(0.2d * faultProneFiles.Count));
+
+			return fileStability
+				.Where(x => x.Value <= 0.01)
+				.Select(x => x.Key);
 		}
 		private double LaplaceIntegralTheorem(double p, double n, double k1, double k2)
 		{
