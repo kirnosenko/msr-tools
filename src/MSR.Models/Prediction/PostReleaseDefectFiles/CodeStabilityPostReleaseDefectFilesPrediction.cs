@@ -49,6 +49,12 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().CalculateDefectCodeSize(releaseRevision)
 			);
+			var addedCodeSizeByRevision = new SmartDictionary<string, double>(r =>
+				repositories.SelectionDSL()
+					.Commits().RevisionIs(r)
+					.Modifications().InCommits()
+					.CodeBlocks().InModifications().Added().CalculateLOC()
+			);
 			
 			foreach (var file in files)
 			{
@@ -66,45 +72,47 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					from c in repositories.Repository<Commit>()
 					where
 						c.ID == CommitID
+					let revision = c.Revision
 					let releaseDate = repositories.Repository<Commit>()
 						.Single(x => x.Revision == releaseRevision)
 						.Date
+					let age = (releaseDate - c.Date).TotalDays
+					let codeSize = cb.Value
 					select new
 					{
-						Revision = c.Revision,
-						Age = (releaseDate - c.Date).TotalDays,
-						CodeSize = cb.Value
+						Revision = revision,
+						Age = age,
+						CodeSize = codeSize,
+						AddedCodeSize = addedCodeSizeByRevision[revision],
+						DefectCodeSize = defectCodeSizeByRevision[revision],
+						// Code from revision has errors probability
+						// (code size predictor)
+						EP = 1 - Math.Pow(1 - defectLineProbability, codeSize),
+						// Code from revision has errors that should be detected probability
+						// (code age predictor)
+						DEP = (double)bugLifetimes.Where(t => t <= age).Count() / bugLifetimes.Count(),
+						// Code from revision has errors that were not fixed probability
+						// (fixed code predictor)
+						NFEP = defectCodeSizeByRevision[revision] == 0 ?
+							1
+							:
+							1 - LaplaceIntegralTheorem(
+								defectLineProbability,
+								addedCodeSizeByRevision[revision],
+								defectCodeSizeByRevision[revision] + 1,
+								defectCodeSizeByRevision[revision] + codeSize
+							)
 					}).ToList();
 				
 				double fileHasNoErrorsProbability = 1;
-				
 				foreach (var codeFromRevision in codeByRevision)
 				{
-					// Code from revision has errors probability
-					// (code size predictor)
-					double ep = 1 - Math.Pow(1 - defectLineProbability, codeFromRevision.CodeSize);
-					// Code from revision has errors that should be detected probability
-					// (code age predictor)
-					double dep = (double)bugLifetimes.Where(t => t <= codeFromRevision.Age).Count() / bugLifetimes.Count();
-					
-					double fdcs = defectCodeSizeByRevision[codeFromRevision.Revision];
-					// Code from revision has errors that were not fixed probability
-					// (fixed code predictor)
-					double nfep = fdcs == 0 ?
+					fileHasNoErrorsProbability *=
 						1
-						:
-						1 - LaplaceIntegralTheorem(
-							defectLineProbability,
-							repositories.SelectionDSL()
-								.Commits().RevisionIs(codeFromRevision.Revision)
-								.Modifications().InCommits()
-								.CodeBlocks().InModifications().Added().CalculateLOC(),
-							fdcs + 1,
-							fdcs + codeFromRevision.CodeSize
-						);
-					
-					fileHasNoErrorsProbability *= 1 - (ep * dep * nfep);
+						-
+						(codeFromRevision.EP * codeFromRevision.DEP * codeFromRevision.NFEP);
 				}
+				
 				fileStability.Add(file.Path, fileHasNoErrorsProbability);
 			}
 			
@@ -124,12 +132,12 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		private double Integral(Func<double,double> func, double from, double to)
 		{
-			double delta = 0.0001;
+			double delta = 0.001;
 			double sum = 0;
 			
-			for (double x = from; x < to; x += delta)
+			for (double x = from + delta/2; x < to; x += delta)
 			{
-				sum += func(x + delta/2) * delta;
+				sum += func(x) * delta;
 			}
 			
 			return sum;
