@@ -101,11 +101,11 @@ namespace MSR.Tools.Debugger
 				Dictionary<string,PostReleaseDefectFilesPrediction> predictors = new Dictionary<string,PostReleaseDefectFilesPrediction>()
 				{
 					//{ "random", new RandomPostReleaseDefectFilesPrediction(s) },
-					{ "loc", new SimpleLocPostReleaseDefectFilesPrediction(s) },
-					{ "touch count", new PostReleaseDefectFilesPrediction(s).AddFilesTouchCountInCommitsPredictor() },
-					{ "tdd", new PostReleaseDefectFilesPrediction(s).AddTraditionalDefectDensityForCodeInCommitsInFilesPredictor() },
-					{ "dd", new PostReleaseDefectFilesPrediction(s).AddDefectDensityForCodeInCommitsInFilesPredictor() },
-					{ "dcd", new PostReleaseDefectFilesPrediction(s).AddDefectCodeDensityForCodeInCommitsInFilesPredictor() },
+					//{ "loc", new SimpleLocPostReleaseDefectFilesPrediction(s) },
+					//{ "touch count", new PostReleaseDefectFilesPrediction(s).AddFilesTouchCountInCommitsPredictor() },
+					//{ "tdd", new PostReleaseDefectFilesPrediction(s).AddTraditionalDefectDensityForCodeInCommitsInFilesPredictor() },
+					//{ "dd", new PostReleaseDefectFilesPrediction(s).AddDefectDensityForCodeInCommitsInFilesPredictor() },
+					//{ "dcd", new PostReleaseDefectFilesPrediction(s).AddDefectCodeDensityForCodeInCommitsInFilesPredictor() },
 					{ "code stability", new CodeStabilityPostReleaseDefectFilesPrediction(s) },
 					//{
 					//	"custom", new PostReleaseDefectFilesPrediction(s)
@@ -158,43 +158,6 @@ namespace MSR.Tools.Debugger
 
 			Console.WriteLine("{0}", prof);
 		}
-		public void LocStat()
-		{
-			using (var s = data.OpenSession())
-			{
-				var code = s.SelectionDSL()
-					.Files()
-						.Exist()
-					.Modifications()
-						.InFiles()
-					.CodeBlocks()
-						.InModifications().Fixed();
-
-				Console.WriteLine(
-					"LOC+ {0}",
-					code.Added().CalculateLOC()
-				);
-				Console.WriteLine(
-					"LOC- {0}",
-					code.Deleted().CalculateLOC()
-				);
-				Console.WriteLine(
-					"LOCc {0}",
-					code.Added().CalculateLOC() + code.Added().ModifiedBy().CalculateLOC()
-				);
-				Console.WriteLine(
-					"LOCm- {0}",
-					code.Added().ModifiedBy().CalculateLOC()
-				);
-				Console.WriteLine(
-					"LOCmf- {0}",
-					code.Added().ModifiedBy().InBugFixes().CalculateLOC()
-				);
-				Console.WriteLine("DD {0}", code.CalculateTraditionalDefectDensity());
-				Console.WriteLine("DCD {0}", code.CalculateDefectCodeDensity());
-			}
-		}
-		
 		public void Blame(string path, string revision)
 		{
 			var blame = scmDataWithoutCache.Blame(revision, path);

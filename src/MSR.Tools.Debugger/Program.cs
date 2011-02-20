@@ -23,7 +23,7 @@ namespace MSR.Tools.Debugger
 		{
 			Console.BufferHeight = 10000;
 
-			//configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
+			configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
 			//configFile = @"E:\repo\dia\dia.config"; // 4384 revisions
 			//configFile = @"E:\repo\gnome-vfs\gnome-vfs.config"; // 5550 revisions
 			//configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
@@ -35,12 +35,11 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\postgresql\postgresql.config";
 			//configFile = @"E:\repo\nhibernate\nhibernate.config";
 			//configFile = @"E:\repo\msr\msr.config";
-			configFile = @"E:\repo\wordpress\wordpress.config"; // 13998 revisions
+			//configFile = @"E:\repo\wordpress\wordpress.config"; // 13998 revisions
 
 			//Debug();
 			//Mapping();
 			Predict();
-			//LocStat();
 			//GenerateStat();
 
 			Console.ReadKey();
@@ -106,17 +105,12 @@ namespace MSR.Tools.Debugger
 			
 			DebuggingTool debugger = new DebuggingTool(configFile);
 
-			for (int i = 3; i <= wordpress_releases.Length; i++)
+			for (int i = 3; i <= gnome_terminal_releases.Length; i++)
 			{
 				debugger.Predict(
-					wordpress_releases.Take(i).ToArray()
+					gnome_terminal_releases.Take(i).ToArray()
 				);
 			}
-		}
-		static void LocStat()
-		{
-			DebuggingTool debugger = new DebuggingTool(configFile);
-			debugger.LocStat();
 		}
 		static void GenerateStat()
 		{
