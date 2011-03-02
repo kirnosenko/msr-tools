@@ -39,6 +39,7 @@ namespace MSR.Tools.Debugger
 
 			//Debug();
 			//Mapping();
+			//MapReleases();
 			Predict();
 			//GenerateStat();
 
@@ -52,23 +53,29 @@ namespace MSR.Tools.Debugger
 		static void Mapping()
 		{
 			MappingTool mapper = new MappingTool(configFile);
-			
+
 			//mapper.Info();
-			//mapper.Map(false, 13998);
+			mapper.Map(true, 100);
 			//mapper.Truncate(600);
-			mapper.Check(13998);
+			//mapper.Check(13998);
+		}
+		static void MapReleases()
+		{
+			MappingTool mapper = new MappingTool(configFile);
+			mapper.MapReleases(
+				new Dictionary<string,string>()
+				{
+					{ "1e3c3934bda6625d381599d2d373087733235c91", "1.0" },
+					{ "55876d49e89f74365a9c737370e58567bd1eabff", "1.1" },
+					{ "e5f9122545127e539b50fa57d8ec8520dc9123ac", "1.2" },
+				}
+			);
 		}
 		static void Predict()
 		{
 			DebuggingTool debugger = new DebuggingTool(configFile);
-			var releases = debugger.Releases();
 
-			for (int i = 3; i <= releases.Count; i++)
-			{
-				debugger.Predict(
-					releases.Keys.Take(i).ToArray()
-				);
-			}
+			debugger.Predict(3);
 		}
 		static void GenerateStat()
 		{

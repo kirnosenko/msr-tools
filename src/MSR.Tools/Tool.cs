@@ -28,10 +28,6 @@ namespace MSR.Tools
 			
 			data = GetConfiguredType<PersistentDataStore>();
 		}
-		public Dictionary<string,string> Releases()
-		{
-			return GetConfiguredType<StringDictionary>("releases");
-		}
 		protected T GetConfiguredType<T>()
 		{
 			return container.Resolve<T>();

@@ -62,7 +62,7 @@ namespace MSR.Tools.Mapper
 			}
 		}
 		public void Truncate(int numberOfRevisionsToKeep)
-		{		
+		{
 			using (ConsoleTimeLogger.Start("truncating time"))
 			using (var s = data.OpenSession())
 			{
@@ -100,6 +100,20 @@ namespace MSR.Tools.Mapper
 					s.Repository<Commit>().Delete(commit);
 				}
 
+				s.SubmitChanges();
+			}
+		}
+		public void MapReleases(IDictionary<string,string> releases)
+		{
+			using (ConsoleTimeLogger.Start("releases mapping time"))
+			using (var s = data.OpenSession())
+			{
+				foreach (var release in releases)
+				{
+					s.MappingDSL()
+						.Commit(release.Key).IsRelease(release.Value);
+				}
+				
 				s.SubmitChanges();
 			}
 		}

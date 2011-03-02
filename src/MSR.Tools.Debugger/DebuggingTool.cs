@@ -84,12 +84,27 @@ namespace MSR.Tools.Debugger
 			
 			Console.WriteLine("No diff errors.");
 		}
-		public void Predict(string[] revisions)
+		public void Predict(int minSizeOfReleaseSet)
 		{
-			using (ConsoleTimeLogger.Start("prediction"))
+			IEnumerable<string> releases;
+			using (var s = data.OpenSession())
 			{
-				PostReleaseDefectFiles(revisions);
-				//PostReleaseMetric(revisions);
+				releases =
+					(
+						from r in s.Repository<Release>()
+						join c in s.Repository<Commit>() on r.CommitID equals c.ID
+						orderby c.OrderedNumber
+						select c.Revision
+					).ToList();
+			}
+
+			for (int i = minSizeOfReleaseSet; i <= releases.Count(); i++)
+			{
+				using (ConsoleTimeLogger.Start("prediction"))
+				{
+					PostReleaseDefectFiles(releases.Take(i).ToArray());
+					//PostReleaseMetric(revisions);
+				}
 			}
 		}
 		public void PostReleaseDefectFiles(string[] revisions)
@@ -154,6 +169,7 @@ namespace MSR.Tools.Debugger
 
 			using (var s = data.OpenSession())
 			{
+				
 			}
 
 			Console.WriteLine("{0}", prof);

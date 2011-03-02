@@ -36,6 +36,24 @@ namespace MSR.Data.Entities.DSL.Mapping
 				);
 		}
 		[Test]
+		public void Can_use_existent_commit()
+		{
+			mappingDSL
+				.AddCommit("1")
+			.Submit()
+				.Commit("1").By("alan")
+			.Submit();
+			
+			Repository<Commit>().Count()
+				.Should().Be(1);
+			Repository<Commit>().Single()
+				.Satisfy(x =>
+					x.Revision == "1"
+					&&
+					x.Author == "alan"
+				);
+		}
+		[Test]
 		public void Should_add_commit_with_incremental_order_number()
 		{
 			mappingDSL

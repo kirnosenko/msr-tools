@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -14,6 +14,15 @@ namespace MSR.Data.Entities.DSL.Mapping
 		public static CommitMappingExpression AddCommit(this IRepositoryMappingExpression exp, string revision)
 		{
 			return new CommitMappingExpression(exp, revision);
+		}
+		public static CommitMappingExpression Commit(this IRepositoryMappingExpression exp, string revision)
+		{
+			return new CommitMappingExpression(
+				exp,
+				exp.Repository<Commit>().Single(x =>
+					x.Revision == revision
+				)
+			);
 		}
 	}
 
@@ -29,6 +38,11 @@ namespace MSR.Data.Entities.DSL.Mapping
 			entity.OrderedNumber = Repository<Commit>().Count() + 1;
 			entity.Revision = revision;
 			AddEntity();
+		}
+		public CommitMappingExpression(IRepositoryMappingExpression parentExp, Commit commit)
+			: base(parentExp)
+		{
+			entity = commit;
 		}
 		public CommitMappingExpression By(string author)
 		{
