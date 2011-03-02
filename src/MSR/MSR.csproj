@@ -55,6 +55,7 @@
     <Compile Include="Data\Entities\DSL\Mapping\ModificationMappingExpression.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\MsrMappingDslException.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\ProjectFileMappingExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Mapping\ReleaseMappingExpression.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\RepositoryMappingExpression.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\SessionHelper.cs" />
     <Compile Include="Data\Entities\DSL\Selection\BugFixSelectionExpression.cs" />
@@ -75,14 +76,17 @@
     <Compile Include="Data\Entities\Mapping\IMapper.cs" />
     <Compile Include="Data\Entities\Mapping\IMappingHost.cs" />
     <Compile Include="Data\Entities\Mapping\IPathSelector.cs" />
+    <Compile Include="Data\Entities\Mapping\IReleaseDetector.cs" />
     <Compile Include="Data\Entities\Mapping\MappingController.cs" />
     <Compile Include="Data\Entities\Mapping\IBugFixDetector.cs" />
     <Compile Include="Data\Entities\Mapping\BugFixMapper.cs" />
     <Compile Include="Data\Entities\CodeBlock.cs" />
     <Compile Include="Data\Entities\Mapping\CodeBlockMapper.cs" />
+    <Compile Include="Data\Entities\Mapping\ReleaseMapper.cs" />
     <Compile Include="Data\Entities\Mapping\SkipPathByExtension.cs" />
     <Compile Include="Data\Entities\Mapping\SkipPathByDirectory.cs" />
     <Compile Include="Data\Entities\Mapping\TakePathByExtension.cs" />
+    <Compile Include="Data\Entities\Release.cs" />
     <Compile Include="Data\Entities\RepositoryResolverHelper.cs" />
     <Compile Include="Data\IDataStore.cs" />
     <Compile Include="Data\InMemoryDataStore.cs" />

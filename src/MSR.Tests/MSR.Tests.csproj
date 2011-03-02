@@ -62,6 +62,7 @@
     <Compile Include="Data\Entities\DSL\Mapping\CommitMappingExpressionTest.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\ModificationMappingExpressionTest.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\ProjectFileMappingExpressionTest.cs" />
+    <Compile Include="Data\Entities\DSL\Mapping\ReleaseMappingExpressionTest.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\RepositoryMappingExpressionTest.cs" />
     <Compile Include="Data\Entities\DSL\Selection\BugFixSelectionExpressionTest.cs" />
     <Compile Include="Data\Entities\DSL\Selection\CodeBlockSelectionExpressionTest.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Data\Entities\Mapping\MappingControllerTest.cs" />
     <Compile Include="Data\Entities\Mapping\ModificationMapperTest.cs" />
     <Compile Include="Data\Entities\Mapping\ProjectFileMapperTest.cs" />
+    <Compile Include="Data\Entities\Mapping\ReleaseMapperTest.cs" />
     <Compile Include="Data\InMemoryDataStoreTest.cs" />
     <Compile Include="Data\Entities\BaseRepositoryTest.cs" />
     <Compile Include="Data\VersionControl\FileUniDiffTest.cs" />

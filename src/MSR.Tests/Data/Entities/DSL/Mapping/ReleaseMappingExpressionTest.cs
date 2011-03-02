@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2011  Semyon Kirnosenko
  */
 
 using System;
@@ -13,21 +13,25 @@ using Rhino.Mocks;
 namespace MSR.Data.Entities.DSL.Mapping
 {
 	[TestFixture]
-	public class BugFixMappingExpressionTest : BaseRepositoryTest
+	public class ReleaseMappingExpressionTest : BaseRepositoryTest
 	{
 		[Test]
-		public void Should_add_bugfix()
+		public void Should_add_release()
 		{
 			mappingDSL
 				.AddCommit("1")
-				.AddCommit("2").IsBugFix()
+				.AddCommit("2").IsRelease("1.0.0")
 				.AddCommit("3")
 			.Submit();
-			
-			Repository<BugFix>().Count()
+
+			Repository<Release>().Count()
 				.Should().Be(1);
-			Repository<BugFix>().Single().Commit.Revision
-				.Should().Be("2");
+			Repository<Release>().Single()
+				.Satisfy(x =>
+					x.Tag == "1.0.0"
+					&&
+					x.Commit.Revision == "2"
+				);
 		}
 	}
 }
