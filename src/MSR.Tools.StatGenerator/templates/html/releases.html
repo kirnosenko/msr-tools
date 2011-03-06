@@ -1,0 +1,24 @@
+<h2>Releases</h2>
+<p>
+	<table class="releases sortable" id="releases">
+		<tr>
+			<th>Release</th>
+			<th>Defect density (defects per KLOC)</th>
+			<th>Added LOC</th>
+			<th>Removed LOC</th>
+			<th>Current LOC</th>
+			<th>Contribution (%)</th>
+		</tr>
+		#foreach($release in $releases)
+		#each
+		<tr>
+			<td>$release.tag</td>
+			<td>$release.dd</td>
+			<td>$release.added</td>
+			<td>$release.deleted</td>
+			<td>$release.current</td>
+			<td>$release.contribution</td>
+		</tr>
+		#end
+	</table>
+</p>
