@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace MSR.Tools.Visualizer.WinForms
 {
-	public class WinFormsViewFactory : IViewFactory
+	public class VisualizerViewFactory : IVisualizerViewFactory
 	{
-		public WinFormsViewFactory()
+		public VisualizerViewFactory()
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
@@ -27,8 +27,7 @@ namespace MSR.Tools.Visualizer.WinForms
 		public IConfigView ConfigDialog()
 		{
 			return new ConfigView();
-		}
-				
+		}			
 		public IVisualizerView Visualizer()
 		{
 			return new VisualizerView();

@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSR.Tools.Visualizer.WinFor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSR.Models.Tests", "MSR.Models.Tests\MSR.Models.Tests.csproj", "{AFFC4E83-0C23-4DEC-90C0-0286144AD5A6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSR.Tools.Predictor", "MSR.Tools.Predictor\MSR.Tools.Predictor.csproj", "{8BF21A27-0A6F-439C-992B-F6FB7DD62F9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{AFFC4E83-0C23-4DEC-90C0-0286144AD5A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFFC4E83-0C23-4DEC-90C0-0286144AD5A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFFC4E83-0C23-4DEC-90C0-0286144AD5A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BF21A27-0A6F-439C-992B-F6FB7DD62F9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BF21A27-0A6F-439C-992B-F6FB7DD62F9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BF21A27-0A6F-439C-992B-F6FB7DD62F9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BF21A27-0A6F-439C-992B-F6FB7DD62F9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -13,8 +13,8 @@ namespace MSR.Tools.Visualizer.WinForms
 		[STAThread]
 		static void Main()
 		{
-			WinFormsViewFactory views = new WinFormsViewFactory();
-			PresenterFactory presenters = new PresenterFactory(views);
+			VisualizerViewFactory views = new VisualizerViewFactory();
+			VisualizerPresenterFactory presenters = new VisualizerPresenterFactory(views);
 			
 			VisualizerPresenter graph = new VisualizerPresenter(
 				new VisualizerModel(), views.Visualizer(), presenters

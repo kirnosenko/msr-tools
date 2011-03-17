@@ -5,15 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D5DD89EA-3748-409F-B415-4AD06730AE99}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{8BF21A27-0A6F-439C-992B-F6FB7DD62F9A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MSR.Tools.Visualizer</RootNamespace>
-    <AssemblyName>MSR.Tools.Visualizer</AssemblyName>
+    <RootNamespace>MSR.Tools.Predictor</RootNamespace>
+    <AssemblyName>MSR.Tools.Predictor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>
-    </StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,42 +35,53 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\MSR\Properties\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="FileDialogPresenter.cs" />
-    <Compile Include="IFileDialogView.cs" />
-    <Compile Include="IGraphView.cs">
+    <Compile Include="PredictionTool.cs" />
+    <Compile Include="PredictorModel.cs" />
+    <Compile Include="PredictorPresenter.cs" />
+    <Compile Include="PredictorView.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="IMainMenuView.cs" />
-    <Compile Include="IMenuItemView.cs" />
-    <Compile Include="IMessageDialogView.cs" />
-    <Compile Include="IStatusBarView.cs" />
-    <Compile Include="IVisualizerViewFactory.cs" />
-    <Compile Include="IVisualization.cs" />
-    <Compile Include="IVisualizationConfigView.cs" />
-    <Compile Include="IVisualizerView.cs" />
-    <Compile Include="MessageDialogPresenter.cs" />
-    <Compile Include="VisualizerPresenterFactory.cs" />
-    <Compile Include="VisualizationConfigPresenter.cs" />
-    <Compile Include="Visualizations\BugLifeTimeDistribution.cs" />
-    <Compile Include="Visualizations\CodeSizeToDate.cs" />
-    <Compile Include="Visualizations\DefectDensityToFileSize.cs" />
-    <Compile Include="Visualizations\Visualization.cs" />
-    <Compile Include="VisualizerModel.cs" />
-    <Compile Include="VisualizerPresenter.cs" />
-    <Compile Include="VisualizationTool.cs" />
+    <Compile Include="PredictorView.Designer.cs">
+      <DependentUpon>PredictorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <EmbeddedResource Include="PredictorView.resx">
+      <DependentUpon>PredictorView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MSR.Models\MSR.Models.csproj">
+      <Project>{E8BE4CCD-C394-41F0-8D7B-28515D2DDD5F}</Project>
+      <Name>MSR.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MSR.Tools\MSR.Tools.csproj">
       <Project>{B6039F7F-3580-4FAC-A929-E9CA05C1A113}</Project>
       <Name>MSR.Tools</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MSR.Util\MSR.Util.csproj">
-      <Project>{8F9A4FAD-4EEB-4590-BEF5-034CDE2BFFBB}</Project>
-      <Name>MSR.Util</Name>
     </ProjectReference>
     <ProjectReference Include="..\MSR\MSR.csproj">
       <Project>{25E8A69D-6400-423F-8B83-C22C096E9D72}</Project>

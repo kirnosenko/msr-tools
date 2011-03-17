@@ -24,10 +24,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			: base(repositories)
 		{
 		}
-		public override IEnumerable<string> Predict(string[] revisions)
+		public override IEnumerable<string> Predict(IEnumerable<string> releases)
 		{
-			IEnumerable<string> previousReleaseRevisions = revisions.Take(revisions.Count() - 1);
-			string releaseRevision = revisions.Last();
+			IEnumerable<string> previousReleaseRevisions = releases.Take(releases.Count() - 1);
+			string releaseRevision = releases.Last();
 			
 			var bugLifetimes = repositories.SelectionDSL()
 				.Commits().TillRevision(previousReleaseRevisions.Last())

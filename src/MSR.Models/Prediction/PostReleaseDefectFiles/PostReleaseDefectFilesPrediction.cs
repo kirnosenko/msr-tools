@@ -23,10 +23,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			FilePortionLimit = 0.2;
 		}
-		public virtual IEnumerable<string> Predict(string[] revisions)
+		public virtual IEnumerable<string> Predict(IEnumerable<string> releases)
 		{
-			IEnumerable<string> previousReleaseRevisions = revisions.Take(revisions.Count() - 1);
-			string releaseRevision = revisions.Last();
+			IEnumerable<string> previousReleaseRevisions = releases.Take(releases.Count() - 1);
+			string releaseRevision = releases.Last();
 			
 			LogisticRegression lr = new LogisticRegression();
 			

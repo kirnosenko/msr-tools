@@ -8,20 +8,20 @@ using System;
 
 namespace MSR.Tools.Visualizer
 {
-	public interface IPresenterFactory
+	public interface IVisualizerPresenterFactory
 	{
 		IFileDialogPresenter FileDialog();
 		IMessageDialogPresenter MessageDialog();
 		IVisualizationConfigPresenter ConfigDialog();
 	}
-	public class PresenterFactory : IPresenterFactory
+	public class VisualizerPresenterFactory : IVisualizerPresenterFactory
 	{
-		private IViewFactory views;
+		private IVisualizerViewFactory views;
 		
-		public PresenterFactory(IViewFactory views)
+		public VisualizerPresenterFactory(IVisualizerViewFactory views)
 		{
 			this.views = views;
-		} 
+		}
 		public IFileDialogPresenter FileDialog()
 		{
 			return new FileDialogPresenter(views.FileDialog());

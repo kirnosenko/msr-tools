@@ -28,12 +28,15 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		public EvaluationResult Evaluate(PostReleaseDefectFilesPrediction prediction)
 		{
+			prediction.FileSelector = FileSelector;
+			return Evaluate(prediction.Predict(Revisions));
+		}
+		public EvaluationResult Evaluate(IEnumerable<string> predictedDefectFiles)
+		{
 			if (allFiles == null)
 			{
 				Calc();
 			}
-			prediction.FileSelector = FileSelector;
-			IEnumerable<string> predictedDefectFiles = prediction.Predict(Revisions);
 			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(predictedDefectFiles);
 
 			IEnumerable<string> P = defectFiles;
@@ -42,7 +45,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			int TN = predictedNonDefectFiles.Intersect(N).Count();
 			int FP = predictedDefectFiles.Count() - TP;
 			int FN = predictedNonDefectFiles.Count() - TN;
-			
+
 			return new EvaluationResult(TP, TN, FP, FN);
 		}
 		public string[] Revisions

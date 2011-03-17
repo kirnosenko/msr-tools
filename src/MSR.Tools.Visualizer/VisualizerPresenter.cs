@@ -12,9 +12,9 @@ namespace MSR.Tools.Visualizer
 	{
 		private VisualizerModel model;
 		private IVisualizerView view;
-		private IPresenterFactory presenters;
+		private IVisualizerPresenterFactory presenters;
 
-		public VisualizerPresenter(VisualizerModel model, IVisualizerView view, IPresenterFactory presenters)
+		public VisualizerPresenter(VisualizerModel model, IVisualizerView view, IVisualizerPresenterFactory presenters)
 		{
 			this.model = model;
 			this.view = view;
