@@ -13,10 +13,11 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
 	public class SimpleLocPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
 	{
-		public SimpleLocPostReleaseDefectFilesPrediction(IRepositoryResolver repositories)
-			: base(repositories)
+		public SimpleLocPostReleaseDefectFilesPrediction()
 		{
 			this.AddTotalLocInFilesTillRevisionPredictor();
+			
+			Title = "Simple total LOC model";
 		}
 	}
 }

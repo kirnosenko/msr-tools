@@ -112,19 +112,12 @@ namespace MSR.Tools.Debugger
 			using (var s = data.OpenSession())
 			{
 				PostReleaseDefectFilesPredictionEvaluation evaluator = new PostReleaseDefectFilesPredictionEvaluation(s);
-
-				Dictionary<string,PostReleaseDefectFilesPrediction> predictors = new Dictionary<string,PostReleaseDefectFilesPrediction>()
+				
+				List<PostReleaseDefectFilesPrediction> predictors = new List<PostReleaseDefectFilesPrediction>()
 				{
-					//{ "random", new RandomPostReleaseDefectFilesPrediction(s) },
-					//{ "loc", new SimpleLocPostReleaseDefectFilesPrediction(s) },
-					//{ "touch count", new PostReleaseDefectFilesPrediction(s).AddFilesTouchCountInCommitsPredictor() },
-					//{ "tdd", new PostReleaseDefectFilesPrediction(s).AddTraditionalDefectDensityForCodeInCommitsInFilesPredictor() },
-					//{ "dd", new PostReleaseDefectFilesPrediction(s).AddDefectDensityForCodeInCommitsInFilesPredictor() },
-					//{ "dcd", new PostReleaseDefectFilesPrediction(s).AddDefectCodeDensityForCodeInCommitsInFilesPredictor() },
-					{ "code stability", new CodeStabilityPostReleaseDefectFilesPrediction(s) },
-					//{
-					//	"custom", new PostReleaseDefectFilesPrediction(s)
-					//}
+					//new RandomPostReleaseDefectFilesPrediction(),
+					//new SimpleLocPostReleaseDefectFilesPrediction(),
+					new CodeStabilityPostReleaseDefectFilesPrediction(),
 				};
 
 				evaluator.PostReleasePeriod = 30 * 6;
@@ -133,8 +126,8 @@ namespace MSR.Tools.Debugger
 
 				foreach (var predictor in predictors)
 				{
-					Console.WriteLine(predictor.Key + ":");
-					EvaluationResult result = evaluator.Evaluate(predictor.Value);
+					Console.WriteLine(predictor.Title);
+					EvaluationResult result = evaluator.Evaluate(predictor);
 					Console.WriteLine(result);
 				}
 			}
@@ -144,22 +137,19 @@ namespace MSR.Tools.Debugger
 			using (var s = data.OpenSession())
 			{
 				PostReleaseMetricPredictionEvaluation evaluator = new PostReleaseMetricPredictionEvaluation(s);
-				Dictionary<string,PostReleaseMetricPrediction> predictors = new Dictionary<string,PostReleaseMetricPrediction>()
+				
+				List<PostReleaseMetricPrediction> predictors = new List<PostReleaseMetricPrediction>()
 				{
-					{
-						"defects",
-						new PostReleaseDefectsPrediction(s)
-							.AddTotalLocInFilesTillRevisionPredictor()
-					},
+					new PostReleaseDefectsPrediction().AddTotalLocInFilesTillRevisionPredictor(),
 				};
-
+				
 				evaluator.Revisions = revisions;
 				evaluator.FileSelector = fe => fe.InDirectory("/trunk");
 
 				foreach (var predictor in predictors)
 				{
-					Console.WriteLine(predictor.Key + ":");
-					Console.WriteLine("R2 = {0}", evaluator.Evaluate(predictor.Value));
+					Console.WriteLine(predictor.Title);
+					Console.WriteLine("R2 = {0}", evaluator.Evaluate(predictor));
 				}
 			}
 		}

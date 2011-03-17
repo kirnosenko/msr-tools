@@ -28,8 +28,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		public EvaluationResult Evaluate(PostReleaseDefectFilesPrediction prediction)
 		{
+			prediction.Init(repositories, Revisions);
 			prediction.FileSelector = FileSelector;
-			return Evaluate(prediction.Predict(Revisions));
+			return Evaluate(prediction.Predict());
 		}
 		public EvaluationResult Evaluate(IEnumerable<string> predictedDefectFiles)
 		{

@@ -22,14 +22,7 @@ namespace MSR.Tools.Predictor
 		public PredictionTool(string configFile)
 			: base(configFile, "predictiontool")
 		{
-			models.Add(
-				"LOC",
-				(repo,rel) =>
-				{
-					SimpleLocPostReleaseDefectFilesPrediction model = new SimpleLocPostReleaseDefectFilesPrediction(repo);
-					return model.Predict(rel);
-				}
-			);
+			
 		}
 		public IEnumerable<string> Releases
 		{

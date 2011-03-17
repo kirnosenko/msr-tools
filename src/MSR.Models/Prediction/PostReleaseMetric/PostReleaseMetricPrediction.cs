@@ -20,17 +20,17 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 	{
 		private MultipleLinearRegression regression;
 		
-		public PostReleaseMetricPrediction(IRepositoryResolver repositories)
-			: base(repositories)
+		public override void Init(IRepositoryResolver repositories, string[] releaseRevisions)
 		{
+			base.Init(repositories, releaseRevisions);
 			context.SetFiles(e => e);
 		}
-		public virtual void Train(string[] revisions)
+		public virtual void Train()
 		{
 			regression = new MultipleLinearRegression();
 
 			string previousRevision = null;
-			foreach (var revision in revisions)
+			foreach (var revision in PreReleaseRevisions)
 			{
 				context.SetCommits(previousRevision, revision);
 				
@@ -43,9 +43,9 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 
 			regression.Train();
 		}
-		public virtual double Predict(string previousReleaseRevision, string releaseRevision)
+		public virtual double Predict()
 		{
-			context.SetCommits(previousReleaseRevision, releaseRevision);
+			context.SetCommits(NextToLastReleaseRevision, LastReleaseRevision);
 			
 			return regression.Predict(
 				GetPredictorValuesFor(context)

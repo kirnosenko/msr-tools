@@ -18,20 +18,16 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
 	public class PostReleaseDefectFilesPrediction : Prediction
 	{
-		public PostReleaseDefectFilesPrediction(IRepositoryResolver repositories)
-			: base(repositories)
+		public PostReleaseDefectFilesPrediction()
 		{
 			FilePortionLimit = 0.2;
 		}
-		public virtual IEnumerable<string> Predict(IEnumerable<string> releases)
+		public virtual IEnumerable<string> Predict()
 		{
-			IEnumerable<string> previousReleaseRevisions = releases.Take(releases.Count() - 1);
-			string releaseRevision = releases.Last();
-			
 			LogisticRegression lr = new LogisticRegression();
 			
 			string previousRevision = null;
-			foreach (var revision in previousReleaseRevisions)
+			foreach (var revision in PreReleaseRevisions)
 			{
 				foreach (var file in FilesInRevision(revision))
 				{
@@ -49,10 +45,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			
 			lr.Train();
 
-			var files = FilesInRevision(releaseRevision);
+			var files = FilesInRevision(LastReleaseRevision);
 			int filesInRelease = files.Count();
 			
-			context.SetCommits(previousReleaseRevisions.Last(), releaseRevision);
+			context.SetCommits(NextToLastReleaseRevision, LastReleaseRevision);
 			
 			var faultProneFiles =
 				(

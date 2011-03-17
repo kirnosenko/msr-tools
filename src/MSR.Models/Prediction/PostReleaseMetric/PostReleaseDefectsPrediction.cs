@@ -17,10 +17,6 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 {
 	public class PostReleaseDefectsPrediction : PostReleaseMetricPrediction
 	{
-		public PostReleaseDefectsPrediction(IRepositoryResolver repositories)
-			: base(repositories)
-		{
-		}
 		public override double PostReleaseMetric(string previousReleaseRevision, string releaseRevision)
 		{
 			return repositories.SelectionDSL()

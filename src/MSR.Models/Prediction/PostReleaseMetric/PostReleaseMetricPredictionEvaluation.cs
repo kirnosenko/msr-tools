@@ -30,6 +30,8 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 		}
 		public double Evaluate(PostReleaseMetricPrediction prediction)
 		{
+			prediction.Init(repositories, Revisions);
+			
 			fileIDs = repositories.SelectionDSL()
 				.Files()
 					.Reselect(FileSelector)
@@ -42,12 +44,12 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 				PrepareSets();
 				
 				prediction.FileSelector = e => e.IdIn(trainSet);
-				prediction.Train(PreviousReleaseRevisions);
+				prediction.Train();
 				
 				prediction.FileSelector = e => e.IdIn(predictSet);
 				
 				regression.AddTrainingData(
-					prediction.Predict(PreviousReleaseRevisions.Last(), ReleaseRevision),
+					prediction.Predict(),
 					prediction.PostReleaseMetric(PreviousReleaseRevisions.Last(), ReleaseRevision)
 				);
 			}

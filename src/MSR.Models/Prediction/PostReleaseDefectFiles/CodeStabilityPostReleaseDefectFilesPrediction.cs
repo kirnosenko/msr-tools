@@ -20,26 +20,23 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
 	public class CodeStabilityPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
 	{
-		public CodeStabilityPostReleaseDefectFilesPrediction(IRepositoryResolver repositories)
-			: base(repositories)
+		public CodeStabilityPostReleaseDefectFilesPrediction()
 		{
+			Title = "Code stability model";
 		}
-		public override IEnumerable<string> Predict(IEnumerable<string> releases)
+		public override IEnumerable<string> Predict()
 		{
-			IEnumerable<string> previousReleaseRevisions = releases.Take(releases.Count() - 1);
-			string releaseRevision = releases.Last();
-			
 			var bugLifetimes = repositories.SelectionDSL()
-				.Commits().TillRevision(previousReleaseRevisions.Last())
+				.Commits().TillRevision(NextToLastReleaseRevision)
 				.BugFixes().InCommits().CalculateAvarageBugLifetime();
 			
 			double defectLineProbability = repositories.SelectionDSL()
-				.Commits().TillRevision(previousReleaseRevisions.Last())
+				.Commits().TillRevision(NextToLastReleaseRevision)
 				.Files().Reselect(FileSelector)
 				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(previousReleaseRevisions.Last());
+				.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(NextToLastReleaseRevision);
 			
-			var files = FilesInRevision(releaseRevision);
+			var files = FilesInRevision(LastReleaseRevision);
 			int filesInRelease = files.Count();
 			Dictionary<string,double> fileStability = new Dictionary<string,double>();
 			
@@ -47,7 +44,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				repositories.SelectionDSL()
 					.Commits().RevisionIs(r)
 					.Modifications().InCommits()
-					.CodeBlocks().InModifications().CalculateDefectCodeSize(releaseRevision)
+					.CodeBlocks().InModifications().CalculateDefectCodeSize(LastReleaseRevision)
 			);
 			var addedCodeSizeByRevision = new SmartDictionary<string, double>(r =>
 				repositories.SelectionDSL()
@@ -59,10 +56,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			foreach (var file in files)
 			{
 				var codeBlocks = repositories.SelectionDSL()
-					.Commits().TillRevision(releaseRevision)
+					.Commits().TillRevision(LastReleaseRevision)
 					.Files().IdIs(file.ID)
 					.Modifications().InCommits().InFiles()
-					.CodeBlocks().InModifications().CalculateRemainingCodeSize(releaseRevision);
+					.CodeBlocks().InModifications().CalculateRemainingCodeSize(LastReleaseRevision);
 				
 				var codeByRevision = (
 					from cb in codeBlocks
@@ -74,7 +71,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 						c.ID == CommitID
 					let revision = c.Revision
 					let releaseDate = repositories.Repository<Commit>()
-						.Single(x => x.Revision == releaseRevision)
+						.Single(x => x.Revision == LastReleaseRevision)
 						.Date
 					let age = (releaseDate - c.Date).TotalDays
 					let codeSize = cb.Value

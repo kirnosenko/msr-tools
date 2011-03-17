@@ -15,15 +15,13 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
 	public class RandomPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
 	{
-		public RandomPostReleaseDefectFilesPrediction(IRepositoryResolver repositories)
-			: base(repositories)
+		public RandomPostReleaseDefectFilesPrediction()
 		{
+			Title = "Random model";
 		}
-		public override IEnumerable<string> Predict(IEnumerable<string> releases)
+		public override IEnumerable<string> Predict()
 		{
-			string releaseRevision = releases.Last();
-			
-			var files = FilesInRevision(releaseRevision);
+			var files = FilesInRevision(LastReleaseRevision);
 			int filesInRelease = files.Count();
 			
 			return files
