@@ -102,11 +102,12 @@ namespace MSR.Tools.Debugger
 			{
 				using (ConsoleTimeLogger.Start("prediction"))
 				{
-					PostReleaseDefectFiles(releases.Take(i).ToArray());
+					//PostReleaseDefectFiles(releases.Take(i).ToArray());
 					//PostReleaseMetric(revisions);
 				}
 			}
 		}
+		/*
 		public void PostReleaseDefectFiles(string[] revisions)
 		{
 			using (var s = data.OpenSession())
@@ -152,7 +153,7 @@ namespace MSR.Tools.Debugger
 					Console.WriteLine("R2 = {0}", evaluator.Evaluate(predictor));
 				}
 			}
-		}
+		}*/
 		public void QueryUnderProfiler()
 		{
 			PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(data);

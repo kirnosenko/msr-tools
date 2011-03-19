@@ -1,5 +1,10 @@
+/*
+ * MSR Tools - tools for mining software repositories
+ * 
+ * Copyright (C) 2011  Semyon Kirnosenko
+ */
+
 using System;
-using System.Windows.Forms;
 
 namespace MSR.Tools.Predictor
 {
@@ -13,6 +18,8 @@ namespace MSR.Tools.Predictor
 			this.model = model;
 			this.view = view;
 			view.OnOpenConfigFile += OpenConfigFile;
+			view.OnPredict += () => Predict(false);
+			view.OnPredictAndEvaluate += () => Predict(true);
 		}
 		public void Run()
 		{
@@ -26,12 +33,28 @@ namespace MSR.Tools.Predictor
 			{
 				model.OpenConfig(fileName);
 				view.SetReleaseList(model.Releases);
-				//view.SetModelList(
+				view.SetModelList(model.Models);
 				view.CommandMenuAvailable = true;
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				view.ShowError(e.Message);
+			}
+		}
+		private void Predict(bool evaluate)
+		{
+			try
+			{
+				model.Predict(view.SelectedReleases, view.SelectedModel, evaluate);
+				view.SetPredictionData(model.PredictedDefectFiles);
+				if (evaluate)
+				{
+					view.SetEvaluationData(model.DefectFiles, model.EvaluationResult);
+				}
+			}
+			catch (Exception e)
+			{
+				view.ShowError(e.Message);
 			}
 		}
 	}

@@ -29,6 +29,10 @@ namespace MSR.Tools
 			
 			data = GetConfiguredType<PersistentDataStore>();
 		}
+		public PersistentDataStore Data
+		{
+			get { return data; }
+		}
 		protected T GetConfiguredType<T>()
 		{
 			return container.Resolve<T>();

@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2011  Semyon Kirnosenko
  */
 
 using System;
@@ -22,40 +22,25 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		private IEnumerable<string> allFiles;
 		private IEnumerable<string> defectFiles;
 		
-		public PostReleaseDefectFilesPredictionEvaluation(IRepositoryResolver repositories)
+		public EvaluationResult Evaluate(IRepositoryResolver repositories, PostReleaseDefectFilesPrediction prediction)
 		{
 			this.repositories = repositories;
-		}
-		public EvaluationResult Evaluate(PostReleaseDefectFilesPrediction prediction)
-		{
-			prediction.Init(repositories, Revisions);
-			prediction.FileSelector = FileSelector;
-			return Evaluate(prediction.Predict());
-		}
-		public EvaluationResult Evaluate(IEnumerable<string> predictedDefectFiles)
-		{
+			FileSelector = prediction.FileSelector;
+
 			if (allFiles == null)
 			{
-				Calc();
+				Calc(prediction.LastReleaseRevision);
 			}
-			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(predictedDefectFiles);
+			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(prediction.DefectFiles);
 
 			IEnumerable<string> P = defectFiles;
 			IEnumerable<string> N = allFiles.Except(defectFiles);
-			int TP = predictedDefectFiles.Intersect(P).Count();
+			int TP = prediction.DefectFiles.Intersect(P).Count();
 			int TN = predictedNonDefectFiles.Intersect(N).Count();
-			int FP = predictedDefectFiles.Count() - TP;
+			int FP = prediction.DefectFiles.Count() - TP;
 			int FN = predictedNonDefectFiles.Count() - TN;
 
 			return new EvaluationResult(TP, TN, FP, FN);
-		}
-		public string[] Revisions
-		{
-			get; set;
-		}
-		public string ReleaseRevision
-		{
-			get { return Revisions.Last(); }
 		}
 		public int PostReleasePeriod
 		{
@@ -65,25 +50,30 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; set;
 		}
+		public IEnumerable<string> DefectFiles
+		{
+			get { return defectFiles; }
+		}
 
-		private void Calc()
+		private void Calc(string releaseRevision)
 		{
 			defectFiles = repositories.SelectionDSL()
 				.Commits()
-					.AfterRevision(ReleaseRevision)
-					.DateIsLesserOrEquelThan(PostReleasePeriodEnd())
+					.AfterRevision(releaseRevision)
+					.DateIsLesserOrEquelThan(PostReleasePeriodEnd(releaseRevision))
 					.AreBugFixes()
 				.Files()
 					.Reselect(FileSelector)
-					.ExistInRevision(ReleaseRevision)
+					.ExistInRevision(releaseRevision)
 						.Do(e => allFiles = e.Select(f => f.Path))
 					.TouchedInCommits()
-				.Select(x => x.Path).ToList();
+				.Select(x => x.Path)
+				.ToList();
 		}
-		private DateTime PostReleasePeriodEnd()
+		private DateTime PostReleasePeriodEnd(string releaseRevision)
 		{
 			return repositories.Repository<Commit>()
-				.Single(c => c.Revision == ReleaseRevision)
+				.Single(c => c.Revision == releaseRevision)
 				.Date.AddDays(PostReleasePeriod);
 		}
 	}

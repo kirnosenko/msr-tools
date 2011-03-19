@@ -43,6 +43,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="PredictionTool.cs" />
+    <Compile Include="PredictionModelPool.cs" />
     <Compile Include="PredictorModel.cs" />
     <Compile Include="PredictorPresenter.cs" />
     <Compile Include="PredictorView.cs">

@@ -24,7 +24,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			Title = "Code stability model";
 		}
-		public override IEnumerable<string> Predict()
+		public override void Predict()
 		{
 			var bugLifetimes = repositories.SelectionDSL()
 				.Commits().TillRevision(NextToLastReleaseRevision)
@@ -113,11 +113,12 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				fileStability.Add(file.Path, fileHasNoErrorsProbability);
 			}
 			
-			return fileStability
+			DefectFiles = fileStability
 				//.Where(x => x.Value <= 0.01)
 				.OrderBy(x => x.Value)
 				.TakeNoMoreThan((int)(0.2 * fileStability.Count))
-				.Select(x => x.Key);
+				.Select(x => x.Key)
+				.ToList();
 		}
 		private double LaplaceIntegralTheorem(double p, double n, double k1, double k2)
 		{

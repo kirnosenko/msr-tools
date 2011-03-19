@@ -19,7 +19,6 @@ namespace MSR.Models.Prediction
 		private List<Func<PredictorContext,double>> predictors = new List<Func<PredictorContext,double>>();
 		
 		protected IRepositoryResolver repositories;
-		protected string[] releaseRevisions;
 		protected PredictorContext context;
 		
 		public string Title
@@ -34,23 +33,25 @@ namespace MSR.Models.Prediction
 		{
 			return predictors.Select(p => p(c)).ToArray();
 		}
-		public virtual void Init(IRepositoryResolver repositories, string[] releaseRevisions)
+		public virtual void Init(IRepositoryResolver repositories, IEnumerable<string> releaseRevisions)
 		{
 			this.repositories = repositories;
-			this.releaseRevisions = releaseRevisions;
+			PreReleaseRevisions = releaseRevisions.Take(releaseRevisions.Count() - 1);
+			LastReleaseRevision = releaseRevisions.Last();
+			NextToLastReleaseRevision = PreReleaseRevisions.Last();
 			context = new PredictorContext(repositories);
 		}
-		protected string LastReleaseRevision
+		public string LastReleaseRevision
 		{
-			get { return releaseRevisions.Last(); }
+			get; private set;
 		}
-		protected string NextToLastReleaseRevision
+		public string NextToLastReleaseRevision
 		{
-			get { return PreReleaseRevisions.Last(); }
+			get; private set;
 		}
-		protected IEnumerable<string> PreReleaseRevisions
+		public IEnumerable<string> PreReleaseRevisions
 		{
-			get { return releaseRevisions.Take(releaseRevisions.Count() - 1); }
+			get; private set;
 		}
 	}
 }

@@ -33,7 +33,7 @@
 			this.openConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.commandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.predictToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.evaluateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.predictAndEvaluateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.releaseList = new System.Windows.Forms.CheckedListBox();
 			this.modelList = new System.Windows.Forms.ComboBox();
 			this.predictionText = new System.Windows.Forms.TextBox();
@@ -71,7 +71,7 @@
 			// 
 			this.commandToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.predictToolStripMenuItem,
-            this.evaluateToolStripMenuItem});
+            this.predictAndEvaluateToolStripMenuItem});
 			this.commandToolStripMenuItem.Name = "commandToolStripMenuItem";
 			this.commandToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
 			this.commandToolStripMenuItem.Text = "Command";
@@ -79,16 +79,16 @@
 			// predictToolStripMenuItem
 			// 
 			this.predictToolStripMenuItem.Name = "predictToolStripMenuItem";
-			this.predictToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.predictToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
 			this.predictToolStripMenuItem.Text = "Predict";
 			this.predictToolStripMenuItem.Click += new System.EventHandler(this.predictToolStripMenuItem_Click);
 			// 
-			// evaluateToolStripMenuItem
+			// predictAndEvaluateToolStripMenuItem
 			// 
-			this.evaluateToolStripMenuItem.Name = "evaluateToolStripMenuItem";
-			this.evaluateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.evaluateToolStripMenuItem.Text = "Evaluate";
-			this.evaluateToolStripMenuItem.Click += new System.EventHandler(this.evaluateToolStripMenuItem_Click);
+			this.predictAndEvaluateToolStripMenuItem.Name = "predictAndEvaluateToolStripMenuItem";
+			this.predictAndEvaluateToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.predictAndEvaluateToolStripMenuItem.Text = "Predict and Evaluate";
+			this.predictAndEvaluateToolStripMenuItem.Click += new System.EventHandler(this.predictAndEvaluateToolStripMenuItem_Click);
 			// 
 			// releaseList
 			// 
@@ -111,6 +111,7 @@
 			this.predictionText.Location = new System.Drawing.Point(216, 72);
 			this.predictionText.Multiline = true;
 			this.predictionText.Name = "predictionText";
+			this.predictionText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
 			this.predictionText.Size = new System.Drawing.Size(504, 144);
 			this.predictionText.TabIndex = 3;
 			// 
@@ -119,6 +120,7 @@
 			this.evaluationText.Location = new System.Drawing.Point(216, 232);
 			this.evaluationText.Multiline = true;
 			this.evaluationText.Name = "evaluationText";
+			this.evaluationText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
 			this.evaluationText.Size = new System.Drawing.Size(504, 144);
 			this.evaluationText.TabIndex = 4;
 			// 
@@ -152,7 +154,7 @@
 		private System.Windows.Forms.CheckedListBox releaseList;
 		private System.Windows.Forms.ToolStripMenuItem commandToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem predictToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem evaluateToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem predictAndEvaluateToolStripMenuItem;
 		private System.Windows.Forms.ComboBox modelList;
 		private System.Windows.Forms.TextBox predictionText;
 		private System.Windows.Forms.TextBox evaluationText;

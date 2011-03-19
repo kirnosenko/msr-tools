@@ -19,14 +19,14 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			Title = "Random model";
 		}
-		public override IEnumerable<string> Predict()
+		public override void Predict()
 		{
 			var files = FilesInRevision(LastReleaseRevision);
 			int filesInRelease = files.Count();
 			
-			return files
-				.Select(x => x.Path)
-				.TakeRandomly((int)(filesInRelease * FilePortionLimit));
+			DefectFiles = files.Select(x => x.Path)
+				.TakeRandomly((int)(filesInRelease * FilePortionLimit))
+				.ToList();
 		}
 	}
 }

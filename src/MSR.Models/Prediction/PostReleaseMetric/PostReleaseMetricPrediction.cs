@@ -20,7 +20,7 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 	{
 		private MultipleLinearRegression regression;
 		
-		public override void Init(IRepositoryResolver repositories, string[] releaseRevisions)
+		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releaseRevisions)
 		{
 			base.Init(repositories, releaseRevisions);
 			context.SetFiles(e => e);
