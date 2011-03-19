@@ -21,6 +21,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public PostReleaseDefectFilesPrediction()
 		{
 			FilePortionLimit = 0.2;
+			PostReleasePeriodInDays = 180;
 		}
 		public virtual void Predict()
 		{
@@ -29,7 +30,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			string previousRevision = null;
 			foreach (var revision in PreReleaseRevisions)
 			{
-				foreach (var file in FilesInRevision(revision))
+				foreach (var file in GetFilesInRevision(revision))
 				{
 					context
 						.SetCommits(previousRevision, revision)
@@ -45,7 +46,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			
 			lr.Train();
 
-			var files = FilesInRevision(LastReleaseRevision);
+			var files = GetFilesInRevision(LastReleaseRevision);
 			int filesInRelease = files.Count();
 			
 			context.SetCommits(NextToLastReleaseRevision, LastReleaseRevision);
@@ -63,10 +64,31 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				).Where(x => x.FaultProneProbability > 0.5)
 				.OrderByDescending(x => x.FaultProneProbability);
 
-			DefectFiles = faultProneFiles
+			PredictedDefectFiles = faultProneFiles
 				.Select(x => x.Path)
 				.TakeNoMoreThan((int)(filesInRelease * FilePortionLimit))
-				.ToList();
+				.ToList();		
+		}
+		public EvaluationResult Evaluate()
+		{
+			var allFiles = GetFilesInRevision(LastReleaseRevision)
+				.Select(x => x.Path);
+			DefectFiles = GetPostReleaseDefectFiles(LastReleaseRevision);
+			
+			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(PredictedDefectFiles);
+
+			IEnumerable<string> P = DefectFiles;
+			IEnumerable<string> N = allFiles.Except(DefectFiles);
+			int TP = PredictedDefectFiles.Intersect(P).Count();
+			int TN = predictedNonDefectFiles.Intersect(N).Count();
+			int FP = PredictedDefectFiles.Count() - TP;
+			int FN = predictedNonDefectFiles.Count() - TN;
+
+			return new EvaluationResult(TP, TN, FP, FN);
+		}
+		public IEnumerable<string> PredictedDefectFiles
+		{
+			get; protected set;
 		}
 		public IEnumerable<string> DefectFiles
 		{
@@ -80,7 +102,12 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; set;
 		}
-		protected IEnumerable<ProjectFile> FilesInRevision(string revision)
+		public int PostReleasePeriodInDays
+		{
+			get; set;
+		}
+		
+		protected IEnumerable<ProjectFile> GetFilesInRevision(string revision)
 		{
 			return repositories.SelectionDSL()
 				.Files()
@@ -97,6 +124,26 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.TillRevision(revision)
 				.Modifications().InCommits().InFiles()
 				.CodeBlocks().InModifications().CalculateNumberOfDefects() > 0 ? 1 : 0;
+		}
+		private IEnumerable<string> GetPostReleaseDefectFiles(string releaseRevision)
+		{
+			return repositories.SelectionDSL()
+				.Commits()
+					.AfterRevision(releaseRevision)
+					.DateIsLesserOrEquelThan(PostReleasePeriodEnd(releaseRevision))
+					.AreBugFixes()
+				.Files()
+					.Reselect(FileSelector)
+					.ExistInRevision(releaseRevision)
+					.TouchedInCommits()
+				.Select(x => x.Path)
+				.ToList();
+		}
+		private DateTime PostReleasePeriodEnd(string releaseRevision)
+		{
+			return repositories.Repository<Commit>()
+				.Single(c => c.Revision == releaseRevision)
+				.Date.AddDays(PostReleasePeriodInDays);
 		}
 	}
 }

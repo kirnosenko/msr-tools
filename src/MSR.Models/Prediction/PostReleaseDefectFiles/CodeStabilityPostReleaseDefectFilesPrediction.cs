@@ -36,7 +36,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				.Modifications().InCommits().InFiles()
 				.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(NextToLastReleaseRevision);
 			
-			var files = FilesInRevision(LastReleaseRevision);
+			var files = GetFilesInRevision(LastReleaseRevision);
 			int filesInRelease = files.Count();
 			Dictionary<string,double> fileStability = new Dictionary<string,double>();
 			
@@ -113,7 +113,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				fileStability.Add(file.Path, fileHasNoErrorsProbability);
 			}
 			
-			DefectFiles = fileStability
+			PredictedDefectFiles = fileStability
 				//.Where(x => x.Value <= 0.01)
 				.OrderBy(x => x.Value)
 				.TakeNoMoreThan((int)(0.2 * fileStability.Count))

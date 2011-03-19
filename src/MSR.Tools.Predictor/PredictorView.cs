@@ -82,7 +82,7 @@ namespace MSR.Tools.Predictor
 		{
 			StringBuilder text = new StringBuilder();
 			text.AppendLine("Defect files:");
-			foreach (var f in files)
+			foreach (var f in files.OrderBy(x => x))
 			{
 				text.AppendLine(f);
 			}

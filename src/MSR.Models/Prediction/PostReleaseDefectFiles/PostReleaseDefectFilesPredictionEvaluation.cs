@@ -14,7 +14,7 @@ using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
 
 namespace MSR.Models.Prediction.PostReleaseDefectFiles
-{
+{/*
 	public class PostReleaseDefectFilesPredictionEvaluation
 	{
 		private IRepositoryResolver repositories;
@@ -31,13 +31,13 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			{
 				Calc(prediction.LastReleaseRevision);
 			}
-			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(prediction.DefectFiles);
+			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(prediction.PredictedDefectFiles);
 
 			IEnumerable<string> P = defectFiles;
 			IEnumerable<string> N = allFiles.Except(defectFiles);
-			int TP = prediction.DefectFiles.Intersect(P).Count();
+			int TP = prediction.PredictedDefectFiles.Intersect(P).Count();
 			int TN = predictedNonDefectFiles.Intersect(N).Count();
-			int FP = prediction.DefectFiles.Count() - TP;
+			int FP = prediction.PredictedDefectFiles.Count() - TP;
 			int FN = predictedNonDefectFiles.Count() - TN;
 
 			return new EvaluationResult(TP, TN, FP, FN);
@@ -76,5 +76,5 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				.Single(c => c.Revision == releaseRevision)
 				.Date.AddDays(PostReleasePeriod);
 		}
-	}
+	}*/
 }

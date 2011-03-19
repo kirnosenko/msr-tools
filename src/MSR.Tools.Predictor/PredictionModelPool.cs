@@ -12,7 +12,7 @@ using MSR.Models.Prediction.PostReleaseDefectFiles;
 
 namespace MSR.Tools.Predictor
 {
-	public class PredictionModelPool : PostReleaseDefectFilesPrediction
+	public class PredictionModelPool
 	{
 		private PostReleaseDefectFilesPrediction[] models;
 		
@@ -20,12 +20,9 @@ namespace MSR.Tools.Predictor
 		{
 			this.models = models;
 		}
-		public PostReleaseDefectFilesPrediction[] Models
+		public PostReleaseDefectFilesPrediction[] Models()
 		{
-			get
-			{
-				return models;
-			}
+			return models;
 		}
 		public string TargetDir
 		{
@@ -34,6 +31,16 @@ namespace MSR.Tools.Predictor
 				foreach (var m in models)
 				{
 					m.FileSelector = e => e.InDirectory(value);
+				}
+			}
+		}
+		public int PostReleasePeriodInDays
+		{
+			set
+			{
+				foreach (var m in models)
+				{
+					m.PostReleasePeriodInDays = value;
 				}
 			}
 		}

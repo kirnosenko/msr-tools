@@ -45,11 +45,11 @@ namespace MSR.Tools.Predictor
 		}
 		public IEnumerable<string> Models
 		{
-			get { return tool.Models.Models.Select(x => x.Title); }
+			get { return tool.Models.Models().Select(x => x.Title); }
 		}
 		public void Predict(IEnumerable<string> releases, int modelNumber, bool evaluate)
 		{
-			var model = tool.Models.Models[modelNumber];
+			var model = tool.Models.Models()[modelNumber];
 			using (var s = tool.Data.OpenSession())
 			{
 				var releaseRevisions = 
@@ -58,12 +58,11 @@ namespace MSR.Tools.Predictor
 					select c.Revision;
 				model.Init(s, releaseRevisions);
 				model.Predict();
-				PredictedDefectFiles = model.DefectFiles;
+				PredictedDefectFiles = model.PredictedDefectFiles;
 				if (evaluate)
 				{
-					PostReleaseDefectFilesPredictionEvaluation evaluation = new PostReleaseDefectFilesPredictionEvaluation();
-					EvaluationResult = evaluation.Evaluate(s, model).ToString();
-					DefectFiles = evaluation.DefectFiles;
+					EvaluationResult = model.Evaluate().ToString();
+					DefectFiles = model.DefectFiles;
 				}
 			}
 		}
