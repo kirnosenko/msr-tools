@@ -26,7 +26,7 @@ namespace MSR.Tools.Predictor
 		void SetReport(string text);
 		
 		IEnumerable<string> SelectedReleases { get; }
-		int SelectedModel { get; }
+		IEnumerable<int> SelectedModels { get; }
 		bool CommandMenuAvailable { get; set; }
 		bool ShowFiles { get; set; }
 	}
@@ -84,9 +84,20 @@ namespace MSR.Tools.Predictor
 				}
 			}
 		}
-		public int SelectedModel
+		public IEnumerable<int> SelectedModels
 		{
-			get { return modelList.SelectedIndex; }
+			get
+			{
+				int index = 0;
+				foreach (var item in modelList.Items)
+				{
+					if (modelList.CheckedItems.Contains(item))
+					{
+						yield return index;
+					}
+					index++;
+				}
+			}
 		}
 		public bool CommandMenuAvailable
 		{

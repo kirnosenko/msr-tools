@@ -45,7 +45,7 @@ namespace MSR.Tools.Predictor
 		{
 			try
 			{
-				model.Predict(view.SelectedReleases, view.SelectedModel, evaluate, view.ShowFiles);
+				model.Predict(view.SelectedReleases, view.SelectedModels, evaluate, view.ShowFiles);
 				view.SetReport(model.Report);
 			}
 			catch (Exception e)

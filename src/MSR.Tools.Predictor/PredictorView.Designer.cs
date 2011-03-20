@@ -31,14 +31,14 @@
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.commandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.predictToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.predictAndEvaluateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.releaseList = new System.Windows.Forms.CheckedListBox();
-			this.modelList = new System.Windows.Forms.ComboBox();
 			this.outputText = new System.Windows.Forms.TextBox();
-			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.showFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.modelList = new System.Windows.Forms.CheckedListBox();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -68,6 +68,21 @@
 			this.openConfigToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
 			this.openConfigToolStripMenuItem.Text = "Open config...";
 			this.openConfigToolStripMenuItem.Click += new System.EventHandler(this.openConfigToolStripMenuItem_Click);
+			// 
+			// viewToolStripMenuItem
+			// 
+			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showFilesToolStripMenuItem});
+			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+			this.viewToolStripMenuItem.Text = "View";
+			// 
+			// showFilesToolStripMenuItem
+			// 
+			this.showFilesToolStripMenuItem.Name = "showFilesToolStripMenuItem";
+			this.showFilesToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
+			this.showFilesToolStripMenuItem.Text = "Show files";
+			this.showFilesToolStripMenuItem.Click += new System.EventHandler(this.showFilesToolStripMenuItem_Click);
 			// 
 			// commandToolStripMenuItem
 			// 
@@ -100,46 +115,31 @@
 			this.releaseList.Size = new System.Drawing.Size(192, 349);
 			this.releaseList.TabIndex = 1;
 			// 
+			// outputText
+			// 
+			this.outputText.Location = new System.Drawing.Point(216, 136);
+			this.outputText.Multiline = true;
+			this.outputText.Name = "outputText";
+			this.outputText.ReadOnly = true;
+			this.outputText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.outputText.Size = new System.Drawing.Size(504, 240);
+			this.outputText.TabIndex = 3;
+			// 
 			// modelList
 			// 
 			this.modelList.FormattingEnabled = true;
 			this.modelList.Location = new System.Drawing.Point(216, 32);
 			this.modelList.Name = "modelList";
-			this.modelList.Size = new System.Drawing.Size(504, 21);
-			this.modelList.TabIndex = 2;
-			// 
-			// outputText
-			// 
-			this.outputText.Location = new System.Drawing.Point(216, 72);
-			this.outputText.Multiline = true;
-			this.outputText.Name = "outputText";
-			this.outputText.ReadOnly = true;
-			this.outputText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.outputText.Size = new System.Drawing.Size(504, 304);
-			this.outputText.TabIndex = 3;
-			// 
-			// viewToolStripMenuItem
-			// 
-			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showFilesToolStripMenuItem});
-			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-			this.viewToolStripMenuItem.Text = "View";
-			// 
-			// showFilesToolStripMenuItem
-			// 
-			this.showFilesToolStripMenuItem.Name = "showFilesToolStripMenuItem";
-			this.showFilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.showFilesToolStripMenuItem.Text = "Show files";
-			this.showFilesToolStripMenuItem.Click += new System.EventHandler(this.showFilesToolStripMenuItem_Click);
+			this.modelList.Size = new System.Drawing.Size(504, 94);
+			this.modelList.TabIndex = 4;
 			// 
 			// PredictorView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(737, 393);
-			this.Controls.Add(this.outputText);
 			this.Controls.Add(this.modelList);
+			this.Controls.Add(this.outputText);
 			this.Controls.Add(this.releaseList);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
@@ -161,10 +161,10 @@
 		private System.Windows.Forms.ToolStripMenuItem commandToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem predictToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem predictAndEvaluateToolStripMenuItem;
-		private System.Windows.Forms.ComboBox modelList;
 		private System.Windows.Forms.TextBox outputText;
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showFilesToolStripMenuItem;
+		private System.Windows.Forms.CheckedListBox modelList;
 	}
 }
 

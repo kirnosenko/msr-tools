@@ -17,7 +17,7 @@ namespace MSR.Tools.Predictor
 	public interface IPredictorModel
 	{
 		void OpenConfig(string fileName);
-		void Predict(IEnumerable<string> releases, int modelNumber, bool evaluate, bool showFiles);
+		void Predict(IEnumerable<string> releases, IEnumerable<int> models, bool evaluate, bool showFiles);
 		IEnumerable<string> Releases { get; }
 		IEnumerable<string> Models { get; }
 		
@@ -46,54 +46,58 @@ namespace MSR.Tools.Predictor
 		{
 			get { return tool.Models.Models().Select(x => x.Title); }
 		}
-		public void Predict(IEnumerable<string> releases, int modelNumber, bool evaluate, bool showFiles)
+		public void Predict(IEnumerable<string> releases, IEnumerable<int> models, bool evaluate, bool showFiles)
 		{
 			StringBuilder report = new StringBuilder();
 			string evaluationResult = null;
 			
-			var model = tool.Models.Models()[modelNumber];
-			using (var s = tool.Data.OpenSession())
+			foreach (var modelNumber in models)
 			{
-				var releaseRevisions = 
-					from r in s.Repository<Release>().Where(x => releases.Contains(x.Tag))
-					join c in s.Repository<Commit>() on r.CommitID equals c.ID
-					select c.Revision;
-				model.Init(s, releaseRevisions);
-				model.Predict();
-				if (evaluate)
+				var model = tool.Models.Models()[modelNumber];
+				using (var s = tool.Data.OpenSession())
 				{
-					evaluationResult = model.Evaluate().ToString();
-				}
-			}
-
-			report.AppendLine(model.Title);
-			report.Append("Releases: ");
-			foreach (var r in releases)
-			{
-				report.Append(r + ", ");
-			}
-			report.AppendLine();
-			if (showFiles || (! evaluate))
-			{
-				report.AppendLine("Predicted defect files:");
-				foreach (var f in model.PredictedDefectFiles)
-				{
-					report.AppendLine(
-						string.Format("{0} {1}", f, evaluate ? model.DefectFiles.Contains(f) ? "+" : "-" : "")
-					);
-				}
-			}
-			if (evaluate)
-			{
-				if (showFiles)
-				{
-					report.AppendLine("Defect files:");
-					foreach (var f in model.DefectFiles.OrderBy(x => x))
+					var releaseRevisions = 
+						from r in s.Repository<Release>().Where(x => releases.Contains(x.Tag))
+						join c in s.Repository<Commit>() on r.CommitID equals c.ID
+						select c.Revision;
+					model.Init(s, releaseRevisions);
+					model.Predict();
+					if (evaluate)
 					{
-						report.AppendLine(string.Format("{0} {1}", f, model.PredictedDefectFiles.Contains(f) ? "+" : "-"));
+						evaluationResult = model.Evaluate().ToString();
 					}
 				}
-				report.AppendLine(evaluationResult);
+
+				report.AppendLine(model.Title);
+				report.Append("Releases: ");
+				foreach (var r in releases)
+				{
+					report.Append(r + ", ");
+				}
+				report.AppendLine();
+				if (showFiles || (! evaluate))
+				{
+					report.AppendLine("Predicted defect files:");
+					foreach (var f in model.PredictedDefectFiles)
+					{
+						report.AppendLine(
+							string.Format("{0} {1}", f, evaluate ? model.DefectFiles.Contains(f) ? "+" : "-" : "")
+						);
+					}
+				}
+				if (evaluate)
+				{
+					if (showFiles)
+					{
+						report.AppendLine("Defect files:");
+						foreach (var f in model.DefectFiles.OrderBy(x => x))
+						{
+							report.AppendLine(string.Format("{0} {1}", f, model.PredictedDefectFiles.Contains(f) ? "+" : "-"));
+						}
+					}
+					report.AppendLine(evaluationResult);
+				}
+				report.AppendLine();
 			}
 			Report = report.ToString();
 		}
