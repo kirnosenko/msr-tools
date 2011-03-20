@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MSR.Tools.Visualizer.WinForms
+namespace MSR.Tools.Visualizer
 {
 	public partial class VisualizerView : Form, IVisualizerView
 	{

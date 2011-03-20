@@ -1,4 +1,4 @@
-﻿namespace MSR.Tools.Visualizer.WinForms
+﻿namespace MSR.Tools.Visualizer
 {
 	partial class VisualizerView
 	{

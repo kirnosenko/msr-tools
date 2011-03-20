@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using ZedGraph;
 
-namespace MSR.Tools.Visualizer.WinForms
+namespace MSR.Tools.Visualizer
 {
 	public class GraphView : ZedGraphControl, IGraphView
 	{

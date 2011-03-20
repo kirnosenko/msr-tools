@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MSR.Tools.Visualizer.WinForms
+namespace MSR.Tools.Visualizer
 {
 	public class MainMenuView : MenuStrip, IMainMenuView
 	{

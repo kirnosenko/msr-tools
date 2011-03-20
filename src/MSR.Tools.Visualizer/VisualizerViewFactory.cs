@@ -7,7 +7,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace MSR.Tools.Visualizer.WinForms
+namespace MSR.Tools.Visualizer
 {
 	public class VisualizerViewFactory : IVisualizerViewFactory
 	{
