@@ -41,9 +41,22 @@
 			this.modelList = new System.Windows.Forms.CheckedListBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.maxReleaseSetSize = new System.Windows.Forms.NumericUpDown();
+			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.splitter1 = new System.Windows.Forms.Splitter();
+			this.panel2 = new System.Windows.Forms.Panel();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.splitter2 = new System.Windows.Forms.Splitter();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.maxReleaseSetSize)).BeginInit();
+			this.panel1.SuspendLayout();
+			this.groupBox2.SuspendLayout();
+			this.panel2.SuspendLayout();
+			this.groupBox3.SuspendLayout();
+			this.groupBox4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -113,56 +126,141 @@
 			// 
 			// releaseList
 			// 
+			this.releaseList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.releaseList.FormattingEnabled = true;
-			this.releaseList.Location = new System.Drawing.Point(8, 32);
+			this.releaseList.Location = new System.Drawing.Point(3, 16);
 			this.releaseList.Name = "releaseList";
-			this.releaseList.Size = new System.Drawing.Size(192, 274);
+			this.releaseList.Size = new System.Drawing.Size(194, 274);
 			this.releaseList.TabIndex = 1;
 			// 
 			// outputText
 			// 
-			this.outputText.Location = new System.Drawing.Point(216, 136);
+			this.outputText.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.outputText.Location = new System.Drawing.Point(3, 16);
 			this.outputText.Multiline = true;
 			this.outputText.Name = "outputText";
 			this.outputText.ReadOnly = true;
 			this.outputText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.outputText.Size = new System.Drawing.Size(504, 240);
+			this.outputText.Size = new System.Drawing.Size(526, 200);
 			this.outputText.TabIndex = 3;
 			// 
 			// modelList
 			// 
+			this.modelList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.modelList.FormattingEnabled = true;
-			this.modelList.Location = new System.Drawing.Point(216, 32);
+			this.modelList.Location = new System.Drawing.Point(3, 16);
 			this.modelList.Name = "modelList";
-			this.modelList.Size = new System.Drawing.Size(504, 94);
+			this.modelList.Size = new System.Drawing.Size(526, 109);
 			this.modelList.TabIndex = 4;
 			// 
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.maxReleaseSetSize);
-			this.groupBox1.Location = new System.Drawing.Point(8, 312);
+			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.groupBox1.Location = new System.Drawing.Point(0, 296);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(192, 72);
+			this.groupBox1.Size = new System.Drawing.Size(200, 64);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Max release set size";
 			// 
 			// maxReleaseSetSize
 			// 
-			this.maxReleaseSetSize.Location = new System.Drawing.Point(64, 32);
+			this.maxReleaseSetSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.maxReleaseSetSize.Location = new System.Drawing.Point(16, 24);
 			this.maxReleaseSetSize.Name = "maxReleaseSetSize";
-			this.maxReleaseSetSize.Size = new System.Drawing.Size(64, 20);
+			this.maxReleaseSetSize.Size = new System.Drawing.Size(168, 20);
 			this.maxReleaseSetSize.TabIndex = 1;
+			// 
+			// statusStrip1
+			// 
+			this.statusStrip1.Location = new System.Drawing.Point(0, 384);
+			this.statusStrip1.Name = "statusStrip1";
+			this.statusStrip1.Size = new System.Drawing.Size(737, 22);
+			this.statusStrip1.TabIndex = 6;
+			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// panel1
+			// 
+			this.panel1.Controls.Add(this.groupBox2);
+			this.panel1.Controls.Add(this.groupBox1);
+			this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
+			this.panel1.Location = new System.Drawing.Point(0, 24);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(200, 360);
+			this.panel1.TabIndex = 7;
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.releaseList);
+			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupBox2.Location = new System.Drawing.Point(0, 0);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(200, 296);
+			this.groupBox2.TabIndex = 8;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Releases";
+			// 
+			// splitter1
+			// 
+			this.splitter1.Location = new System.Drawing.Point(200, 24);
+			this.splitter1.Name = "splitter1";
+			this.splitter1.Size = new System.Drawing.Size(5, 360);
+			this.splitter1.TabIndex = 8;
+			this.splitter1.TabStop = false;
+			// 
+			// panel2
+			// 
+			this.panel2.Controls.Add(this.groupBox4);
+			this.panel2.Controls.Add(this.splitter2);
+			this.panel2.Controls.Add(this.groupBox3);
+			this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.panel2.Location = new System.Drawing.Point(205, 24);
+			this.panel2.Name = "panel2";
+			this.panel2.Size = new System.Drawing.Size(532, 360);
+			this.panel2.TabIndex = 9;
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.modelList);
+			this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
+			this.groupBox3.Location = new System.Drawing.Point(0, 0);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(532, 136);
+			this.groupBox3.TabIndex = 5;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "Prediction models";
+			// 
+			// splitter2
+			// 
+			this.splitter2.Dock = System.Windows.Forms.DockStyle.Top;
+			this.splitter2.Location = new System.Drawing.Point(0, 136);
+			this.splitter2.Name = "splitter2";
+			this.splitter2.Size = new System.Drawing.Size(532, 5);
+			this.splitter2.TabIndex = 6;
+			this.splitter2.TabStop = false;
+			// 
+			// groupBox4
+			// 
+			this.groupBox4.Controls.Add(this.outputText);
+			this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.groupBox4.Location = new System.Drawing.Point(0, 141);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(532, 219);
+			this.groupBox4.TabIndex = 7;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = "Output";
 			// 
 			// PredictorView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(737, 406);
-			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.modelList);
-			this.Controls.Add(this.outputText);
-			this.Controls.Add(this.releaseList);
+			this.Controls.Add(this.panel2);
+			this.Controls.Add(this.splitter1);
+			this.Controls.Add(this.panel1);
+			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "PredictorView";
@@ -171,6 +269,12 @@
 			this.menuStrip1.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.maxReleaseSetSize)).EndInit();
+			this.panel1.ResumeLayout(false);
+			this.groupBox2.ResumeLayout(false);
+			this.panel2.ResumeLayout(false);
+			this.groupBox3.ResumeLayout(false);
+			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -191,6 +295,14 @@
 		private System.Windows.Forms.CheckedListBox modelList;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.NumericUpDown maxReleaseSetSize;
+		private System.Windows.Forms.StatusStrip statusStrip1;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.Splitter splitter1;
+		private System.Windows.Forms.Panel panel2;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.Splitter splitter2;
 	}
 }
 
