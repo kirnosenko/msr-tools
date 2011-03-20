@@ -23,7 +23,8 @@ namespace MSR.Tools.Predictor
 		void ShowError(string text);
 		void SetReleaseList(IEnumerable<string> releases);
 		void SetModelList(IEnumerable<string> models);
-		void SetReport(string text);
+		void ClearReport();
+		void AddReport(string text);
 		
 		IEnumerable<string> SelectedReleases { get; }
 		IEnumerable<int> SelectedModels { get; }
@@ -64,14 +65,14 @@ namespace MSR.Tools.Predictor
 			{
 				modelList.Items.Add(m);
 			}
-			if (modelList.Items.Count > 0)
-			{
-				modelList.SelectedIndex = 0;
-			}
 		}
-		public void SetReport(string text)
+		public void ClearReport()
 		{
-			outputText.Text = text;
+			outputText.Text = string.Empty;
+		}
+		public void AddReport(string text)
+		{
+			outputText.Text += text;
 		}
 		
 		public IEnumerable<string> SelectedReleases
@@ -109,6 +110,16 @@ namespace MSR.Tools.Predictor
 			get { return showFilesToolStripMenuItem.Checked; }
 			set { showFilesToolStripMenuItem.Checked = value; }
 		}
+		public bool ReleaseSetAll
+		{
+			get { return releaseSetAll.Checked; }
+			set { releaseSetAll.Checked = value; }
+		}
+		public int ReleaseSetSize
+		{
+			get { return (int)releaseSetSize.Value; }
+			set { releaseSetSize.Value = value; }
+		}
 
 		private void openConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -130,6 +141,11 @@ namespace MSR.Tools.Predictor
 		private void showFilesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			showFilesToolStripMenuItem.Checked = ! showFilesToolStripMenuItem.Checked;
+		}
+
+		private void releaseSetAll_CheckedChanged(object sender, EventArgs e)
+		{
+			releaseSetSize.Enabled = ! releaseSetAll.Checked;
 		}
 	}
 }

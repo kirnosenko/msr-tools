@@ -39,5 +39,22 @@ namespace MSR.Data.Entities
 				-
 				repositories.Repository<Commit>().Min(c => c.Date);
 		}
+		public static IDictionary<string,string> Releases(this IRepositoryResolver repositories)
+		{
+			var releases =
+				from r in repositories.Repository<Release>()
+				join c in repositories.Repository<Commit>() on r.CommitID equals c.ID
+				select new
+				{
+					Release = r.Tag,
+					Revision = c.Revision
+				};
+			Dictionary<string,string> result = new Dictionary<string, string>();
+			foreach (var r in releases)
+			{
+				result.Add(r.Release, r.Revision);
+			}
+			return result;
+		}
 	}
 }

@@ -16,51 +16,60 @@ namespace MSR.Tools.Predictor
 {
 	public interface IPredictorModel
 	{
-		void OpenConfig(string fileName);
-		void Predict(IEnumerable<string> releases, IEnumerable<int> models, bool evaluate, bool showFiles);
-		IEnumerable<string> Releases { get; }
-		IEnumerable<string> Models { get; }
+		event Action OnClearReport;
+		event Action<string> OnAddReport;
 		
-		string Report { get; }
+		void OpenConfig(string fileName);
+		void Predict(bool evaluate, bool showFiles);
+		IDictionary<string,string> Releases { get; }
+		IDictionary<string,string> SelectedReleases { get; set; }
+		PostReleaseDefectFilesPrediction[] Models { get; }
+		IEnumerable<PostReleaseDefectFilesPrediction> SelectedModels { get; set; }
+
+		
 	}
 	
 	public class PredictorModel : IPredictorModel
 	{
+		public event Action OnClearReport;
+		public event Action<string> OnAddReport;
+		
 		private PredictionTool tool;
 		
+		public PredictorModel()
+		{
+		}
 		public void OpenConfig(string fileName)
 		{
 			tool = new PredictionTool(fileName);
 		}
-		public IEnumerable<string> Releases
+		public IDictionary<string,string> Releases
 		{
-			get
-			{
-				using (var s = tool.Data.OpenSession())
-				{
-					return (from r in s.Repository<Release>() select r.Tag).ToList();
-				}
-			}
+			get { return tool.Releases; }
 		}
-		public IEnumerable<string> Models
+		public IDictionary<string,string> SelectedReleases
 		{
-			get { return tool.Models.Models().Select(x => x.Title); }
+			get; set;
 		}
-		public void Predict(IEnumerable<string> releases, IEnumerable<int> models, bool evaluate, bool showFiles)
+		public PostReleaseDefectFilesPrediction[] Models
+		{
+			get { return tool.Models.Models(); }
+		}
+		public IEnumerable<PostReleaseDefectFilesPrediction> SelectedModels
+		{
+			get; set;
+		}
+		public void Predict(bool evaluate, bool showFiles)
 		{
 			StringBuilder report = new StringBuilder();
 			string evaluationResult = null;
 			
-			foreach (var modelNumber in models)
+			OnClearReport();
+			foreach (var model in SelectedModels)
 			{
-				var model = tool.Models.Models()[modelNumber];
 				using (var s = tool.Data.OpenSession())
 				{
-					var releaseRevisions = 
-						from r in s.Repository<Release>().Where(x => releases.Contains(x.Tag))
-						join c in s.Repository<Commit>() on r.CommitID equals c.ID
-						select c.Revision;
-					model.Init(s, releaseRevisions);
+					model.Init(s, SelectedReleases.Values);
 					model.Predict();
 					if (evaluate)
 					{
@@ -70,9 +79,9 @@ namespace MSR.Tools.Predictor
 
 				report.AppendLine(model.Title);
 				report.Append("Releases: ");
-				foreach (var r in releases)
+				foreach (var r in SelectedReleases.Keys)
 				{
-					report.Append(r + ", ");
+					report.Append(r + " ");
 				}
 				report.AppendLine();
 				if (showFiles || (! evaluate))
@@ -99,11 +108,7 @@ namespace MSR.Tools.Predictor
 				}
 				report.AppendLine();
 			}
-			Report = report.ToString();
-		}
-		public string Report
-		{
-			get; private set;
+			OnAddReport(report.ToString());
 		}
 	}
 }

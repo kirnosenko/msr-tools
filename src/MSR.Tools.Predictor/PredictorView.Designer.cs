@@ -39,7 +39,12 @@
 			this.releaseList = new System.Windows.Forms.CheckedListBox();
 			this.outputText = new System.Windows.Forms.TextBox();
 			this.modelList = new System.Windows.Forms.CheckedListBox();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.releaseSetAll = new System.Windows.Forms.CheckBox();
+			this.releaseSetSize = new System.Windows.Forms.NumericUpDown();
 			this.menuStrip1.SuspendLayout();
+			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.releaseSetSize)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// menuStrip1
@@ -112,7 +117,7 @@
 			this.releaseList.FormattingEnabled = true;
 			this.releaseList.Location = new System.Drawing.Point(8, 32);
 			this.releaseList.Name = "releaseList";
-			this.releaseList.Size = new System.Drawing.Size(192, 349);
+			this.releaseList.Size = new System.Drawing.Size(192, 274);
 			this.releaseList.TabIndex = 1;
 			// 
 			// outputText
@@ -133,11 +138,41 @@
 			this.modelList.Size = new System.Drawing.Size(504, 94);
 			this.modelList.TabIndex = 4;
 			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.releaseSetSize);
+			this.groupBox1.Controls.Add(this.releaseSetAll);
+			this.groupBox1.Location = new System.Drawing.Point(8, 312);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(192, 72);
+			this.groupBox1.TabIndex = 5;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Release set size";
+			// 
+			// releaseSetAll
+			// 
+			this.releaseSetAll.AutoSize = true;
+			this.releaseSetAll.Location = new System.Drawing.Point(16, 32);
+			this.releaseSetAll.Name = "releaseSetAll";
+			this.releaseSetAll.Size = new System.Drawing.Size(37, 17);
+			this.releaseSetAll.TabIndex = 0;
+			this.releaseSetAll.Text = "All";
+			this.releaseSetAll.UseVisualStyleBackColor = true;
+			this.releaseSetAll.CheckedChanged += new System.EventHandler(this.releaseSetAll_CheckedChanged);
+			// 
+			// releaseSetSize
+			// 
+			this.releaseSetSize.Location = new System.Drawing.Point(112, 32);
+			this.releaseSetSize.Name = "releaseSetSize";
+			this.releaseSetSize.Size = new System.Drawing.Size(64, 20);
+			this.releaseSetSize.TabIndex = 1;
+			// 
 			// PredictorView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(737, 393);
+			this.ClientSize = new System.Drawing.Size(737, 406);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.modelList);
 			this.Controls.Add(this.outputText);
 			this.Controls.Add(this.releaseList);
@@ -147,6 +182,9 @@
 			this.Text = "Predictor";
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.releaseSetSize)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -165,6 +203,9 @@
 		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem showFilesToolStripMenuItem;
 		private System.Windows.Forms.CheckedListBox modelList;
+		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.NumericUpDown releaseSetSize;
+		private System.Windows.Forms.CheckBox releaseSetAll;
 	}
 }
 

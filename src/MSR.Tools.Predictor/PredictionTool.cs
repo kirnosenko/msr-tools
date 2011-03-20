@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using MSR.Data.Entities;
 using MSR.Models.Prediction.PostReleaseDefectFiles;
 
 namespace MSR.Tools.Predictor
@@ -18,6 +19,14 @@ namespace MSR.Tools.Predictor
 			: base(configFile, "predictiontool")
 		{
 			Models = GetConfiguredType<PredictionModelPool>();
+			using (var s = data.OpenSession())
+			{
+				Releases = s.Releases();
+			}
+		}
+		public IDictionary<string,string> Releases
+		{
+			get; private set;
 		}
 		public PredictionModelPool Models
 		{

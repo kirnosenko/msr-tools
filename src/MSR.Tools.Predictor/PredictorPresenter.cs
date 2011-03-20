@@ -5,6 +5,10 @@
  */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using MSR.Models.Prediction.PostReleaseDefectFiles;
 
 namespace MSR.Tools.Predictor
 {
@@ -17,24 +21,41 @@ namespace MSR.Tools.Predictor
 		{
 			this.model = model;
 			this.view = view;
+			model.OnClearReport += () => view.ClearReport();
+			model.OnAddReport += r => view.AddReport(r);
 			view.OnOpenConfigFile += OpenConfigFile;
 			view.OnPredict += () => Predict(false);
 			view.OnPredictAndEvaluate += () => Predict(true);
 		}
 		public void Run()
 		{
-			view.CommandMenuAvailable = false;
 			view.Show();
 		}
-		
+		private void ReadOptions()
+		{
+			view.SetReleaseList(model.Releases.Keys);
+			view.SetModelList(model.Models.Select(x => x.Title));
+			view.CommandMenuAvailable = true;
+		}
+		private void UpdateOptions()
+		{
+			List<PostReleaseDefectFilesPrediction> models = new List<PostReleaseDefectFilesPrediction>();
+			foreach (var n in view.SelectedModels)
+			{
+				models.Add(model.Models[n]);
+			}
+			model.SelectedModels = models;
+			
+			model.SelectedReleases = model.Releases
+				.Where(x => view.SelectedReleases.Contains(x.Key))
+				.ToDictionary(x => x.Key, x => x.Value);
+		}
 		private void OpenConfigFile(string fileName)
 		{
 			try
 			{
 				model.OpenConfig(fileName);
-				view.SetReleaseList(model.Releases);
-				view.SetModelList(model.Models);
-				view.CommandMenuAvailable = true;
+				ReadOptions();
 			}
 			catch (Exception e)
 			{
@@ -45,8 +66,8 @@ namespace MSR.Tools.Predictor
 		{
 			try
 			{
-				model.Predict(view.SelectedReleases, view.SelectedModels, evaluate, view.ShowFiles);
-				view.SetReport(model.Report);
+				UpdateOptions();
+				model.Predict(evaluate, view.ShowFiles);
 			}
 			catch (Exception e)
 			{
