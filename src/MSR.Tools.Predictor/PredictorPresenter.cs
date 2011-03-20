@@ -36,6 +36,8 @@ namespace MSR.Tools.Predictor
 			view.SetReleaseList(model.Releases.Keys);
 			view.SetModelList(model.Models.Select(x => x.Title));
 			view.CommandMenuAvailable = true;
+			view.ShowFiles = model.ShowFiles;
+			view.MaxReleaseSetSize = model.MaxReleaseSetSize;
 		}
 		private void UpdateOptions()
 		{
@@ -49,6 +51,9 @@ namespace MSR.Tools.Predictor
 			model.SelectedReleases = model.Releases
 				.Where(x => view.SelectedReleases.Contains(x.Key))
 				.ToDictionary(x => x.Key, x => x.Value);
+			
+			model.ShowFiles = view.ShowFiles;
+			model.MaxReleaseSetSize = view.MaxReleaseSetSize;
 		}
 		private void OpenConfigFile(string fileName)
 		{
@@ -67,7 +72,7 @@ namespace MSR.Tools.Predictor
 			try
 			{
 				UpdateOptions();
-				model.Predict(evaluate, view.ShowFiles);
+				model.Predict(evaluate);
 			}
 			catch (Exception e)
 			{

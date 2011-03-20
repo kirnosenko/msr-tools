@@ -20,13 +20,14 @@ namespace MSR.Tools.Predictor
 		event Action<string> OnAddReport;
 		
 		void OpenConfig(string fileName);
-		void Predict(bool evaluate, bool showFiles);
+		void Predict(bool evaluate);
 		IDictionary<string,string> Releases { get; }
 		IDictionary<string,string> SelectedReleases { get; set; }
 		PostReleaseDefectFilesPrediction[] Models { get; }
 		IEnumerable<PostReleaseDefectFilesPrediction> SelectedModels { get; set; }
-
 		
+		bool ShowFiles { get; set; }
+		int MaxReleaseSetSize { get; set; }
 	}
 	
 	public class PredictorModel : IPredictorModel
@@ -38,6 +39,8 @@ namespace MSR.Tools.Predictor
 		
 		public PredictorModel()
 		{
+			ShowFiles = true;
+			MaxReleaseSetSize = 3;
 		}
 		public void OpenConfig(string fileName)
 		{
@@ -59,17 +62,48 @@ namespace MSR.Tools.Predictor
 		{
 			get; set;
 		}
-		public void Predict(bool evaluate, bool showFiles)
+		public void Predict(bool evaluate)
+		{
+			OnClearReport();
+			
+			List<IDictionary<string,string>> releaseSets = new List<IDictionary<string,string>>();
+			if (SelectedReleases.Count <= MaxReleaseSetSize)
+			{
+				releaseSets.Add(SelectedReleases);
+			}
+			else
+			{
+				for (int i = 0; i <= SelectedReleases.Count - MaxReleaseSetSize; i++)
+				{
+					releaseSets.Add(
+						SelectedReleases.Skip(i).Take(MaxReleaseSetSize)
+							.ToDictionary(x => x.Key, x => x.Value)
+					);
+				}
+			}
+			
+			foreach (var releaseSet in releaseSets)
+			{
+				Predict(evaluate, releaseSet);
+			}
+		}
+		public void Predict(bool evaluate, IDictionary<string,string> releases)
 		{
 			StringBuilder report = new StringBuilder();
 			string evaluationResult = null;
+
+			report.Append("Releases: ");
+			foreach (var r in releases.Keys)
+			{
+				report.Append(r + " ");
+			}
+			report.AppendLine();
 			
-			OnClearReport();
 			foreach (var model in SelectedModels)
 			{
 				using (var s = tool.Data.OpenSession())
 				{
-					model.Init(s, SelectedReleases.Values);
+					model.Init(s, releases.Values);
 					model.Predict();
 					if (evaluate)
 					{
@@ -78,13 +112,7 @@ namespace MSR.Tools.Predictor
 				}
 
 				report.AppendLine(model.Title);
-				report.Append("Releases: ");
-				foreach (var r in SelectedReleases.Keys)
-				{
-					report.Append(r + " ");
-				}
-				report.AppendLine();
-				if (showFiles || (! evaluate))
+				if (ShowFiles || (!evaluate))
 				{
 					report.AppendLine("Predicted defect files:");
 					foreach (var f in model.PredictedDefectFiles)
@@ -96,7 +124,7 @@ namespace MSR.Tools.Predictor
 				}
 				if (evaluate)
 				{
-					if (showFiles)
+					if (ShowFiles)
 					{
 						report.AppendLine("Defect files:");
 						foreach (var f in model.DefectFiles.OrderBy(x => x))
@@ -109,6 +137,14 @@ namespace MSR.Tools.Predictor
 				report.AppendLine();
 			}
 			OnAddReport(report.ToString());
+		}
+		public bool ShowFiles
+		{
+			get; set;
+		}
+		public int MaxReleaseSetSize
+		{
+			get; set;
 		}
 	}
 }

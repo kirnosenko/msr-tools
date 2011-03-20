@@ -30,6 +30,7 @@ namespace MSR.Tools.Predictor
 		IEnumerable<int> SelectedModels { get; }
 		bool CommandMenuAvailable { get; set; }
 		bool ShowFiles { get; set; }
+		int MaxReleaseSetSize { get; set; }
 	}
 	
 	public partial class PredictorView : Form, IPredictorView
@@ -42,7 +43,6 @@ namespace MSR.Tools.Predictor
 		{
 			InitializeComponent();
 			CommandMenuAvailable = false;
-			ShowFiles = true;
 		}
 		public new void Show()
 		{
@@ -110,15 +110,10 @@ namespace MSR.Tools.Predictor
 			get { return showFilesToolStripMenuItem.Checked; }
 			set { showFilesToolStripMenuItem.Checked = value; }
 		}
-		public bool ReleaseSetAll
+		public int MaxReleaseSetSize
 		{
-			get { return releaseSetAll.Checked; }
-			set { releaseSetAll.Checked = value; }
-		}
-		public int ReleaseSetSize
-		{
-			get { return (int)releaseSetSize.Value; }
-			set { releaseSetSize.Value = value; }
+			get { return (int)maxReleaseSetSize.Value; }
+			set { maxReleaseSetSize.Value = value; }
 		}
 
 		private void openConfigToolStripMenuItem_Click(object sender, EventArgs e)
@@ -141,11 +136,6 @@ namespace MSR.Tools.Predictor
 		private void showFilesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			showFilesToolStripMenuItem.Checked = ! showFilesToolStripMenuItem.Checked;
-		}
-
-		private void releaseSetAll_CheckedChanged(object sender, EventArgs e)
-		{
-			releaseSetSize.Enabled = ! releaseSetAll.Checked;
 		}
 	}
 }
