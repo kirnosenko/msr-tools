@@ -23,12 +23,12 @@ namespace MSR.Tools.Predictor
 		void ShowError(string text);
 		void SetReleaseList(IEnumerable<string> releases);
 		void SetModelList(IEnumerable<string> models);
-		void SetPredictionData(IEnumerable<string> files);
-		void SetEvaluationData(IEnumerable<string> files, string result);
+		void SetReport(string text);
 		
 		IEnumerable<string> SelectedReleases { get; }
 		int SelectedModel { get; }
 		bool CommandMenuAvailable { get; set; }
+		bool ShowFiles { get; set; }
 	}
 	
 	public partial class PredictorView : Form, IPredictorView
@@ -40,6 +40,8 @@ namespace MSR.Tools.Predictor
 		public PredictorView()
 		{
 			InitializeComponent();
+			CommandMenuAvailable = false;
+			ShowFiles = true;
 		}
 		public new void Show()
 		{
@@ -67,29 +69,9 @@ namespace MSR.Tools.Predictor
 				modelList.SelectedIndex = 0;
 			}
 		}
-		public void SetPredictionData(IEnumerable<string> files)
+		public void SetReport(string text)
 		{
-			StringBuilder text = new StringBuilder();
-			text.AppendLine("Predicted defect files:");
-			foreach (var f in files)
-			{
-				text.AppendLine(f);
-			}
-			
-			predictionText.Text = text.ToString();
-		}
-		public void SetEvaluationData(IEnumerable<string> files, string result)
-		{
-			StringBuilder text = new StringBuilder();
-			text.AppendLine("Defect files:");
-			foreach (var f in files.OrderBy(x => x))
-			{
-				text.AppendLine(f);
-			}
-			text.AppendLine("Evaluation result:");
-			text.AppendLine(result);
-			
-			evaluationText.Text = text.ToString();
+			outputText.Text = text;
 		}
 		
 		public IEnumerable<string> SelectedReleases
@@ -111,6 +93,11 @@ namespace MSR.Tools.Predictor
 			get { return commandToolStripMenuItem.Visible; }
 			set { commandToolStripMenuItem.Visible = value; }
 		}
+		public bool ShowFiles
+		{
+			get { return showFilesToolStripMenuItem.Checked; }
+			set { showFilesToolStripMenuItem.Checked = value; }
+		}
 
 		private void openConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -127,6 +114,11 @@ namespace MSR.Tools.Predictor
 		private void predictAndEvaluateToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			OnPredictAndEvaluate();
+		}
+
+		private void showFilesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			showFilesToolStripMenuItem.Checked = ! showFilesToolStripMenuItem.Checked;
 		}
 	}
 }

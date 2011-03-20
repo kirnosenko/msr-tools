@@ -45,12 +45,8 @@ namespace MSR.Tools.Predictor
 		{
 			try
 			{
-				model.Predict(view.SelectedReleases, view.SelectedModel, evaluate);
-				view.SetPredictionData(model.PredictedDefectFiles);
-				if (evaluate)
-				{
-					view.SetEvaluationData(model.DefectFiles, model.EvaluationResult);
-				}
+				model.Predict(view.SelectedReleases, view.SelectedModel, evaluate, view.ShowFiles);
+				view.SetReport(model.Report);
 			}
 			catch (Exception e)
 			{

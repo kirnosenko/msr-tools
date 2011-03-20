@@ -40,7 +40,6 @@ namespace MSR.Tools.Debugger
 			//Debug();
 			//Mapping();
 			//MapReleases();
-			Predict();
 			//GenerateStat();
 
 			Console.ReadKey();
@@ -70,12 +69,6 @@ namespace MSR.Tools.Debugger
 					{ "e5f9122545127e539b50fa57d8ec8520dc9123ac", "1.2" },
 				}
 			);
-		}
-		static void Predict()
-		{
-			DebuggingTool debugger = new DebuggingTool(configFile);
-
-			debugger.Predict(3);
 		}
 		static void GenerateStat()
 		{

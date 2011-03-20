@@ -36,8 +36,9 @@
 			this.predictAndEvaluateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.releaseList = new System.Windows.Forms.CheckedListBox();
 			this.modelList = new System.Windows.Forms.ComboBox();
-			this.predictionText = new System.Windows.Forms.TextBox();
-			this.evaluationText = new System.Windows.Forms.TextBox();
+			this.outputText = new System.Windows.Forms.TextBox();
+			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.showFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -45,6 +46,7 @@
 			// 
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.viewToolStripMenuItem,
             this.commandToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
@@ -106,37 +108,41 @@
 			this.modelList.Size = new System.Drawing.Size(504, 21);
 			this.modelList.TabIndex = 2;
 			// 
-			// predictionText
+			// outputText
 			// 
-			this.predictionText.Location = new System.Drawing.Point(216, 72);
-			this.predictionText.Multiline = true;
-			this.predictionText.Name = "predictionText";
-			this.predictionText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.predictionText.Size = new System.Drawing.Size(504, 144);
-			this.predictionText.TabIndex = 3;
+			this.outputText.Location = new System.Drawing.Point(216, 72);
+			this.outputText.Multiline = true;
+			this.outputText.Name = "outputText";
+			this.outputText.ReadOnly = true;
+			this.outputText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.outputText.Size = new System.Drawing.Size(504, 304);
+			this.outputText.TabIndex = 3;
 			// 
-			// evaluationText
+			// viewToolStripMenuItem
 			// 
-			this.evaluationText.Location = new System.Drawing.Point(216, 232);
-			this.evaluationText.Multiline = true;
-			this.evaluationText.Name = "evaluationText";
-			this.evaluationText.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.evaluationText.Size = new System.Drawing.Size(504, 144);
-			this.evaluationText.TabIndex = 4;
+			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showFilesToolStripMenuItem});
+			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+			this.viewToolStripMenuItem.Text = "View";
+			// 
+			// showFilesToolStripMenuItem
+			// 
+			this.showFilesToolStripMenuItem.Name = "showFilesToolStripMenuItem";
+			this.showFilesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.showFilesToolStripMenuItem.Text = "Show files";
+			this.showFilesToolStripMenuItem.Click += new System.EventHandler(this.showFilesToolStripMenuItem_Click);
 			// 
 			// PredictorView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(737, 393);
-			this.Controls.Add(this.evaluationText);
-			this.Controls.Add(this.predictionText);
+			this.Controls.Add(this.outputText);
 			this.Controls.Add(this.modelList);
 			this.Controls.Add(this.releaseList);
 			this.Controls.Add(this.menuStrip1);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MainMenuStrip = this.menuStrip1;
-			this.MaximizeBox = false;
 			this.Name = "PredictorView";
 			this.Text = "Predictor";
 			this.menuStrip1.ResumeLayout(false);
@@ -156,8 +162,9 @@
 		private System.Windows.Forms.ToolStripMenuItem predictToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem predictAndEvaluateToolStripMenuItem;
 		private System.Windows.Forms.ComboBox modelList;
-		private System.Windows.Forms.TextBox predictionText;
-		private System.Windows.Forms.TextBox evaluationText;
+		private System.Windows.Forms.TextBox outputText;
+		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem showFilesToolStripMenuItem;
 	}
 }
 
