@@ -11,7 +11,6 @@ namespace MSR.Tools.Visualizer
 	public interface IVisualizerPresenterFactory
 	{
 		IFileDialogPresenter FileDialog();
-		IMessageDialogPresenter MessageDialog();
 		IVisualizationConfigPresenter ConfigDialog();
 	}
 	public class VisualizerPresenterFactory : IVisualizerPresenterFactory
@@ -25,10 +24,6 @@ namespace MSR.Tools.Visualizer
 		public IFileDialogPresenter FileDialog()
 		{
 			return new FileDialogPresenter(views.FileDialog());
-		}
-		public IMessageDialogPresenter MessageDialog()
-		{
-			return new MessageDialogPresenter(views.MessageDialog());
 		}
 		public IVisualizationConfigPresenter ConfigDialog()
 		{

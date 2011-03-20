@@ -58,22 +58,14 @@
     </Compile>
     <Compile Include="IMainMenuView.cs" />
     <Compile Include="IMenuItemView.cs" />
-    <Compile Include="IMessageDialogView.cs" />
-    <Compile Include="IStatusBarView.cs" />
     <Compile Include="IVisualizerViewFactory.cs" />
     <Compile Include="IVisualization.cs" />
     <Compile Include="IVisualizationConfigView.cs" />
-    <Compile Include="IVisualizerView.cs" />
     <Compile Include="MainMenuView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MenuItemView.cs" />
-    <Compile Include="MessageDialogPresenter.cs" />
-    <Compile Include="MessageDialogView.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="StatusBarView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="VisualizationConfigView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +99,11 @@
       <Project>{25E8A69D-6400-423F-8B83-C22C096E9D72}</Project>
       <Name>MSR</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="VisualizerView.resx">
+      <DependentUpon>VisualizerView.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

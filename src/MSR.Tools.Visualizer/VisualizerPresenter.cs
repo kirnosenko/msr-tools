@@ -55,7 +55,7 @@ namespace MSR.Tools.Visualizer
 					}
 					catch (Exception e)
 					{
-						presenters.MessageDialog().Error(e.Message);
+						view.ShowError(e.Message);
 					}
 				}
 			};
@@ -103,7 +103,7 @@ namespace MSR.Tools.Visualizer
 						
 						model.CalcVisualization(visualization);
 						visualization.Draw(view.Graph);
-						view.StatusBar.Status = model.LastVisualizationProfiling;
+						view.Status = model.LastVisualizationProfiling;
 					}
 				};
 			}

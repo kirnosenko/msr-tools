@@ -1,7 +1,7 @@
 ﻿/*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -11,6 +11,17 @@ using System.Windows.Forms;
 
 namespace MSR.Tools.Visualizer
 {
+	public interface IVisualizerView
+	{
+		void ShowView();
+		void ShowError(string text);
+
+		string Title { get; set; }
+		IMainMenuView MainMenu { get; }
+		IGraphView Graph { get; }
+
+		string Status { get; set; }
+	}
 	public partial class VisualizerView : Form, IVisualizerView
 	{
 		private const int WindowHeight = 500;
@@ -39,11 +50,14 @@ namespace MSR.Tools.Visualizer
 
 			Graph = new GraphView(this);
 			MainMenu = new MainMenuView(this);
-			StatusBar = new StatusBarView(this);
 		}
 		public void ShowView()
 		{
 			Application.Run(this);
+		}
+		public void ShowError(string text)
+		{
+			MessageBox.Show(text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 		public string Title
 		{
@@ -58,9 +72,10 @@ namespace MSR.Tools.Visualizer
 		{
 			get; private set;
 		}
-		public IStatusBarView StatusBar
+		public string Status
 		{
-			get; private set;
+			get { return statusText.Text; }
+			set { statusText.Text = value; }
 		}
 	}
 }

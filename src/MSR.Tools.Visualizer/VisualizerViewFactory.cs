@@ -16,10 +16,6 @@ namespace MSR.Tools.Visualizer
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 		}
-		public IMessageDialogView MessageDialog()
-		{
-			return new MessageDialogView();
-		}
 		public IFileDialogView FileDialog()
 		{
 			return new FileDialogView();
