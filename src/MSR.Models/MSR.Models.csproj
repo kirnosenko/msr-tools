@@ -45,6 +45,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Prediction\EvaluationResult.cs" />
+    <Compile Include="Prediction\PostReleaseDefectFiles\CustomPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\PostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\RandomPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\CodeStabilityPostReleaseDefectFilesPrediction.cs" />
@@ -62,7 +63,6 @@
     <Compile Include="Regressions\LinearRegression.cs" />
     <Compile Include="Regressions\MultipleLinearRegression.cs" />
     <Compile Include="Regressions\LogisticRegression.cs" />
-    <Compile Include="Prediction\PostReleaseDefectFiles\PostReleaseDefectFilesPredictionEvaluation.cs" />
     <Compile Include="Regressions\PolynomialRegression.cs" />
     <Compile Include="Regressions\Regression.cs" />
     <Compile Include="Rng.cs" />
