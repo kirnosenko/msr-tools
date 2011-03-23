@@ -13,20 +13,20 @@ namespace MSR.Tools.Visualizer
 {
 	public interface IVisualizerView
 	{
-		void ShowView();
+		event Action<string> OnOpenConfigFile;
+		event Action<int> OnVisualizationActivate;
+		
+		void Show();
 		void ShowError(string text);
+		void SetVisualizationList(IEnumerable<string> visualizations);
+		bool ConfigureVisualization(IVisualization visualization);
 
 		string Title { get; set; }
-		IMainMenuView MainMenu { get; }
 		IGraphView Graph { get; }
-
 		string Status { get; set; }
 	}
 	public partial class VisualizerView : Form, IVisualizerView
 	{
-		private const int WindowHeight = 500;
-		private const int WindowWidth = 800;
-		
 		private List<Color> differentColors = new List<Color>()
 		{
 			Color.Black,
@@ -41,17 +41,17 @@ namespace MSR.Tools.Visualizer
 			Color.Purple,
 			Color.Silver
 		};
+
+		public event Action<string> OnOpenConfigFile;
+		public event Action<int> OnVisualizationActivate;
 		
 		public VisualizerView()
 		{
 			InitializeComponent();
-			Height = WindowHeight;
-			Width = WindowWidth;
 
-			Graph = new GraphView(this);
-			MainMenu = new MainMenuView(this);
+			Graph = new GraphView(panel1);
 		}
-		public void ShowView()
+		public new void Show()
 		{
 			Application.Run(this);
 		}
@@ -59,14 +59,30 @@ namespace MSR.Tools.Visualizer
 		{
 			MessageBox.Show(text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
+		public void SetVisualizationList(IEnumerable<string> visualizations)
+		{
+			visualizationsToolStripMenuItem.DropDownItems.Clear();
+			int i = 0;
+			foreach (var v in visualizations)
+			{
+				var menuItem = visualizationsToolStripMenuItem.DropDownItems.Add(v);
+				menuItem.Tag = i;
+				menuItem.Click += (s,e) =>
+				{
+					OnVisualizationActivate((int)(s as ToolStripItem).Tag);
+				};
+				i++;
+			}
+		}
+		public bool ConfigureVisualization(IVisualization visualization)
+		{
+			var config = new VisualizationConfigView();
+			return config.ShowDialog(visualization);
+		}
 		public string Title
 		{
 			get { return Text; }
 			set { Text = value; }
-		}
-		public IMainMenuView MainMenu
-		{
-			get; private set;
 		}
 		public IGraphView Graph
 		{
@@ -76,6 +92,15 @@ namespace MSR.Tools.Visualizer
 		{
 			get { return statusText.Text; }
 			set { statusText.Text = value; }
+		}
+
+		private void openConfigToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog dialog = new OpenFileDialog();
+			if (dialog.ShowDialog() == DialogResult.OK)
+			{
+				OnOpenConfigFile(dialog.FileName);
+			}
 		}
 	}
 }

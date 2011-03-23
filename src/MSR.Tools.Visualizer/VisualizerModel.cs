@@ -10,7 +10,17 @@ using System.Linq;
 
 namespace MSR.Tools.Visualizer
 {
-	public class VisualizerModel
+	public interface IVisualizerModel
+	{
+		void OpenConfig(string fileName);
+		void CalcVisualization(IVisualization visualization);
+		
+		IVisualization[] Visualizations { get; }
+		bool AutomaticallyCleanUp { get; set; }
+		string LastVisualizationProfiling { get; }
+	}
+	
+	public class VisualizerModel : IVisualizerModel
 	{
 		private VisualizationTool visualizer;
 		
@@ -34,7 +44,7 @@ namespace MSR.Tools.Visualizer
 		{
 			get { return visualizer.LastVisualizationProfiling; }
 		}
-		public IEnumerable<string> Visualizations
+		public IVisualization[] Visualizations
 		{
 			get
 			{
@@ -42,7 +52,7 @@ namespace MSR.Tools.Visualizer
 				{
 					return visualizer.Visualizations;
 				}
-				return Enumerable.Empty<string>();
+				return new IVisualization[] {};
 			}
 		}
 		public bool AutomaticallyCleanUp

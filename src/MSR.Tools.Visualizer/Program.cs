@@ -1,10 +1,11 @@
 ﻿/*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
+using System.Windows.Forms;
 
 namespace MSR.Tools.Visualizer
 {
@@ -13,14 +14,15 @@ namespace MSR.Tools.Visualizer
 		[STAThread]
 		static void Main()
 		{
-			VisualizerViewFactory views = new VisualizerViewFactory();
-			VisualizerPresenterFactory presenters = new VisualizerPresenterFactory(views);
-			
-			VisualizerPresenter graph = new VisualizerPresenter(
-				new VisualizerModel(), views.Visualizer(), presenters
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+
+			VisualizerPresenter visualizer = new VisualizerPresenter(
+				new VisualizerModel(),
+				new VisualizerView()
 			);
 
-			graph.Show();
+			visualizer.Run();
 		}
 	}
 }

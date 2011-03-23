@@ -37,8 +37,10 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
     <Reference Include="ZedGraph, Version=5.1.5.28844, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\ZedGraph.dll</HintPath>
@@ -48,29 +50,19 @@
     <Compile Include="..\MSR\Properties\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="FileDialogPresenter.cs" />
-    <Compile Include="FileDialogView.cs" />
     <Compile Include="GraphView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="IFileDialogView.cs" />
     <Compile Include="IGraphView.cs">
     </Compile>
-    <Compile Include="IMainMenuView.cs" />
-    <Compile Include="IMenuItemView.cs" />
-    <Compile Include="IVisualizerViewFactory.cs" />
     <Compile Include="IVisualization.cs" />
-    <Compile Include="IVisualizationConfigView.cs" />
-    <Compile Include="MainMenuView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="MenuItemView.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="VisualizationConfigView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="VisualizerPresenterFactory.cs" />
-    <Compile Include="VisualizationConfigPresenter.cs" />
+    <Compile Include="VisualizationConfigView.Designer.cs">
+      <DependentUpon>VisualizationConfigView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Visualizations\BugLifeTimeDistribution.cs" />
     <Compile Include="Visualizations\CodeSizeToDate.cs" />
     <Compile Include="Visualizations\DefectDensityToFileSize.cs" />
@@ -84,7 +76,6 @@
     <Compile Include="VisualizerView.Designer.cs">
       <DependentUpon>VisualizerView.cs</DependentUpon>
     </Compile>
-    <Compile Include="VisualizerViewFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MSR.Tools\MSR.Tools.csproj">
@@ -101,6 +92,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="VisualizationConfigView.resx">
+      <DependentUpon>VisualizationConfigView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VisualizerView.resx">
       <DependentUpon>VisualizerView.cs</DependentUpon>
     </EmbeddedResource>

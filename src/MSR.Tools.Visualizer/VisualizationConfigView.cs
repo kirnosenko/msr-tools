@@ -1,34 +1,31 @@
-/*
- * MSR Tools - tools for mining software repositories
- * 
- * Copyright (C) 2011  Semyon Kirnosenko
- */
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Windows.Forms;
 
 namespace MSR.Tools.Visualizer
 {
-	public class ConfigView : Form, IConfigView
+	public partial class VisualizationConfigView : Form
 	{
-		private PropertyGrid properties;
-		
-		public ConfigView()
+		public VisualizationConfigView()
 		{
-			properties = new PropertyGrid();
-			properties.Parent = this;
-			properties.PropertySort = PropertySort.NoSort;
-			properties.Dock = DockStyle.Fill;
+			InitializeComponent();
 		}
-		public void Add(object obj)
+		public bool ShowDialog(object obj)
 		{
-			properties.SelectedObject = obj;
-		}
-		public new bool ShowDialog()
-		{
+			propertyList.SelectedObject = obj;
 			base.ShowDialog();
-			return true;
+			return DialogResult == DialogResult.OK;
+		}
+
+		private void okButton_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.OK;
+			Close();
+		}
+
+		private void cancelButton_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
 	}
 }

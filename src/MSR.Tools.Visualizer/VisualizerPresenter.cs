@@ -5,27 +5,28 @@
  */
 
 using System;
+using System.Linq;
 
 namespace MSR.Tools.Visualizer
 {
 	public class VisualizerPresenter
 	{
-		private VisualizerModel model;
+		private IVisualizerModel model;
 		private IVisualizerView view;
-		private IVisualizerPresenterFactory presenters;
 
-		public VisualizerPresenter(VisualizerModel model, IVisualizerView view, IVisualizerPresenterFactory presenters)
+		public VisualizerPresenter(IVisualizerModel model, IVisualizerView view)
 		{
 			this.model = model;
 			this.view = view;
-			this.presenters = presenters;
+			view.OnOpenConfigFile += OpenConfigFile;
+			view.OnVisualizationActivate += UseVisualization;
 			
 			Title = string.Empty;
-			CreateMainMenu();
+			//CreateMainMenu();
 		}
-		public void Show()
+		public void Run()
 		{
-			view.ShowView();
+			view.Show();
 		}
 		public string Title
 		{
@@ -39,6 +40,44 @@ namespace MSR.Tools.Visualizer
 				}
 			}
 		}
+		private void ReadOptions()
+		{
+			//view.CommandMenuAvailable = true;
+			view.SetVisualizationList(model.Visualizations.Select(x => x.Title));
+		}
+		private void UpdateOptions()
+		{
+		
+		}
+		private void OpenConfigFile(string fileName)
+		{
+			try
+			{
+				model.OpenConfig(fileName);
+				ReadOptions();
+			}
+			catch (Exception e)
+			{
+				view.ShowError(e.Message);
+			}
+		}
+		private void UseVisualization(int number)
+		{
+			IVisualization visualization = model.Visualizations[number];
+
+			if (! visualization.Configurable || view.ConfigureVisualization(visualization))
+			{
+				if (model.AutomaticallyCleanUp)
+				{
+					view.Graph.CleanUp();
+				}
+
+				model.CalcVisualization(visualization);
+				visualization.Draw(view.Graph);
+				view.Status = model.LastVisualizationProfiling;
+			}
+		}
+		/*
 		private void CreateMainMenu()
 		{
 			view.MainMenu.AddCommand("Visualizer");
@@ -108,5 +147,6 @@ namespace MSR.Tools.Visualizer
 				};
 			}
 		}
+		*/
 	}
 }

@@ -39,9 +39,9 @@ namespace MSR.Tools.Visualizer
 				prof.NumberOfQueries, prof.ElapsedTime.ToFormatedString()
 			);
 		}
-		public IEnumerable<string> Visualizations
+		public IVisualization[] Visualizations
 		{
-			get { return visualizations.Select(x => x.Title); }
+			get { return visualizations.ToArray(); }
 		}
 		public IVisualization Visualization(string visualizationName)
 		{
