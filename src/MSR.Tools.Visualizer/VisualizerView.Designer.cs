@@ -102,20 +102,22 @@
             this.logXToolStripMenuItem,
             this.logYToolStripMenuItem});
 			this.scaleToolStripMenuItem.Name = "scaleToolStripMenuItem";
-			this.scaleToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+			this.scaleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.scaleToolStripMenuItem.Text = "Scale";
 			// 
 			// logXToolStripMenuItem
 			// 
 			this.logXToolStripMenuItem.Name = "logXToolStripMenuItem";
-			this.logXToolStripMenuItem.Size = new System.Drawing.Size(104, 22);
+			this.logXToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.logXToolStripMenuItem.Text = "Log X";
+			this.logXToolStripMenuItem.Click += new System.EventHandler(this.logXToolStripMenuItem_Click);
 			// 
 			// logYToolStripMenuItem
 			// 
 			this.logYToolStripMenuItem.Name = "logYToolStripMenuItem";
-			this.logYToolStripMenuItem.Size = new System.Drawing.Size(104, 22);
+			this.logYToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.logYToolStripMenuItem.Text = "Log Y";
+			this.logYToolStripMenuItem.Click += new System.EventHandler(this.logYToolStripMenuItem_Click);
 			// 
 			// cleanUpToolStripMenuItem
 			// 
@@ -123,20 +125,22 @@
             this.automaticallyToolStripMenuItem,
             this.cleanUpNowToolStripMenuItem});
 			this.cleanUpToolStripMenuItem.Name = "cleanUpToolStripMenuItem";
-			this.cleanUpToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+			this.cleanUpToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.cleanUpToolStripMenuItem.Text = "Clean up";
 			// 
 			// automaticallyToolStripMenuItem
 			// 
 			this.automaticallyToolStripMenuItem.Name = "automaticallyToolStripMenuItem";
-			this.automaticallyToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.automaticallyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.automaticallyToolStripMenuItem.Text = "Automatically";
+			this.automaticallyToolStripMenuItem.Click += new System.EventHandler(this.automaticallyToolStripMenuItem_Click);
 			// 
 			// cleanUpNowToolStripMenuItem
 			// 
 			this.cleanUpNowToolStripMenuItem.Name = "cleanUpNowToolStripMenuItem";
-			this.cleanUpNowToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+			this.cleanUpNowToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.cleanUpNowToolStripMenuItem.Text = "Clean up now";
+			this.cleanUpNowToolStripMenuItem.Click += new System.EventHandler(this.cleanUpNowToolStripMenuItem_Click);
 			// 
 			// visualizationsToolStripMenuItem
 			// 

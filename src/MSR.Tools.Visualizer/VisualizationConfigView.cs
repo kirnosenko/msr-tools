@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+ * MSR Tools - tools for mining software repositories
+ * 
+ * Copyright (C) 2011  Semyon Kirnosenko
+ */
+
+using System;
 using System.Windows.Forms;
 
 namespace MSR.Tools.Visualizer

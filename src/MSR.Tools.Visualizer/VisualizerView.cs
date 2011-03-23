@@ -15,6 +15,7 @@ namespace MSR.Tools.Visualizer
 	{
 		event Action<string> OnOpenConfigFile;
 		event Action<int> OnVisualizationActivate;
+		event Action<bool> OnChengeCleanUpOption;
 		
 		void Show();
 		void ShowError(string text);
@@ -24,7 +25,9 @@ namespace MSR.Tools.Visualizer
 		string Title { get; set; }
 		IGraphView Graph { get; }
 		string Status { get; set; }
+		bool AutomaticallyCleanUp { get; set; }
 	}
+	
 	public partial class VisualizerView : Form, IVisualizerView
 	{
 		private List<Color> differentColors = new List<Color>()
@@ -44,6 +47,7 @@ namespace MSR.Tools.Visualizer
 
 		public event Action<string> OnOpenConfigFile;
 		public event Action<int> OnVisualizationActivate;
+		public event Action<bool> OnChengeCleanUpOption;
 		
 		public VisualizerView()
 		{
@@ -69,7 +73,7 @@ namespace MSR.Tools.Visualizer
 				menuItem.Tag = i;
 				menuItem.Click += (s,e) =>
 				{
-					OnVisualizationActivate((int)(s as ToolStripItem).Tag);
+					OnVisualizationActivate((int)(s as ToolStripMenuItem).Tag);
 				};
 				i++;
 			}
@@ -93,6 +97,11 @@ namespace MSR.Tools.Visualizer
 			get { return statusText.Text; }
 			set { statusText.Text = value; }
 		}
+		public bool AutomaticallyCleanUp
+		{
+			get { return automaticallyToolStripMenuItem.Checked; }
+			set { automaticallyToolStripMenuItem.Checked = value; }
+		}
 
 		private void openConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -101,6 +110,29 @@ namespace MSR.Tools.Visualizer
 			{
 				OnOpenConfigFile(dialog.FileName);
 			}
+		}
+
+		private void logXToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var item = (sender as ToolStripMenuItem);
+			item.Checked = ! item.Checked;
+			Graph.XAxisLogScale = item.Checked;
+		}
+		private void logYToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var item = (sender as ToolStripMenuItem);
+			item.Checked = ! item.Checked;
+			Graph.YAxisLogScale = item.Checked;
+		}
+		private void automaticallyToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var item = (sender as ToolStripMenuItem);
+			item.Checked = ! item.Checked;
+			OnChengeCleanUpOption(item.Checked);
+		}
+		private void cleanUpNowToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Graph.CleanUp();
 		}
 	}
 }

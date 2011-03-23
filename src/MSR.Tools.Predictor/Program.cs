@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace MSR.Tools.Predictor
 {
-	static class Program
+	class Program
 	{
 		[STAThread]
 		static void Main()
