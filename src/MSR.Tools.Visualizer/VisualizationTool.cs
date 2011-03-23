@@ -15,15 +15,10 @@ namespace MSR.Tools.Visualizer
 {
 	public class VisualizationTool : Tool
 	{
-		private List<IVisualization> visualizations = new List<IVisualization>();
-		
 		public VisualizationTool(string configFile)
 			: base(configFile, "visualizationtool")
 		{
-			visualizations.Add(new BugLifeTimeDistribution());
-			visualizations.Add(new DefectDensityToFileSize());
-			visualizations.Add(new CodeSizeToDate());
-			visualizations.AddRange(GetConfiguredTypes<IVisualization>());
+			Visualizations = GetConfiguredType<VisualizationPool>();
 		}
 		public void CalcVisualization(IVisualization visualization)
 		{
@@ -39,13 +34,9 @@ namespace MSR.Tools.Visualizer
 				prof.NumberOfQueries, prof.ElapsedTime.ToFormatedString()
 			);
 		}
-		public IVisualization[] Visualizations
+		public VisualizationPool Visualizations
 		{
-			get { return visualizations.ToArray(); }
-		}
-		public IVisualization Visualization(string visualizationName)
-		{
-			return visualizations.Single(x => x.Title == visualizationName);
+			get; private set;
 		}
 		public string LastVisualizationProfiling
 		{

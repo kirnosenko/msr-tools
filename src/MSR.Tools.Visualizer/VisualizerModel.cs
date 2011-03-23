@@ -32,10 +32,6 @@ namespace MSR.Tools.Visualizer
 		{
 			visualizer = new VisualizationTool(fileName);
 		}
-		public IVisualization Visualization(string visualizationName)
-		{
-			return visualizer.Visualization(visualizationName);
-		}
 		public void CalcVisualization(IVisualization visualization)
 		{	
 			visualizer.CalcVisualization(visualization);
@@ -50,7 +46,7 @@ namespace MSR.Tools.Visualizer
 			{
 				if (visualizer != null)
 				{
-					return visualizer.Visualizations;
+					return visualizer.Visualizations.Visualizations;
 				}
 				return new IVisualization[] {};
 			}

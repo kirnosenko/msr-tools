@@ -14,12 +14,11 @@ namespace MSR.Tools.Visualizer.Visualizations
 {
 	public abstract class Visualization : IVisualization
 	{
-		private static string targetPath = "/";
-		
 		protected double[] x,y;
 		
 		public Visualization()
 		{
+			TargetDir = "/";
 		}
 		public abstract void Calc(IRepositoryResolver repositories);
 		public abstract void Draw(IGraphView graph);
@@ -36,8 +35,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 		[DescriptionAttribute("Target directory")]
 		public string TargetDir
 		{
-			get { return targetPath; }
-			set { targetPath = value; }
+			get; set;
 		}
 	}
 }

@@ -28,7 +28,7 @@ namespace MSR.Models.Prediction.Predictors
 			base.SetUp();
 			context = new PredictorContext(this);
 			p = new Prediction().AddFilesTouchCountInCommitsPredictor();
-			p.Init(this, new string[] {});
+			p.Init(this, new string[] { "1", "2" });
 		}
 		[Test]
 		public void Should_count_number_of_touches_for_file()
