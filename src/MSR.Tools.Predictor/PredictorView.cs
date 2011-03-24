@@ -54,6 +54,7 @@ namespace MSR.Tools.Predictor
 		}
 		public void SetReleaseList(IEnumerable<string> releases)
 		{
+			releaseList.Items.Clear();
 			foreach (var r in releases)
 			{
 				releaseList.Items.Add(r);
@@ -61,6 +62,7 @@ namespace MSR.Tools.Predictor
 		}
 		public void SetModelList(IEnumerable<string> models)
 		{
+			modelList.Items.Clear();
 			foreach (var m in models)
 			{
 				modelList.Items.Add(m);
