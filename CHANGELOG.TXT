@@ -1,4 +1,12 @@
-﻿2011-01-28 - version 0.1.1
+﻿2011-03-24 - version 0.2.0
+
+	* new entity Release to keep information about releases
+	* simple defect file prediction models
+	* more statistics
+	* new predictor tool
+	* changes in configuration files
+
+2011-01-28 - version 0.1.1
 
 	* Generator and visualizator no more require access to SCM
 

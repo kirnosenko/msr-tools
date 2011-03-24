@@ -40,7 +40,7 @@ namespace MSR.Tools.Debugger
 			//Debug();
 			//Mapping();
 			//MapReleases();
-			//GenerateStat();
+			GenerateStat();
 
 			Console.ReadKey();
 		}
