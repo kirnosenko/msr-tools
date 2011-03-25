@@ -27,6 +27,8 @@ namespace MSR.Tools.Predictor
 		void AddReport(string text);
 		
 		string Title { get; set; }
+		string Status { set; }
+		bool Ready { set; }
 		IEnumerable<string> SelectedReleases { get; }
 		IEnumerable<int> SelectedModels { get; }
 		bool CommandMenuAvailable { get; set; }
@@ -40,9 +42,12 @@ namespace MSR.Tools.Predictor
 		public event Action OnPredict;
 		public event Action OnPredictAndEvaluate;		
 		
+		private Queue<Action> workToDo = new Queue<Action>();
+		
 		public PredictorView()
 		{
 			InitializeComponent();
+			Ready = true;
 			CommandMenuAvailable = false;
 		}
 		public new void Show()
@@ -51,7 +56,9 @@ namespace MSR.Tools.Predictor
 		}
 		public void ShowError(string text)
 		{
-			MessageBox.Show(text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			AddWorkToDo(() =>
+				MessageBox.Show(this, text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+			);
 		}
 		public void SetReleaseList(IEnumerable<string> releases)
 		{
@@ -71,17 +78,44 @@ namespace MSR.Tools.Predictor
 		}
 		public void ClearReport()
 		{
-			outputText.Text = string.Empty;
+			AddWorkToDo(() =>
+				outputText.Text = string.Empty
+			);
 		}
 		public void AddReport(string text)
 		{
-			outputText.Text += text;
+			AddWorkToDo(() =>
+				outputText.Text += text
+			);
 		}
 
 		public string Title
 		{
 			get { return Text; }
 			set { Text = value; }
+		}
+		public string Status
+		{
+			set
+			{
+				AddWorkToDo(() =>
+					statusText.Text = value
+				);
+			}
+		}
+		public bool Ready
+		{
+			set
+			{
+				AddWorkToDo(() =>
+				{
+					mainMenu.Enabled = value;
+					releaseList.Enabled = value;
+					modelList.Enabled = value;
+					maxReleaseSetSize.Enabled = value;
+				});
+				Status = value ? "Ready" : "";
+			}
 		}
 		public IEnumerable<string> SelectedReleases
 		{
@@ -124,6 +158,24 @@ namespace MSR.Tools.Predictor
 			set { maxReleaseSetSize.Value = value; }
 		}
 
+		protected override void DefWndProc(ref Message m)
+		{
+			base.DefWndProc(ref m);
+			lock (workToDo)
+			{
+				while (workToDo.Count > 0)
+				{
+					workToDo.Dequeue()();
+				}
+			}
+		}
+		private void AddWorkToDo(Action action)
+		{
+			lock (workToDo)
+			{
+				workToDo.Enqueue(action);
+			}
+		}
 		private void openConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog dialog = new OpenFileDialog();
@@ -140,7 +192,6 @@ namespace MSR.Tools.Predictor
 		{
 			OnPredictAndEvaluate();
 		}
-
 		private void showFilesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			showFilesToolStripMenuItem.Checked = ! showFilesToolStripMenuItem.Checked;

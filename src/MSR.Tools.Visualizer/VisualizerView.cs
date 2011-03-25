@@ -23,8 +23,8 @@ namespace MSR.Tools.Visualizer
 		bool ConfigureVisualization(IVisualization visualization);
 
 		string Title { get; set; }
-		IGraphView Graph { get; }
 		string Status { get; set; }
+		IGraphView Graph { get; }
 		bool AutomaticallyCleanUp { get; set; }
 	}
 	
@@ -88,14 +88,14 @@ namespace MSR.Tools.Visualizer
 			get { return Text; }
 			set { Text = value; }
 		}
-		public IGraphView Graph
-		{
-			get; private set;
-		}
 		public string Status
 		{
 			get { return statusText.Text; }
 			set { statusText.Text = value; }
+		}
+		public IGraphView Graph
+		{
+			get; private set;
 		}
 		public bool AutomaticallyCleanUp
 		{

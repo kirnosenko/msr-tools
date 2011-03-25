@@ -23,7 +23,9 @@ namespace MSR.Tools.Predictor
 			this.view = view;
 			model.OnTitleUpdated += x => view.Title = x;
 			model.OnClearReport += () => view.ClearReport();
-			model.OnAddReport += r => view.AddReport(r);
+			model.OnAddReport += x => view.AddReport(x);
+			model.OnReadyStateChanged += x => view.Ready = x;
+			model.OnError += x => view.ShowError(x);
 			view.OnOpenConfigFile += OpenConfigFile;
 			view.OnPredict += () => Predict(false);
 			view.OnPredictAndEvaluate += () => Predict(true);
@@ -74,7 +76,8 @@ namespace MSR.Tools.Predictor
 			try
 			{
 				UpdateOptions();
-				model.Predict(evaluate);
+				model.Evaluate = evaluate;
+				model.Predict();
 			}
 			catch (Exception e)
 			{
