@@ -16,6 +16,7 @@ namespace MSR.Tools.Predictor
 {
 	public interface IPredictorModel
 	{
+		event Action<string> OnTitleUpdated;
 		event Action OnClearReport;
 		event Action<string> OnAddReport;
 		
@@ -32,10 +33,11 @@ namespace MSR.Tools.Predictor
 	
 	public class PredictorModel : IPredictorModel
 	{
+		public event Action<string> OnTitleUpdated;
 		public event Action OnClearReport;
 		public event Action<string> OnAddReport;
 		
-		private PredictionTool tool;
+		private PredictionTool predictor;
 		
 		public PredictorModel()
 		{
@@ -44,11 +46,12 @@ namespace MSR.Tools.Predictor
 		}
 		public void OpenConfig(string fileName)
 		{
-			tool = new PredictionTool(fileName);
+			predictor = new PredictionTool(fileName);
+			OnTitleUpdated(string.Format("Predictor - {0}", fileName));
 		}
 		public IDictionary<string,string> Releases
 		{
-			get { return tool.Releases; }
+			get { return predictor.Releases; }
 		}
 		public IDictionary<string,string> SelectedReleases
 		{
@@ -56,7 +59,7 @@ namespace MSR.Tools.Predictor
 		}
 		public PostReleaseDefectFilesPrediction[] Models
 		{
-			get { return tool.Models.Models(); }
+			get { return predictor.Models.Models(); }
 		}
 		public IEnumerable<PostReleaseDefectFilesPrediction> SelectedModels
 		{
@@ -101,7 +104,7 @@ namespace MSR.Tools.Predictor
 			
 			foreach (var model in SelectedModels)
 			{
-				using (var s = tool.Data.OpenSession())
+				using (var s = predictor.Data.OpenSession())
 				{
 					model.Init(s, releases.Values);
 					model.Predict();

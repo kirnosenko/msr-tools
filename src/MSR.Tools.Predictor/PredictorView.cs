@@ -26,6 +26,7 @@ namespace MSR.Tools.Predictor
 		void ClearReport();
 		void AddReport(string text);
 		
+		string Title { get; set; }
 		IEnumerable<string> SelectedReleases { get; }
 		IEnumerable<int> SelectedModels { get; }
 		bool CommandMenuAvailable { get; set; }
@@ -76,7 +77,12 @@ namespace MSR.Tools.Predictor
 		{
 			outputText.Text += text;
 		}
-		
+
+		public string Title
+		{
+			get { return Text; }
+			set { Text = value; }
+		}
 		public IEnumerable<string> SelectedReleases
 		{
 			get

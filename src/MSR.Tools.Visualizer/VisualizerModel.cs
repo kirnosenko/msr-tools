@@ -12,6 +12,8 @@ namespace MSR.Tools.Visualizer
 {
 	public interface IVisualizerModel
 	{
+		event Action<string> OnTitleUpdated;
+		
 		void OpenConfig(string fileName);
 		void CalcVisualization(IVisualization visualization);
 		
@@ -22,6 +24,8 @@ namespace MSR.Tools.Visualizer
 	
 	public class VisualizerModel : IVisualizerModel
 	{
+		public event Action<string> OnTitleUpdated;
+		
 		private VisualizationTool visualizer;
 		
 		public VisualizerModel()
@@ -31,6 +35,7 @@ namespace MSR.Tools.Visualizer
 		public void OpenConfig(string fileName)
 		{
 			visualizer = new VisualizationTool(fileName);
+			OnTitleUpdated(string.Format("Visualizer - {0}", fileName));
 		}
 		public void CalcVisualization(IVisualization visualization)
 		{	

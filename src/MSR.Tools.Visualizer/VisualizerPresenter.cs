@@ -18,27 +18,14 @@ namespace MSR.Tools.Visualizer
 		{
 			this.model = model;
 			this.view = view;
+			model.OnTitleUpdated += x => view.Title = x;
 			view.OnOpenConfigFile += OpenConfigFile;
 			view.OnVisualizationActivate += UseVisualization;
 			view.OnChengeCleanUpOption += x => model.AutomaticallyCleanUp = x;
-			
-			Title = string.Empty;
 		}
 		public void Run()
 		{
 			view.Show();
-		}
-		public string Title
-		{
-			get { return view.Title; }
-			set
-			{
-				view.Title = "Visualizer";
-				if ((value != null) && (value != string.Empty))
-				{
-					view.Title += " - " + value;
-				}
-			}
 		}
 		private void ReadOptions()
 		{

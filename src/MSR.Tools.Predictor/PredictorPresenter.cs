@@ -21,6 +21,7 @@ namespace MSR.Tools.Predictor
 		{
 			this.model = model;
 			this.view = view;
+			model.OnTitleUpdated += x => view.Title = x;
 			model.OnClearReport += () => view.ClearReport();
 			model.OnAddReport += r => view.AddReport(r);
 			view.OnOpenConfigFile += OpenConfigFile;
@@ -35,6 +36,7 @@ namespace MSR.Tools.Predictor
 		{
 			view.SetReleaseList(model.Releases.Keys);
 			view.SetModelList(model.Models.Select(x => x.Title));
+			view.ClearReport();
 			view.CommandMenuAvailable = true;
 			view.ShowFiles = model.ShowFiles;
 			view.MaxReleaseSetSize = model.MaxReleaseSetSize;
