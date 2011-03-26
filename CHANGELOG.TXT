@@ -1,4 +1,8 @@
-﻿2011-03-24 - version 0.2.0
+﻿2011-03-26 - version 0.2.1
+
+	* minor fixes and improvements for predictor GUI
+
+2011-03-24 - version 0.2.0
 
 	* new entity Release to keep information about releases
 	* simple defect file prediction models
