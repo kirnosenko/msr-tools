@@ -135,18 +135,22 @@ namespace MSR.Tools.Predictor
 		}
 		private void Predict(IDictionary<string,string> releases)
 		{
-			StringBuilder report = new StringBuilder();
+			StringBuilder output = new StringBuilder();
 			string evaluationResult = null;
 
-			report.Append("Releases: ");
+			output.Append("Releases: ");
 			foreach (var r in releases.Keys)
 			{
-				report.Append(r + " ");
+				output.Append(r + " ");
 			}
-			report.AppendLine();
+			output.AppendLine();
+			output.AppendLine();
+			OnAddReport(output.ToString());
 
 			foreach (var model in SelectedModels)
 			{
+				output = new StringBuilder();
+				
 				using (var s = predictor.Data.OpenSession())
 				{
 					model.Init(s, releases.Values);
@@ -157,13 +161,13 @@ namespace MSR.Tools.Predictor
 					}
 				}
 
-				report.AppendLine(model.Title);
+				output.AppendLine(model.Title);
 				if (ShowFiles || (!Evaluate))
 				{
-					report.AppendLine("Predicted defect files:");
+					output.AppendLine("Predicted defect files:");
 					foreach (var f in model.PredictedDefectFiles)
 					{
-						report.AppendLine(
+						output.AppendLine(
 							string.Format("{0} {1}", f, Evaluate ? model.DefectFiles.Contains(f) ? "+" : "-" : "")
 						);
 					}
@@ -172,17 +176,20 @@ namespace MSR.Tools.Predictor
 				{
 					if (ShowFiles)
 					{
-						report.AppendLine("Defect files:");
+						output.AppendLine("Defect files:");
 						foreach (var f in model.DefectFiles.OrderBy(x => x))
 						{
-							report.AppendLine(string.Format("{0} {1}", f, model.PredictedDefectFiles.Contains(f) ? "+" : "-"));
+							output.AppendLine(
+								string.Format("{0} {1}", f, model.PredictedDefectFiles.Contains(f) ? "+" : "-")
+							);
 						}
 					}
-					report.AppendLine(evaluationResult);
+					output.AppendLine(evaluationResult);
 				}
-				report.AppendLine();
+				output.AppendLine();
+
+				OnAddReport(output.ToString());
 			}
-			OnAddReport(report.ToString());
 		}
 	}
 }
