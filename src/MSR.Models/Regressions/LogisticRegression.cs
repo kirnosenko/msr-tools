@@ -16,10 +16,11 @@ namespace MSR.Models.Regressions
 		
 		public override void Train()
 		{
-			regression = new LogisticRegressionAnalysis(
-				predictorList.ToArray(),
-				resultList.ToArray()
-			);
+			Train(predictorList.ToArray(), resultList.ToArray());
+		}
+		public override void Train(double[][] predictors, double[] results)
+		{
+			regression = new LogisticRegressionAnalysis(predictors, results);
 			regression.Compute();
 		}
 		public override double Predict(double[] predictor)

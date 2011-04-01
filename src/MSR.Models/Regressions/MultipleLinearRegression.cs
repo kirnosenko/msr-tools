@@ -8,8 +8,6 @@ using System;
 using System.Collections.Generic;
 using AccordMultipleLinearRegression = Accord.Statistics.Models.Regression.Linear.MultipleLinearRegression;
 
-using Accord.Statistics.Models.Regression.Linear;
-
 namespace MSR.Models.Regressions
 {
 	public class MultipleLinearRegression : Regression<double[]>
@@ -18,10 +16,14 @@ namespace MSR.Models.Regressions
 
 		public override void Train()
 		{
+			Train(predictorList.ToArray(), resultList.ToArray());
+		}
+		public override void Train(double[][] predictors, double[] results)
+		{
 			regression = new AccordMultipleLinearRegression(predictorList[0].Length, true);
 			regression.Regress(
-				predictorList.ToArray(),
-				resultList.ToArray()
+				predictors,
+				results
 			);
 		}
 		public override double Predict(double[] predictor)

@@ -18,6 +18,7 @@ namespace MSR.Tools.Visualizer
 		
 		string Title { get; }
 		bool Configurable { get; }
+		bool AllowCleanUp { get; }
 		string TargetDir { get; set; }
 	}
 }

@@ -16,8 +16,12 @@ namespace MSR.Models.Regressions
 		
 		public override void Train()
 		{
+			Train(predictorList.ToArray(), resultList.ToArray());
+		}
+		public override void Train(double[] predictors, double[] results)
+		{
 			regression = new SimpleLinearRegression();
-			regression.Regress(predictorList.ToArray(), resultList.ToArray());
+			regression.Regress(predictors, results);
 		}
 		public override double Predict(double predictor)
 		{

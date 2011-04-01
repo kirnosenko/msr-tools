@@ -30,21 +30,6 @@ namespace MSR.Tools.Visualizer
 	
 	public partial class VisualizerView : Form, IVisualizerView
 	{
-		private List<Color> differentColors = new List<Color>()
-		{
-			Color.Black,
-			Color.Blue,
-			Color.Red,
-			Color.Green,
-			Color.Brown,
-			Color.Gray,
-			Color.Lime,
-			Color.Orange,
-			Color.Pink,
-			Color.Purple,
-			Color.Silver
-		};
-
 		public event Action<string> OnOpenConfigFile;
 		public event Action<int> OnVisualizationActivate;
 		public event Action<bool> OnChengeCleanUpOption;

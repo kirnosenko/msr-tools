@@ -64,7 +64,11 @@
     <Compile Include="VisualizationPool.cs" />
     <Compile Include="Visualizations\BugLifeTimeDistribution.cs" />
     <Compile Include="Visualizations\CodeSizeToDate.cs" />
+    <Compile Include="Visualizations\DefectDensityToCommitSize.cs" />
     <Compile Include="Visualizations\DefectDensityToFileSize.cs" />
+    <Compile Include="Visualizations\LinearRegression.cs" />
+    <Compile Include="Visualizations\PolynomialRegression.cs" />
+    <Compile Include="Visualizations\RegressionVisualization.cs" />
     <Compile Include="Visualizations\Visualization.cs" />
     <Compile Include="VisualizerModel.cs" />
     <Compile Include="VisualizerPresenter.cs" />
@@ -77,6 +81,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MSR.Models\MSR.Models.csproj">
+      <Project>{E8BE4CCD-C394-41F0-8D7B-28515D2DDD5F}</Project>
+      <Name>MSR.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MSR.Tools\MSR.Tools.csproj">
       <Project>{B6039F7F-3580-4FAC-A929-E9CA05C1A113}</Project>
       <Name>MSR.Tools</Name>

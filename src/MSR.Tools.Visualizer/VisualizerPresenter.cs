@@ -50,7 +50,7 @@ namespace MSR.Tools.Visualizer
 
 			if (! visualization.Configurable || view.ConfigureVisualization(visualization))
 			{
-				if (model.AutomaticallyCleanUp)
+				if (model.AutomaticallyCleanUp && visualization.AllowCleanUp)
 				{
 					view.Graph.CleanUp();
 				}

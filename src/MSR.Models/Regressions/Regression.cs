@@ -20,6 +20,7 @@ namespace MSR.Models.Regressions
 			resultList.Add(result);
 		}
 		public abstract void Train();
+		public abstract void Train(INPUT[] predictors, double[] results);
 		public abstract double Predict(INPUT predictor);
 	}
 }

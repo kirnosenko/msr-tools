@@ -32,6 +32,11 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			get { return true; }
 		}
+		[Browsable(false)]
+		public virtual bool AllowCleanUp
+		{
+			get { return true; }
+		}
 		[DescriptionAttribute("Target directory")]
 		public string TargetDir
 		{
