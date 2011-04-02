@@ -53,40 +53,44 @@ namespace MSR.Tools.StatGenerator
 						e.InDirectory(targetDir)
 						:
 						e.PathIs(targetPath);
-				};	
-			
-				var authors = 
-					(
-						from cb in s.SelectionDSL()
-							.Files().Reselect(fileSelector)
-							.Modifications().InFiles()
-							.CodeBlocks().InModifications().Added()
-						join c in s.Repository<Commit>() on cb.AddedInitiallyInCommitID equals c.ID
-						select c.Author
-					).Distinct().OrderBy(x => x).ToList();
+				};
+
+				var authors = s.SelectionDSL()
+					.Files().Reselect(fileSelector)
+					.Commits().TouchFiles()
+					.Select(x => x.Author).Distinct().OrderBy(x => x)
+					.ToList();
 				
 				int maxAuthorLen = authors.Select(x => x.Length).Max();
 				if (maxAuthorLen < 6)
 				{
 					maxAuthorLen = 6;
 				}
-				string format = "{0,X}{1,15}{2,15}".Replace("X", maxAuthorLen.ToString());
-				string line = "-".Repeat(maxAuthorLen + 15 + 15);
-				Console.WriteLine(format, "Author", "Added LOC", "Current LOC");
+				string format = "{0,X}{1,15}{2,15}{3,15}".Replace("X", maxAuthorLen.ToString());
+				string line = "-".Repeat(maxAuthorLen + 15 + 15 + 15);
+				Console.WriteLine(format, "Author", "Added LOC", "Removed LOC", "Current LOC");
 				Console.WriteLine(line);
 				foreach (var author in authors)
 				{
-					var code = s.SelectionDSL()
+					var addedCode = s.SelectionDSL()
 						.Commits().AuthorIs(author)
 						.Files().Reselect(fileSelector)
 						.Modifications().InFiles()
-						.CodeBlocks().InModifications().AddedInitiallyInCommits().Fixed();
+						.CodeBlocks().InModifications().AddedInitiallyInCommits()
+						.Fixed();
+					var removedCode = s.SelectionDSL()
+						.Commits().AuthorIs(author)
+						.Files().Reselect(fileSelector)
+						.Modifications().InCommits().InFiles()
+						.CodeBlocks().InModifications().Deleted()
+						.Fixed();
 					
-					double addedLoc = code.CalculateLOC();
+					double addedLoc = addedCode.CalculateLOC();
 					Console.WriteLine(format,
 						author,
 						addedLoc,
-						addedLoc + code.ModifiedBy().CalculateLOC()
+						- removedCode.CalculateLOC(),
+						addedLoc + addedCode.ModifiedBy().CalculateLOC()
 					);
 				}
 				Console.WriteLine(line);
