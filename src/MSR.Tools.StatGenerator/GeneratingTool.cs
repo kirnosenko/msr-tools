@@ -5,6 +5,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -66,9 +67,9 @@ namespace MSR.Tools.StatGenerator
 				{
 					maxAuthorLen = 6;
 				}
-				string format = "{0,X}{1,15}{2,15}{3,15}".Replace("X", maxAuthorLen.ToString());
-				string line = "-".Repeat(maxAuthorLen + 15 + 15 + 15);
-				Console.WriteLine(format, "Author", "Added LOC", "Removed LOC", "Current LOC");
+				string format = "{0,X}{1,13}{2,13}{3,13}{4,15}".Replace("X", maxAuthorLen.ToString());
+				string line = "-".Repeat(maxAuthorLen + 13 + 13 + 13 + 15);
+				Console.WriteLine(format, "Author", "Added LOC", "Removed LOC", "Current LOC", "Max & Min Age");
 				Console.WriteLine(line);
 				foreach (var author in authors)
 				{
@@ -84,13 +85,34 @@ namespace MSR.Tools.StatGenerator
 						.Modifications().InCommits().InFiles()
 						.CodeBlocks().InModifications().Deleted()
 						.Fixed();
-					
+
+					DateTime now = DateTime.Now;
 					double addedLoc = addedCode.CalculateLOC();
+					var remainingCode = addedCode.CalculateRemainingCodeSize(s.LastRevision());
+					var remainingCodeSize = remainingCode.Sum(x => x.Value);
+
+					var remainingCodeAge = 
+						(
+							from cb in remainingCode
+							let CommitID = s.Repository<CodeBlock>()
+								.Single(x => x.ID == cb.Key)
+								.AddedInitiallyInCommitID
+							from c in s.Repository<Commit>()
+								where c.ID == CommitID
+							select (now - c.Date).Days
+						).ToList();
+					
+					string age = remainingCodeAge.Count() > 0 ?
+						remainingCodeAge.Max().ToString() + "-" + remainingCodeAge.Min().ToString()
+						:
+						"";
+					
 					Console.WriteLine(format,
 						author,
 						addedLoc,
 						- removedCode.CalculateLOC(),
-						addedLoc + addedCode.ModifiedBy().CalculateLOC()
+						remainingCode.Sum(x => x.Value),
+						age
 					);
 				}
 				Console.WriteLine(line);
