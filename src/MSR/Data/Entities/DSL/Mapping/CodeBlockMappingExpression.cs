@@ -125,11 +125,22 @@ namespace MSR.Data.Entities.DSL.Mapping
 		}
 		public ICodeBlockMappingExpression ForCodeAddedInitiallyInRevision(string revision)
 		{
-			entity.TargetCodeBlock = this.SelectionDSL()
-				.Commits().RevisionIs(revision)
-				.Files().IdIs(CurrentEntity<Modification>().File.ID)
-				.Modifications().InFiles()
-				.CodeBlocks().InModifications().AddedInitiallyInCommits().Single();
+			try
+			{
+				entity.TargetCodeBlock = this.SelectionDSL()
+					.Commits().RevisionIs(revision)
+					.Files().IdIs(CurrentEntity<Modification>().File.ID)
+					.Modifications().InFiles()
+					.CodeBlocks().InModifications().AddedInitiallyInCommits().Single();
+			}
+			catch
+			{
+				throw new MsrMappingDslException(string.Format(
+					"Could not found the code block added initially in revision {0} to file {1}.",
+					revision,
+					CurrentEntity<Modification>().File.Path
+				));
+			}
 			
 			return this;
 		}
