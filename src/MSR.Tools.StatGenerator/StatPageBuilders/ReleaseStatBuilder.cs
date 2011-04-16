@@ -57,10 +57,18 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					.CodeBlocks().InModifications().Fixed();
 				var currentLoc = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC();
 				
+				double DD = code.CalculateDefectDensity();
+				double postReleaseDD = DD - code.CalculateDefectDensityAtRevision(release.Revision);
+				
 				releaseObjects.Add(new
 				{
 					tag = release.Tag,
-					dd = code.CalculateDefectDensity().ToString("F03"),
+					dd = DD.ToString("F03"),
+					post_release_dd = string.Format(
+						"{0} ({1}%)",
+						postReleaseDD.ToString("F02"),
+						((postReleaseDD / DD) * 100).ToString("F02")
+					),
 					added = code.Added().CalculateLOC(),
 					deleted = -code.Deleted().CalculateLOC(),
 					current = currentLoc,
