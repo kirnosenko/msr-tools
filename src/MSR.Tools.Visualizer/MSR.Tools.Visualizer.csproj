@@ -62,6 +62,7 @@
       <DependentUpon>VisualizationConfigView.cs</DependentUpon>
     </Compile>
     <Compile Include="VisualizationPool.cs" />
+    <Compile Include="Visualizations\RemovedToAddedCode.cs" />
     <Compile Include="Visualizations\BugLifeTimeDistribution.cs" />
     <Compile Include="Visualizations\CodeSizeToDate.cs" />
     <Compile Include="Visualizations\DefectDensityToCommitSize.cs" />

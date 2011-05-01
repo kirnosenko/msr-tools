@@ -16,6 +16,7 @@ namespace MSR.Tools.Visualizer
 	{
 		void ShowPoints(string legend, double[] x, double[] y);
 		void ShowLine(string legend, double[] x, double[] y);
+		void ShowHistogram(string legend, double[] x, double[] y);
 		void CleanUp();
 
 		string Title { get; set; }
@@ -50,6 +51,12 @@ namespace MSR.Tools.Visualizer
 		public void ShowLine(string legend, double[] x, double[] y)
 		{
 			ShowCurve(legend, x, y, NextColor(), true);
+		}
+		public void ShowHistogram(string legend, double[] x, double[] y)
+		{
+			BarItem bar = GraphPane.AddBar(legend, x, y, NextColor());
+			AxisChange();
+			Invalidate();
 		}
 		public void CleanUp()
 		{
