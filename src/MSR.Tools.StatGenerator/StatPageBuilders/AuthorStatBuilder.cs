@@ -63,7 +63,8 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				let authorCommits = a.AddedCode.Commits().Again().Count()
 				let authorFixes = a.AddedCode.Commits().Again().AreBugFixes().Count()
 				let authorRefactorings = a.AddedCode.Commits().Again().AreRefactorings().Count()
-				let authorLoc = a.AddedCode.CalculateLOC() + a.AddedCode.ModifiedBy().CalculateLOC()
+				let authorAddedLoc = a.AddedCode.CalculateLOC()
+				let authorCurrentLoc = authorAddedLoc + a.AddedCode.ModifiedBy().CalculateLOC()
 				let authorTouchedFiles = a.TouchedFiles.Count()
 				let authorFilesTouchedByOtherAuthors = a.TouchedFiles
 					.Commits().AuthorIsNot(a.Name)
@@ -77,11 +78,15 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					dd = a.AddedCode.CalculateDefectDensity().ToString("F03"),
 					added = a.AddedCode.CalculateLOC(),
 					deleted = - a.RemovedCode.CalculateLOC(),
-					current = authorLoc,
-					contribution = ((authorLoc / totalLoc) * 100).ToString("F02"),
+					current = authorCurrentLoc,
+					contribution = ((authorCurrentLoc / totalLoc) * 100).ToString("F02"),
 					specialization = ((double)authorTouchedFiles / totalFiles * 100).ToString("F02"),
 					uniqueSpecialization = (authorTouchedFiles > 0 ?
 						((double)(authorTouchedFiles - authorFilesTouchedByOtherAuthors) / totalFiles * 100)
+						:
+						0).ToString("F02"),
+					efficiency = (authorAddedLoc > 0 ?
+						((authorCurrentLoc / authorAddedLoc) * 100)
 						:
 						0).ToString("F02")
 				};
