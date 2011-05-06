@@ -19,8 +19,8 @@ namespace MSR.Data.Entities.Mapping
 		
 		public BugFixDetectorBasedOnLogMessage()
 		{
-			MessageRegExp = @"(\P{L}|^)(fix|fixes|bug|bugs|bugfix|bugfixes|fixed)(\P{L}|$)";
-			stopWords = new string[] { "warning", "typo" };
+			KeyWords = "fix fixes bug bugs bugfix bugfixes fixed";
+			StopWords = "warning typo grammar";
 		}
 		public bool IsBugFix(Commit commit)
 		{
