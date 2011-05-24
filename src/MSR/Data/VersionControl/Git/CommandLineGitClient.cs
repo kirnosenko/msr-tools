@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
@@ -15,11 +15,13 @@ namespace MSR.Data.VersionControl.Git
 		{
 			RepositoryPath = repositoryPath;
 			Command = "git";
+			Branch = "master";
 		}
 		public Stream RevList()
 		{
 			return RunCommand(
-				"rev-list master --topo-order --reverse"
+				"rev-list {0} --topo-order --reverse",
+				Branch
 			);
 		}
 		public Stream Log(string revision)
@@ -56,6 +58,10 @@ namespace MSR.Data.VersionControl.Git
 			get; private set;
 		}
 		public string Command
+		{
+			get; set;
+		}
+		public string Branch
 		{
 			get; set;
 		}

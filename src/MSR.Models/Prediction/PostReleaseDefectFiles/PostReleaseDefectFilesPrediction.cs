@@ -67,7 +67,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			PredictedDefectFiles = faultProneFiles
 				.Select(x => x.Path)
 				.TakeNoMoreThan((int)(filesInRelease * FilePortionLimit))
-				.ToList();		
+				.ToList();
 		}
 		public EvaluationResult Evaluate()
 		{
