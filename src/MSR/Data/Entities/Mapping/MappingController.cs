@@ -15,7 +15,7 @@ namespace MSR.Data.Entities.Mapping
 {
 	public class MappingController : IMappingHost
 	{
-		public event Action<string> OnRevisionMapping;
+		public event Action<string,string> OnRevisionMapping;
 		
 		private IScmData scmData;
 		
@@ -41,23 +41,25 @@ namespace MSR.Data.Entities.Mapping
 			{
 				return;
 			}
-			string nextRevision = scmData.RevisionByNumber(MappingStartRevision(data));
+			int nextRevisionNumber = MappingStartRevision(data);
+			string nextRevision = scmData.RevisionByNumber(nextRevisionNumber);
 			
 			do
 			{
+				if (OnRevisionMapping != null)
+				{
+					OnRevisionMapping(nextRevision, nextRevisionNumber.ToString());
+				}
 				Map(data, nextRevision);
 				nextRevision = nextRevision == StopRevision ?
 					null
 					:
 					scmData.NextRevision(nextRevision);
+				nextRevisionNumber++;
 			} while (nextRevision != null);
 		}
 		public void Map(IDataStore data, string revision)
 		{
-			if (OnRevisionMapping != null)
-			{
-				OnRevisionMapping(revision);
-			}
 			using (var s = data.OpenSession())
 			{
 				availableExpressions = new List<object>()

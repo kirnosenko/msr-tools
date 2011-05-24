@@ -136,7 +136,7 @@ namespace MSR.Data.Entities.Mapping
 				.Return("11");
 			
 			mapper.StopRevision = "10";
-			mapper.OnRevisionMapping += r => revisions.Add(r);
+			mapper.OnRevisionMapping += (r,n) => revisions.Add(r);
 			
 			mapper.Map(data);
 			
@@ -160,7 +160,7 @@ namespace MSR.Data.Entities.Mapping
 				.Return(null);
 
 			mapper.StopRevision = null;
-			mapper.OnRevisionMapping += r => revisions.Add(r);
+			mapper.OnRevisionMapping += (r,n) => revisions.Add(r);
 
 			mapper.Map(data);
 

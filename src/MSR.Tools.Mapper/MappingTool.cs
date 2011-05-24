@@ -56,7 +56,11 @@ namespace MSR.Tools.Mapper
 				MappingController mapping = GetConfiguredType<MappingController>();
 				mapping.CreateDataBase = createDataBase;
 				mapping.StopRevision = stopRevision;
-				mapping.OnRevisionMapping += r => Console.WriteLine("mapping of revision {0}", r);
+				mapping.OnRevisionMapping += (r,n) => Console.WriteLine(
+					"mapping of revision {0}{1}",
+					r,
+					r != n ? string.Format(" ({0})", n) : ""
+				);
 				
 				mapping.Map(data);
 			}
