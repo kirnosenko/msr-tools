@@ -101,21 +101,23 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 							)
 					}).ToList();
 				
-				double fileHasNoErrorsProbability = 1;
+				double fileHasDefectsProbability = 0;
 				foreach (var codeFromRevision in codeByRevision)
 				{
-					fileHasNoErrorsProbability *=
-						1
-						-
+					double codeFromRevisionHasDefectsProbability = 
 						(codeFromRevision.EP * codeFromRevision.DEP * codeFromRevision.NFEP);
+					fileHasDefectsProbability += 
+						codeFromRevisionHasDefectsProbability
+						-
+						fileHasDefectsProbability * codeFromRevisionHasDefectsProbability;
 				}
 				
-				fileStability.Add(file.Path, fileHasNoErrorsProbability);
+				fileStability.Add(file.Path, fileHasDefectsProbability);
 			}
-			
+
 			PredictedDefectFiles = fileStability
 				//.Where(x => x.Value <= 0.01)
-				.OrderBy(x => x.Value)
+				.OrderByDescending(x => x.Value)
 				.TakeNoMoreThan((int)(0.2 * fileStability.Count))
 				.Select(x => x.Key)
 				.ToList();
