@@ -44,7 +44,17 @@ adrian
 Created django.contrib and moved comments into it
 C100	django/views/comments/__init__.py	django/contrib/__init__.py
 C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
-	
+
+private string log_4 =
+@"766c647d9b9cf3e84353536ebb928153c96fdece
+jezdez
+2011-02-14 23:45:32 +0000
+Fixed the staticfiles management commands collectstatic and findstatic to not raise encoding related exceptions when handlings filenames with non-ASCII characters.
+M	django/contrib/staticfiles/management/commands/collectstatic.py
+M	django/contrib/staticfiles/management/commands/findstatic.py
+A	'tests/regressiontests/staticfiles_tests/apps/test/static/test/spec\314\247ial.txt'
+M	tests/regressiontests/staticfiles_tests/tests.py".Replace("'", "\"");
+
 		private GitLog log;
 		
 		[Test]
@@ -125,6 +135,16 @@ C100	django/views/comments/__init__.py	django/contrib/comments/__init__.py";
 				.Where(x => x.Action == TouchedFile.TouchedFileAction.ADDED)
 				.Count()
 					.Should().Be(2);
+		}
+		[Test]
+		public void Should_parse_filename_with_special_symbols()
+		{
+			log = new GitLog(log_4.ToStream());
+			
+			log.TouchedFiles
+				.Where(x => x.Path == "/tests/regressiontests/staticfiles_tests/apps/test/static/test/spec\\314\\247ial.txt")
+				.Count()
+					.Should().Be(1);
 		}
 	}
 }

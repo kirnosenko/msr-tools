@@ -85,6 +85,8 @@
     <Compile Include="Data\Entities\Mapping\CommitMapperTest.cs" />
     <Compile Include="Data\Entities\Mapping\MappingControllerTest.cs" />
     <Compile Include="Data\Entities\Mapping\ModificationMapperTest.cs" />
+    <Compile Include="Data\Entities\Mapping\PathSelectors\SkipPathByExtensionTest.cs" />
+    <Compile Include="Data\Entities\Mapping\PathSelectors\TakePathByExtensionTest.cs" />
     <Compile Include="Data\Entities\Mapping\ProjectFileMapperTest.cs" />
     <Compile Include="Data\Entities\Mapping\ReleaseMapperTest.cs" />
     <Compile Include="Data\InMemoryDataStoreTest.cs" />

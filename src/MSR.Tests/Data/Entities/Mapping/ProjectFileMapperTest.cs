@@ -13,6 +13,7 @@ using Rhino.Mocks;
 
 using MSR.Data.VersionControl;
 using MSR.Data.Entities.DSL.Mapping;
+using MSR.Data.Entities.Mapping.PathSelectors;
 
 namespace MSR.Data.Entities.Mapping
 {

@@ -6,7 +6,7 @@
 
 using System;
 
-namespace MSR.Data.Entities.Mapping
+namespace MSR.Data.Entities.Mapping.PathSelectors
 {
 	public class SkipPathByDirectory : IPathSelector
 	{

@@ -62,6 +62,12 @@ namespace MSR.Data.VersionControl.Git
 		}
 		private void TouchFile(TouchedFile.TouchedFileAction action, string path, string sourcePath)
 		{
+			path = path.Replace("\"", "");
+			if (sourcePath != null)
+			{
+				sourcePath = sourcePath.Replace("\"", "");
+			}
+			
 			path = "/" + path;
 			if (sourcePath != null)
 			{

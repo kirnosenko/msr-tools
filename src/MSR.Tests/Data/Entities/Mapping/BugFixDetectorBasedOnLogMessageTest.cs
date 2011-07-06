@@ -36,18 +36,18 @@ namespace MSR.Data.Entities.Mapping
 			detector.IsBugFix(commit)
 				.Should().Be(isBugFix);
 		}
-		[TestCase("Fixed warnings&#xA;", false)]
-		[TestCase("PATCH: [ 715553 ] Add commandline options to not add paths to MRU&#xA;", false)]
-		[TestCase("Apply icon change (2004-03-13 Seier) to languages&#xA;", false)]
-		[TestCase("Text modifications&#xA;", false)]
-		[TestCase("Fix 'cannot select CDROM directory' problem&#xA;", true)]
-		[TestCase("bug fix scroll to first diff.&#xA;", true)]
-		[TestCase("fix some bugs with undo and merge&#xA;", true)]
-		[TestCase("bugfix to use system colours for unselected lines in directory.&#xA;", true)]
-		[TestCase("Bug #125572: state of recurse checkbox is now saved&#xA;", true)]
-		[TestCase("[ 686699 ] Check &amp; return file saving success - fix&#xA;", true)]
-		[TestCase("BUG: [ 683753 ] Rescan is not prompting to save dirty current file&#xA;", true)]
-		[TestCase("PATCH: [ 709502 ] Fix missing/existing EOL at end of file&#xA;", true)]
+		[TestCase("Fixed warnings", false)]
+		[TestCase("PATCH: [ 715553 ] Add commandline options to not add paths to MRU", false)]
+		[TestCase("Apply icon change (2004-03-13 Seier) to languages", false)]
+		[TestCase("Text modifications", false)]
+		[TestCase("Fix 'cannot select CDROM directory' problem", true)]
+		[TestCase("bug fix scroll to first diff.", true)]
+		[TestCase("fix some bugs with undo and merge", true)]
+		[TestCase("bugfix to use system colours for unselected lines in directory.", true)]
+		[TestCase("Bug #125572: state of recurse checkbox is now saved", true)]
+		[TestCase("[ 686699 ] Check &amp; return file saving success - fix", true)]
+		[TestCase("BUG: [ 683753 ] Rescan is not prompting to save dirty current file", true)]
+		[TestCase("PATCH: [ 709502 ] Fix missing/existing EOL at end of file", true)]
 		public void Can_detect_bugfix_for_winmerge(string message, bool isBugFix)
 		{
 			commit.Message = message;

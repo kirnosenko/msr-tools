@@ -83,10 +83,11 @@
     <Compile Include="Data\Entities\CodeBlock.cs" />
     <Compile Include="Data\Entities\Mapping\CodeBlockMapper.cs" />
     <Compile Include="Data\Entities\Mapping\NullReleaseDetector.cs" />
+    <Compile Include="Data\Entities\Mapping\PathSelectors\SelectPathByExtension.cs" />
     <Compile Include="Data\Entities\Mapping\ReleaseMapper.cs" />
-    <Compile Include="Data\Entities\Mapping\SkipPathByExtension.cs" />
-    <Compile Include="Data\Entities\Mapping\SkipPathByDirectory.cs" />
-    <Compile Include="Data\Entities\Mapping\TakePathByExtension.cs" />
+    <Compile Include="Data\Entities\Mapping\PathSelectors\SkipPathByExtension.cs" />
+    <Compile Include="Data\Entities\Mapping\PathSelectors\SkipPathByDirectory.cs" />
+    <Compile Include="Data\Entities\Mapping\PathSelectors\TakePathByExtension.cs" />
     <Compile Include="Data\Entities\Release.cs" />
     <Compile Include="Data\Entities\RepositoryResolverHelper.cs" />
     <Compile Include="Data\IDataStore.cs" />
