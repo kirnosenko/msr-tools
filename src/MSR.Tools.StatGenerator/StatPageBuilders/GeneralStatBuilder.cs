@@ -39,6 +39,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			result.Add("stat_period_from", statfrom);
 			result.Add("stat_period_to", statto);
 			result.Add("stat_period_days", (statto - statfrom).Days);
+			result.Add("stat_period_years", ((statto - statfrom).TotalDays / 365).ToString("F01"));
 			result.Add("authors_count",
 				repositories.Repository<Commit>().Select(x => x.Author).Distinct().Count()
 			);

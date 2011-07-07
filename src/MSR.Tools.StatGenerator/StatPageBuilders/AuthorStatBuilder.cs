@@ -85,7 +85,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 						((double)(authorTouchedFiles - authorFilesTouchedByOtherAuthors) / totalFiles * 100)
 						:
 						0).ToString("F02"),
-					efficiency = (authorAddedLoc > 0 ?
+					demandForCode = (authorAddedLoc > 0 ?
 						((authorCurrentLoc / authorAddedLoc) * 100)
 						:
 						0).ToString("F02")

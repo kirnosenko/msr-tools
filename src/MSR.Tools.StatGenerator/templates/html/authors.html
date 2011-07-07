@@ -12,8 +12,8 @@
 			<th>Current LOC</th>
 			<th>Contribution (%)</th>
 			<th>Specialization (%)</th>
-			<th>Unique Specialization (%)</th>
-			<th>Efficiency (%)</th>
+			<th>Unique specialization (%)</th>
+			<th>Demand for code (%)</th>
 		</tr>
 		#foreach($author in $authors)
 		#each
@@ -29,7 +29,7 @@
 			<td>$author.contribution</td>
 			<td>$author.specialization</td>
 			<td>$author.uniqueSpecialization</td>
-			<td>$author.efficiency</td>
+			<td>$author.demandForCode</td>
 		</tr>
 		#end
 	</table>
