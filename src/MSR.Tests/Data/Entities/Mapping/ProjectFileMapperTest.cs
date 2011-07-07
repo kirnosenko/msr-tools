@@ -21,7 +21,6 @@ namespace MSR.Data.Entities.Mapping
 	public class ProjectFileMapperTest : BaseMapperTest
 	{
 		private ProjectFileMapper mapper;
-		
 		private List<TouchedFile> touchedFiles;
 		
 		[SetUp]
@@ -33,7 +32,6 @@ namespace MSR.Data.Entities.Mapping
 				.Return(touchedFiles);
 			scmData.Stub(x => x.Log("10"))
 				.Return(logStub);
-			
 			mapper = new ProjectFileMapper(scmData);
 		}
 		[Test]
@@ -143,15 +141,13 @@ namespace MSR.Data.Entities.Mapping
 			AddFile("file1.123");
 			AddFile("file2.555");
 
-			mapper = new ProjectFileMapper(
-				scmData,
-				new IPathSelector[] {
-					new SkipPathByExtension(new string[]
-					{
-						".555"
-					})
-				}
-			);
+			mapper = new ProjectFileMapper(scmData);
+			mapper.PathSelectors = new IPathSelector[] {
+				new SkipPathByExtension(new string[]
+				{
+					".555"
+				})
+			};
 			
 			mapper.Map(
 				mappingDSL.AddCommit("10")
@@ -162,7 +158,6 @@ namespace MSR.Data.Entities.Mapping
 				.Select(x => x.Path).ToArray()
 					.Should().Have.SameSequenceAs(new string[] { "file1.123" });
 		}
-		
 		private void AddFile(string path)
 		{
 			TouchPath(path, TouchedFile.TouchedFileAction.ADDED, null, null);

@@ -20,12 +20,12 @@ namespace MSR.Data.Entities.Mapping
 		private IScmData scmData;
 		
 		private List<object> availableExpressions;
-		private List<Action> mappers = new List<Action>();
-		private List<Type> mapperTypes = new List<Type>();
+		private Dictionary<Type,Action> mappers = new Dictionary<Type,Action>();
 		
 		public MappingController(IScmData scmData, IMapper[] mappers)
 		{
 			this.scmData = scmData;
+			CreateDataBase = false;
 			foreach (var mapper in mappers)
 			{
 				mapper.RegisterHost(this);
@@ -72,7 +72,7 @@ namespace MSR.Data.Entities.Mapping
 				
 				foreach (var mapper in mappers)
 				{
-					mapper();
+					mapper.Value();
 				}
 				
 				s.SubmitChanges();
@@ -80,8 +80,11 @@ namespace MSR.Data.Entities.Mapping
 		}
 		public void RegisterMapper<T,IME,OME>(EntityMapper<T,IME,OME> mapper)
 		{
-			mapperTypes.Add(typeof(T));
-			mappers.Add(() =>
+			if (mappers.ContainsKey(typeof(T)))
+			{
+				mappers.Remove(typeof(T));
+			}
+			mappers.Add(typeof(T), () =>
 			{
 				List<object> newExpressions = new List<object>();
 				
@@ -99,6 +102,14 @@ namespace MSR.Data.Entities.Mapping
 				}
 			});
 		}
+		public void KeepOnlyMappers(Type[] mapperTypesToKeep)
+		{
+			var mappersToRemove = mappers.Where(x => !mapperTypesToKeep.Contains(x.Key)).ToList();
+			foreach (var mapper in mappersToRemove)
+			{
+				mappers.Remove(mapper.Key);
+			}
+		}
 		public bool CreateDataBase
 		{
 			get; set;
@@ -109,7 +120,7 @@ namespace MSR.Data.Entities.Mapping
 		}
 		private void CreateSchema(IDataStore data)
 		{
-			data.CreateSchema(mapperTypes.ToArray());
+			data.CreateSchema(mappers.Keys.ToArray());
 		}
 		private bool RevisionExists(IDataStore data, string revision)
 		{

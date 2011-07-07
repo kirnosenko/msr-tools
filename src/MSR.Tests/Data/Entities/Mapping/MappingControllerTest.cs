@@ -202,5 +202,23 @@ namespace MSR.Data.Entities.Mapping
 			
 			mapper.Map(data, "1");
 		}
+		[Test]
+		public void Can_replace_mappers()
+		{			
+			commitMapperStub.Expect(x => x.Map(null))
+				.IgnoreArguments()
+				.Constraints(Rhino.Mocks.Constraints.Is.NotNull())
+				.Return(Enumerable.Empty<CommitMappingExpression>());
+
+			CommitMapper commitMapperStub2 = MockRepository.GenerateMock<CommitMapper>(null as IScmData);
+			
+			mapper.RegisterMapper(commitMapperStub2);
+			mapper.RegisterMapper(commitMapperStub);
+
+			mapper.Map(data, "1");
+			
+			commitMapperStub.VerifyAllExpectations();
+			commitMapperStub2.VerifyAllExpectations();
+		}
 	}
 }

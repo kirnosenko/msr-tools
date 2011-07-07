@@ -17,30 +17,9 @@ namespace MSR.Data.Entities.Mapping
 {
 	public class ProjectFileMapper : EntityMapper<ProjectFile,CommitMappingExpression,ProjectFileMappingExpression>
 	{
-		private List<Func<IEnumerable<TouchedFile>,IRepositoryResolver,IEnumerable<TouchedFile>>> fileFilters =
-			new List<Func<IEnumerable<TouchedFile>,IRepositoryResolver,IEnumerable<TouchedFile>>>();
-		
 		public ProjectFileMapper(IScmData scmData)
-			: this(scmData, new IPathSelector[] {})
-		{
-		}
-		public ProjectFileMapper(IScmData scmData, IPathSelector[] pathSelectors)
 			: base(scmData)
 		{
-			if (pathSelectors.Length > 0)
-			{
-				fileFilters.Add((f,r) => f.Where(x =>
-				{
-					foreach (var selector in pathSelectors)
-					{
-						if (! selector.InSelection(x.Path))
-						{
-							return false;
-						}
-					}
-					return true;
-				}));
-			}
 		}
 		public override IEnumerable<ProjectFileMappingExpression> Map(CommitMappingExpression expression)
 		{
@@ -83,14 +62,21 @@ namespace MSR.Data.Entities.Mapping
 			
 			return fileExpressions;
 		}
+		public IPathSelector[] PathSelectors
+		{
+			get; set;
+		}
 		private IEnumerable<TouchedFile> FilterTouchedFiles(IEnumerable<TouchedFile> touchedFiles, IRepositoryResolver repositories)
 		{
-			var files = touchedFiles;
-			foreach (var filter in fileFilters)
+			if (PathSelectors != null)
 			{
-				files = filter(files, repositories);
+				foreach (var selector in PathSelectors)
+				{
+					touchedFiles = touchedFiles.Where(x => selector.InSelection(x.Path));
+				}
 			}
-			return files;
+			
+			return touchedFiles;
 		}
 	}
 }

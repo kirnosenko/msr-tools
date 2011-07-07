@@ -13,27 +13,24 @@ using SharpTestsEx;
 namespace MSR.Data.Entities.Mapping.PathSelectors
 {
 	[TestFixture]
-	public class TakePathByExtensionTest
+	public class SkipPathByRegExpTest
 	{
-		private TakePathByExtension selector;
-		private string[] extensions = new string[] { ".h", ".cpp" };
-		
+		private SkipPathByRegExp selector;
+
 		[SetUp]
 		public void SetUp()
 		{
-			selector = new TakePathByExtension(extensions);
+			selector = new SkipPathByRegExp();
 		}
 		[Test]
-		public void Should_select_matched_paths()
+		public void Should_select_file()
 		{
-			foreach (var ext in extensions)
-			{
-				selector.InSelection(ext)
-					.Should().Be.True();
-			}
-			
-			selector.InSelection(".cs")
+			selector.FilePath = "/dir/file1";
+
+			selector.InSelection("/dir/file1")
 				.Should().Be.False();
+			selector.InSelection("/dir/file2")
+				.Should().Be.True();
 		}
 	}
 }

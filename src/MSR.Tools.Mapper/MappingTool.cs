@@ -12,6 +12,7 @@ using System.Linq;
 using MSR.Data;
 using MSR.Data.Entities;
 using MSR.Data.Entities.Mapping;
+using MSR.Data.Entities.Mapping.PathSelectors;
 using MSR.Data.Entities.DSL.Mapping;
 using MSR.Data.Entities.DSL.Selection;
 using MSR.Data.Entities.DSL.Selection.Metrics;
@@ -51,19 +52,39 @@ namespace MSR.Tools.Mapper
 		}
 		public void Map(bool createDataBase, string stopRevision)
 		{
-			using (ConsoleTimeLogger.Start("mapping time"))
+			MappingController mapping = GetConfiguredType<MappingController>();
+			mapping.CreateDataBase = createDataBase;
+			mapping.StopRevision = stopRevision;
+			
+			Map(mapping);
+		}
+		public void PartialMap(int revisionNumber, string path, string dir)
+		{
+			PartialMap(scmData.RevisionByNumber(revisionNumber), path, dir);
+		}
+		public void PartialMap(string revision, string path, string dir)
+		{
+			MappingController mapping = GetConfiguredType<MappingController>();
+			mapping.RegisterMapper(GetConfiguredType<CommitMapperForExistentRevision>());
+			var fileMapper = GetConfiguredType<ProjectFileMapper>();
+			fileMapper.PathSelectors = new IPathSelector[]
 			{
-				MappingController mapping = GetConfiguredType<MappingController>();
-				mapping.CreateDataBase = createDataBase;
-				mapping.StopRevision = stopRevision;
-				mapping.OnRevisionMapping += (r,n) => Console.WriteLine(
-					"mapping of revision {0}{1}",
-					r,
-					r != n ? string.Format(" ({0})", n) : ""
-				);
-				
-				mapping.Map(data);
-			}
+				new TakePathByRegExp()
+				{
+					DirPath = dir,
+					FilePath = path
+				}
+			};
+			mapping.RegisterMapper(fileMapper);
+			mapping.KeepOnlyMappers(new Type[]
+			{
+				typeof(Commit),
+				typeof(ProjectFile),
+				typeof(Modification),
+				typeof(CodeBlock)
+			});
+
+			PartialMap(mapping, revision);
 		}
 		public void Truncate(int numberOfRevisionsToKeep)
 		{
@@ -160,6 +181,26 @@ namespace MSR.Tools.Mapper
 			}
 		}
 
+		private void Map(MappingController mapping)
+		{
+			using (ConsoleTimeLogger.Start("mapping time"))
+			{
+				mapping.OnRevisionMapping += (r, n) => Console.WriteLine(
+					"mapping of revision {0}{1}",
+					r,
+					r != n ? string.Format(" ({0})", n) : ""
+				);
+
+				mapping.Map(data);
+			}
+		}
+		private void PartialMap(MappingController mapping, string revision)
+		{
+			using (ConsoleTimeLogger.Start("partial mapping time"))
+			{
+				mapping.Map(data, revision);
+			}
+		}
 		private void CheckEmptyCodeBlocks(IRepositoryResolver repositories, string testRevision)
 		{
 			foreach (var zeroCodeBlock in

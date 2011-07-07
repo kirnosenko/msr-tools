@@ -24,15 +24,19 @@ namespace MSR.Data.Entities.Mapping
 		}
 		public override IEnumerable<CommitMappingExpression> Map(RepositoryMappingExpression expression)
 		{
-			ILog log = scmData.Log(expression.Revision);
-			
 			return new CommitMappingExpression[]
 			{
-				expression.AddCommit(log.Revision)
-					.By(log.Author)
-					.At(log.Date)
-					.WithMessage(log.Message)
+				ExpressionFor(expression)
 			};
+		}
+		protected virtual CommitMappingExpression ExpressionFor(RepositoryMappingExpression expression)
+		{
+			ILog log = scmData.Log(expression.Revision);
+			
+			return expression.AddCommit(log.Revision)
+				.By(log.Author)
+				.At(log.Date)
+				.WithMessage(log.Message);
 		}
 	}
 }

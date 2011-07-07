@@ -19,6 +19,7 @@ namespace MSR.Tools.Mapper
 			string stopRevision = null;
 			bool automaticallyFixDiffErrors = false;
 			string path = null;
+			string dir = null;
 			
 			try
 			{
@@ -44,6 +45,9 @@ namespace MSR.Tools.Mapper
 						case "-p":
 							path = args[++i];
 							break;
+						case "-d":
+							dir = args[++i];
+							break;
 						default:
 							break;
 					}
@@ -57,10 +61,15 @@ namespace MSR.Tools.Mapper
 				Console.WriteLine("  info		print general information about database");
 				Console.WriteLine("  map		map data incrementally from software repositories to database");
 				Console.WriteLine("    -c		create database");
-				Console.WriteLine("    -n N		map data till commit number N");
+				Console.WriteLine("    -n N		map data till revision number N");
 				Console.WriteLine("    -r R		map data till revision R");
+				Console.WriteLine("  pmap		map data partially from software repositories to database for specified revision");
+				Console.WriteLine("    -n N		map data for revision number N");
+				Console.WriteLine("    -r R		map data for revision R");
+				Console.WriteLine("    -p PATH	map the file on path");
+				Console.WriteLine("    -d DIR	map the files in directory");
 				Console.WriteLine("  check		check validity of mapped data");
-				Console.WriteLine("    -n N		check data till revision N");
+				Console.WriteLine("    -n N		check data till revision number N");
 				Console.WriteLine("    -p PATH	check the file on path");
 				Console.WriteLine("    -f		automatically fix diff errors");
 				
@@ -92,6 +101,16 @@ namespace MSR.Tools.Mapper
 						else
 						{
 							mapper.Map(createDataBase, stopRevision);
+						}
+						break;
+					case "pmap":
+						if (stopRevisionNumber != 0)
+						{
+							mapper.PartialMap(stopRevisionNumber, path, dir);
+						}
+						else
+						{
+							mapper.PartialMap(stopRevision, path, dir);
 						}
 						break;
 					case "check":
