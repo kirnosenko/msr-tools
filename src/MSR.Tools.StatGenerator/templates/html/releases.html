@@ -3,23 +3,35 @@
 	<table class="releases sortable" id="releases">
 		<tr>
 			<th>Release</th>
-			<th>Defect density (defects per KLOC)</th>
-			<th>Post-release defect density (defects per KLOC)</th>
-			<th>Added LOC</th>
-			<th>Removed LOC</th>
-			<th>Current LOC</th>
-			<th>Contribution (%)</th>
+			<th>Duration in days (total)</th>
+			<th>Commits (total)</th>
+			<th>Authors (total)</th>
+			<th>Defect density in defects per KLOC (total)</th>
+			<th>Post-release defect density in defects per KLOC</th>
+			<th>Fixed defects (total)</th>
+			<th>Added LOC (total)</th>
+			<th>Removed LOC (total)</th>
+			<th>LOC</th>
+			<th>Remain LOC</th>
+			<th>Contribution %</th>
+			<th>Demand for code %</th>
 		</tr>
 		#foreach($release in $releases)
 		#each
 		<tr>
 			<td>$release.tag</td>
+			<td>$release.days</td>
+			<td>$release.commits</td>
+			<td>$release.authors</td>
 			<td>$release.dd</td>
 			<td>$release.post_release_dd</td>
-			<td>$release.added</td>
-			<td>$release.deleted</td>
-			<td>$release.current</td>
+			<td>$release.fixed_defects</td>
+			<td>$release.added_loc</td>
+			<td>$release.removed_loc</td>
+			<td>$release.loc</td>
+			<td>$release.remain_loc</td>
 			<td>$release.contribution</td>
+			<td>$release.demand_for_code</td>
 		</tr>
 		#end
 	</table>

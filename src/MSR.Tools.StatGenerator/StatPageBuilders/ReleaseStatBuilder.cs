@@ -44,35 +44,93 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 						Revision = c.Revision
 					}
 				).ToList();
+
+			DateTime statFrom = repositories.Repository<Commit>().Min(x => x.Date);
+			DateTime statTo = repositories.Repository<Commit>().Max(x => x.Date);
 			
 			string prevRelease = null;
 			foreach (var release in releases)
 			{
-				var code = repositories.SelectionDSL()
+				var releaseCommits = repositories.SelectionDSL()
 					.Commits()
 						.AfterRevision(prevRelease)
 						.TillRevision(release.Revision)
+						.Fixed();
+				var releaseCode = releaseCommits
 					.Files().InDirectory(TargetDir)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().Fixed();
-				var currentLoc = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC();
+				var totalReleaseCommits = repositories.SelectionDSL()
+					.Commits()
+						.TillRevision(release.Revision)
+						.Fixed();
+				var totalReleaseCode = totalReleaseCommits
+					.Files().InDirectory(TargetDir)
+					.Modifications().InCommits().InFiles()
+					.CodeBlocks().InModifications().Fixed();
+
+				DateTime releaseStatFrom = releaseCommits.Min(x => x.Date);
+				DateTime releaseStatTo = releaseCommits.Max(x => x.Date);
 				
-				double DD = code.CalculateDefectDensity();
-				double postReleaseDD = DD - code.CalculateDefectDensityAtRevision(release.Revision);
+				int releaseCommitsCount = releaseCommits.Count();
+				int releaseAuthorsCount = releaseCommits.Select(c => c.Author).Distinct().Count();
+				int releaseFixesCount = releaseCommits.AreBugFixes().Count();
+				int totalReleaseCommitsCount = totalReleaseCommits.Count();
+				int totalReleaseAuthorsCount = totalReleaseCommits.Select(c => c.Author).Distinct().Count();
+				int totalReleaseFixesCount = totalReleaseCommits.AreBugFixes().Count();
+				
+				var totalReleaseLoc = totalReleaseCode.CalculateLOC();
+				var releaseRemainLoc = releaseCode.Added().CalculateLOC() + releaseCode.ModifiedBy().CalculateLOC();
+				var totalReleaseAddedLoc = totalReleaseCode.Added().CalculateLOC();
+				var releaseAddedLoc = releaseCode.Added().CalculateLOC();
+				
+				double releaseDD = releaseCode.CalculateDefectDensity();
+				double totalReleaseDD = totalReleaseCode.CalculateDefectDensity();
+				double postReleaseDD = releaseDD - releaseCode.CalculateDefectDensityAtRevision(release.Revision);
 				
 				releaseObjects.Add(new
 				{
 					tag = release.Tag,
-					dd = DD.ToString("F03"),
+					commits = string.Format("{0} ({1})",
+						releaseCommitsCount,
+						totalReleaseCommitsCount
+					),
+					days = string.Format("{0} ({1})",
+						(releaseStatTo - releaseStatFrom).Days,
+						(releaseStatTo - statFrom).Days
+					),
+					authors = string.Format("{0} ({1})",
+						releaseAuthorsCount,
+						totalReleaseAuthorsCount
+					),
+					dd = string.Format("{0} ({1})",
+						releaseDD.ToString("F03"),
+						totalReleaseDD.ToString("F03")
+					),
 					post_release_dd = string.Format(
 						"{0} ({1}%)",
 						postReleaseDD.ToString("F02"),
-						((postReleaseDD / DD) * 100).ToString("F02")
+						((postReleaseDD / releaseDD) * 100).ToString("F02")
 					),
-					added = code.Added().CalculateLOC(),
-					deleted = -code.Deleted().CalculateLOC(),
-					current = currentLoc,
-					contribution = ((currentLoc / totalLoc) * 100).ToString("F02"),
+					fixed_defects = string.Format("{0} ({1})",
+						releaseFixesCount,
+						totalReleaseFixesCount
+					),
+					added_loc = string.Format("{0} ({1})",
+						releaseAddedLoc,
+						totalReleaseAddedLoc
+					),
+					removed_loc = string.Format("{0} ({1})",
+						- releaseCode.Deleted().CalculateLOC(),
+						- totalReleaseCode.Deleted().CalculateLOC()
+					),
+					loc = totalReleaseLoc,
+					remain_loc = releaseRemainLoc,
+					contribution = ((releaseRemainLoc / totalLoc) * 100).ToString("F02"),
+					demand_for_code = (releaseAddedLoc > 0 ?
+						((releaseRemainLoc / releaseAddedLoc) * 100)
+						:
+						0).ToString("F02")
 				});
 				
 				prevRelease = release.Revision;
