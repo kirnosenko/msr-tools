@@ -56,12 +56,14 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				
 				extObjects.Add(new {
 					name = ext,
-					files = ext_files_count,
-					files_percent = ((double)ext_files_count / files_count * 100).ToString("F02"),
+					files = string.Format("{0} ({1}%)",
+						ext_files_count,
+						((double)ext_files_count / files_count * 100).ToString("F02")
+					),
 					dd = code.CalculateDefectDensity().ToString("F03"),
-					added = code.Added().CalculateLOC(),
-					deleted = - code.Deleted().CalculateLOC(),
-					current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
+					added_loc = code.Added().CalculateLOC(),
+					removed_loc = - code.Deleted().CalculateLOC(),
+					remain_loc = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
 				});
 			}
 			result.Add("exts", extObjects);
@@ -88,12 +90,14 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				dirObjects.Add(new
 				{
 					name = dir,
-					files = dir_files_count,
-					files_percent = ((double)dir_files_count / files_count * 100).ToString("F02"),
+					files = string.Format("{0} ({1}%)",
+						dir_files_count,
+						((double)dir_files_count / files_count * 100).ToString("F02")
+					),
 					dd = code.CalculateDefectDensity().ToString("F03"),
-					added = code.Added().CalculateLOC(),
-					deleted = - code.Deleted().CalculateLOC(),
-					current = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
+					added_loc = code.Added().CalculateLOC(),
+					removed_loc = - code.Deleted().CalculateLOC(),
+					remain_loc = code.Added().CalculateLOC() + code.ModifiedBy().CalculateLOC()
 				});
 			}
 			result.Add("dirs", dirObjects);

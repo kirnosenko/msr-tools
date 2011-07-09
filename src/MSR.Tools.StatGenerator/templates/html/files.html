@@ -4,20 +4,20 @@
 		<tr>
 			<th>Extension</th>
 			<th>Number of files (%)</th>
-			<th>Defect density (defects per KLOC)</th>
+			<th>Defect density in defects per KLOC</th>
 			<th>Added LOC</th>
 			<th>Removed LOC</th>
-			<th>Current LOC</th>
+			<th>Remain LOC</th>
 		</tr>
 		#foreach($ext in $exts)
 		#each
 		<tr>
 			<td>$ext.name</td>
-			<td>$ext.files ($ext.files_percent %)</td>
+			<td>$ext.files</td>
 			<td>$ext.dd</td>
-			<td>$ext.added</td>
-			<td>$ext.deleted</td>
-			<td>$ext.current</td>
+			<td>$ext.added_loc</td>
+			<td>$ext.removed_loc</td>
+			<td>$ext.remain_loc</td>
 		</tr>
 		#end
 	</table>
@@ -27,20 +27,20 @@
 		<tr>
 			<th>Directory</th>
 			<th>Number of files (%)</th>
-			<th>Defect density (defects per KLOC)</th>
+			<th>Defect density in defects per KLOC</th>
 			<th>Added LOC</th>
 			<th>Removed LOC</th>
-			<th>Current LOC</th>
+			<th>Remain LOC</th>
 		</tr>
 		#foreach($dir in $dirs)
 		#each
 		<tr>
 			<td>$dir.name</td>
-			<td>$dir.files ($dir.files_percent %)</td>
+			<td>$dir.files</td>
 			<td>$dir.dd</td>
-			<td>$dir.added</td>
-			<td>$dir.deleted</td>
-			<td>$dir.current</td>
+			<td>$dir.added_loc</td>
+			<td>$dir.removed_loc</td>
+			<td>$dir.remain_loc</td>
 		</tr>
 		#end
 	</table>

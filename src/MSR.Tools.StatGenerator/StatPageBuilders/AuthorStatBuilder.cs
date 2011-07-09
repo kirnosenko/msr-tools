@@ -76,16 +76,16 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					fixes = string.Format("{0} ({1}%)", authorFixes, (((double)authorFixes / authorCommits) * 100).ToString("F02")),
 					refactorings = string.Format("{0} ({1}%)", authorRefactorings, (((double)authorRefactorings / authorCommits) * 100).ToString("F02")),
 					dd = a.AddedCode.CalculateDefectDensity().ToString("F03"),
-					added = a.AddedCode.CalculateLOC(),
-					deleted = - a.RemovedCode.CalculateLOC(),
-					current = authorCurrentLoc,
+					added_loc = a.AddedCode.CalculateLOC(),
+					removed_loc = - a.RemovedCode.CalculateLOC(),
+					remain_loc = authorCurrentLoc,
 					contribution = ((authorCurrentLoc / totalLoc) * 100).ToString("F02"),
 					specialization = ((double)authorTouchedFiles / totalFiles * 100).ToString("F02"),
-					uniqueSpecialization = (authorTouchedFiles > 0 ?
+					unique_specialization = (authorTouchedFiles > 0 ?
 						((double)(authorTouchedFiles - authorFilesTouchedByOtherAuthors) / totalFiles * 100)
 						:
 						0).ToString("F02"),
-					demandForCode = (authorAddedLoc > 0 ?
+					demand_for_code = (authorAddedLoc > 0 ?
 						((authorCurrentLoc / authorAddedLoc) * 100)
 						:
 						0).ToString("F02")

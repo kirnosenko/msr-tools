@@ -6,14 +6,14 @@
 			<th>Commits (%)</th>
 			<th>Fix commits (%)</th>
 			<th>Refactoring commits (%)</th>
-			<th>Defect density (defects per KLOC)</th>
+			<th>Defect density in defects per KLOC</th>
 			<th>Added LOC</th>
 			<th>Removed LOC</th>
-			<th>Current LOC</th>
-			<th>Contribution (%)</th>
-			<th>Specialization (%)</th>
-			<th>Unique specialization (%)</th>
-			<th>Demand for code (%)</th>
+			<th>Remain LOC</th>
+			<th>Contribution %</th>
+			<th>Specialization %</th>
+			<th>Unique specialization %</th>
+			<th>Demand for code %</th>
 		</tr>
 		#foreach($author in $authors)
 		#each
@@ -23,13 +23,13 @@
 			<td>$author.fixes</td>
 			<td>$author.refactorings</td>
 			<td>$author.dd</td>
-			<td>$author.added</td>
-			<td>$author.deleted</td>
-			<td>$author.current</td>
+			<td>$author.added_loc</td>
+			<td>$author.removed_loc</td>
+			<td>$author.remain_loc</td>
 			<td>$author.contribution</td>
 			<td>$author.specialization</td>
-			<td>$author.uniqueSpecialization</td>
-			<td>$author.demandForCode</td>
+			<td>$author.unique_specialization</td>
+			<td>$author.demand_for_code</td>
 		</tr>
 		#end
 	</table>

@@ -103,6 +103,8 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 						releaseAuthorsCount,
 						totalReleaseAuthorsCount
 					),
+					files = repositories.SelectionDSL().Files()
+						.ExistInRevision(release.Revision).Count(),
 					dd = string.Format("{0} ({1})",
 						releaseDD.ToString("F03"),
 						totalReleaseDD.ToString("F03")
