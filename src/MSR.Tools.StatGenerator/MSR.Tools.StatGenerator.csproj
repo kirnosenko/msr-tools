@@ -44,6 +44,7 @@
     <Compile Include="..\MSR\Properties\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="StatPageBuilders\ActivityStatBuilder.cs" />
     <Compile Include="StatPageBuilders\AuthorStatBuilder.cs" />
     <Compile Include="StatPageBuilders\FileStatBuilder.cs" />
     <Compile Include="StatPageBuilders\GeneralStatBuilder.cs" />

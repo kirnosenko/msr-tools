@@ -1,0 +1,28 @@
+<h2>Activity</h2>
+<p>
+	<table class="activity sortable" id="activity">
+		<tr>
+			<th>Month</th>
+			<th>Commits (total)</th>
+			<th>Authors (total)</th>
+			<th>Files</th>
+			<th>Fixed defects (total)</th>
+			<th>Added LOC (total)</th>
+			<th>Removed LOC (total)</th>
+			<th>LOC</th>
+		</tr>
+		#foreach($month in $monthes)
+		#each
+		<tr>
+			<td>$month.month</td>
+			<td>$month.commits</td>
+			<td>$month.authors</td>
+			<td>$month.files</td>
+			<td>$month.fixed_defects</td>
+			<td>$month.added_loc</td>
+			<td>$month.removed_loc</td>
+			<td>$month.loc</td>
+		</tr>
+		#end
+	</table>
+</p>
