@@ -72,6 +72,15 @@ namespace MSR.Data.VersionControl.Git
 			int revisionNumber = revisions.IndexOf(revision) + 1;
 			return RevisionByNumber(revisionNumber + 1);
 		}
+		public string PreviousRevision(string revision)
+		{
+			if (revisions == null)
+			{
+				GetAllRevisions();
+			}
+			int revisionNumber = revisions.IndexOf(revision) + 1;
+			return RevisionByNumber(revisionNumber - 1);
+		}
 		private void GetAllRevisions()
 		{
 			revisions = new List<string>();

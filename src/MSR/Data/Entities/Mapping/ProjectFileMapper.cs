@@ -25,7 +25,8 @@ namespace MSR.Data.Entities.Mapping
 		{
 			List<ProjectFileMappingExpression> fileExpressions = new List<ProjectFileMappingExpression>();
 			
-			ILog log = scmData.Log(expression.CurrentEntity<Commit>().Revision);
+			string revision = expression.CurrentEntity<Commit>().Revision;
+			ILog log = scmData.Log(revision);
 			var touchedFiles = FilterTouchedFiles(log.TouchedFiles, expression);
 			
 			foreach (var touchedFile in touchedFiles)
@@ -51,7 +52,7 @@ namespace MSR.Data.Entities.Mapping
 				{
 					if (touchedFile.SourceRevision == null)
 					{
-						touchedFile.SourceRevision = expression.LastRevision();
+						touchedFile.SourceRevision = scmData.PreviousRevision(revision);
 					}
 					fileExp.CopiedFrom(touchedFile.SourcePath, touchedFile.SourceRevision);
 				}

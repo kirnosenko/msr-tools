@@ -97,7 +97,7 @@ namespace MSR.Data.Entities.Mapping
 				);
 		}
 		[Test]
-		public void Should_set_last_revision_as_source_for_copied_file_without_source_revision()
+		public void Should_set_previous_revision_as_source_for_file_copied_without_source_revision()
 		{
 			mappingDSL
 				.AddCommit("9").At(DateTime.Today.AddDays(-1))
@@ -105,7 +105,9 @@ namespace MSR.Data.Entities.Mapping
 			.Submit();
 
 			RenameFile("file2", "file1");
-
+			scmData.Stub(x => x.PreviousRevision("10"))
+				.Return("9");
+				
 			mapper.Map(
 				mappingDSL.AddCommit("10")
 			);
@@ -136,12 +138,11 @@ namespace MSR.Data.Entities.Mapping
 				.Should().Be("10");
 		}
 		[Test]
-		public void Can_ignore_files_by_extension()
+		public void Should_use_path_selectors()
 		{
 			AddFile("file1.123");
 			AddFile("file2.555");
 
-			mapper = new ProjectFileMapper(scmData);
 			mapper.PathSelectors = new IPathSelector[] {
 				new SkipPathByExtension(new string[]
 				{
@@ -158,6 +159,42 @@ namespace MSR.Data.Entities.Mapping
 				.Select(x => x.Path).ToArray()
 					.Should().Have.SameSequenceAs(new string[] { "file1.123" });
 		}
+		[Test]
+		public void Should_map_ranamed_file_during_partial_mapping()
+		{
+			mappingDSL
+				.AddCommit("7")
+					.AddFile("file1.c").Modified()
+			.Submit()
+				.AddCommit("8")
+					.File("file1.c").Delete()
+			.Submit()
+				.AddCommit("9")
+					.AddFile("file3.c").Modified()
+			.Submit();
+			
+			RenameFile("file1.cpp", "file1.c");
+
+			scmData.Stub(x => x.Log("8"))
+				.Return(logStub);
+			scmData.Stub(x => x.PreviousRevision("8"))
+				.Return("7");
+			mapper.PathSelectors = new IPathSelector[] {
+				new TakePathByExtension(new string[]
+				{
+					".cpp"
+				})
+			};
+			mapper.Map(
+				mappingDSL.Commit("8")
+			);
+			Submit();
+			
+			Repository<ProjectFile>()
+				.Where(x => x.Path == "file1.cpp").Count()
+					.Should().Be(1);
+		}
+		
 		private void AddFile(string path)
 		{
 			TouchPath(path, TouchedFile.TouchedFileAction.ADDED, null, null);

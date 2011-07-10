@@ -6,6 +6,9 @@
 
 using System;
 
+using MSR.Data.Entities.Mapping;
+using MSR.Data.Entities.Mapping.PathSelectors;
+
 namespace MSR.Tools.Mapper
 {
 	class Program
@@ -63,11 +66,11 @@ namespace MSR.Tools.Mapper
 				Console.WriteLine("    -c		create database");
 				Console.WriteLine("    -n N		map data till revision number N");
 				Console.WriteLine("    -r R		map data till revision R");
-				Console.WriteLine("  pmap		map data partially from software repositories to database for specified revision");
-				Console.WriteLine("    -n N		map data for revision number N");
-				Console.WriteLine("    -r R		map data for revision R");
-				Console.WriteLine("    -p PATH	map the file on path");
-				Console.WriteLine("    -d DIR	map the files in directory");
+				Console.WriteLine("  pmap		map data partially from software repositories to database");
+				Console.WriteLine("    -n N		map data from a revision number N to the last one in database");
+				Console.WriteLine("    -r R		map data from a revision R to the last one in database");
+				Console.WriteLine("    -p PATH	map file in the path");
+				Console.WriteLine("    -d DIR	map files in the directory");
 				Console.WriteLine("  check		check validity of mapped data");
 				Console.WriteLine("    -n N		check data till revision number N");
 				Console.WriteLine("    -p PATH	check the file on path");
@@ -104,13 +107,21 @@ namespace MSR.Tools.Mapper
 						}
 						break;
 					case "pmap":
+						IPathSelector[] pathSelectors = new IPathSelector[]
+						{
+							new TakePathByList()
+							{
+								PathList = path != null ? new string[] { path } : null,
+								DirList = dir != null ? new string[] { dir } : null
+							}
+						};
 						if (stopRevisionNumber != 0)
 						{
-							mapper.PartialMap(stopRevisionNumber, path, dir);
+							mapper.PartialMap(stopRevisionNumber, pathSelectors);
 						}
 						else
 						{
-							mapper.PartialMap(stopRevision, path, dir);
+							mapper.PartialMap(stopRevision, pathSelectors);
 						}
 						break;
 					case "check":

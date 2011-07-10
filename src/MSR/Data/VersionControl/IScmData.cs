@@ -22,5 +22,6 @@ namespace MSR.Data.VersionControl
 		/// <param name="revision">SCM revision.</param>
 		/// <returns>Next revision or null if there is no one.</returns>
 		string NextRevision(string revision);
+		string PreviousRevision(string revision);
 	}
 }

@@ -23,13 +23,15 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 			selector = new SkipPathByRegExp();
 		}
 		[Test]
-		public void Should_select_file()
+		public void Should_ignore_file()
 		{
-			selector.FilePath = "/dir/file1";
+			selector.RegExp = @"/dir/file(\d+)";
 
 			selector.InSelection("/dir/file1")
 				.Should().Be.False();
 			selector.InSelection("/dir/file2")
+				.Should().Be.False();
+			selector.InSelection("/dir/file")
 				.Should().Be.True();
 		}
 	}

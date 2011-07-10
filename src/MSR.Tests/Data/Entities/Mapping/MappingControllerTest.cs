@@ -38,6 +38,7 @@ namespace MSR.Data.Entities.Mapping
 		[Test]
 		public void Should_use_registered_mapper()
 		{
+			commitMapperStub = MockRepository.GenerateMock<CommitMapper>(null as IScmData);
 			commitMapperStub.Expect(x => x.Map(null))
 				.IgnoreArguments()
 				.Constraints(Rhino.Mocks.Constraints.Is.NotNull())
@@ -52,6 +53,7 @@ namespace MSR.Data.Entities.Mapping
 		[Test]
 		public void Should_set_revision_being_mapped()
 		{
+			commitMapperStub = MockRepository.GenerateMock<CommitMapper>(null as IScmData);
 			commitMapperStub.Expect(x => x.Map(null))
 				.IgnoreArguments()
 				.Constraints(Rhino.Mocks.Constraints.Is.Matching(
@@ -111,6 +113,7 @@ namespace MSR.Data.Entities.Mapping
 		{
 			CommitMappingExpression commitExp = mappingDSL.AddCommit("1");
 
+			commitMapperStub = MockRepository.GenerateMock<CommitMapper>(null as IScmData);
 			commitMapperStub.Expect(x => x.Map(null))
 				.IgnoreArguments()
 				.Return(new CommitMappingExpression[] { commitExp })
@@ -153,12 +156,21 @@ namespace MSR.Data.Entities.Mapping
 
 			scmDataStub.Stub(x => x.RevisionByNumber(0))
 				.IgnoreArguments()
-				.Return("8");
-			scmDataStub.Stub(x => x.NextRevision("8"))
-				.Return("9");
-			scmDataStub.Stub(x => x.NextRevision("9"))
-				.Return(null);
-
+				.Do((Func<int, string>)(n =>
+				{
+					return n.ToString();
+				}));
+			scmDataStub.Stub(x => x.NextRevision(null))
+				.IgnoreArguments()
+				.Do((Func<string, string>)(r =>
+				{
+					if (r == "5")
+					{
+						return null;
+					}
+					return (Convert.ToInt32(r) + 1).ToString();
+				}));
+			
 			mapper.StopRevision = null;
 			mapper.OnRevisionMapping += (r,n) => revisions.Add(r);
 
@@ -167,9 +179,44 @@ namespace MSR.Data.Entities.Mapping
 			revisions.ToArray()
 				.Should().Have.SameSequenceAs(new string[]
 				{
-					"8", "9"
+					"1", "2", "3", "4", "5"
 				});
 		}
+
+		[Test]
+		public void Should_execute_partial_mapping_for_all_mapped_revisions_from_specified()
+		{
+			List<string> revisions = new List<string>();
+			
+			mappingDSL
+				.AddCommit("1")
+					.AddFile("file1").Modified()
+			.Submit()
+				.AddCommit("2")
+					.AddFile("file2").Modified()
+			.Submit()
+				.AddCommit("3")
+					.AddFile("file3").Modified()
+			.Submit();
+			scmDataStub.Stub(x => x.NextRevision(null))
+				.IgnoreArguments()
+				.Do((Func<string,string>)(r =>
+				{
+					return (Convert.ToInt32(r) + 1).ToString();
+				}));
+			
+			mapper.StartRevision = "2";
+			mapper.OnRevisionMapping += (r, n) => revisions.Add(r);
+			
+			mapper.Map(data);
+
+			revisions.ToArray()
+				.Should().Have.SameSequenceAs(new string[]
+				{
+					"2", "3"
+				});
+		}
+		
 		[Test]
 		public void Should_create_schema_for_registered_expressions()
 		{
@@ -204,7 +251,8 @@ namespace MSR.Data.Entities.Mapping
 		}
 		[Test]
 		public void Can_replace_mappers()
-		{			
+		{
+			commitMapperStub = MockRepository.GenerateMock<CommitMapper>(null as IScmData);
 			commitMapperStub.Expect(x => x.Map(null))
 				.IgnoreArguments()
 				.Constraints(Rhino.Mocks.Constraints.Is.NotNull())

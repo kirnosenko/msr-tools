@@ -58,23 +58,17 @@ namespace MSR.Tools.Mapper
 			
 			Map(mapping);
 		}
-		public void PartialMap(int revisionNumber, string path, string dir)
+		public void PartialMap(int startRevisionNumber, IPathSelector[] pathSelectors)
 		{
-			PartialMap(scmData.RevisionByNumber(revisionNumber), path, dir);
+			PartialMap(scmData.RevisionByNumber(startRevisionNumber), pathSelectors);
 		}
-		public void PartialMap(string revision, string path, string dir)
+		public void PartialMap(string startRevision, IPathSelector[] pathSelectors)
 		{
 			MappingController mapping = GetConfiguredType<MappingController>();
+			mapping.StartRevision = startRevision;
 			mapping.RegisterMapper(GetConfiguredType<CommitMapperForExistentRevision>());
 			var fileMapper = GetConfiguredType<ProjectFileMapper>();
-			fileMapper.PathSelectors = new IPathSelector[]
-			{
-				new TakePathByRegExp()
-				{
-					DirPath = dir,
-					FilePath = path
-				}
-			};
+			fileMapper.PathSelectors = pathSelectors;
 			mapping.RegisterMapper(fileMapper);
 			mapping.KeepOnlyMappers(new Type[]
 			{
@@ -84,7 +78,7 @@ namespace MSR.Tools.Mapper
 				typeof(CodeBlock)
 			});
 
-			PartialMap(mapping, revision);
+			Map(mapping);
 		}
 		public void Truncate(int numberOfRevisionsToKeep)
 		{
@@ -192,13 +186,6 @@ namespace MSR.Tools.Mapper
 				);
 
 				mapping.Map(data);
-			}
-		}
-		private void PartialMap(MappingController mapping, string revision)
-		{
-			using (ConsoleTimeLogger.Start("partial mapping time"))
-			{
-				mapping.Map(data, revision);
 			}
 		}
 		private void CheckEmptyCodeBlocks(IRepositoryResolver repositories, string testRevision)

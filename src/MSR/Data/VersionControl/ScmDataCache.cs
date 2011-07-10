@@ -55,6 +55,10 @@ namespace MSR.Data.VersionControl
 		{
 			return innerScmData.NextRevision(revision);
 		}
+		public string PreviousRevision(string revision)
+		{
+			return innerScmData.PreviousRevision(revision);
+		}
 		public int BlamesToCache
 		{
 			set

@@ -65,6 +65,10 @@ namespace MSR.Data.VersionControl.Svn
 		{
 			return RevisionByNumber(Convert.ToInt32(revision) + 1);
 		}
+		public string PreviousRevision(string revision)
+		{
+			return RevisionByNumber(Convert.ToInt32(revision) - 1);
+		}
 		private int GetNumberOfRevisions()
 		{
 			using (var info = svn.Info())

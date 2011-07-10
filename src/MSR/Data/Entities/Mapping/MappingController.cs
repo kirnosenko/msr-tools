@@ -33,16 +33,28 @@ namespace MSR.Data.Entities.Mapping
 		}
 		public void Map(IDataStore data)
 		{
-			if (CreateDataBase)
+			int nextRevisionNumber;
+			string nextRevision;
+				
+			if (StartRevision == null)
 			{
-				CreateSchema(data);
+				if (CreateDataBase)
+				{
+					CreateSchema(data);
+				}
+				else if (RevisionExists(data, StopRevision))
+				{
+					return;
+				}
+				nextRevisionNumber = MappingStartRevision(data);
+				nextRevision = scmData.RevisionByNumber(nextRevisionNumber);
 			}
-			else if (RevisionExists(data, StopRevision))
+			else
 			{
-				return;
+				StopRevision = LastMappedRevision(data);
+				nextRevision = StartRevision;
+				nextRevisionNumber = NumberOfRevision(data, StartRevision);
 			}
-			int nextRevisionNumber = MappingStartRevision(data);
-			string nextRevision = scmData.RevisionByNumber(nextRevisionNumber);
 			
 			do
 			{
@@ -114,6 +126,10 @@ namespace MSR.Data.Entities.Mapping
 		{
 			get; set;
 		}
+		public string StartRevision
+		{
+			get; set;
+		}
 		public string StopRevision
 		{
 			get; set;
@@ -134,6 +150,24 @@ namespace MSR.Data.Entities.Mapping
 			using (var s = data.OpenSession())
 			{
 				return s.Repository<Commit>().Count() + 1;
+			}
+		}
+		private int NumberOfRevision(IDataStore data, string revision)
+		{
+			using (var s = data.OpenSession())
+			{
+				return s.Repository<Commit>()
+					.Single(x => x.Revision == revision)
+					.OrderedNumber;
+			}
+		}
+		private string LastMappedRevision(IDataStore data)
+		{
+			using (var s = data.OpenSession())
+			{
+				return s.Repository<Commit>()
+					.Single(x => x.OrderedNumber == s.Repository<Commit>().Max(y => y.OrderedNumber))
+					.Revision;
 			}
 		}
 	}

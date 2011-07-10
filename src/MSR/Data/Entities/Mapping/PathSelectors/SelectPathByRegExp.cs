@@ -19,7 +19,7 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 		}
 		public SelectPathByRegExp(string regExpText)
 		{
-			RegExpText = regExpText;
+			RegExp = regExpText;
 		}
 		public bool InSelection(string path)
 		{
@@ -29,31 +29,11 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 				||
 				(!m.Success && !SelectMatchedPath());
 		}
-		public string RegExpText
+		public string RegExp
 		{
 			set
 			{
 				regExp = new Regex(value, RegexOptions.Compiled);
-			}
-		}
-		public string FilePath
-		{
-			set
-			{
-				if (value != null)
-				{
-					RegExpText = "^" + value + "$";
-				}
-			}
-		}
-		public string DirPath
-		{
-			set
-			{
-				if (value != null)
-				{
-					RegExpText = "^" + value + "/" + "(.)+" + "$";
-				}
 			}
 		}
 		protected abstract bool SelectMatchedPath();

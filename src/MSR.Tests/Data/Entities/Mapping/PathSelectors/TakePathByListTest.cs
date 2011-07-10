@@ -13,25 +13,28 @@ using SharpTestsEx;
 namespace MSR.Data.Entities.Mapping.PathSelectors
 {
 	[TestFixture]
-	public class TakePathByRegExpTest
+	public class TakePathByListTest
 	{
-		private TakePathByRegExp selector;
+		private TakePathByList selector;
 
 		[SetUp]
 		public void SetUp()
 		{
-			selector = new TakePathByRegExp();
+			selector = new TakePathByList();
 		}
 		[Test]
-		public void Should_select_file()
+		public void Should_take_path_or_directory()
 		{
-			selector.RegExp = @"/dir/file(\d+)";
+			selector.DirList = new string[] { "/dir1", "/dir2" };
+			selector.PathList = new string[] { "/dir3/file3" };
 
-			selector.InSelection("/dir/file1")
+			selector.InSelection("/dir1/file1")
 				.Should().Be.True();
-			selector.InSelection("/dir/file2")
+			selector.InSelection("/dir2/file2")
 				.Should().Be.True();
-			selector.InSelection("/dir/file")
+			selector.InSelection("/dir3/file3")
+				.Should().Be.True();
+			selector.InSelection("/dir3/file4")
 				.Should().Be.False();
 		}
 	}
