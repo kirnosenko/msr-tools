@@ -18,8 +18,8 @@ namespace MSR.Tools.Mapper
 			string configFile;
 			string cmd;
 			bool createDataBase = false;
-			int stopRevisionNumber = 0;
-			string stopRevision = null;
+			int revisionNumber = 0;
+			string revision = null;
 			bool automaticallyFixDiffErrors = false;
 			string path = null;
 			string dir = null;
@@ -40,10 +40,10 @@ namespace MSR.Tools.Mapper
 							automaticallyFixDiffErrors = true;
 							break;
 						case "-n":
-							stopRevisionNumber = Convert.ToInt32(args[++i]);
+							revisionNumber = Convert.ToInt32(args[++i]);
 							break;
 						case "-r":
-							stopRevision = args[++i];
+							revision = args[++i];
 							break;
 						case "-p":
 							path = args[++i];
@@ -71,6 +71,9 @@ namespace MSR.Tools.Mapper
 				Console.WriteLine("    -r R		map data from a revision R to the last one in database");
 				Console.WriteLine("    -p PATH	map file in the path");
 				Console.WriteLine("    -d DIR	map files in the directory");
+				Console.WriteLine("  truncate	remove mapped data from database");
+				Console.WriteLine("    -n N		keep the first N revisions");
+				Console.WriteLine("    -r R		keep all revisions until revision R");
 				Console.WriteLine("  check		check validity of mapped data");
 				Console.WriteLine("    -n N		check data till revision number N");
 				Console.WriteLine("    -p PATH	check the file on path");
@@ -97,13 +100,13 @@ namespace MSR.Tools.Mapper
 						mapper.Info();
 						break;
 					case "map":
-						if (stopRevisionNumber != 0)
+						if (revisionNumber != 0)
 						{
-							mapper.Map(createDataBase, stopRevisionNumber);
+							mapper.Map(createDataBase, revisionNumber);
 						}
 						else
 						{
-							mapper.Map(createDataBase, stopRevision);
+							mapper.Map(createDataBase, revision);
 						}
 						break;
 					case "pmap":
@@ -115,23 +118,33 @@ namespace MSR.Tools.Mapper
 								DirList = dir != null ? new string[] { dir } : null
 							}
 						};
-						if (stopRevisionNumber != 0)
+						if (revisionNumber != 0)
 						{
-							mapper.PartialMap(stopRevisionNumber, pathSelectors);
+							mapper.PartialMap(revisionNumber, pathSelectors);
 						}
 						else
 						{
-							mapper.PartialMap(stopRevision, pathSelectors);
+							mapper.PartialMap(revision, pathSelectors);
+						}
+						break;
+					case "truncate":
+						if (revisionNumber != 0)
+						{
+							mapper.Truncate(revisionNumber);
+						}
+						else
+						{
+							mapper.Truncate(revision);
 						}
 						break;
 					case "check":
-						if (stopRevisionNumber != 0)
+						if (revisionNumber != 0)
 						{
-							mapper.Check(stopRevisionNumber, path, automaticallyFixDiffErrors);
+							mapper.Check(revisionNumber, path, automaticallyFixDiffErrors);
 						}
 						else
 						{
-							mapper.Check(stopRevision, path, automaticallyFixDiffErrors);
+							mapper.Check(revision, path, automaticallyFixDiffErrors);
 						}
 						break;
 					default:

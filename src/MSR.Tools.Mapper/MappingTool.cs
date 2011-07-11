@@ -82,12 +82,16 @@ namespace MSR.Tools.Mapper
 		}
 		public void Truncate(int numberOfRevisionsToKeep)
 		{
+			Truncate(scmData.RevisionByNumber(numberOfRevisionsToKeep));
+		}
+		public void Truncate(string lastRevisionToKeep)
+		{
 			using (ConsoleTimeLogger.Start("truncating time"))
 			using (var s = data.OpenSession())
 			{
 				var selectionDSL = s.SelectionDSL();
 
-				var addedCommits = selectionDSL.Commits().AfterRevision(numberOfRevisionsToKeep);
+				var addedCommits = selectionDSL.Commits().AfterRevision(lastRevisionToKeep);
 				var addedBugFixes = addedCommits.BugFixes().InCommits();
 				var addedModifications = addedCommits.Modifications().InCommits();
 				var addedFiles = addedCommits.Files().AddedInCommits();
