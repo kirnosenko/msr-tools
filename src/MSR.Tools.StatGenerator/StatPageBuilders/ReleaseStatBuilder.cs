@@ -44,6 +44,11 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 						Revision = c.Revision
 					}
 				).ToList();
+			releases.Add(new
+			{
+				Tag = "upcoming",
+				Revision = repositories.LastRevision()
+			});
 
 			DateTime statFrom = repositories.Repository<Commit>().Min(x => x.Date);
 			DateTime statTo = repositories.Repository<Commit>().Max(x => x.Date);
