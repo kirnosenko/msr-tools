@@ -36,7 +36,7 @@ namespace MSR.Tools.Predictor
 		}
 		private void ReadOptions()
 		{
-			view.SetReleaseList(model.Releases.Keys);
+			view.SetReleaseList(model.Releases.Values);
 			view.SetModelList(model.Models.Select(x => x.Title));
 			view.ClearReport();
 			view.CommandMenuAvailable = true;
@@ -53,7 +53,7 @@ namespace MSR.Tools.Predictor
 			model.SelectedModels = models;
 			
 			model.SelectedReleases = model.Releases
-				.Where(x => view.SelectedReleases.Contains(x.Key))
+				.Where(x => view.SelectedReleases.Contains(x.Value))
 				.ToDictionary(x => x.Key, x => x.Value);
 			
 			model.ShowFiles = view.ShowFiles;

@@ -51,15 +51,16 @@ namespace MSR.Data.Entities
 			var releases =
 				from r in repositories.Repository<Release>()
 				join c in repositories.Repository<Commit>() on r.CommitID equals c.ID
+				orderby c.OrderedNumber
 				select new
 				{
-					Release = r.Tag,
-					Revision = c.Revision
+					Revision = c.Revision,
+					Tag = r.Tag
 				};
 			Dictionary<string,string> result = new Dictionary<string, string>();
 			foreach (var r in releases)
 			{
-				result.Add(r.Release, r.Revision);
+				result.Add(r.Revision, r.Tag);
 			}
 			return result;
 		}

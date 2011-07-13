@@ -34,22 +34,9 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 
 			List<object> releaseObjects = new List<object>();
 			
-			var releases =
-				(
-					from r in repositories.Repository<Release>()
-					join c in repositories.Repository<Commit>() on r.CommitID equals c.ID
-					select new
-					{
-						Tag = r.Tag,
-						Revision = c.Revision
-					}
-				).ToList();
-			releases.Add(new
-			{
-				Tag = "upcoming",
-				Revision = repositories.LastRevision()
-			});
-
+			var releases = repositories.Releases();
+			releases.Add(repositories.LastRevision(), "upcoming");
+			
 			DateTime statFrom = repositories.Repository<Commit>().Min(x => x.Date);
 			DateTime statTo = repositories.Repository<Commit>().Max(x => x.Date);
 			
@@ -59,7 +46,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				var releaseCommits = repositories.SelectionDSL()
 					.Commits()
 						.AfterRevision(prevRelease)
-						.TillRevision(release.Revision)
+						.TillRevision(release.Key)
 						.Fixed();
 				var releaseCode = releaseCommits
 					.Files().InDirectory(TargetDir)
@@ -67,7 +54,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					.CodeBlocks().InModifications().Fixed();
 				var totalReleaseCommits = repositories.SelectionDSL()
 					.Commits()
-						.TillRevision(release.Revision)
+						.TillRevision(release.Key)
 						.Fixed();
 				var totalReleaseCode = totalReleaseCommits
 					.Files().InDirectory(TargetDir)
@@ -91,11 +78,11 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				
 				double releaseDD = releaseCode.CalculateDefectDensity();
 				double totalReleaseDD = totalReleaseCode.CalculateDefectDensity();
-				double postReleaseDD = releaseDD - releaseCode.CalculateDefectDensityAtRevision(release.Revision);
+				double postReleaseDD = releaseDD - releaseCode.CalculateDefectDensityAtRevision(release.Key);
 				
 				releaseObjects.Add(new
 				{
-					tag = release.Tag,
+					tag = release.Value,
 					commits = string.Format("{0} ({1})",
 						releaseCommitsCount,
 						totalReleaseCommitsCount
@@ -109,7 +96,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 						totalReleaseAuthorsCount
 					),
 					files = repositories.SelectionDSL().Files()
-						.ExistInRevision(release.Revision).Count(),
+						.ExistInRevision(release.Key).Count(),
 					dd = string.Format("{0} ({1})",
 						releaseDD.ToString("F03"),
 						totalReleaseDD.ToString("F03")
@@ -140,7 +127,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 						0).ToString("F02")
 				});
 				
-				prevRelease = release.Revision;
+				prevRelease = release.Key;
 			}
 			
 			result.Add("releases", releaseObjects);

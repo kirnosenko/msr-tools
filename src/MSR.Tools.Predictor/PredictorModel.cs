@@ -139,7 +139,7 @@ namespace MSR.Tools.Predictor
 			string evaluationResult = null;
 
 			output.Append("Releases: ");
-			foreach (var r in releases.Keys)
+			foreach (var r in releases.Values)
 			{
 				output.Append(r + " ");
 			}
@@ -153,7 +153,7 @@ namespace MSR.Tools.Predictor
 				
 				using (var s = predictor.Data.OpenSession())
 				{
-					model.Init(s, releases.Values);
+					model.Init(s, releases.Keys);
 					model.Predict();
 					if (Evaluate)
 					{
