@@ -30,21 +30,23 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\gnome-vfs\gnome-vfs.config"; // 5550 revisions
 			//configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
 			//configFile = @"E:\repo\git\git.config";
-			//configFile = @"E:\repo\gitstats\gitstats.config";
 			//configFile = @"E:\repo\linux-2.6\linux-2.6.config";
-			//configFile = @"E:\repo\jquery\jquery.config";
 			//configFile = @"E:\repo\django\django.config";
-			configFile = @"E:\repo\postgresql\postgresql.config";
+			//configFile = @"E:\repo\postgresql\postgresql.config";
 			//configFile = @"E:\repo\nhibernate\nhibernate.config";
 			//configFile = @"E:\repo\msr\msr.config";
 			//configFile = @"E:\repo\wordpress\wordpress.config"; // 13998 revisions
 			//configFile = @"E:\repo\frund\frund.config";
 			//configFile = @"E:\repo\httpd\httpd.config";
+			//configFile = @"E:\repo\subtle\subtle.config";
+			//configFile = @"E:\repo\hc\hc.config";
+			configFile = @"E:\repo\pgadmin3\pgadmin3.config";
 
 			//Debug();
-			//Mapping();
-			PartialMapping();
+			Mapping();
+			//PartialMapping();
 			//MapReleases();
+			//MapSyntheticReleases(5);
 			//GenerateStat();
 
 			Console.ReadKey();
@@ -52,27 +54,28 @@ namespace MSR.Tools.Debugger
 		static void Debug()
 		{
 			DebuggingTool debugger = new DebuggingTool(configFile);
-			debugger.QueryUnderProfiler();
+			debugger.FindDiffError(256);
 		}
 		static void Mapping()
 		{
 			MappingTool mapper = new MappingTool(configFile);
 
 			//mapper.Info();
-			//mapper.Map(false, 28000);
-			//mapper.Truncate(600);
-			mapper.Check(28000);
+			mapper.Map(false, 1000);
+			//mapper.Map(false, 800);
+			//mapper.Truncate(10);
+			//mapper.Check(100);
 		}
 		static void PartialMapping()
 		{
 			MappingTool mapper = new MappingTool(configFile);
 
-			mapper.PartialMap("ac03efbb9cb9ed3eb9ede139dbdeb62782185128",
+			mapper.PartialMap(30,
 				new IPathSelector[]
 				{
 					new TakePathByList()
 					{
-						PathList = new string[] { "/src/interfaces/ecpg/test/expected/connect-test1.c.in" }
+						PathList = new string[] { "/src/utils/sysLogger.h" }
 					}
 				}
 			);
@@ -83,19 +86,17 @@ namespace MSR.Tools.Debugger
 			mapper.MapReleases(
 				new Dictionary<string,string>()
 				{
-					{ "f44328b2b8cb175d05d424ab147d04ad0de744c5", "7.0" },
-					{ "741604dd84dbbd58368a0206f73de259cb6718f4", "7.1" },
-					{ "42e28d209c3dea644b6d111ae4c84b620fea0ded", "7.2" },
-					{ "1941887d6e2055cae3a1532c9ae4d58504f93cc7", "7.3" },
-					{ "cc3a149cb0b8a93bfee113c0e4a1ab35f49ad02c", "7.4 RC 1" },
-					{ "c22b7eccd368754ea96865c046764382ab05db4b", "8.0" },
-					{ "2a80c3c4dc56a44a26805c889ef71b614e769266", "8.1" },
-					{ "2f52d7260ceac8e57613516d82a7404fbf3d137b", "8.2" },
-					{ "9e647a13872a5f34dc0009566925c5c352463780", "8.3" },
-					{ "4d53a2f9699547bdc12831d2860c9d44c465e805", "8.4" },
-					{ "1084f317702e1a039696ab8a37caf900e55ec8f2", "9.0 BETA 3" },
+					{ "7e92915b1012773fc4f699951d13da1e5780b3ae", "0.10" },
+					{ "ca2f4b0e0f61675d9085faf3cef57b4a7bc03496", "0.9" },
+					{ "6bd33739504d20cb20570df9b28b9c18eab896cd", "0.8" },
+					{ "dfb16fdae6f7f966c2adad76b867f96eae164e7a", "0.7" },
 				}
 			);
+		}
+		static void MapSyntheticReleases(int count)
+		{
+			MappingTool mapper = new MappingTool(configFile);
+			mapper.MapSyntheticReleases(count, 0.8);
 		}
 		static void GenerateStat()
 		{

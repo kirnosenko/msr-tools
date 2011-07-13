@@ -12,6 +12,13 @@ namespace MSR.Data.Entities
 {
 	public static class RepositoryResolverHelper
 	{
+		public static string FirstRevision(this IRepositoryResolver repositories)
+		{
+			return
+				repositories.Repository<Commit>().Single(
+					c => c.OrderedNumber == repositories.Repository<Commit>().Min(x => x.OrderedNumber)
+				).Revision;
+		}
 		public static string LastRevision(this IRepositoryResolver repositories)
 		{
 			return

@@ -140,6 +140,46 @@ namespace MSR.Tools.Mapper
 				s.SubmitChanges();
 			}
 		}
+		public void MapSyntheticReleases(int count)
+		{
+			MapSyntheticReleases(count, 0.9);
+		}
+		public void MapSyntheticReleases(int count, double stabilizationProbability)
+		{
+			Dictionary<string,string> releases = new Dictionary<string,string>();
+
+			using (var s = data.OpenSession())
+			{
+				double stabilizationPeriod = s.SelectionDSL().BugFixes()
+					.CalculateStabilizationPeriod(stabilizationProbability);
+				
+				DateTime from = s.Repository<Commit>().Single(c => c.Revision == s.FirstRevision()).Date;
+				DateTime to = s.Repository<Commit>().Single(c => c.Revision == s.LastRevision()).Date.AddDays(- stabilizationPeriod);
+				
+				int duration = (to - from).Days;
+				int delta = duration / count;
+				DateTime releaseDate = from;
+				
+				for (int i = 1; i <= count; i++)
+				{
+					releaseDate = releaseDate.AddDays(delta);
+					
+					var q = s.Repository<Commit>()
+							.Where(x => x.Date <= releaseDate)
+							.OrderByDescending(x => x.Date).ToList();
+					
+					releases.Add(
+						s.Repository<Commit>()
+							.Where(x => x.Date <= releaseDate)
+							.OrderByDescending(x => x.Date)
+							.First().Revision,
+						"Synthetic Release # " + i.ToString()
+					);
+				}
+			}
+			
+			MapReleases(releases);
+		}
 		public void Check(int stopRevisionNumber)
 		{
 			Check(stopRevisionNumber, null, false);

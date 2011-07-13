@@ -14,7 +14,7 @@ namespace MSR.Data.VersionControl.Git
 		public CommandLineGitClient(string repositoryPath)
 		{
 			RepositoryPath = repositoryPath;
-			Command = "git";
+			GitCommand = "git";
 			Branch = "master";
 		}
 		public Stream RevList()
@@ -57,7 +57,7 @@ namespace MSR.Data.VersionControl.Git
 		{
 			get; private set;
 		}
-		public string Command
+		public string GitCommand
 		{
 			get; set;
 		}
@@ -70,7 +70,7 @@ namespace MSR.Data.VersionControl.Git
 			MemoryStream buf = new MemoryStream();
 
 			Shell.RunAndWaitForExit(
-				Command,
+				GitCommand,
 				string.Format("--git-dir={0} ", RepositoryPath) + string.Format(cmd, objects),
 				buf
 			);
