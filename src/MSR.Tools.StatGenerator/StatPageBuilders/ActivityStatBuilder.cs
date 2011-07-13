@@ -45,6 +45,8 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				m = m.AddMonths(1);
 			}
 			
+			string lastRevision = null;
+			
 			foreach (var month in monthes)
 			{
 				DateTime nextMonth = month.AddMonths(1);
@@ -73,9 +75,12 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				int totalMonthAuthorsCount = totalMonthCommits.Select(c => c.Author).Distinct().Count();
 				int monthFixesCount = monthCommits.AreBugFixes().Count();
 				int totalMonthFixesCount = totalMonthCommits.AreBugFixes().Count();
-				string lastMonthRevision = monthCommits
-					.Single(c => c.OrderedNumber == monthCommits.Max(x => x.OrderedNumber))
-					.Revision;
+				if (monthCommitsCount > 0)
+				{
+					lastRevision = monthCommits
+						.Single(c => c.OrderedNumber == monthCommits.Max(x => x.OrderedNumber))
+						.Revision;
+				}
 				
 				monthObjects.Add(new
 				{
@@ -89,7 +94,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 						totalMonthAuthorsCount
 					),
 					files = repositories.SelectionDSL().Files()
-						.ExistInRevision(lastMonthRevision).Count(),
+						.ExistInRevision(lastRevision).Count(),
 					fixed_defects = string.Format("{0} ({1})",
 						monthFixesCount,
 						totalMonthFixesCount
