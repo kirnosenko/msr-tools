@@ -160,6 +160,35 @@ namespace MSR.Data.Entities.Mapping
 					.Should().Have.SameSequenceAs(new string[] { "file1.123" });
 		}
 		[Test]
+		public void Should_use_all_path_selectors()
+		{
+			AddFile("/dir1/file1.123");
+			AddFile("/dir1/file2.555");
+			AddFile("/dir2/file3.555");
+
+			mapper.PathSelectors = new IPathSelector[] {
+				new TakePathByList()
+				{
+					DirList = new string[] { "/dir1" }
+				},
+				new TakePathByExtension(new string[]
+				{
+					".555"
+				})
+			};
+
+			mapper.Map(
+				mappingDSL.AddCommit("10")
+			);
+			Submit();
+			
+			Repository<ProjectFile>().Count()
+				.Should().Be(1);
+			Repository<ProjectFile>()
+				.Single().Path
+					.Should().Be("/dir1/file2.555");
+		}
+		[Test]
 		public void Should_map_ranamed_file_during_partial_mapping()
 		{
 			mappingDSL

@@ -73,7 +73,7 @@ namespace MSR.Data.Entities.Mapping
 			{
 				foreach (var selector in PathSelectors)
 				{
-					touchedFiles = touchedFiles.Where(x => selector.InSelection(x.Path));
+					touchedFiles = touchedFiles.Where(x => selector.InSelection(x.Path)).ToArray();
 				}
 			}
 			
