@@ -38,7 +38,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 					let codeDate = bugFixes.Repository<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
 					group codeDate by c.Date into g
 					select (g.Key - g.Min()).TotalDays
-				).ToList();
+				).ToArray();
 		}
 		/// <summary>
 		/// Calculate for each fix the time between the fix date
@@ -60,7 +60,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 					let codeDate = bugFixes.Repository<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
 					group codeDate by c.Date into g
 					select (g.Key - g.Max()).TotalDays
-				).ToList();
+				).ToArray();
 		}
 		/// <summary>
 		/// Calculate for each fix the time between the fix date
@@ -83,7 +83,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 					let codeDate = bugFixes.Repository<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
 					group codeDate by c.Date into g
 					select ((g.Key - g.Min()).TotalDays + (g.Key - g.Max()).TotalDays) / 2
-				).ToList();
+				).ToArray();
 		}
 		/// <summary>
 		/// Calculate for each fix the time between dates when
@@ -105,7 +105,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 					let codeDate = bugFixes.Repository<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
 					group codeDate by c.Date into g
 					select (g.Max() - g.Min()).TotalDays
-				).ToList();
+				).ToArray();
 		}
 	}
 }
