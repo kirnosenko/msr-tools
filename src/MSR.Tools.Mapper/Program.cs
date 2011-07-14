@@ -114,8 +114,8 @@ namespace MSR.Tools.Mapper
 						{
 							new TakePathByList()
 							{
-								PathList = path != null ? new string[] { path } : null,
-								DirList = dir != null ? new string[] { dir } : null
+								Paths = path != null ? new string[] { path } : null,
+								Dirs = dir != null ? new string[] { dir } : null
 							}
 						};
 						if (revisionNumber != 0)

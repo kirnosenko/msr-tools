@@ -7,26 +7,27 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace MSR.Data.Entities.Mapping.PathSelectors
 {
 	public abstract class SelectPathByExtension : IPathSelector
 	{
-		private List<string> extensions;
-		
-		public SelectPathByExtension(string[] extensions)
-		{
-			this.extensions = new List<string>(extensions);
-		}
 		public bool InSelection(string path)
 		{
-			string ext = Path.GetExtension(path).ToLower();	
-			
-			if (extensions.Contains(ext))
-			{
-				return SelectMatchedPath();
+			if (Extensions != null)
+			{	
+				if (Extensions.Any(x => x == Path.GetExtension(path).ToLower()))
+				{
+					return SelectMatchedPath();
+				}
 			}
+			
 			return ! SelectMatchedPath();
+		}
+		public string[] Extensions
+		{
+			get; set;
 		}
 		protected abstract bool SelectMatchedPath();
 	}

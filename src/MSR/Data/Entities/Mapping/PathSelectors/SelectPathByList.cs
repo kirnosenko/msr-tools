@@ -13,27 +13,27 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 	{
 		public bool InSelection(string path)
 		{
-			if (PathList != null)
+			if (Paths != null)
 			{
-				if (PathList.Any(x => x == path))
+				if (Paths.Any(x => x == path))
 				{
 					return SelectMatchedPath();
 				}
 			}
-			if (DirList != null)
+			if (Dirs != null)
 			{
-				if (DirList.Any(x => path.StartsWith(x + "/")))
+				if (Dirs.Any(x => path.StartsWith(x + "/")))
 				{
 					return SelectMatchedPath();
 				}
 			}
-			return !SelectMatchedPath();
+			return ! SelectMatchedPath();
 		}
-		public string[] PathList
+		public string[] Paths
 		{
 			get; set;
 		}
-		public string[] DirList
+		public string[] Dirs
 		{
 			get; set;
 		}

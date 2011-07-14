@@ -12,10 +12,6 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 {
 	public class SkipPathByExtension : SelectPathByExtension
 	{
-		public SkipPathByExtension(string[] extensionsToSkip)
-			: base(extensionsToSkip)
-		{
-		}
 		protected override bool SelectMatchedPath()
 		{
 			return false;

@@ -28,7 +28,7 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
 			//configFile = @"E:\repo\dia\dia.config"; // 4384 revisions
 			//configFile = @"E:\repo\gnome-vfs\gnome-vfs.config"; // 5550 revisions
-			//configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
+			configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
 			//configFile = @"E:\repo\git\git.config";
 			//configFile = @"E:\repo\linux-2.6\linux-2.6.config";
 			//configFile = @"E:\repo\django\django.config";
@@ -40,13 +40,14 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\httpd\httpd.config";
 			//configFile = @"E:\repo\subtle\subtle.config";
 			//configFile = @"E:\repo\hc\hc.config";
-			configFile = @"E:\repo\pgadmin3\pgadmin3.config";
+			//configFile = @"E:\repo\pgadmin3\pgadmin3.config";
+			//configFile = @"E:\repo\gnuplot\gnuplot.config";
 
 			//Debug();
 			Mapping();
 			//PartialMapping();
 			//MapReleases();
-			//MapSyntheticReleases(5);
+			//MapSyntheticReleases(10, 0.8);
 			//GenerateStat();
 
 			Console.ReadKey();
@@ -61,21 +62,21 @@ namespace MSR.Tools.Debugger
 			MappingTool mapper = new MappingTool(configFile);
 
 			//mapper.Info();
-			mapper.Map(false, 1000);
+			mapper.Map(true, 10);
 			//mapper.Map(false, 800);
 			//mapper.Truncate(10);
-			//mapper.Check(100);
+			//mapper.Check(6651);
 		}
 		static void PartialMapping()
 		{
 			MappingTool mapper = new MappingTool(configFile);
 
-			mapper.PartialMap(30,
+			mapper.PartialMap(1901,
 				new IPathSelector[]
 				{
 					new TakePathByList()
 					{
-						PathList = new string[] { "/src/utils/sysLogger.h" }
+						Paths = new string[] { "/src/gpexecute.inc" }
 					}
 				}
 			);
@@ -86,17 +87,21 @@ namespace MSR.Tools.Debugger
 			mapper.MapReleases(
 				new Dictionary<string,string>()
 				{
-					{ "7e92915b1012773fc4f699951d13da1e5780b3ae", "0.10" },
-					{ "ca2f4b0e0f61675d9085faf3cef57b4a7bc03496", "0.9" },
-					{ "6bd33739504d20cb20570df9b28b9c18eab896cd", "0.8" },
-					{ "dfb16fdae6f7f966c2adad76b867f96eae164e7a", "0.7" },
+					{ "f29b607b20b61fddf93885132ed0708308770cf8", "1.12.0 BETA 3" },
+					{ "7fb632e2d838f1e75aec512e060841977c6cb5a5", "1.10.0" },
+					{ "72fbb5a89ac45a8795cda0cd1537e7bbe666602f", "1.8.0" },
+					{ "d8b0a5b7da22c4621b3064fca08d55830430bddb", "1.6.0" },
+					{ "71edf25b4a6a1f882e3a463292b3828f40c894c9", "1.4.0" },
+					{ "3f83858cea5aa8bca9647d8363adc35c1f1d5801", "1.2.0" },
+					{ "d4bfe61f1dc71363c0d237b1add257a4e50488d5", "1.0.0" },
+					{ "ccbd6c1cd30acc12df9e91aba0230c848d69b6cc", "0.9.0" },
 				}
 			);
 		}
-		static void MapSyntheticReleases(int count)
+		static void MapSyntheticReleases(int count, double stabilizationProbability)
 		{
 			MappingTool mapper = new MappingTool(configFile);
-			mapper.MapSyntheticReleases(count, 0.8);
+			mapper.MapSyntheticReleases(count, stabilizationProbability);
 		}
 		static void GenerateStat()
 		{

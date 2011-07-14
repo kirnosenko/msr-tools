@@ -25,8 +25,8 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 		[Test]
 		public void Should_take_path_or_directory()
 		{
-			selector.DirList = new string[] { "/dir1", "/dir2" };
-			selector.PathList = new string[] { "/dir3/file3" };
+			selector.Dirs = new string[] { "/dir1", "/dir2" };
+			selector.Paths = new string[] { "/dir3/file3" };
 
 			selector.InSelection("/dir1/file1")
 				.Should().Be.True();

@@ -144,10 +144,10 @@ namespace MSR.Data.Entities.Mapping
 			AddFile("file2.555");
 
 			mapper.PathSelectors = new IPathSelector[] {
-				new SkipPathByExtension(new string[]
+				new SkipPathByExtension()
 				{
-					".555"
-				})
+					Extensions = new string[] { ".555" }
+				}
 			};
 			
 			mapper.Map(
@@ -169,12 +169,12 @@ namespace MSR.Data.Entities.Mapping
 			mapper.PathSelectors = new IPathSelector[] {
 				new TakePathByList()
 				{
-					DirList = new string[] { "/dir1" }
+					Dirs = new string[] { "/dir1" }
 				},
-				new TakePathByExtension(new string[]
+				new TakePathByExtension()
 				{
-					".555"
-				})
+					Extensions = new string[] { ".555" }
+				}
 			};
 
 			mapper.Map(
@@ -209,10 +209,10 @@ namespace MSR.Data.Entities.Mapping
 			scmData.Stub(x => x.PreviousRevision("8"))
 				.Return("7");
 			mapper.PathSelectors = new IPathSelector[] {
-				new TakePathByExtension(new string[]
+				new TakePathByExtension()
 				{
-					".cpp"
-				})
+					Extensions = new string[] { ".cpp" }
+				}
 			};
 			mapper.Map(
 				mappingDSL.Commit("8")

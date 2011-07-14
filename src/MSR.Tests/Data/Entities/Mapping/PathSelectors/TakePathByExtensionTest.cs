@@ -21,7 +21,10 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 		[SetUp]
 		public void SetUp()
 		{
-			selector = new TakePathByExtension(extensions);
+			selector = new TakePathByExtension()
+			{
+				Extensions = extensions
+			};
 		}
 		[Test]
 		public void Should_select_matched_paths()

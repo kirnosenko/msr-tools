@@ -22,7 +22,10 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 		[SetUp]
 		public void SetUp()
 		{
-			selector = new SkipPathByExtension(extensions);
+			selector = new SkipPathByExtension()
+			{
+				Extensions = extensions
+			};
 		}
 		[Test]
 		public void Should_ignore_matched_paths()

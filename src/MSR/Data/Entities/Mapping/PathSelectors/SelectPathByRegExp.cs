@@ -14,20 +14,17 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 	{
 		private Regex regExp;
 		
-		public SelectPathByRegExp()
-		{
-		}
-		public SelectPathByRegExp(string regExpText)
-		{
-			RegExp = regExpText;
-		}
 		public bool InSelection(string path)
 		{
-			Match m = regExp.Match(path);
-			return
-				(m.Success && SelectMatchedPath())
-				||
-				(!m.Success && !SelectMatchedPath());
+			if (regExp != null)
+			{
+				Match m = regExp.Match(path);
+				return
+					(m.Success && SelectMatchedPath())
+					||
+					(!m.Success && !SelectMatchedPath());
+			}
+			return ! SelectMatchedPath();
 		}
 		public string RegExp
 		{

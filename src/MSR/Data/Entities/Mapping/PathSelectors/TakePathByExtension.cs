@@ -12,10 +12,6 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 {
 	public class TakePathByExtension : SelectPathByExtension
 	{
-		public TakePathByExtension(string[] extensionsToTake)
-			: base(extensionsToTake)
-		{
-		}
 		protected override bool SelectMatchedPath()
 		{
 			return true;
