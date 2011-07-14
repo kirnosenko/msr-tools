@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using MathNet.Numerics.Statistics;
+
 using MSR.Data;
 using MSR.Data.Entities;
 using MSR.Data.Entities.DSL.Selection;
@@ -31,6 +33,13 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 				y[i] = (double)data.Where(d => d <= value).Count() / data.Count();
 				i++;
 			}
+
+			Legend = string.Format("Mean = {0:0.00} Standard deviation = {1:0.00}", x.Mean(), x.PopulationStandardDeviation());
+		}
+		public override void Draw(IGraphView graph)
+		{
+			graph.Title = Title;
+			graph.ShowPoints(Legend, x, y);
 		}
 		protected abstract IEnumerable<double> DistributionData(IRepositoryResolver repositories);
 	}

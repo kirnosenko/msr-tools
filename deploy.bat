@@ -28,6 +28,7 @@ class Deploy
 			"./lib/AForge.dll",
 			"./lib/Accord.Math.dll",
 			"./lib/Accord.Statistics.dll",
+			"./lib/MathNet.Numerics.dll",
 			"./lib/NVelocity.dll",
 			"./lib/ZedGraph.dll",
 			

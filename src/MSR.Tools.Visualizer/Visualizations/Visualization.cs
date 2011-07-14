@@ -18,12 +18,18 @@ namespace MSR.Tools.Visualizer.Visualizations
 		
 		public Visualization()
 		{
+			Legend = "";
 			TargetDir = "/";
 		}
 		public abstract void Calc(IRepositoryResolver repositories);
 		public abstract void Draw(IGraphView graph);
 		[Browsable(false)]
 		public string Title
+		{
+			get; protected set;
+		}
+		[Browsable(false)]
+		public string Legend
 		{
 			get; protected set;
 		}

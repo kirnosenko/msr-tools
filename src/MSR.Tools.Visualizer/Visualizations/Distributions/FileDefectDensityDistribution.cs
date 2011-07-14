@@ -23,10 +23,9 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 		}
 		public override void Draw(IGraphView graph)
 		{
-			graph.Title = Title;
 			graph.XAxisTitle = "File defect density";
 			graph.YAxisTitle = "Probability";
-			graph.ShowPoints("", x, y);
+			base.Draw(graph);
 		}
 		public override bool Configurable
 		{

@@ -23,10 +23,9 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 		}
 		public override void Draw(IGraphView graph)
 		{
-			graph.Title = Title;
 			graph.XAxisTitle = "Days";
 			graph.YAxisTitle = "Probability";
-			graph.ShowPoints("M = D =", x, y);
+			base.Draw(graph);
 		}
 		public override bool Configurable
 		{
