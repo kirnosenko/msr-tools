@@ -33,7 +33,8 @@ namespace MSR.Tools.Predictor
 		IEnumerable<int> SelectedModels { get; }
 		bool CommandMenuAvailable { get; set; }
 		bool ShowFiles { get; set; }
-		int MaxReleaseSetSize { get; set; }
+		bool LimitReleaseSetSize { get; set; }
+		int ReleaseSetSize { get; set; }
 	}
 	
 	public partial class PredictorView : Form, IPredictorView
@@ -112,7 +113,8 @@ namespace MSR.Tools.Predictor
 					mainMenu.Enabled = value;
 					releaseList.Enabled = value;
 					modelList.Enabled = value;
-					maxReleaseSetSize.Enabled = value;
+					cbLimitReleaseSetSize.Enabled = value;
+					releaseSetSize.Enabled = value && LimitReleaseSetSize;
 				});
 				Status = value ? "Ready" : "";
 			}
@@ -152,10 +154,19 @@ namespace MSR.Tools.Predictor
 			get { return showFilesToolStripMenuItem.Checked; }
 			set { showFilesToolStripMenuItem.Checked = value; }
 		}
-		public int MaxReleaseSetSize
+		public bool LimitReleaseSetSize
 		{
-			get { return (int)maxReleaseSetSize.Value; }
-			set { maxReleaseSetSize.Value = value; }
+			get { return cbLimitReleaseSetSize.Checked; }
+			set
+			{
+				cbLimitReleaseSetSize.Checked = value;
+				releaseSetSize.Enabled = value;
+			}
+		}
+		public int ReleaseSetSize
+		{
+			get { return (int)releaseSetSize.Value; }
+			set { releaseSetSize.Value = value; }
 		}
 
 		protected override void DefWndProc(ref Message m)
@@ -195,6 +206,10 @@ namespace MSR.Tools.Predictor
 		private void showFilesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			showFilesToolStripMenuItem.Checked = ! showFilesToolStripMenuItem.Checked;
+		}
+		private void cbLimitReleaseSetSize_CheckedChanged(object sender, EventArgs e)
+		{
+			LimitReleaseSetSize = cbLimitReleaseSetSize.Checked;
 		}
 	}
 }

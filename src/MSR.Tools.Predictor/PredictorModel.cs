@@ -32,7 +32,8 @@ namespace MSR.Tools.Predictor
 		
 		bool Evaluate { get; set; }
 		bool ShowFiles { get; set; }
-		int MaxReleaseSetSize { get; set; }
+		bool LimitReleaseSetSize { get; set; }
+		int ReleaseSetSize { get; set; }
 	}
 	
 	public class PredictorModel : IPredictorModel
@@ -49,7 +50,8 @@ namespace MSR.Tools.Predictor
 		{
 			Evaluate = false;
 			ShowFiles = true;
-			MaxReleaseSetSize = 3;
+			LimitReleaseSetSize = true;
+			ReleaseSetSize = 3;
 		}
 		public void OpenConfig(string fileName)
 		{
@@ -85,7 +87,11 @@ namespace MSR.Tools.Predictor
 		{
 			get; set;
 		}
-		public int MaxReleaseSetSize
+		public bool LimitReleaseSetSize
+		{
+			get; set;
+		}
+		public int ReleaseSetSize
 		{
 			get; set;
 		}
@@ -95,16 +101,16 @@ namespace MSR.Tools.Predictor
 			get
 			{
 				List<IDictionary<string,string>> releaseSets = new List<IDictionary<string,string>>();
-				if (SelectedReleases.Count <= MaxReleaseSetSize)
+				if (!LimitReleaseSetSize || SelectedReleases.Count <= ReleaseSetSize)
 				{
 					releaseSets.Add(SelectedReleases);
 				}
 				else
 				{
-					for (int i = 0; i <= SelectedReleases.Count - MaxReleaseSetSize; i++)
+					for (int i = 0; i <= SelectedReleases.Count - ReleaseSetSize; i++)
 					{
 						releaseSets.Add(
-							SelectedReleases.Skip(i).Take(MaxReleaseSetSize)
+							SelectedReleases.Skip(i).Take(ReleaseSetSize)
 								.ToDictionary(x => x.Key, x => x.Value)
 						);
 					}

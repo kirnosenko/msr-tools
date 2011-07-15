@@ -40,8 +40,10 @@
 			this.outputText = new System.Windows.Forms.TextBox();
 			this.modelList = new System.Windows.Forms.CheckedListBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.maxReleaseSetSize = new System.Windows.Forms.NumericUpDown();
+			this.cbLimitReleaseSetSize = new System.Windows.Forms.CheckBox();
+			this.releaseSetSize = new System.Windows.Forms.NumericUpDown();
 			this.statusBar = new System.Windows.Forms.StatusStrip();
+			this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.splitter1 = new System.Windows.Forms.Splitter();
@@ -49,10 +51,9 @@
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.splitter2 = new System.Windows.Forms.Splitter();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
 			this.mainMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.maxReleaseSetSize)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.releaseSetSize)).BeginInit();
 			this.statusBar.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -157,23 +158,50 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Controls.Add(this.maxReleaseSetSize);
+			this.groupBox1.Controls.Add(this.cbLimitReleaseSetSize);
+			this.groupBox1.Controls.Add(this.releaseSetSize);
 			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.groupBox1.Location = new System.Drawing.Point(0, 296);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(200, 64);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Max release set size";
+			this.groupBox1.Text = "Release set size";
 			// 
-			// maxReleaseSetSize
+			// cbLimitReleaseSetSize
 			// 
-			this.maxReleaseSetSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			this.cbLimitReleaseSetSize.AutoSize = true;
+			this.cbLimitReleaseSetSize.Location = new System.Drawing.Point(16, 24);
+			this.cbLimitReleaseSetSize.Name = "cbLimitReleaseSetSize";
+			this.cbLimitReleaseSetSize.Size = new System.Drawing.Size(47, 17);
+			this.cbLimitReleaseSetSize.TabIndex = 2;
+			this.cbLimitReleaseSetSize.Text = "Limit";
+			this.cbLimitReleaseSetSize.UseVisualStyleBackColor = true;
+			this.cbLimitReleaseSetSize.CheckedChanged += new System.EventHandler(this.cbLimitReleaseSetSize_CheckedChanged);
+			// 
+			// releaseSetSize
+			// 
+			this.releaseSetSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.maxReleaseSetSize.Location = new System.Drawing.Point(16, 24);
-			this.maxReleaseSetSize.Name = "maxReleaseSetSize";
-			this.maxReleaseSetSize.Size = new System.Drawing.Size(168, 20);
-			this.maxReleaseSetSize.TabIndex = 1;
+			this.releaseSetSize.Location = new System.Drawing.Point(80, 24);
+			this.releaseSetSize.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.releaseSetSize.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.releaseSetSize.Name = "releaseSetSize";
+			this.releaseSetSize.Size = new System.Drawing.Size(104, 20);
+			this.releaseSetSize.TabIndex = 1;
+			this.releaseSetSize.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			// 
 			// statusBar
 			// 
@@ -184,6 +212,11 @@
 			this.statusBar.Size = new System.Drawing.Size(737, 22);
 			this.statusBar.TabIndex = 6;
 			this.statusBar.Text = "statusStrip1";
+			// 
+			// statusText
+			// 
+			this.statusText.Name = "statusText";
+			this.statusText.Size = new System.Drawing.Size(0, 17);
 			// 
 			// panel1
 			// 
@@ -256,11 +289,6 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Prediction models";
 			// 
-			// statusText
-			// 
-			this.statusText.Name = "statusText";
-			this.statusText.Size = new System.Drawing.Size(0, 17);
-			// 
 			// PredictorView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -277,7 +305,8 @@
 			this.mainMenu.ResumeLayout(false);
 			this.mainMenu.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.maxReleaseSetSize)).EndInit();
+			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.releaseSetSize)).EndInit();
 			this.statusBar.ResumeLayout(false);
 			this.statusBar.PerformLayout();
 			this.panel1.ResumeLayout(false);
@@ -305,7 +334,7 @@
 		private System.Windows.Forms.ToolStripMenuItem showFilesToolStripMenuItem;
 		private System.Windows.Forms.CheckedListBox modelList;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.NumericUpDown maxReleaseSetSize;
+		private System.Windows.Forms.NumericUpDown releaseSetSize;
 		private System.Windows.Forms.StatusStrip statusBar;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.GroupBox groupBox2;
@@ -315,6 +344,7 @@
 		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.Splitter splitter2;
 		private System.Windows.Forms.ToolStripStatusLabel statusText;
+		private System.Windows.Forms.CheckBox cbLimitReleaseSetSize;
 	}
 }
 

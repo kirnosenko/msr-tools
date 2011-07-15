@@ -29,6 +29,9 @@ namespace MSR.Tools.Predictor
 			view.OnOpenConfigFile += OpenConfigFile;
 			view.OnPredict += () => Predict(false);
 			view.OnPredictAndEvaluate += () => Predict(true);
+			view.ShowFiles = model.ShowFiles;
+			view.LimitReleaseSetSize = model.LimitReleaseSetSize;
+			view.ReleaseSetSize = model.ReleaseSetSize;
 		}
 		public void Run()
 		{
@@ -40,8 +43,6 @@ namespace MSR.Tools.Predictor
 			view.SetModelList(model.Models.Select(x => x.Title));
 			view.ClearReport();
 			view.CommandMenuAvailable = true;
-			view.ShowFiles = model.ShowFiles;
-			view.MaxReleaseSetSize = model.MaxReleaseSetSize;
 		}
 		private void UpdateOptions()
 		{
@@ -57,7 +58,8 @@ namespace MSR.Tools.Predictor
 				.ToDictionary(x => x.Key, x => x.Value);
 			
 			model.ShowFiles = view.ShowFiles;
-			model.MaxReleaseSetSize = view.MaxReleaseSetSize;
+			model.LimitReleaseSetSize = view.LimitReleaseSetSize;
+			model.ReleaseSetSize = view.ReleaseSetSize;
 		}
 		private void OpenConfigFile(string fileName)
 		{
