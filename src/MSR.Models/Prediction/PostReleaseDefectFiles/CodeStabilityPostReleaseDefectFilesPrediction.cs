@@ -27,16 +27,16 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public override void Predict()
 		{
 			var bugLifetimes = repositories.SelectionDSL()
-				.Commits().TillRevision(NextToLastReleaseRevision)
+				.Commits().TillRevision(TrainReleases.Last())
 				.BugFixes().InCommits().CalculateAvarageBugLifetime();
 			
 			double defectLineProbability = repositories.SelectionDSL()
-				.Commits().TillRevision(NextToLastReleaseRevision)
+				.Commits().TillRevision(TrainReleases.Last())
 				.Files().Reselect(FileSelector)
 				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(NextToLastReleaseRevision);
+				.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(TrainReleases.Last());
 			
-			var files = GetFilesInRevision(LastReleaseRevision);
+			var files = GetFilesInRevision(PredictionRelease);
 			int filesInRelease = files.Count();
 			Dictionary<string,double> fileStability = new Dictionary<string,double>();
 			
@@ -44,7 +44,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				repositories.SelectionDSL()
 					.Commits().RevisionIs(r)
 					.Modifications().InCommits()
-					.CodeBlocks().InModifications().CalculateDefectCodeSize(LastReleaseRevision)
+					.CodeBlocks().InModifications().CalculateDefectCodeSize(PredictionRelease)
 			);
 			var addedCodeSizeByRevision = new SmartDictionary<string, double>(r =>
 				repositories.SelectionDSL()
@@ -56,10 +56,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			foreach (var file in files)
 			{
 				var codeBlocks = repositories.SelectionDSL()
-					.Commits().TillRevision(LastReleaseRevision)
+					.Commits().TillRevision(PredictionRelease)
 					.Files().IdIs(file.ID)
 					.Modifications().InCommits().InFiles()
-					.CodeBlocks().InModifications().CalculateRemainingCodeSize(LastReleaseRevision);
+					.CodeBlocks().InModifications().CalculateRemainingCodeSize(PredictionRelease);
 				
 				var codeByRevision = (
 					from cb in codeBlocks
@@ -71,7 +71,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 						c.ID == CommitID
 					let revision = c.Revision
 					let releaseDate = repositories.Repository<Commit>()
-						.Single(x => x.Revision == LastReleaseRevision)
+						.Single(x => x.Revision == PredictionRelease)
 						.Date
 					let age = (releaseDate - c.Date).TotalDays
 					let codeSize = cb.Value

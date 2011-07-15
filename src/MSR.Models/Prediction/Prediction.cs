@@ -33,23 +33,25 @@ namespace MSR.Models.Prediction
 		{
 			return predictors.Select(p => p(c)).ToArray();
 		}
-		public virtual void Init(IRepositoryResolver repositories, IEnumerable<string> releaseRevisions)
+		public virtual void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
 			this.repositories = repositories;
-			PreReleaseRevisions = releaseRevisions.Take(releaseRevisions.Count() - 1);
-			LastReleaseRevision = releaseRevisions.Last();
-			NextToLastReleaseRevision = PreReleaseRevisions.Last();
+			PredictionRelease = releases.Last();
+			if (releases.Count() > 1)
+			{
+				TrainReleases = releases.Take(releases.Count() - 1);
+			}
+			else
+			{
+				TrainReleases = releases;
+			}
 			context = new PredictorContext(repositories);
 		}
-		public string LastReleaseRevision
+		public string PredictionRelease
 		{
 			get; private set;
 		}
-		public string NextToLastReleaseRevision
-		{
-			get; private set;
-		}
-		public IEnumerable<string> PreReleaseRevisions
+		public IEnumerable<string> TrainReleases
 		{
 			get; private set;
 		}

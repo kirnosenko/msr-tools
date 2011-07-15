@@ -21,7 +21,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		public override void Predict()
 		{
-			var files = GetFilesInRevision(LastReleaseRevision);
+			var files = GetFilesInRevision(PredictionRelease);
 			int filesInRelease = files.Count();
 			
 			PredictedDefectFiles = files.Select(x => x.Path)

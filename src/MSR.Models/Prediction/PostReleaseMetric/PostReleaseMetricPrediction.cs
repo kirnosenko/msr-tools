@@ -30,7 +30,7 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 			regression = new MultipleLinearRegression();
 
 			string previousRevision = null;
-			foreach (var revision in PreReleaseRevisions)
+			foreach (var revision in TrainReleases)
 			{
 				context.SetCommits(previousRevision, revision);
 				
@@ -45,7 +45,7 @@ namespace MSR.Models.Prediction.PostReleaseMetric
 		}
 		public virtual double Predict()
 		{
-			context.SetCommits(NextToLastReleaseRevision, LastReleaseRevision);
+			context.SetCommits(TrainReleases.Last(), PredictionRelease);
 			
 			return regression.Predict(
 				GetPredictorValuesFor(context)

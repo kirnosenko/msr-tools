@@ -28,7 +28,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			LogisticRegression lr = new LogisticRegression();
 			
 			string previousRevision = null;
-			foreach (var revision in PreReleaseRevisions)
+			foreach (var revision in TrainReleases)
 			{
 				foreach (var file in GetFilesInRevision(revision))
 				{
@@ -46,10 +46,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			
 			lr.Train();
 
-			var files = GetFilesInRevision(LastReleaseRevision);
+			var files = GetFilesInRevision(PredictionRelease);
 			int filesInRelease = files.Count();
 			
-			context.SetCommits(NextToLastReleaseRevision, LastReleaseRevision);
+			context.SetCommits(TrainReleases.Last(), PredictionRelease);
 			
 			var faultProneFiles =
 				(
@@ -71,9 +71,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		public EvaluationResult Evaluate()
 		{
-			var allFiles = GetFilesInRevision(LastReleaseRevision)
+			var allFiles = GetFilesInRevision(PredictionRelease)
 				.Select(x => x.Path);
-			DefectFiles = GetPostReleaseDefectFiles(LastReleaseRevision);
+			DefectFiles = GetPostReleaseDefectFiles(PredictionRelease);
 			
 			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(PredictedDefectFiles);
 
