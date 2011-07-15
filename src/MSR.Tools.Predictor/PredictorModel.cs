@@ -15,6 +15,62 @@ using MSR.Models.Prediction.PostReleaseDefectFiles;
 
 namespace MSR.Tools.Predictor
 {
+	public abstract class ReleaseSetGettingAlgo
+	{
+		public static readonly ReleaseSetGettingAlgo All = new ReleaseSetGettingAlgoAll();
+		public static readonly ReleaseSetGettingAlgo IncrementalGrowth = new ReleaseSetGettingAlgoIncrementalGrowth();
+		public static readonly ReleaseSetGettingAlgo Limited = new ReleaseSetGettingAlgoLimited();
+		
+		public abstract List<IDictionary<string,string>> ReleaseSets(IPredictorModel model);
+	}
+	public class ReleaseSetGettingAlgoAll : ReleaseSetGettingAlgo
+	{
+		public override List<IDictionary<string,string>> ReleaseSets(IPredictorModel model)
+		{
+			return new List<IDictionary<string,string>>() { model.SelectedReleases };
+		}
+	}
+	public class ReleaseSetGettingAlgoIncrementalGrowth : ReleaseSetGettingAlgo
+	{
+		public override List<IDictionary<string,string>> ReleaseSets(IPredictorModel model)
+		{
+			List<IDictionary<string,string>> list = new List<IDictionary<string,string>>();
+			
+			for (int i = 1; i <= model.SelectedReleases.Count; i++)
+			{
+				list.Add(
+					model.SelectedReleases.Take(i).ToDictionary(x => x.Key, x => x.Value)
+				);
+			}
+			
+			return list;
+		}
+	}
+	public class ReleaseSetGettingAlgoLimited : ReleaseSetGettingAlgo
+	{
+		public override List<IDictionary<string,string>> ReleaseSets(IPredictorModel model)
+		{
+			List<IDictionary<string,string>> list = new List<IDictionary<string,string>>();
+
+			if (model.SelectedReleases.Count <= model.ReleaseSetSize)
+			{
+				list.Add(model.SelectedReleases);
+			}
+			else
+			{
+				for (int i = 0; i <= model.SelectedReleases.Count - model.ReleaseSetSize; i++)
+				{
+					list.Add(
+						model.SelectedReleases.Skip(i).Take(model.ReleaseSetSize)
+							.ToDictionary(x => x.Key, x => x.Value)
+					);
+				}
+			}
+
+			return list;
+		}
+	}
+	
 	public interface IPredictorModel
 	{
 		event Action<string> OnTitleUpdated;
@@ -32,7 +88,7 @@ namespace MSR.Tools.Predictor
 		
 		bool Evaluate { get; set; }
 		bool ShowFiles { get; set; }
-		bool LimitReleaseSetSize { get; set; }
+		ReleaseSetGettingAlgo ReleaseSetGetting { get; set; }
 		int ReleaseSetSize { get; set; }
 	}
 	
@@ -49,8 +105,8 @@ namespace MSR.Tools.Predictor
 		public PredictorModel()
 		{
 			Evaluate = false;
-			ShowFiles = true;
-			LimitReleaseSetSize = true;
+			ShowFiles = false;
+			ReleaseSetGetting = ReleaseSetGettingAlgo.IncrementalGrowth;
 			ReleaseSetSize = 3;
 		}
 		public void OpenConfig(string fileName)
@@ -87,7 +143,7 @@ namespace MSR.Tools.Predictor
 		{
 			get; set;
 		}
-		public bool LimitReleaseSetSize
+		public ReleaseSetGettingAlgo ReleaseSetGetting
 		{
 			get; set;
 		}
@@ -96,28 +152,6 @@ namespace MSR.Tools.Predictor
 			get; set;
 		}
 		
-		private List<IDictionary<string,string>> ReleaseSets
-		{
-			get
-			{
-				List<IDictionary<string,string>> releaseSets = new List<IDictionary<string,string>>();
-				if (!LimitReleaseSetSize || SelectedReleases.Count <= ReleaseSetSize)
-				{
-					releaseSets.Add(SelectedReleases);
-				}
-				else
-				{
-					for (int i = 0; i <= SelectedReleases.Count - ReleaseSetSize; i++)
-					{
-						releaseSets.Add(
-							SelectedReleases.Skip(i).Take(ReleaseSetSize)
-								.ToDictionary(x => x.Key, x => x.Value)
-						);
-					}
-				}
-				return releaseSets;
-			}
-		}
 		private void PredictWork()
 		{
 			try
@@ -125,7 +159,7 @@ namespace MSR.Tools.Predictor
 				OnReadyStateChanged(false);
 				OnClearReport();
 				
-				foreach (var releaseSet in ReleaseSets)
+				foreach (var releaseSet in ReleaseSetGetting.ReleaseSets(this))
 				{
 					Predict(releaseSet);
 				}

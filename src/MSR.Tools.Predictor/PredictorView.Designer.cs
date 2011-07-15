@@ -40,7 +40,6 @@
 			this.outputText = new System.Windows.Forms.TextBox();
 			this.modelList = new System.Windows.Forms.CheckedListBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.cbLimitReleaseSetSize = new System.Windows.Forms.CheckBox();
 			this.releaseSetSize = new System.Windows.Forms.NumericUpDown();
 			this.statusBar = new System.Windows.Forms.StatusStrip();
 			this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
@@ -51,6 +50,9 @@
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.splitter2 = new System.Windows.Forms.Splitter();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.rbAll = new System.Windows.Forms.RadioButton();
+			this.rbIncrementalGrowth = new System.Windows.Forms.RadioButton();
+			this.rbLimit = new System.Windows.Forms.RadioButton();
 			this.mainMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.releaseSetSize)).BeginInit();
@@ -133,7 +135,7 @@
 			this.releaseList.FormattingEnabled = true;
 			this.releaseList.Location = new System.Drawing.Point(3, 16);
 			this.releaseList.Name = "releaseList";
-			this.releaseList.Size = new System.Drawing.Size(194, 274);
+			this.releaseList.Size = new System.Drawing.Size(194, 229);
 			this.releaseList.TabIndex = 1;
 			// 
 			// outputText
@@ -158,32 +160,23 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Controls.Add(this.cbLimitReleaseSetSize);
+			this.groupBox1.Controls.Add(this.rbLimit);
+			this.groupBox1.Controls.Add(this.rbIncrementalGrowth);
+			this.groupBox1.Controls.Add(this.rbAll);
 			this.groupBox1.Controls.Add(this.releaseSetSize);
 			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.groupBox1.Location = new System.Drawing.Point(0, 296);
+			this.groupBox1.Location = new System.Drawing.Point(0, 256);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(200, 64);
+			this.groupBox1.Size = new System.Drawing.Size(200, 104);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Release set size";
-			// 
-			// cbLimitReleaseSetSize
-			// 
-			this.cbLimitReleaseSetSize.AutoSize = true;
-			this.cbLimitReleaseSetSize.Location = new System.Drawing.Point(16, 24);
-			this.cbLimitReleaseSetSize.Name = "cbLimitReleaseSetSize";
-			this.cbLimitReleaseSetSize.Size = new System.Drawing.Size(47, 17);
-			this.cbLimitReleaseSetSize.TabIndex = 2;
-			this.cbLimitReleaseSetSize.Text = "Limit";
-			this.cbLimitReleaseSetSize.UseVisualStyleBackColor = true;
-			this.cbLimitReleaseSetSize.CheckedChanged += new System.EventHandler(this.cbLimitReleaseSetSize_CheckedChanged);
 			// 
 			// releaseSetSize
 			// 
 			this.releaseSetSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.releaseSetSize.Location = new System.Drawing.Point(80, 24);
+			this.releaseSetSize.Location = new System.Drawing.Point(80, 72);
 			this.releaseSetSize.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -234,7 +227,7 @@
 			this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.groupBox2.Location = new System.Drawing.Point(0, 0);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(200, 296);
+			this.groupBox2.Size = new System.Drawing.Size(200, 256);
 			this.groupBox2.TabIndex = 8;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Releases";
@@ -288,6 +281,42 @@
 			this.groupBox3.TabIndex = 5;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Prediction models";
+			// 
+			// rbAll
+			// 
+			this.rbAll.AutoSize = true;
+			this.rbAll.Location = new System.Drawing.Point(16, 24);
+			this.rbAll.Name = "rbAll";
+			this.rbAll.Size = new System.Drawing.Size(121, 17);
+			this.rbAll.TabIndex = 3;
+			this.rbAll.TabStop = true;
+			this.rbAll.Text = "All selected releases";
+			this.rbAll.UseVisualStyleBackColor = true;
+			this.rbAll.CheckedChanged += new System.EventHandler(this.rbAll_CheckedChanged);
+			// 
+			// rbIncrementalGrowth
+			// 
+			this.rbIncrementalGrowth.AutoSize = true;
+			this.rbIncrementalGrowth.Location = new System.Drawing.Point(16, 48);
+			this.rbIncrementalGrowth.Name = "rbIncrementalGrowth";
+			this.rbIncrementalGrowth.Size = new System.Drawing.Size(115, 17);
+			this.rbIncrementalGrowth.TabIndex = 4;
+			this.rbIncrementalGrowth.TabStop = true;
+			this.rbIncrementalGrowth.Text = "Incremental growth";
+			this.rbIncrementalGrowth.UseVisualStyleBackColor = true;
+			this.rbIncrementalGrowth.CheckedChanged += new System.EventHandler(this.rbAll_CheckedChanged);
+			// 
+			// rbLimit
+			// 
+			this.rbLimit.AutoSize = true;
+			this.rbLimit.Location = new System.Drawing.Point(16, 72);
+			this.rbLimit.Name = "rbLimit";
+			this.rbLimit.Size = new System.Drawing.Size(46, 17);
+			this.rbLimit.TabIndex = 5;
+			this.rbLimit.TabStop = true;
+			this.rbLimit.Text = "Limit";
+			this.rbLimit.UseVisualStyleBackColor = true;
+			this.rbLimit.CheckedChanged += new System.EventHandler(this.rbAll_CheckedChanged);
 			// 
 			// PredictorView
 			// 
@@ -344,7 +373,9 @@
 		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.Splitter splitter2;
 		private System.Windows.Forms.ToolStripStatusLabel statusText;
-		private System.Windows.Forms.CheckBox cbLimitReleaseSetSize;
+		private System.Windows.Forms.RadioButton rbAll;
+		private System.Windows.Forms.RadioButton rbLimit;
+		private System.Windows.Forms.RadioButton rbIncrementalGrowth;
 	}
 }
 

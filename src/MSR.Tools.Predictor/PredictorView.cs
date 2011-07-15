@@ -33,7 +33,9 @@ namespace MSR.Tools.Predictor
 		IEnumerable<int> SelectedModels { get; }
 		bool CommandMenuAvailable { get; set; }
 		bool ShowFiles { get; set; }
-		bool LimitReleaseSetSize { get; set; }
+		bool ReleaseSetGettingAll { get; set; }
+		bool ReleaseSetGettingIncrementalGrowth { get; set; }
+		bool ReleaseSetGettingLimited { get; set; }
 		int ReleaseSetSize { get; set; }
 	}
 	
@@ -113,8 +115,10 @@ namespace MSR.Tools.Predictor
 					mainMenu.Enabled = value;
 					releaseList.Enabled = value;
 					modelList.Enabled = value;
-					cbLimitReleaseSetSize.Enabled = value;
-					releaseSetSize.Enabled = value && LimitReleaseSetSize;
+					rbAll.Enabled = value;
+					rbIncrementalGrowth.Enabled = value;
+					rbLimit.Enabled = value;
+					releaseSetSize.Enabled = value && ReleaseSetGettingLimited;
 				});
 				Status = value ? "Ready" : "";
 			}
@@ -154,13 +158,31 @@ namespace MSR.Tools.Predictor
 			get { return showFilesToolStripMenuItem.Checked; }
 			set { showFilesToolStripMenuItem.Checked = value; }
 		}
-		public bool LimitReleaseSetSize
+		public bool ReleaseSetGettingAll
 		{
-			get { return cbLimitReleaseSetSize.Checked; }
+			get { return rbAll.Checked; }
 			set
 			{
-				cbLimitReleaseSetSize.Checked = value;
-				releaseSetSize.Enabled = value;
+				rbAll.Checked = true;
+				releaseSetSize.Enabled = false;
+			}
+		}
+		public bool ReleaseSetGettingIncrementalGrowth
+		{
+			get { return rbIncrementalGrowth.Checked; }
+			set
+			{
+				rbIncrementalGrowth.Checked = true;
+				releaseSetSize.Enabled = false;
+			}
+		}
+		public bool ReleaseSetGettingLimited
+		{
+			get { return rbLimit.Checked; }
+			set
+			{
+				rbLimit.Checked = true;
+				releaseSetSize.Enabled = true;
 			}
 		}
 		public int ReleaseSetSize
@@ -168,7 +190,6 @@ namespace MSR.Tools.Predictor
 			get { return (int)releaseSetSize.Value; }
 			set { releaseSetSize.Value = value; }
 		}
-
 		protected override void DefWndProc(ref Message m)
 		{
 			base.DefWndProc(ref m);
@@ -207,9 +228,9 @@ namespace MSR.Tools.Predictor
 		{
 			showFilesToolStripMenuItem.Checked = ! showFilesToolStripMenuItem.Checked;
 		}
-		private void cbLimitReleaseSetSize_CheckedChanged(object sender, EventArgs e)
+		private void rbAll_CheckedChanged(object sender, EventArgs e)
 		{
-			LimitReleaseSetSize = cbLimitReleaseSetSize.Checked;
+			releaseSetSize.Enabled = rbLimit.Checked;
 		}
 	}
 }

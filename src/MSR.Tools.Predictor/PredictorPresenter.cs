@@ -30,7 +30,18 @@ namespace MSR.Tools.Predictor
 			view.OnPredict += () => Predict(false);
 			view.OnPredictAndEvaluate += () => Predict(true);
 			view.ShowFiles = model.ShowFiles;
-			view.LimitReleaseSetSize = model.LimitReleaseSetSize;
+			if (model.ReleaseSetGetting == ReleaseSetGettingAlgo.All)
+			{
+				view.ReleaseSetGettingAll = true;
+			}
+			else if (model.ReleaseSetGetting == ReleaseSetGettingAlgo.IncrementalGrowth)
+			{
+				view.ReleaseSetGettingIncrementalGrowth = true;
+			}
+			else
+			{
+				view.ReleaseSetGettingLimited = true;
+			}
 			view.ReleaseSetSize = model.ReleaseSetSize;
 		}
 		public void Run()
@@ -58,7 +69,18 @@ namespace MSR.Tools.Predictor
 				.ToDictionary(x => x.Key, x => x.Value);
 			
 			model.ShowFiles = view.ShowFiles;
-			model.LimitReleaseSetSize = view.LimitReleaseSetSize;
+			if (view.ReleaseSetGettingAll)
+			{
+				model.ReleaseSetGetting = ReleaseSetGettingAlgo.All;
+			}
+			else if (view.ReleaseSetGettingIncrementalGrowth)
+			{
+				model.ReleaseSetGetting = ReleaseSetGettingAlgo.IncrementalGrowth;
+			}
+			else
+			{
+				model.ReleaseSetGetting = ReleaseSetGettingAlgo.Limited;
+			}
 			model.ReleaseSetSize = view.ReleaseSetSize;
 		}
 		private void OpenConfigFile(string fileName)
