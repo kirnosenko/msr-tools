@@ -86,7 +86,7 @@ namespace MSR.Data.Entities.Mapping
 				if (removedLines > 0)
 				{
 					foreach (var lines in LinesByRevisionTheyWereAddedIn(
-							diff.RemovedLines, scmData.Blame(expression.LastRevision(), file.Path)
+							diff.RemovedLines, scmData.Blame(scmData.PreviousRevision(revision), file.Path)
 						)
 					)
 					{

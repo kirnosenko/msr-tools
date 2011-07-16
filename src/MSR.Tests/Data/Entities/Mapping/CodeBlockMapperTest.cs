@@ -35,6 +35,12 @@ namespace MSR.Data.Entities.Mapping
 				.Return(addedLines);
 			diffStub.Stub(x => x.RemovedLines)
 				.Return(removedLines);
+			scmData.Stub(x => x.PreviousRevision(null))
+				.IgnoreArguments()
+				.Do((Func<string,string>)(r =>
+				{
+					return (Convert.ToInt32(r) - 1).ToString();
+				}));
 			
 			mapper = new CodeBlockMapper(scmData);
 		}
@@ -57,7 +63,7 @@ namespace MSR.Data.Entities.Mapping
 		public void Should_add_separate_blocks_for_added_and_removed_code()
 		{
 			mappingDSL
-				.AddCommit("1")
+				.AddCommit("9")
 					.AddFile("file1").Modified()
 						.Code(100)
 			.Submit();
@@ -66,8 +72,8 @@ namespace MSR.Data.Entities.Mapping
 				.Return(diffStub);
 			addedLines.AddRange(new int[] { 20, 21, 22 });
 			removedLines.Add(5);
-			scmData.Stub(x => x.Blame("1", "file1"))
-				.Return(new BlameStub(x => "1"));
+			scmData.Stub(x => x.Blame("9", "file1"))
+				.Return(new BlameStub(x => "9"));
 
 			mapper.Map(
 				mappingDSL.AddCommit("10")
@@ -87,7 +93,7 @@ namespace MSR.Data.Entities.Mapping
 		public void Should_set_commit_code_block_was_added_in()
 		{
 			mappingDSL
-				.AddCommit("1")
+				.AddCommit("9")
 					.AddFile("file1").Modified()
 						.Code(100)
 			.Submit();
@@ -96,8 +102,8 @@ namespace MSR.Data.Entities.Mapping
 				.Return(diffStub);
 			removedLines.Add(10);
 			addedLines.Add(10);
-			scmData.Stub(x => x.Blame("1", "file1"))
-				.Return(new BlameStub(x => "1"));
+			scmData.Stub(x => x.Blame("9", "file1"))
+				.Return(new BlameStub(x => "9"));
 
 			mapper.Map(
 				mappingDSL.AddCommit("10")
@@ -190,6 +196,47 @@ namespace MSR.Data.Entities.Mapping
 			code.Select(cb => cb.AddedInitiallyInCommit.Revision).ToArray()
 				.Should().Have.SameSequenceAs(new string[] { "6", "7" });
 		}
+		[Test]
+		public void Should_add_codeblocks_for_file_during_partial_mapping()
+		{
+			mappingDSL
+				.AddCommit("6")
+					.AddFile("file1").Modified()
+						.Code(20)
+					.AddFile("file2").Modified()
+						.Code(25)
+			.Submit()
+				.AddCommit("7")
+					.File("file1").Modified()
+						.Code(30)
+			.Submit()
+				.AddCommit("8")
+					.File("file1").Modified()
+						.Code(40)
+			.Submit();
+
+			scmData.Stub(x => x.Diff("7", "file2"))
+				.Return(diffStub);
+			addedLines.AddRange(new int[] { 10, 11 });
+			removedLines.AddRange(new int[] { 10, 11 });
+			scmData.Stub(x => x.Blame("6", "file2"))
+				.Return(new BlameStub(x => "6"));
+			
+			mapper.Map(
+				mappingDSL.Commit("7")
+					.File("file2").Modified()
+			);
+			Submit();
+
+			var code = Repository<CodeBlock>()
+				.Where(cb => cb.Modification.Commit.Revision == "7");
+
+			code.Count()
+				.Should().Be(3);
+			code.Select(cb => cb.Size).ToArray()
+				.Should().Have.SameSequenceAs(new double[] { 30, 2, -2 });
+		}
+		
 		[Test]
 		public void Should_not_take_diff_for_copied_file()
 		{
