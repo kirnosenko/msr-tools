@@ -15,6 +15,7 @@ namespace MSR.Data.Persistent
 		public PersistentDataStore()
 		{
 			QueryTimeout = 60;
+			ReadOnly = false;
 		}
 		public ISession OpenSession()
 		{

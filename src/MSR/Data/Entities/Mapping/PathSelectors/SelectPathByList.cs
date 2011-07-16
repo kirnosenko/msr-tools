@@ -5,24 +5,29 @@
  */
 
 using System;
+using System.Globalization;
 using System.Linq;
 
 namespace MSR.Data.Entities.Mapping.PathSelectors
 {
 	public abstract class SelectPathByList : IPathSelector
 	{
+		public SelectPathByList()
+		{
+			IgnoreCase = true;
+		}
 		public bool InSelection(string path)
 		{
 			if (Paths != null)
 			{
-				if (Paths.Any(x => x == path))
+				if (Paths.Any(x => string.Compare(x, path, IgnoreCase) == 0))
 				{
 					return SelectMatchedPath();
 				}
 			}
 			if (Dirs != null)
 			{
-				if (Dirs.Any(x => path.StartsWith(x + "/")))
+				if (Dirs.Any(x => path.StartsWith(x + "/", IgnoreCase, CultureInfo.InvariantCulture)))
 				{
 					return SelectMatchedPath();
 				}
@@ -34,6 +39,10 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 			get; set;
 		}
 		public string[] Dirs
+		{
+			get; set;
+		}
+		public bool IgnoreCase
 		{
 			get; set;
 		}

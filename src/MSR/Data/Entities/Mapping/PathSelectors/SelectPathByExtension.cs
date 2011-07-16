@@ -13,11 +13,15 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 {
 	public abstract class SelectPathByExtension : IPathSelector
 	{
+		public SelectPathByExtension()
+		{
+			IgnoreCase = true;
+		}
 		public bool InSelection(string path)
 		{
 			if (Extensions != null)
-			{	
-				if (Extensions.Any(x => x == Path.GetExtension(path).ToLower()))
+			{
+				if (Extensions.Any(x => string.Compare(x, Path.GetExtension(path), IgnoreCase) == 0))
 				{
 					return SelectMatchedPath();
 				}
@@ -26,6 +30,10 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 			return ! SelectMatchedPath();
 		}
 		public string[] Extensions
+		{
+			get; set;
+		}
+		public bool IgnoreCase
 		{
 			get; set;
 		}

@@ -36,7 +36,21 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 					.Should().Be.False();
 			}
 
-			selector.InSelection(".cs")
+			selector.InSelection("file.cs")
+				.Should().Be.True();
+		}
+		[Test]
+		public void Should_be_case_insensitive()
+		{
+			selector.InSelection("file.CPP")
+				.Should().Be.False();
+		}
+		[Test]
+		public void Can_be_case_sensitive()
+		{
+			selector.IgnoreCase = false;
+			
+			selector.InSelection("file.CPP")
 				.Should().Be.True();
 		}
 	}
