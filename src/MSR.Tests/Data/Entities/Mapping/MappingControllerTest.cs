@@ -30,7 +30,7 @@ namespace MSR.Data.Entities.Mapping
 		{
 			base.SetUp();
 			scmDataStub = MockRepository.GenerateStub<IScmData>();
-			mapper = new MappingController(scmDataStub, new IMapper[] {});
+			mapper = new MappingController(scmDataStub);
 			commitMapperStub = MockRepository.GenerateStub<CommitMapper>(null as IScmData);
 			bugFixMapperStub = MockRepository.GenerateStub<BugFixMapper>(null, null);
 			fileMapperStub = MockRepository.GenerateStub<ProjectFileMapper>(null as IScmData);

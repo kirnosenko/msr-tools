@@ -19,11 +19,9 @@ namespace MSR.Tools.StatGenerator
 {
 	public class StatBuilder
 	{
-		private IStatPageBuilder[] builders;
-		
-		public StatBuilder(IStatPageBuilder[] builders)
+		public StatBuilder()
 		{
-			this.builders = builders;
+			PageBuilders = new IStatPageBuilder[] {};
 			SharedPageTemplate = "page.html";
 			FilesToCopy = new string[]
 			{
@@ -37,7 +35,7 @@ namespace MSR.Tools.StatGenerator
 		{
 			Velocity.Init();
 			
-			var menu = builders.Select(x => new
+			var menu = PageBuilders.Select(x => new
 			{
 				url = x.PageTemplate,
 				name = x.PageName
@@ -45,7 +43,7 @@ namespace MSR.Tools.StatGenerator
 			string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 			version = version.Substring(0, version.LastIndexOf('.'));
 			
-			foreach (var builder in builders)
+			foreach (var builder in PageBuilders)
 			{
 				if (builder.TargetDir == null)
 				{
@@ -91,6 +89,10 @@ namespace MSR.Tools.StatGenerator
 			{
 				File.Copy(TemplateDir + "/" + fileToCopy, OutputDir + "/" + fileToCopy, true);
 			}
+		}
+		public IStatPageBuilder[] PageBuilders
+		{
+			get; set;
 		}
 		public string SharedPageTemplate
 		{

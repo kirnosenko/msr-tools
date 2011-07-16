@@ -14,23 +14,19 @@ namespace MSR.Data.Entities.Mapping.PathSelectors
 	{
 		public SelectPathByList()
 		{
+			Paths = new string[] {};
+			Dirs = new string[] {};
 			IgnoreCase = true;
 		}
 		public bool InSelection(string path)
 		{
-			if (Paths != null)
+			if (Paths.Any(x => string.Compare(x, path, IgnoreCase) == 0))
 			{
-				if (Paths.Any(x => string.Compare(x, path, IgnoreCase) == 0))
-				{
-					return SelectMatchedPath();
-				}
+				return SelectMatchedPath();
 			}
-			if (Dirs != null)
+			if (Dirs.Any(x => path.StartsWith(x + "/", IgnoreCase, CultureInfo.InvariantCulture)))
 			{
-				if (Dirs.Any(x => path.StartsWith(x + "/", IgnoreCase, CultureInfo.InvariantCulture)))
-				{
-					return SelectMatchedPath();
-				}
+				return SelectMatchedPath();
 			}
 			return ! SelectMatchedPath();
 		}

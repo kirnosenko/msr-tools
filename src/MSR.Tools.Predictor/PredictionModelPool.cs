@@ -14,21 +14,19 @@ namespace MSR.Tools.Predictor
 {
 	public class PredictionModelPool
 	{
-		private PostReleaseDefectFilesPrediction[] models;
-		
-		public PredictionModelPool(PostReleaseDefectFilesPrediction[] models)
+		public PredictionModelPool()
 		{
-			this.models = models;
+			Models = new PostReleaseDefectFilesPrediction[] {};
 		}
-		public PostReleaseDefectFilesPrediction[] Models()
+		public PostReleaseDefectFilesPrediction[] Models
 		{
-			return models;
+			get; set;
 		}
 		public string TargetDir
 		{
 			set
 			{
-				foreach (var m in models)
+				foreach (var m in Models)
 				{
 					m.FileSelector = e => e.InDirectory(value);
 				}
@@ -38,7 +36,7 @@ namespace MSR.Tools.Predictor
 		{
 			set
 			{
-				foreach (var m in models)
+				foreach (var m in Models)
 				{
 					m.PostReleasePeriodInDays = value;
 				}

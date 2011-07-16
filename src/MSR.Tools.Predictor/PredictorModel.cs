@@ -124,7 +124,7 @@ namespace MSR.Tools.Predictor
 		}
 		public PostReleaseDefectFilesPrediction[] Models
 		{
-			get { return predictor.Models.Models(); }
+			get { return predictor.Models.Models; }
 		}
 		public IEnumerable<PostReleaseDefectFilesPrediction> SelectedModels
 		{

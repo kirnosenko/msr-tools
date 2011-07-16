@@ -22,14 +22,10 @@ namespace MSR.Data.Entities.Mapping
 		private List<object> availableExpressions;
 		private Dictionary<Type,Action> mappers = new Dictionary<Type,Action>();
 		
-		public MappingController(IScmData scmData, IMapper[] mappers)
+		public MappingController(IScmData scmData)
 		{
 			this.scmData = scmData;
 			CreateDataBase = false;
-			foreach (var mapper in mappers)
-			{
-				mapper.RegisterHost(this);
-			}
 		}
 		public void Map(IDataStore data)
 		{
@@ -120,6 +116,16 @@ namespace MSR.Data.Entities.Mapping
 			foreach (var mapper in mappersToRemove)
 			{
 				mappers.Remove(mapper.Key);
+			}
+		}
+		public IMapper[] Mappers
+		{
+			set
+			{
+				foreach (var mapper in value)
+				{
+					mapper.RegisterHost(this);
+				}
 			}
 		}
 		public bool CreateDataBase
