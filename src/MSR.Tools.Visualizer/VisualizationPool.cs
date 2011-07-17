@@ -17,6 +17,7 @@ namespace MSR.Tools.Visualizer
 		
 		public VisualizationPool()
 		{
+			TargetDir = "/";
 			FindVisualizationsInAssembly(Assembly.GetExecutingAssembly());
 		}
 		public IVisualization[] Visualizations
