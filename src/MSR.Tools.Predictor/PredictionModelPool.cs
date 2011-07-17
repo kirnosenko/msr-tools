@@ -32,15 +32,5 @@ namespace MSR.Tools.Predictor
 				}
 			}
 		}
-		public int PostReleasePeriodInDays
-		{
-			set
-			{
-				foreach (var m in Models)
-				{
-					m.PostReleasePeriodInDays = value;
-				}
-			}
-		}
 	}
 }

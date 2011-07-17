@@ -21,7 +21,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public PostReleaseDefectFilesPrediction()
 		{
 			FilePortionLimit = 0.2;
-			PostReleasePeriodInDays = 180;
 		}
 		public virtual void Predict()
 		{
@@ -73,7 +72,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			var allFiles = GetFilesInRevision(PredictionRelease)
 				.Select(x => x.Path);
-			DefectFiles = GetPostReleaseDefectFiles(PredictionRelease);
+			DefectFiles = GetPostReleaseDefectFiles();
 			
 			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(PredictedDefectFiles);
 
@@ -102,10 +101,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; set;
 		}
-		public int PostReleasePeriodInDays
-		{
-			get; set;
-		}
 		
 		protected IEnumerable<ProjectFile> GetFilesInRevision(string revision)
 		{
@@ -125,25 +120,24 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				.Modifications().InCommits().InFiles()
 				.CodeBlocks().InModifications().CalculateNumberOfDefects() > 0 ? 1 : 0;
 		}
-		private IEnumerable<string> GetPostReleaseDefectFiles(string releaseRevision)
+		private IEnumerable<string> GetPostReleaseDefectFiles()
 		{
 			return repositories.SelectionDSL()
 				.Commits()
-					.AfterRevision(releaseRevision)
-					.DateIsLesserOrEquelThan(PostReleasePeriodEnd(releaseRevision))
+					.TillRevision(PredictionRelease)
+				.Modifications().InCommits()
+				.CodeBlocks().InModifications().ModifiedBy()
+				.Modifications().ContainCodeBlocks()
+				.Commits()
+					.AfterRevision(PredictionRelease)
 					.AreBugFixes()
+					.ContainModifications()
 				.Files()
 					.Reselect(FileSelector)
-					.ExistInRevision(releaseRevision)
+					.ExistInRevision(PredictionRelease)
 					.TouchedInCommits()
 				.Select(x => x.Path)
-				.ToList();
-		}
-		private DateTime PostReleasePeriodEnd(string releaseRevision)
-		{
-			return repositories.Repository<Commit>()
-				.Single(c => c.Revision == releaseRevision)
-				.Date.AddDays(PostReleasePeriodInDays);
+				.ToArray();
 		}
 	}
 }

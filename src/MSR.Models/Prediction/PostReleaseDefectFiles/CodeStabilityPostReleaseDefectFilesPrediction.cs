@@ -82,15 +82,18 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 						CodeSize = codeSize,
 						AddedCodeSize = addedCodeSizeByRevision[revision],
 						DefectCodeSize = defectCodeSizeByRevision[revision],
-						// Code from revision has errors probability
+						// Probability that code from revision has errors
 						// (code size predictor)
-						EP = 1 - Math.Pow(1 - defectLineProbability, codeSize),
-						// Code from revision has errors that should be detected probability
+						EP = 1 - Math.Pow(1 - defectLineProbability, addedCodeSizeByRevision[revision]),
+						// Probability that code from revision has errors will be detected in future
 						// (code age predictor)
-						DEP = (double)bugLifetimes.Where(t => t <= age).Count() / bugLifetimes.Count(),
-						// Code from revision has errors that were not fixed probability
+						EFDP = (double)bugLifetimes.Where(t => t > age).Count() / bugLifetimes.Count(),
+						// Probability that code from revision has errors were not removed
+						// (code removing predictor)
+						//EWNRFP = codeSize / addedCodeSizeByRevision[revision],
+						// Probability that code from revision has errors were not fixed before
 						// (fixed code predictor)
-						NFEP = defectCodeSizeByRevision[revision] == 0 ?
+						/*EWNFP = defectCodeSizeByRevision[revision] == 0 ?
 							1
 							:
 							1 - LaplaceIntegralTheorem(
@@ -98,14 +101,19 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 								addedCodeSizeByRevision[revision],
 								defectCodeSizeByRevision[revision] + 1,
 								defectCodeSizeByRevision[revision] + codeSize
-							)
-					}).ToList();
+							)*/
+						
+					}).ToArray();
 				
 				double fileHasDefectsProbability = 0;
 				foreach (var codeFromRevision in codeByRevision)
 				{
-					double codeFromRevisionHasDefectsProbability = 
-						(codeFromRevision.EP * codeFromRevision.DEP * codeFromRevision.NFEP);
+					double codeFromRevisionHasDefectsProbability = (
+						codeFromRevision.EP
+						* codeFromRevision.EFDP
+						//* codeFromRevision.EWNRFP
+						//* codeFromRevision.EWNFP
+					);
 					fileHasDefectsProbability += 
 						codeFromRevisionHasDefectsProbability
 						-
@@ -116,9 +124,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			}
 
 			PredictedDefectFiles = fileStability
-				//.Where(x => x.Value <= 0.01)
-				.OrderByDescending(x => x.Value)
-				.TakeNoMoreThan((int)(0.2 * fileStability.Count))
+				.Where(x => x.Value >= 0.5)
 				.Select(x => x.Key)
 				.ToList();
 		}
