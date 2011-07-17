@@ -43,7 +43,7 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 				data.Add(repositories.SelectionDSL()
 					.Commits().RevisionIs(commit)
 					.Modifications().InCommits()
-					.CodeBlocks().InModifications().CalculateLOC()
+					.CodeBlocks().InModifications().Added().CalculateLOC()
 				);
 			}
 			
