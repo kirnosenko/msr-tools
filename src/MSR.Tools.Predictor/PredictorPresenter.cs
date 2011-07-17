@@ -40,7 +40,7 @@ namespace MSR.Tools.Predictor
 			}
 			else
 			{
-				view.ReleaseSetGettingLimited = true;
+				view.ReleaseSetGettingFixed = true;
 			}
 			view.ReleaseSetSize = model.ReleaseSetSize;
 		}
@@ -79,7 +79,7 @@ namespace MSR.Tools.Predictor
 			}
 			else
 			{
-				model.ReleaseSetGetting = ReleaseSetGettingAlgo.Limited;
+				model.ReleaseSetGetting = ReleaseSetGettingAlgo.Fixed;
 			}
 			model.ReleaseSetSize = view.ReleaseSetSize;
 		}

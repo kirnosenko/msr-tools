@@ -40,6 +40,9 @@
 			this.outputText = new System.Windows.Forms.TextBox();
 			this.modelList = new System.Windows.Forms.CheckedListBox();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.rbFixed = new System.Windows.Forms.RadioButton();
+			this.rbIncrementalGrowth = new System.Windows.Forms.RadioButton();
+			this.rbAll = new System.Windows.Forms.RadioButton();
 			this.releaseSetSize = new System.Windows.Forms.NumericUpDown();
 			this.statusBar = new System.Windows.Forms.StatusStrip();
 			this.statusText = new System.Windows.Forms.ToolStripStatusLabel();
@@ -50,9 +53,6 @@
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.splitter2 = new System.Windows.Forms.Splitter();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.rbAll = new System.Windows.Forms.RadioButton();
-			this.rbIncrementalGrowth = new System.Windows.Forms.RadioButton();
-			this.rbLimit = new System.Windows.Forms.RadioButton();
 			this.mainMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.releaseSetSize)).BeginInit();
@@ -160,7 +160,7 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Controls.Add(this.rbLimit);
+			this.groupBox1.Controls.Add(this.rbFixed);
 			this.groupBox1.Controls.Add(this.rbIncrementalGrowth);
 			this.groupBox1.Controls.Add(this.rbAll);
 			this.groupBox1.Controls.Add(this.releaseSetSize);
@@ -171,6 +171,42 @@
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Release set size";
+			// 
+			// rbFixed
+			// 
+			this.rbFixed.AutoSize = true;
+			this.rbFixed.Location = new System.Drawing.Point(16, 72);
+			this.rbFixed.Name = "rbFixed";
+			this.rbFixed.Size = new System.Drawing.Size(50, 17);
+			this.rbFixed.TabIndex = 5;
+			this.rbFixed.TabStop = true;
+			this.rbFixed.Text = "Fixed";
+			this.rbFixed.UseVisualStyleBackColor = true;
+			this.rbFixed.CheckedChanged += new System.EventHandler(this.rbAll_CheckedChanged);
+			// 
+			// rbIncrementalGrowth
+			// 
+			this.rbIncrementalGrowth.AutoSize = true;
+			this.rbIncrementalGrowth.Location = new System.Drawing.Point(16, 48);
+			this.rbIncrementalGrowth.Name = "rbIncrementalGrowth";
+			this.rbIncrementalGrowth.Size = new System.Drawing.Size(115, 17);
+			this.rbIncrementalGrowth.TabIndex = 4;
+			this.rbIncrementalGrowth.TabStop = true;
+			this.rbIncrementalGrowth.Text = "Incremental growth";
+			this.rbIncrementalGrowth.UseVisualStyleBackColor = true;
+			this.rbIncrementalGrowth.CheckedChanged += new System.EventHandler(this.rbAll_CheckedChanged);
+			// 
+			// rbAll
+			// 
+			this.rbAll.AutoSize = true;
+			this.rbAll.Location = new System.Drawing.Point(16, 24);
+			this.rbAll.Name = "rbAll";
+			this.rbAll.Size = new System.Drawing.Size(121, 17);
+			this.rbAll.TabIndex = 3;
+			this.rbAll.TabStop = true;
+			this.rbAll.Text = "All selected releases";
+			this.rbAll.UseVisualStyleBackColor = true;
+			this.rbAll.CheckedChanged += new System.EventHandler(this.rbAll_CheckedChanged);
 			// 
 			// releaseSetSize
 			// 
@@ -282,42 +318,6 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Prediction models";
 			// 
-			// rbAll
-			// 
-			this.rbAll.AutoSize = true;
-			this.rbAll.Location = new System.Drawing.Point(16, 24);
-			this.rbAll.Name = "rbAll";
-			this.rbAll.Size = new System.Drawing.Size(121, 17);
-			this.rbAll.TabIndex = 3;
-			this.rbAll.TabStop = true;
-			this.rbAll.Text = "All selected releases";
-			this.rbAll.UseVisualStyleBackColor = true;
-			this.rbAll.CheckedChanged += new System.EventHandler(this.rbAll_CheckedChanged);
-			// 
-			// rbIncrementalGrowth
-			// 
-			this.rbIncrementalGrowth.AutoSize = true;
-			this.rbIncrementalGrowth.Location = new System.Drawing.Point(16, 48);
-			this.rbIncrementalGrowth.Name = "rbIncrementalGrowth";
-			this.rbIncrementalGrowth.Size = new System.Drawing.Size(115, 17);
-			this.rbIncrementalGrowth.TabIndex = 4;
-			this.rbIncrementalGrowth.TabStop = true;
-			this.rbIncrementalGrowth.Text = "Incremental growth";
-			this.rbIncrementalGrowth.UseVisualStyleBackColor = true;
-			this.rbIncrementalGrowth.CheckedChanged += new System.EventHandler(this.rbAll_CheckedChanged);
-			// 
-			// rbLimit
-			// 
-			this.rbLimit.AutoSize = true;
-			this.rbLimit.Location = new System.Drawing.Point(16, 72);
-			this.rbLimit.Name = "rbLimit";
-			this.rbLimit.Size = new System.Drawing.Size(46, 17);
-			this.rbLimit.TabIndex = 5;
-			this.rbLimit.TabStop = true;
-			this.rbLimit.Text = "Limit";
-			this.rbLimit.UseVisualStyleBackColor = true;
-			this.rbLimit.CheckedChanged += new System.EventHandler(this.rbAll_CheckedChanged);
-			// 
 			// PredictorView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -374,7 +374,7 @@
 		private System.Windows.Forms.Splitter splitter2;
 		private System.Windows.Forms.ToolStripStatusLabel statusText;
 		private System.Windows.Forms.RadioButton rbAll;
-		private System.Windows.Forms.RadioButton rbLimit;
+		private System.Windows.Forms.RadioButton rbFixed;
 		private System.Windows.Forms.RadioButton rbIncrementalGrowth;
 	}
 }

@@ -35,7 +35,7 @@ namespace MSR.Tools.Predictor
 		bool ShowFiles { get; set; }
 		bool ReleaseSetGettingAll { get; set; }
 		bool ReleaseSetGettingIncrementalGrowth { get; set; }
-		bool ReleaseSetGettingLimited { get; set; }
+		bool ReleaseSetGettingFixed { get; set; }
 		int ReleaseSetSize { get; set; }
 	}
 	
@@ -117,8 +117,8 @@ namespace MSR.Tools.Predictor
 					modelList.Enabled = value;
 					rbAll.Enabled = value;
 					rbIncrementalGrowth.Enabled = value;
-					rbLimit.Enabled = value;
-					releaseSetSize.Enabled = value && ReleaseSetGettingLimited;
+					rbFixed.Enabled = value;
+					releaseSetSize.Enabled = value && ReleaseSetGettingFixed;
 				});
 				Status = value ? "Ready" : "";
 			}
@@ -176,12 +176,12 @@ namespace MSR.Tools.Predictor
 				releaseSetSize.Enabled = false;
 			}
 		}
-		public bool ReleaseSetGettingLimited
+		public bool ReleaseSetGettingFixed
 		{
-			get { return rbLimit.Checked; }
+			get { return rbFixed.Checked; }
 			set
 			{
-				rbLimit.Checked = true;
+				rbFixed.Checked = true;
 				releaseSetSize.Enabled = true;
 			}
 		}
@@ -230,7 +230,7 @@ namespace MSR.Tools.Predictor
 		}
 		private void rbAll_CheckedChanged(object sender, EventArgs e)
 		{
-			releaseSetSize.Enabled = rbLimit.Checked;
+			releaseSetSize.Enabled = rbFixed.Checked;
 		}
 	}
 }

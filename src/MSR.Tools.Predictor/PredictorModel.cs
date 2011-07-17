@@ -19,7 +19,7 @@ namespace MSR.Tools.Predictor
 	{
 		public static readonly ReleaseSetGettingAlgo All = new ReleaseSetGettingAlgoAll();
 		public static readonly ReleaseSetGettingAlgo IncrementalGrowth = new ReleaseSetGettingAlgoIncrementalGrowth();
-		public static readonly ReleaseSetGettingAlgo Limited = new ReleaseSetGettingAlgoLimited();
+		public static readonly ReleaseSetGettingAlgo Fixed = new ReleaseSetGettingAlgoFixed();
 		
 		public abstract List<IDictionary<string,string>> ReleaseSets(IPredictorModel model);
 	}
@@ -46,7 +46,7 @@ namespace MSR.Tools.Predictor
 			return list;
 		}
 	}
-	public class ReleaseSetGettingAlgoLimited : ReleaseSetGettingAlgo
+	public class ReleaseSetGettingAlgoFixed : ReleaseSetGettingAlgo
 	{
 		public override List<IDictionary<string,string>> ReleaseSets(IPredictorModel model)
 		{
