@@ -7,20 +7,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace MSR.Data.Entities.Mapping
 {
 	public class BugFixDetectorBasedOnLogMessage : IBugFixDetector
 	{
-		private static char[] WordsSeparator = new char[] { ' ' };
-		
-		private IEnumerable<string> stopWords;
-		
 		public BugFixDetectorBasedOnLogMessage()
 		{
-			KeyWords = "fix fixes bug bugs bugfix bugfixes fixed";
-			StopWords = "warning typo grammar";
+			KeyWords = new string[]
+			{
+				"fix",
+				"fixes",
+				"bug",
+				"bugs",
+				"bugfix",
+				"bugfixes",
+				"fixed"
+			};
+			StopWords = new string[]
+			{
+				"warning",
+				"typo",
+				"grammar"
+			};
 		}
 		public bool IsBugFix(Commit commit)
 		{
@@ -29,7 +40,7 @@ namespace MSR.Data.Entities.Mapping
 				return false;
 			}
 			string messageToLower = commit.Message.ToLower();
-			if (stopWords.Any(x => messageToLower.IndexOf(x) > 0))
+			if (StopWords.Any(x => messageToLower.IndexOf(x) > 0))
 			{
 				return false;
 			}
@@ -39,21 +50,24 @@ namespace MSR.Data.Entities.Mapping
 		{
 			get; set;
 		}
-		public string KeyWords
+		public string[] KeyWords
 		{
 			set
 			{
-				string keywords = value.Replace(' ', '|');
-
-				MessageRegExp = @"(\P{L}|^)(" + keywords + @")(\P{L}|$)";
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < value.Length-1; i++)
+				{
+					sb.Append(value[i]);
+					sb.Append("|");
+				}
+				sb.Append(value[value.Length-1]);
+				
+				MessageRegExp = @"(\P{L}|^)(" + sb.ToString() + @")(\P{L}|$)";
 			}
 		}
-		public string StopWords
+		public string[] StopWords
 		{
-			set
-			{
-				stopWords = value.Split(WordsSeparator);
-			}
+			get; set;
 		}
 	}
 }

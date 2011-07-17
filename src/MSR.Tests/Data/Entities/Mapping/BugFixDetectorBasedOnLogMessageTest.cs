@@ -60,8 +60,8 @@ namespace MSR.Data.Entities.Mapping
 		{
 			commit.Message = message;
 			
-			detector.KeyWords = "bug error";
-			detector.StopWords = "not no";
+			detector.KeyWords = new string[] { "bug", "error" };
+			detector.StopWords = new string[] { "not", "no" };
 			
 			detector.IsBugFix(commit)
 				.Should().Be(isBugFix);
