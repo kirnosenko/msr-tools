@@ -11,7 +11,7 @@ using MSR.Models.Prediction.Predictors;
 
 namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
-	public class SimpleLocPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
+	public class SimpleLocPostReleaseDefectFilesPrediction : LogisticRegressionPostReleaseDefectFilesPrediction
 	{
 		public SimpleLocPostReleaseDefectFilesPrediction()
 		{

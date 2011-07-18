@@ -16,35 +16,17 @@ using MSR.Models.Regressions;
 
 namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
-	public class PostReleaseDefectFilesPrediction : Prediction
+	public abstract class PostReleaseDefectFilesPrediction : Prediction
 	{
+		private double defaultCutOffValue;
+		
+		public PostReleaseDefectFilesPrediction()
+		{
+			defaultCutOffValue = 0.5;
+		}
 		public virtual void Predict()
 		{
-			LogisticRegression lr = new LogisticRegression();
-			
-			string previousRevision = null;
-			foreach (var revision in TrainReleases)
-			{
-				foreach (var file in GetFilesInRevision(revision))
-				{
-					context
-						.SetCommits(previousRevision, revision)
-						.SetFiles(e => e.IdIs(file.ID));
-					
-					lr.AddTrainingData(
-						GetPredictorValuesFor(context),
-						FileHasDefects(file.ID, revision, previousRevision)
-					);
-				}
-				previousRevision = revision;
-			}
-			
-			lr.Train();
-
 			var files = GetFilesInRevision(PredictionRelease);
-			int filesInRelease = files.Count();
-			
-			context.SetCommits(TrainReleases.Last(), PredictionRelease);
 
 			PredictedDefectFiles =
 				(
@@ -52,11 +34,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					select new
 					{
 						Path = f.Path,
-						FaultProneProbability = lr.Predict(
-							GetPredictorValuesFor(context.SetFiles(e => e.IdIs(f.ID)))
-						)
+						FaultProneProbability = PredictDefectFileProbability(f)
 					}
-				).Where(x => x.FaultProneProbability > 0.5)
+				).Where(x => x.FaultProneProbability > defaultCutOffValue)
 				.Select(x => x.Path).ToArray();
 		}
 		public EvaluationResult Evaluate()
@@ -89,6 +69,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			get; set;
 		}
 		
+		protected abstract double PredictDefectFileProbability(ProjectFile file);
 		protected IEnumerable<ProjectFile> GetFilesInRevision(string revision)
 		{
 			return repositories.SelectionDSL()
@@ -97,16 +78,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.ExistInRevision(revision)
 					.ToList();
 		}
-		protected double FileHasDefects(int fileID, string revision, string previousRevision)
-		{
-			return repositories.SelectionDSL()
-				.Files().IdIs(fileID)
-				.Commits()
-					.AfterRevision(previousRevision)
-					.TillRevision(revision)
-				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().CalculateNumberOfDefects() > 0 ? 1 : 0;
-		}
+		
 		private IEnumerable<string> GetPostReleaseDefectFiles()
 		{
 			return repositories.SelectionDSL()

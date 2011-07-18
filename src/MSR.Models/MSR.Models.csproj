@@ -48,10 +48,8 @@
     <Compile Include="Prediction\PostReleaseDefectFiles\CustomPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\PostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\CodeStabilityPostReleaseDefectFilesPrediction.cs" />
+    <Compile Include="Prediction\PostReleaseDefectFiles\LogisticRegressionPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\SimpleLocPostReleaseDefectFilesPrediction.cs" />
-    <Compile Include="Prediction\PostReleaseMetric\PostReleaseDefectsPrediction.cs" />
-    <Compile Include="Prediction\PostReleaseMetric\PostReleaseMetricPrediction.cs" />
-    <Compile Include="Prediction\PostReleaseMetric\PostReleaseMetricPredictionEvaluation.cs" />
     <Compile Include="Prediction\Prediction.cs" />
     <Compile Include="Prediction\PredictorContext.cs" />
     <Compile Include="Prediction\Predictors\CodeBlockPredictors.cs" />

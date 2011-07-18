@@ -17,7 +17,6 @@ using MSR.Data.Persistent;
 using MSR.Data.VersionControl;
 using MSR.Models.Prediction;
 using MSR.Models.Prediction.PostReleaseDefectFiles;
-using MSR.Models.Prediction.PostReleaseMetric;
 using MSR.Models.Prediction.Predictors;
 
 namespace MSR.Tools.Debugger

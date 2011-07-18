@@ -24,110 +24,119 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			Title = "Code stability model";
 		}
-		public override void Predict()
+		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
-			var bugLifetimes = repositories.SelectionDSL()
+			base.Init(repositories, releases);
+
+			BugLifetimes = repositories.SelectionDSL()
 				.Commits().TillRevision(TrainReleases.Last())
 				.BugFixes().InCommits().CalculateAvarageBugLifetime();
-			
-			double defectLineProbability = repositories.SelectionDSL()
+
+			DefectLineProbability = repositories.SelectionDSL()
 				.Commits().TillRevision(TrainReleases.Last())
 				.Files().Reselect(FileSelector)
 				.Modifications().InCommits().InFiles()
 				.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(TrainReleases.Last());
-			
-			var files = GetFilesInRevision(PredictionRelease);
-			int filesInRelease = files.Count();
-			Dictionary<string,double> fileStability = new Dictionary<string,double>();
-			
-			var defectCodeSizeByRevision = new SmartDictionary<string,double>(r =>
-				repositories.SelectionDSL()
-					.Commits().RevisionIs(r)
-					.Modifications().InCommits()
-					.CodeBlocks().InModifications().CalculateDefectCodeSize(PredictionRelease)
-			);
-			var addedCodeSizeByRevision = new SmartDictionary<string, double>(r =>
+
+			AddedCodeSizeByRevision = new SmartDictionary<string, double>(r =>
 				repositories.SelectionDSL()
 					.Commits().RevisionIs(r)
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().Added().CalculateLOC()
 			);
-			
-			foreach (var file in files)
-			{
-				var codeBlocks = repositories.SelectionDSL()
-					.Commits().TillRevision(PredictionRelease)
-					.Files().IdIs(file.ID)
-					.Modifications().InCommits().InFiles()
-					.CodeBlocks().InModifications().CalculateRemainingCodeSize(PredictionRelease);
-				
-				var codeByRevision = (
-					from cb in codeBlocks
-					let CommitID = repositories.Repository<CodeBlock>()
-						.Single(x => x.ID == cb.Key)
-						.AddedInitiallyInCommitID
-					from c in repositories.Repository<Commit>()
-					where
-						c.ID == CommitID
-					let revision = c.Revision
-					let releaseDate = repositories.Repository<Commit>()
-						.Single(x => x.Revision == PredictionRelease)
-						.Date
-					let age = (releaseDate - c.Date).TotalDays
-					let codeSize = cb.Value
-					select new
-					{
-						Revision = revision,
-						Age = age,
-						CodeSize = codeSize,
-						AddedCodeSize = addedCodeSizeByRevision[revision],
-						DefectCodeSize = defectCodeSizeByRevision[revision],
-						// Probability that code from revision has errors
-						// (code size predictor)
-						EP = 1 - Math.Pow(1 - defectLineProbability, addedCodeSizeByRevision[revision]),
-						// Probability that code from revision has errors will be detected in future
-						// (code age predictor)
-						EFDP = (double)bugLifetimes.Where(t => t > age).Count() / bugLifetimes.Count(),
-						// Probability that code from revision has errors were not removed
-						// (code removing predictor)
-						//EWNRFP = codeSize / addedCodeSizeByRevision[revision],
-						// Probability that code from revision has errors were not fixed before
-						// (fixed code predictor)
-						/*EWNFP = defectCodeSizeByRevision[revision] == 0 ?
-							1
-							:
-							1 - LaplaceIntegralTheorem(
-								defectLineProbability,
-								addedCodeSizeByRevision[revision],
-								defectCodeSizeByRevision[revision] + 1,
-								defectCodeSizeByRevision[revision] + codeSize
-							)*/
-						
-					}).ToArray();
-				
-				double fileHasDefectsProbability = 0;
-				foreach (var codeFromRevision in codeByRevision)
-				{
-					double codeFromRevisionHasDefectsProbability = (
-						codeFromRevision.EP
-						* codeFromRevision.EFDP
-						//* codeFromRevision.EWNRFP
-						//* codeFromRevision.EWNFP
-					);
-					fileHasDefectsProbability += 
-						codeFromRevisionHasDefectsProbability
-						-
-						fileHasDefectsProbability * codeFromRevisionHasDefectsProbability;
-				}
-				
-				fileStability.Add(file.Path, fileHasDefectsProbability);
-			}
-
-			PredictedDefectFiles = fileStability
-				.Where(x => x.Value >= 0.5)
-				.Select(x => x.Key)
-				.ToList();
+			DefectCodeSizeByRevision = new SmartDictionary<string,double>(r =>
+				repositories.SelectionDSL()
+					.Commits().RevisionIs(r)
+					.Modifications().InCommits()
+					.CodeBlocks().InModifications().CalculateDefectCodeSize(PredictionRelease)
+			);
 		}
+		protected override double PredictDefectFileProbability(ProjectFile file)
+		{
+			var codeBlocks = repositories.SelectionDSL()
+				.Commits().TillRevision(PredictionRelease)
+				.Files().IdIs(file.ID)
+				.Modifications().InCommits().InFiles()
+				.CodeBlocks().InModifications().CalculateRemainingCodeSize(PredictionRelease);
+
+			var codeByRevision = (
+				from cb in codeBlocks
+				let CommitID = repositories.Repository<CodeBlock>()
+					.Single(x => x.ID == cb.Key)
+					.AddedInitiallyInCommitID
+				from c in repositories.Repository<Commit>()
+				where
+					c.ID == CommitID
+				let revision = c.Revision
+				let releaseDate = repositories.Repository<Commit>()
+					.Single(x => x.Revision == PredictionRelease)
+					.Date
+				let age = (releaseDate - c.Date).TotalDays
+				let codeSize = cb.Value
+				select new
+				{
+					Revision = revision,
+					Age = age,
+					CodeSize = codeSize,
+					AddedCodeSize = AddedCodeSizeByRevision[revision],
+					DefectCodeSize = DefectCodeSizeByRevision[revision],
+					// Probability that code from revision has errors
+					// (code size predictor)
+					EP = 1 - Math.Pow(1 - DefectLineProbability, AddedCodeSizeByRevision[revision]),
+					// Probability that code from revision has errors will be detected in future
+					// (code age predictor)
+					EFDP = (double)BugLifetimes.Where(t => t > age).Count() / BugLifetimes.Count(),
+					// Probability that code from revision has errors were not removed
+					// (code removing predictor)
+					//EWNRFP = codeSize / addedCodeSizeByRevision[revision],
+					// Probability that code from revision has errors were not fixed before
+					// (fixed code predictor)
+					/*EWNFP = defectCodeSizeByRevision[revision] == 0 ?
+						1
+						:
+						1 - LaplaceIntegralTheorem(
+							defectLineProbability,
+							addedCodeSizeByRevision[revision],
+							defectCodeSizeByRevision[revision] + 1,
+							defectCodeSizeByRevision[revision] + codeSize
+						)*/
+
+				}).ToArray();
+
+			double fileHasDefectsProbability = 0;
+			foreach (var codeFromRevision in codeByRevision)
+			{
+				double codeFromRevisionHasDefectsProbability = (
+					codeFromRevision.EP
+					* codeFromRevision.EFDP
+					//* codeFromRevision.EWNRFP
+					//* codeFromRevision.EWNFP
+				);
+				fileHasDefectsProbability +=
+					codeFromRevisionHasDefectsProbability
+					-
+					fileHasDefectsProbability * codeFromRevisionHasDefectsProbability;
+			}
+			
+			return fileHasDefectsProbability;
+		}
+		protected IEnumerable<double> BugLifetimes
+		{
+			get; set;
+		}
+		protected double DefectLineProbability
+		{
+			get; set;
+		}
+		protected IDictionary<string,double> AddedCodeSizeByRevision
+		{
+			get; set;
+		}
+		protected IDictionary<string,double> DefectCodeSizeByRevision
+		{
+			get; set;
+		}
+		
 		private double LaplaceIntegralTheorem(double p, double n, double k1, double k2)
 		{
 			double q = 1 - p;
