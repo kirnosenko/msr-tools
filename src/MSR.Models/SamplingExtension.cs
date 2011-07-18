@@ -15,20 +15,14 @@ public static class SamplingExtension
 {
 	public static IEnumerable<T> TakeRandomly<T>(this IEnumerable<T> sampledPopulation, int selectionSize)
 	{
-		List<T> selection = new List<T>();
-		T item;
-
+		var source = sampledPopulation.ToList();
+		
 		for (int i = 0; i < selectionSize; i++)
 		{
-			do
-			{
-				item = sampledPopulation.Skip(Rng.GetInt(sampledPopulation.Count())).First();
-			} while (selection.Contains(item));
-
-			selection.Add(item);
+			var item = source[Rng.GetInt(source.Count)];
+			source.Remove(item);
+			yield return item;
 		}
-		
-		return selection;
 	}
 	public static IEnumerable<T> TakeNoMoreThan<T>(this IEnumerable<T> sampledPopulation, int maxSelectionSize)
 	{

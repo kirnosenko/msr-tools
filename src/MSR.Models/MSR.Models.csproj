@@ -47,7 +47,6 @@
     <Compile Include="Prediction\EvaluationResult.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\CustomPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\PostReleaseDefectFilesPrediction.cs" />
-    <Compile Include="Prediction\PostReleaseDefectFiles\RandomPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\CodeStabilityPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\SimpleLocPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseMetric\PostReleaseDefectsPrediction.cs" />

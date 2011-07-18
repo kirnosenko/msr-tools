@@ -18,10 +18,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
 	public class PostReleaseDefectFilesPrediction : Prediction
 	{
-		public PostReleaseDefectFilesPrediction()
-		{
-			FilePortionLimit = 0.2;
-		}
 		public virtual void Predict()
 		{
 			LogisticRegression lr = new LogisticRegression();
@@ -49,8 +45,8 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			int filesInRelease = files.Count();
 			
 			context.SetCommits(TrainReleases.Last(), PredictionRelease);
-			
-			var faultProneFiles =
+
+			PredictedDefectFiles =
 				(
 					from f in files
 					select new
@@ -61,12 +57,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 						)
 					}
 				).Where(x => x.FaultProneProbability > 0.5)
-				.OrderByDescending(x => x.FaultProneProbability);
-
-			PredictedDefectFiles = faultProneFiles
-				.Select(x => x.Path)
-				.TakeNoMoreThan((int)(filesInRelease * FilePortionLimit))
-				.ToList();
+				.Select(x => x.Path).ToArray();
 		}
 		public EvaluationResult Evaluate()
 		{
@@ -94,10 +85,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			get; protected set;
 		}
 		public Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression> FileSelector
-		{
-			get; set;
-		}
-		public double FilePortionLimit
 		{
 			get; set;
 		}
