@@ -1,4 +1,17 @@
-﻿2011-03-26 - version 0.2.1
+﻿2011-07-18 - version 0.3.0
+	
+	* partial mapping for ignored paths
+	* activity stats page
+	* more release stats
+	* more path selectors for file mapping
+	* truncate mapping command
+	* blame statistics command
+	* some distributions in visualizer
+	* interpolation regressions in visualizer
+	* many changes in configuration schema
+	* minor fixes
+
+2011-03-26 - version 0.2.1
 
 	* minor fixes and improvements for predictor GUI
 
@@ -8,7 +21,7 @@
 	* simple defect file prediction models
 	* more statistics
 	* new predictor tool
-	* changes in configuration files
+	* changes in configuration schema
 
 2011-01-28 - version 0.1.1
 
