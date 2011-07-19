@@ -17,7 +17,6 @@ namespace MSR.Tools.Predictor
 	{
 		event Action<string> OnOpenConfigFile;
 		event Action OnPredict;
-		event Action OnPredictAndEvaluate;
 		
 		void Show();
 		void ShowError(string text);
@@ -33,6 +32,8 @@ namespace MSR.Tools.Predictor
 		IEnumerable<int> SelectedModels { get; }
 		bool CommandMenuAvailable { get; set; }
 		bool ShowFiles { get; set; }
+		bool Evaluate { get; set; }
+		bool EvaluateUsingROC { get; set; }
 		bool ReleaseSetGettingAll { get; set; }
 		bool ReleaseSetGettingIncrementalGrowth { get; set; }
 		bool ReleaseSetGettingFixed { get; set; }
@@ -43,7 +44,6 @@ namespace MSR.Tools.Predictor
 	{
 		public event Action<string> OnOpenConfigFile;
 		public event Action OnPredict;
-		public event Action OnPredictAndEvaluate;		
 		
 		private Queue<Action> workToDo = new Queue<Action>();
 		
@@ -150,13 +150,23 @@ namespace MSR.Tools.Predictor
 		}
 		public bool CommandMenuAvailable
 		{
-			get { return commandToolStripMenuItem.Visible; }
-			set { commandToolStripMenuItem.Visible = value; }
+			get { return commandMenu.Visible; }
+			set { commandMenu.Visible = value; }
 		}
 		public bool ShowFiles
 		{
-			get { return showFilesToolStripMenuItem.Checked; }
-			set { showFilesToolStripMenuItem.Checked = value; }
+			get { return showFilesMenu.Checked; }
+			set { showFilesMenu.Checked = value; }
+		}
+		public bool Evaluate
+		{
+			get { return evaluateMenu.Checked; }
+			set { evaluateMenu.Checked = value; }
+		}
+		public bool EvaluateUsingROC
+		{
+			get { return evaluateUsingROCMenu.Checked; }
+			set { evaluateUsingROCMenu.Checked = value; }
 		}
 		public bool ReleaseSetGettingAll
 		{
@@ -208,7 +218,7 @@ namespace MSR.Tools.Predictor
 				workToDo.Enqueue(action);
 			}
 		}
-		private void openConfigToolStripMenuItem_Click(object sender, EventArgs e)
+		private void openConfigMenuClick(object sender, EventArgs e)
 		{
 			OpenFileDialog dialog = new OpenFileDialog();
 			if (dialog.ShowDialog() == DialogResult.OK)
@@ -216,17 +226,13 @@ namespace MSR.Tools.Predictor
 				OnOpenConfigFile(dialog.FileName);
 			}
 		}
-		private void predictToolStripMenuItem_Click(object sender, EventArgs e)
+		private void predictMenuClick(object sender, EventArgs e)
 		{
 			OnPredict();
 		}
-		private void predictAndEvaluateToolStripMenuItem_Click(object sender, EventArgs e)
+		private void SwitchMenuOptionClick(object sender, EventArgs e)
 		{
-			OnPredictAndEvaluate();
-		}
-		private void showFilesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			showFilesToolStripMenuItem.Checked = ! showFilesToolStripMenuItem.Checked;
+			(sender as ToolStripMenuItem).Checked = !(sender as ToolStripMenuItem).Checked;
 		}
 		private void rbAll_CheckedChanged(object sender, EventArgs e)
 		{

@@ -86,8 +86,9 @@ namespace MSR.Tools.Predictor
 		PostReleaseDefectFilesPrediction[] Models { get; }
 		IEnumerable<PostReleaseDefectFilesPrediction> SelectedModels { get; set; }
 		
-		bool Evaluate { get; set; }
 		bool ShowFiles { get; set; }
+		bool Evaluate { get; set; }
+		bool EvaluateUsingROC { get; set; }
 		ReleaseSetGettingAlgo ReleaseSetGetting { get; set; }
 		int ReleaseSetSize { get; set; }
 	}
@@ -104,8 +105,9 @@ namespace MSR.Tools.Predictor
 		
 		public PredictorModel()
 		{
-			Evaluate = false;
 			ShowFiles = false;
+			Evaluate = true;
+			EvaluateUsingROC = true;
 			ReleaseSetGetting = ReleaseSetGettingAlgo.IncrementalGrowth;
 			ReleaseSetSize = 3;
 		}
@@ -135,11 +137,15 @@ namespace MSR.Tools.Predictor
 			Thread thread = new Thread(PredictWork);
 			thread.Start();
 		}
+		public bool ShowFiles
+		{
+			get; set;
+		}
 		public bool Evaluate
 		{
 			get; set;
 		}
-		public bool ShowFiles
+		public bool EvaluateUsingROC
 		{
 			get; set;
 		}
@@ -176,7 +182,6 @@ namespace MSR.Tools.Predictor
 		private void Predict(IDictionary<string,string> releases)
 		{
 			StringBuilder output = new StringBuilder();
-			string evaluationResult = null;
 
 			output.Append("Releases: ");
 			foreach (var r in releases.Values)
@@ -195,40 +200,52 @@ namespace MSR.Tools.Predictor
 				{
 					model.Init(s, releases.Keys);
 					model.Predict();
-					if (Evaluate)
-					{
-						evaluationResult = model.Evaluate().ToString();
-					}
-				}
 
-				output.AppendLine(model.Title);
-				if (ShowFiles || (!Evaluate))
-				{
-					output.AppendLine("Predicted defect files:");
-					foreach (var f in model.PredictedDefectFiles)
+					output.AppendLine(model.Title);
+					output.AppendLine();
+					
+					if (ShowFiles || (!Evaluate && !EvaluateUsingROC))
 					{
-						output.AppendLine(
-							string.Format("{0} {1}", f, Evaluate ? model.DefectFiles.Contains(f) ? "+" : "-" : "")
-						);
-					}
-				}
-				if (Evaluate)
-				{
-					if (ShowFiles)
-					{
-						output.AppendLine("Defect files:");
-						foreach (var f in model.DefectFiles.OrderBy(x => x))
+						output.AppendLine("Predicted defect files:");
+						foreach (var f in model.PredictedDefectFiles)
 						{
 							output.AppendLine(
-								string.Format("{0} {1}", f, model.PredictedDefectFiles.Contains(f) ? "+" : "-")
+								string.Format("{0} {1}", f, Evaluate ? model.DefectFiles.Contains(f) ? "+" : "-" : "")
 							);
 						}
 					}
-					output.AppendLine(evaluationResult);
-				}
-				output.AppendLine();
+					if (Evaluate || EvaluateUsingROC)
+					{
+						string evaluateResult = Evaluate ?
+							model.Evaluate().ToString()
+							:
+							"";
+						string evaluateUsingROCResult = EvaluateUsingROC ?
+							string.Format("AUC = {0:0.00}", model.EvaluateUsingROC())
+							:
+							"";
+						
+						if (ShowFiles)
+						{
+							output.AppendLine("Defect files:");
+							foreach (var f in model.DefectFiles.OrderBy(x => x))
+							{
+								output.AppendLine(
+									string.Format("{0} {1}", f, model.PredictedDefectFiles.Contains(f) ? "+" : "-")
+								);
+							}
+						}
 
-				OnAddReport(output.ToString());
+						output.AppendLine(string.Format("{0}{1}{2}",
+							evaluateResult,
+							((evaluateResult != "") && (evaluateUsingROCResult != "")) ? ", " : "",
+							evaluateUsingROCResult
+						));
+					}
+					output.AppendLine();
+
+					OnAddReport(output.ToString());
+				}
 			}
 		}
 	}

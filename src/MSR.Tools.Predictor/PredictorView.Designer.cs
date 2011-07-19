@@ -29,13 +29,14 @@
 		private void InitializeComponent()
 		{
 			this.mainMenu = new System.Windows.Forms.MenuStrip();
-			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.openConfigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.showFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.commandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.predictToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.predictAndEvaluateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.openConfigMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.viewMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.showFilesMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.evaluateMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.evaluateUsingROCMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.commandMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.predictMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.releaseList = new System.Windows.Forms.CheckedListBox();
 			this.outputText = new System.Windows.Forms.TextBox();
 			this.modelList = new System.Windows.Forms.CheckedListBox();
@@ -67,67 +68,75 @@
 			// mainMenu
 			// 
 			this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.viewToolStripMenuItem,
-            this.commandToolStripMenuItem});
+            this.fileMenu,
+            this.viewMenu,
+            this.commandMenu});
 			this.mainMenu.Location = new System.Drawing.Point(0, 0);
 			this.mainMenu.Name = "mainMenu";
 			this.mainMenu.Size = new System.Drawing.Size(737, 24);
 			this.mainMenu.TabIndex = 0;
 			this.mainMenu.Text = "menuStrip1";
 			// 
-			// fileToolStripMenuItem
+			// fileMenu
 			// 
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openConfigToolStripMenuItem});
-			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-			this.fileToolStripMenuItem.Text = "File";
+			this.fileMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openConfigMenu});
+			this.fileMenu.Name = "fileMenu";
+			this.fileMenu.Size = new System.Drawing.Size(37, 20);
+			this.fileMenu.Text = "File";
 			// 
-			// openConfigToolStripMenuItem
+			// openConfigMenu
 			// 
-			this.openConfigToolStripMenuItem.Name = "openConfigToolStripMenuItem";
-			this.openConfigToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
-			this.openConfigToolStripMenuItem.Text = "Open config...";
-			this.openConfigToolStripMenuItem.Click += new System.EventHandler(this.openConfigToolStripMenuItem_Click);
+			this.openConfigMenu.Name = "openConfigMenu";
+			this.openConfigMenu.Size = new System.Drawing.Size(149, 22);
+			this.openConfigMenu.Text = "Open config...";
+			this.openConfigMenu.Click += new System.EventHandler(this.openConfigMenuClick);
 			// 
-			// viewToolStripMenuItem
+			// viewMenu
 			// 
-			this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.showFilesToolStripMenuItem});
-			this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-			this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-			this.viewToolStripMenuItem.Text = "View";
+			this.viewMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showFilesMenu,
+            this.evaluateMenu,
+            this.evaluateUsingROCMenu});
+			this.viewMenu.Name = "viewMenu";
+			this.viewMenu.Size = new System.Drawing.Size(44, 20);
+			this.viewMenu.Text = "View";
 			// 
-			// showFilesToolStripMenuItem
+			// showFilesMenu
 			// 
-			this.showFilesToolStripMenuItem.Name = "showFilesToolStripMenuItem";
-			this.showFilesToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
-			this.showFilesToolStripMenuItem.Text = "Show files";
-			this.showFilesToolStripMenuItem.Click += new System.EventHandler(this.showFilesToolStripMenuItem_Click);
+			this.showFilesMenu.Name = "showFilesMenu";
+			this.showFilesMenu.Size = new System.Drawing.Size(177, 22);
+			this.showFilesMenu.Text = "Show files";
+			this.showFilesMenu.Click += new System.EventHandler(this.SwitchMenuOptionClick);
 			// 
-			// commandToolStripMenuItem
+			// evaluateMenu
 			// 
-			this.commandToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.predictToolStripMenuItem,
-            this.predictAndEvaluateToolStripMenuItem});
-			this.commandToolStripMenuItem.Name = "commandToolStripMenuItem";
-			this.commandToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
-			this.commandToolStripMenuItem.Text = "Command";
+			this.evaluateMenu.Name = "evaluateMenu";
+			this.evaluateMenu.Size = new System.Drawing.Size(177, 22);
+			this.evaluateMenu.Text = "Evaluate";
+			this.evaluateMenu.Click += new System.EventHandler(this.SwitchMenuOptionClick);
 			// 
-			// predictToolStripMenuItem
+			// evaluateUsingROCMenu
 			// 
-			this.predictToolStripMenuItem.Name = "predictToolStripMenuItem";
-			this.predictToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-			this.predictToolStripMenuItem.Text = "Predict";
-			this.predictToolStripMenuItem.Click += new System.EventHandler(this.predictToolStripMenuItem_Click);
+			this.evaluateUsingROCMenu.Name = "evaluateUsingROCMenu";
+			this.evaluateUsingROCMenu.Size = new System.Drawing.Size(177, 22);
+			this.evaluateUsingROCMenu.Text = "Evaluate using ROC";
+			this.evaluateUsingROCMenu.Click += new System.EventHandler(this.SwitchMenuOptionClick);
 			// 
-			// predictAndEvaluateToolStripMenuItem
+			// commandMenu
 			// 
-			this.predictAndEvaluateToolStripMenuItem.Name = "predictAndEvaluateToolStripMenuItem";
-			this.predictAndEvaluateToolStripMenuItem.Size = new System.Drawing.Size(181, 22);
-			this.predictAndEvaluateToolStripMenuItem.Text = "Predict and Evaluate";
-			this.predictAndEvaluateToolStripMenuItem.Click += new System.EventHandler(this.predictAndEvaluateToolStripMenuItem_Click);
+			this.commandMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.predictMenu});
+			this.commandMenu.Name = "commandMenu";
+			this.commandMenu.Size = new System.Drawing.Size(76, 20);
+			this.commandMenu.Text = "Command";
+			// 
+			// predictMenu
+			// 
+			this.predictMenu.Name = "predictMenu";
+			this.predictMenu.Size = new System.Drawing.Size(111, 22);
+			this.predictMenu.Text = "Predict";
+			this.predictMenu.Click += new System.EventHandler(this.predictMenuClick);
 			// 
 			// releaseList
 			// 
@@ -352,15 +361,14 @@
 		#endregion
 
 		private System.Windows.Forms.MenuStrip mainMenu;
-		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem openConfigToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem fileMenu;
+		private System.Windows.Forms.ToolStripMenuItem openConfigMenu;
 		private System.Windows.Forms.CheckedListBox releaseList;
-		private System.Windows.Forms.ToolStripMenuItem commandToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem predictToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem predictAndEvaluateToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem commandMenu;
+		private System.Windows.Forms.ToolStripMenuItem predictMenu;
 		private System.Windows.Forms.TextBox outputText;
-		private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem showFilesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem viewMenu;
+		private System.Windows.Forms.ToolStripMenuItem showFilesMenu;
 		private System.Windows.Forms.CheckedListBox modelList;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.NumericUpDown releaseSetSize;
@@ -376,6 +384,8 @@
 		private System.Windows.Forms.RadioButton rbAll;
 		private System.Windows.Forms.RadioButton rbFixed;
 		private System.Windows.Forms.RadioButton rbIncrementalGrowth;
+		private System.Windows.Forms.ToolStripMenuItem evaluateMenu;
+		private System.Windows.Forms.ToolStripMenuItem evaluateUsingROCMenu;
 	}
 }
 

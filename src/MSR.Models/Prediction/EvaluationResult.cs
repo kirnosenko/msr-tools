@@ -42,6 +42,14 @@ namespace MSR.Models.Prediction
 		{
 			get { return (TP + FP) / (TP + TN + FP + FN); }
 		}
+		public double Sensitivity
+		{
+			get { return TP / (TP + FN); }
+		}
+		public double Specificity
+		{
+			get { return TN / (TN + FP); }
+		}
 		public double NegPos
 		{
 			get { return (TN + FP) / (FN + TP); }

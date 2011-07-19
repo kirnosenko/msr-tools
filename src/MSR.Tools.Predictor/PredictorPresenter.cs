@@ -27,9 +27,10 @@ namespace MSR.Tools.Predictor
 			model.OnReadyStateChanged += x => view.Ready = x;
 			model.OnError += x => view.ShowError(x);
 			view.OnOpenConfigFile += OpenConfigFile;
-			view.OnPredict += () => Predict(false);
-			view.OnPredictAndEvaluate += () => Predict(true);
+			view.OnPredict += Predict;
 			view.ShowFiles = model.ShowFiles;
+			view.Evaluate = model.Evaluate;
+			view.EvaluateUsingROC = model.EvaluateUsingROC;
 			if (model.ReleaseSetGetting == ReleaseSetGettingAlgo.All)
 			{
 				view.ReleaseSetGettingAll = true;
@@ -69,6 +70,8 @@ namespace MSR.Tools.Predictor
 				.ToDictionary(x => x.Key, x => x.Value);
 			
 			model.ShowFiles = view.ShowFiles;
+			model.Evaluate = view.Evaluate;
+			model.EvaluateUsingROC = view.EvaluateUsingROC;
 			if (view.ReleaseSetGettingAll)
 			{
 				model.ReleaseSetGetting = ReleaseSetGettingAlgo.All;
@@ -95,12 +98,11 @@ namespace MSR.Tools.Predictor
 				view.ShowError(e.Message);
 			}
 		}
-		private void Predict(bool evaluate)
+		private void Predict()
 		{
 			try
 			{
 				UpdateOptions();
-				model.Evaluate = evaluate;
 				model.Predict();
 			}
 			catch (Exception e)

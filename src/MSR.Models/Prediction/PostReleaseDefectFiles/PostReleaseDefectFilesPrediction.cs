@@ -19,6 +19,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	public abstract class PostReleaseDefectFilesPrediction : Prediction
 	{
 		private double defaultCutOffValue;
+		private Dictionary<string,double> possibleDefectFiles;
 		
 		public PostReleaseDefectFilesPrediction()
 		{
@@ -26,35 +27,62 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		public virtual void Predict()
 		{
-			var files = GetFilesInRevision(PredictionRelease);
+			AllFiles = GetFilesInRevision(PredictionRelease);
+			
+			possibleDefectFiles = new Dictionary<string,double>();
+			foreach (var file in AllFiles)
+			{
+				possibleDefectFiles.Add(
+					file.Path,
+					FileFaultProneProbability(file)
+				);
+			}
 
-			PredictedDefectFiles =
-				(
-					from f in files
-					select new
-					{
-						Path = f.Path,
-						FaultProneProbability = PredictDefectFileProbability(f)
-					}
-				).Where(x => x.FaultProneProbability > defaultCutOffValue)
-				.Select(x => x.Path).ToArray();
+			PredictedDefectFiles = possibleDefectFiles
+				.Where(x => x.Value > defaultCutOffValue)
+				.Select(x => x.Key)
+				.ToArray();
 		}
 		public EvaluationResult Evaluate()
 		{
-			var allFiles = GetFilesInRevision(PredictionRelease)
-				.Select(x => x.Path);
 			DefectFiles = GetPostReleaseDefectFiles();
 			
-			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(PredictedDefectFiles);
-
-			IEnumerable<string> P = DefectFiles;
-			IEnumerable<string> N = allFiles.Except(DefectFiles);
-			int TP = PredictedDefectFiles.Intersect(P).Count();
-			int TN = predictedNonDefectFiles.Intersect(N).Count();
-			int FP = PredictedDefectFiles.Count() - TP;
-			int FN = predictedNonDefectFiles.Count() - TN;
-
-			return new EvaluationResult(TP, TN, FP, FN);
+			return Evaluate(PredictedDefectFiles);
+		}
+		public double EvaluateUsingROC()
+		{
+			if (DefectFiles == null)
+			{
+				DefectFiles = GetPostReleaseDefectFiles();
+			}
+			
+			List<double> xlist = new List<double>(100);
+			List<double> ylist = new List<double>(100);
+			
+			for (double cutOffValue = 0; cutOffValue <= 1; cutOffValue+= 0.01)
+			{
+				var predictedDefectFiles = possibleDefectFiles
+					.Where(x => x.Value > cutOffValue)
+					.Select(x => x.Key)
+					.ToArray();
+				
+				var er = Evaluate(predictedDefectFiles);
+				
+				xlist.Add(1 - er.Specificity);
+				ylist.Add(er.Sensitivity);
+			}
+			
+			double sum = 0;
+			for (int i = 0; i < xlist.Count-1; i++)
+			{
+				sum += ((ylist[i+1] + ylist[i]) / 2) * (xlist[i] - xlist[i+1]);
+			}
+			return sum;
+		}
+		
+		public IEnumerable<ProjectFile> AllFiles
+		{
+			get; protected set;
 		}
 		public IEnumerable<string> PredictedDefectFiles
 		{
@@ -68,15 +96,32 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; set;
 		}
-		
-		protected abstract double PredictDefectFileProbability(ProjectFile file);
+
+		protected EvaluationResult Evaluate(
+			IEnumerable<string> predictedDefectFiles
+		)
+		{
+			var allFiles = AllFiles.Select(x => x.Path).ToArray();
+			
+			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(predictedDefectFiles);
+			
+			IEnumerable<string> P = DefectFiles;
+			IEnumerable<string> N = allFiles.Except(DefectFiles);
+			int TP = predictedDefectFiles.Intersect(P).Count();
+			int TN = predictedNonDefectFiles.Intersect(N).Count();
+			int FP = predictedDefectFiles.Count() - TP;
+			int FN = predictedNonDefectFiles.Count() - TN;
+
+			return new EvaluationResult(TP, TN, FP, FN);
+		}
+		protected abstract double FileFaultProneProbability(ProjectFile file);
 		protected IEnumerable<ProjectFile> GetFilesInRevision(string revision)
 		{
 			return repositories.SelectionDSL()
 				.Files()
 					.Reselect(FileSelector)
 					.ExistInRevision(revision)
-					.ToList();
+					.ToArray();
 		}
 		
 		private IEnumerable<string> GetPostReleaseDefectFiles()

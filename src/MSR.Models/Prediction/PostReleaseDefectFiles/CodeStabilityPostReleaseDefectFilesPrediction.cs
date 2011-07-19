@@ -28,9 +28,13 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			base.Init(repositories, releases);
 
-			BugLifetimes = repositories.SelectionDSL()
-				.Commits().TillRevision(TrainReleases.Last())
-				.BugFixes().InCommits().CalculateAvarageBugLifetime();
+			List<double> bugLifetimes = new List<double>(
+				repositories.SelectionDSL()
+					.Commits().TillRevision(TrainReleases.Last())
+					.BugFixes().InCommits().CalculateAvarageBugLifetime()
+			);
+			bugLifetimes.Add(1000000);
+			BugLifetimes = bugLifetimes;
 
 			DefectLineProbability = repositories.SelectionDSL()
 				.Commits().TillRevision(TrainReleases.Last())
@@ -51,7 +55,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.CodeBlocks().InModifications().CalculateDefectCodeSize(PredictionRelease)
 			);
 		}
-		protected override double PredictDefectFileProbability(ProjectFile file)
+		protected override double FileFaultProneProbability(ProjectFile file)
 		{
 			var codeBlocks = repositories.SelectionDSL()
 				.Commits().TillRevision(PredictionRelease)
