@@ -39,7 +39,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			}
 
 			PredictedDefectFiles = possibleDefectFiles
-				.Where(x => x.Value > defaultCutOffValue)
+				.Where(x => x.Value >= defaultCutOffValue)
 				.Select(x => x.Key)
 				.ToArray();
 		}
@@ -59,10 +59,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			List<double> xlist = new List<double>(100);
 			List<double> ylist = new List<double>(100);
 			
-			for (double cutOffValue = 0; cutOffValue <= 1; cutOffValue+= 0.01)
+			for (int cutOffValue = 0; cutOffValue <= 100; cutOffValue++)
 			{
 				var predictedDefectFiles = possibleDefectFiles
-					.Where(x => x.Value > cutOffValue)
+					.Where(x => x.Value >= (double)cutOffValue * 0.01)
 					.Select(x => x.Key)
 					.ToArray();
 				

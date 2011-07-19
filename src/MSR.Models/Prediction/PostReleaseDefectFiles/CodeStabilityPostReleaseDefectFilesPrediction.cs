@@ -92,17 +92,17 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					EFDP = (double)BugLifetimes.Where(t => t > age).Count() / BugLifetimes.Count(),
 					// Probability that code from revision has errors were not removed
 					// (code removing predictor)
-					//EWNRFP = codeSize / addedCodeSizeByRevision[revision],
+					//EWNRFP = codeSize / AddedCodeSizeByRevision[revision],
 					// Probability that code from revision has errors were not fixed before
 					// (fixed code predictor)
-					/*EWNFP = defectCodeSizeByRevision[revision] == 0 ?
+					/*EWNFP = DefectCodeSizeByRevision[revision] == 0 ?
 						1
 						:
 						1 - LaplaceIntegralTheorem(
-							defectLineProbability,
-							addedCodeSizeByRevision[revision],
-							defectCodeSizeByRevision[revision] + 1,
-							defectCodeSizeByRevision[revision] + codeSize
+							DefectLineProbability,
+							AddedCodeSizeByRevision[revision],
+							DefectCodeSizeByRevision[revision] + 1,
+							DefectCodeSizeByRevision[revision] + codeSize
 						)*/
 
 				}).ToArray();
