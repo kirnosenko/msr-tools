@@ -25,6 +25,7 @@ namespace MSR.Tools.Predictor
 			model.OnClearReport += () => view.ClearReport();
 			model.OnAddReport += x => view.AddReport(x);
 			model.OnReadyStateChanged += x => view.Ready = x;
+			model.OnProgressStateChanged += x => view.Status = x;
 			model.OnError += x => view.ShowError(x);
 			view.OnOpenConfigFile += OpenConfigFile;
 			view.OnPredict += Predict;

@@ -18,6 +18,8 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
 	public abstract class PostReleaseDefectFilesPrediction : Prediction
 	{
+		public event Action<PostReleaseDefectFilesPrediction,double> CallBack;
+		
 		private double defaultCutOffValue;
 		private Dictionary<string,double> possibleDefectFiles;
 		
@@ -29,6 +31,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			AllFiles = GetFilesInRevision(PredictionRelease);
 			
+			int allFilesCount = AllFiles.Count();
+			int processedFilesCount = 0;
+			
 			possibleDefectFiles = new Dictionary<string,double>();
 			foreach (var file in AllFiles)
 			{
@@ -36,6 +41,12 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					file.Path,
 					FileFaultProneProbability(file)
 				);
+				
+				if (CallBack != null)
+				{
+					processedFilesCount++;
+					CallBack(this, (double)processedFilesCount / allFilesCount);
+				}
 			}
 
 			PredictedDefectFiles = possibleDefectFiles

@@ -77,6 +77,7 @@ namespace MSR.Tools.Predictor
 		event Action OnClearReport;
 		event Action<string> OnAddReport;
 		event Action<bool> OnReadyStateChanged;
+		event Action<string> OnProgressStateChanged;
 		event Action<string> OnError;
 		
 		void OpenConfig(string fileName);
@@ -99,6 +100,7 @@ namespace MSR.Tools.Predictor
 		public event Action OnClearReport;
 		public event Action<string> OnAddReport;
 		public event Action<bool> OnReadyStateChanged;
+		public event Action<string> OnProgressStateChanged;
 		public event Action<string> OnError;
 		
 		private PredictionTool predictor;
@@ -115,6 +117,16 @@ namespace MSR.Tools.Predictor
 		{
 			predictor = new PredictionTool(fileName);
 			OnTitleUpdated(string.Format("Predictor - {0}", fileName));
+			foreach (var model in Models)
+			{
+				model.CallBack += (m,p) =>
+				{
+					OnProgressStateChanged(string.Format("{0} - {1:0}%",
+						m.Title,
+						p * 100
+					));
+				};
+			}
 		}
 		public IDictionary<string,string> Releases
 		{
@@ -135,6 +147,7 @@ namespace MSR.Tools.Predictor
 		public void Predict()
 		{
 			Thread thread = new Thread(PredictWork);
+			thread.IsBackground = true;
 			thread.Start();
 		}
 		public bool ShowFiles

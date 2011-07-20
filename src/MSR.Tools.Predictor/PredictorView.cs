@@ -88,8 +88,11 @@ namespace MSR.Tools.Predictor
 		public void AddReport(string text)
 		{
 			AddWorkToDo(() =>
-				outputText.Text += text
-			);
+			{
+				outputText.Text += text;
+				outputText.SelectionStart = outputText.TextLength;
+				outputText.ScrollToCaret();
+			});
 		}
 
 		public string Title
@@ -200,9 +203,8 @@ namespace MSR.Tools.Predictor
 			get { return (int)releaseSetSize.Value; }
 			set { releaseSetSize.Value = value; }
 		}
-		protected override void DefWndProc(ref Message m)
+		private void DoWork()
 		{
-			base.DefWndProc(ref m);
 			lock (workToDo)
 			{
 				while (workToDo.Count > 0)
@@ -216,6 +218,10 @@ namespace MSR.Tools.Predictor
 			lock (workToDo)
 			{
 				workToDo.Enqueue(action);
+			}
+			if (base.IsHandleCreated)
+			{
+				base.Invoke((Action)(DoWork));
 			}
 		}
 		private void openConfigMenuClick(object sender, EventArgs e)
