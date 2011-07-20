@@ -54,6 +54,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().CalculateDefectCodeSize(PredictionRelease)
 			);
+			ReleaseDate = repositories.Repository<Commit>()
+				.Single(x => x.Revision == PredictionRelease)
+				.Date;
 		}
 		protected override double FileFaultProneProbability(ProjectFile file)
 		{
@@ -72,18 +75,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				where
 					c.ID == CommitID
 				let revision = c.Revision
-				let releaseDate = repositories.Repository<Commit>()
-					.Single(x => x.Revision == PredictionRelease)
-					.Date
-				let age = (releaseDate - c.Date).TotalDays
+				let age = (ReleaseDate - c.Date).TotalDays
 				let codeSize = cb.Value
 				select new
 				{
-					Revision = revision,
-					Age = age,
-					CodeSize = codeSize,
-					AddedCodeSize = AddedCodeSizeByRevision[revision],
-					DefectCodeSize = DefectCodeSizeByRevision[revision],
 					// Probability that code from revision has errors
 					// (code size predictor)
 					EP = 1 - Math.Pow(1 - DefectLineProbability, AddedCodeSizeByRevision[revision]),
@@ -137,6 +132,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			get; set;
 		}
 		protected IDictionary<string,double> DefectCodeSizeByRevision
+		{
+			get; set;
+		}
+		protected DateTime ReleaseDate
 		{
 			get; set;
 		}
