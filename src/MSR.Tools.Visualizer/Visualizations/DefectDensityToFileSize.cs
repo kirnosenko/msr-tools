@@ -52,10 +52,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 		}
 		public override void Draw(IGraphView graph)
 		{
-			graph.Title = "Defect density to file size";
 			graph.XAxisTitle = "File size (LOC)";
 			graph.YAxisTitle = "Defect density (defects per KLOC)";
-			graph.ShowPoints("", x, y);
+			base.Draw(graph);
 		}
 	}
 }

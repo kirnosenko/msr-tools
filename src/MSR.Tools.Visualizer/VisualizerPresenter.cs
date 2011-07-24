@@ -47,7 +47,11 @@ namespace MSR.Tools.Visualizer
 		private void UseVisualization(int number)
 		{
 			IVisualization visualization = model.Visualizations[number];
-
+			
+			if (! visualization.Initialized)
+			{
+				model.InitVisualization(visualization);
+			}
 			if (! visualization.Configurable || view.ConfigureVisualization(visualization))
 			{
 				if (model.AutomaticallyCleanUp && visualization.AllowCleanUp)

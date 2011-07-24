@@ -13,9 +13,11 @@ namespace MSR.Tools.Visualizer
 {
 	public interface IVisualization
 	{
+		void Init(IRepositoryResolver repositories);
 		void Calc(IRepositoryResolver repositories);
 		void Draw(IGraphView graph);
 		
+		bool Initialized { get; }
 		string Title { get; }
 		bool Configurable { get; }
 		bool AllowCleanUp { get; }

@@ -20,6 +20,13 @@ namespace MSR.Tools.Visualizer
 		{
 			Visualizations = GetConfiguredType<VisualizationPool>();
 		}
+		public void InitVisualization(IVisualization visualization)
+		{
+			using (var s = data.OpenSession())
+			{
+				visualization.Init(s);
+			}
+		}
 		public void CalcVisualization(IVisualization visualization)
 		{
 			PersistentDataStoreProfiler prof = new PersistentDataStoreProfiler(data);

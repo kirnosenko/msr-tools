@@ -36,11 +36,6 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 
 			Legend = string.Format("Mean = {0:0.00} Standard deviation = {1:0.00}", x.Mean(), x.PopulationStandardDeviation());
 		}
-		public override void Draw(IGraphView graph)
-		{
-			graph.Title = Title;
-			graph.ShowPoints(Legend, x, y);
-		}
 		protected abstract IEnumerable<double> DistributionData(IRepositoryResolver repositories);
 	}
 }

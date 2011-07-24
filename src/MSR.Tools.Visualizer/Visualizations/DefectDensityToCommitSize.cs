@@ -60,10 +60,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 		}
 		public override void Draw(IGraphView graph)
 		{
-			graph.Title = "Defect density to commit size";
 			graph.XAxisTitle = "Commit size (LOC)";
 			graph.YAxisTitle = "Defect density (defects per KLOC)";
-			graph.ShowPoints("", x, y);
+			base.Draw(graph);
 		}
 	}
 }

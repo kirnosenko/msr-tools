@@ -12,17 +12,57 @@ using MSR.Data;
 
 namespace MSR.Tools.Visualizer.Visualizations
 {
+	public enum VisualizationType
+	{
+		POINTS,
+		LINE,
+		HISTOGRAM
+	}
+	
 	public abstract class Visualization : IVisualization
 	{
 		protected double[] x,y;
 		
 		public Visualization()
 		{
+			Initialized = false;
+			Type = VisualizationType.POINTS;
 			Legend = "";
 			TargetDir = "/";
 		}
+		public virtual void Init(IRepositoryResolver repositories)
+		{
+			Initialized = true;
+		}
 		public abstract void Calc(IRepositoryResolver repositories);
-		public abstract void Draw(IGraphView graph);
+		public virtual void Draw(IGraphView graph)
+		{
+			graph.Title = Title;
+			switch (Type)
+			{
+				case VisualizationType.POINTS:
+					graph.ShowPoints(Legend, x, y);
+					break;
+				case VisualizationType.LINE:
+					graph.ShowLine(Legend, x, y);
+					break;
+				case VisualizationType.HISTOGRAM:
+					graph.ShowHistogram(Legend, x, y);
+					break;
+				default:
+					break;
+			}
+		}
+		[Browsable(false)]
+		public bool Initialized
+		{
+			get; protected set;
+		}
+		[Browsable(false)]
+		public VisualizationType Type
+		{
+			get; protected set;
+		}
 		[Browsable(false)]
 		public string Title
 		{

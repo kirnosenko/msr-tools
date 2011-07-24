@@ -53,10 +53,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 		}
 		public override void Draw(IGraphView graph)
 		{
-			graph.Title = "Code size to date";
 			graph.XAxisTitle = "Days";
 			graph.YAxisTitle = "LOC";
-			graph.ShowPoints("", x, y);
+			base.Draw(graph);
 		}
 		[DescriptionAttribute("Days per step")]
 		public int DaysPerStep

@@ -1,8 +1,8 @@
 MSR Tools - tools for mining software repositories
 
-MSR Tools is a source code evolution analysis tool. It is a metric 
-calculator, statistics generator and framework for mining software 
-repositories.
+MSR Tools is a source code evolution analysis tool. It consists of a 
+framework for mining software repositories and tools for metric calculation,
+visualization, defect prediction.
 
 More info
 =========
