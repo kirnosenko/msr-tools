@@ -22,10 +22,17 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		
 		private double defaultCutOffValue;
 		private Dictionary<string,double> possibleDefectFiles;
+		private IEnumerable<string> defectFiles;
 		
 		public PostReleaseDefectFilesPrediction()
 		{
 			defaultCutOffValue = 0.5;
+		}
+		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
+		{
+			base.Init(repositories, releases);
+			
+			defectFiles = null;
 		}
 		public virtual void Predict()
 		{
@@ -56,17 +63,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		public EvaluationResult Evaluate()
 		{
-			DefectFiles = GetPostReleaseDefectFiles();
-			
 			return Evaluate(PredictedDefectFiles);
 		}
 		public double EvaluateUsingROC()
 		{
-			if (DefectFiles == null)
-			{
-				DefectFiles = GetPostReleaseDefectFiles();
-			}
-			
 			List<double> xlist = new List<double>(100);
 			List<double> ylist = new List<double>(100);
 			
@@ -101,7 +101,14 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		public IEnumerable<string> DefectFiles
 		{
-			get; protected set;
+			get
+			{
+				if (defectFiles == null)
+				{
+					defectFiles = GetPostReleaseDefectFiles();
+				}
+				return defectFiles;
+			}
 		}
 		public Func<ProjectFileSelectionExpression,ProjectFileSelectionExpression> FileSelector
 		{
