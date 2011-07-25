@@ -14,8 +14,10 @@ namespace MSR.Tools.Visualizer
 {
 	public interface IGraphView
 	{
+		void PrepairPointsForDateScale(double[] points, DateTime startDate);
 		void ShowPoints(string legend, double[] x, double[] y);
 		void ShowLine(string legend, double[] x, double[] y);
+		void ShowLineWithPoints(string legend, double[] x, double[] y);
 		void ShowHistogram(string legend, double[] x, double[] y);
 		void CleanUp();
 
@@ -24,6 +26,10 @@ namespace MSR.Tools.Visualizer
 		string YAxisTitle { get; set; }
 		bool XAxisLogScale { get; set; }
 		bool YAxisLogScale { get; set; }
+		bool XAxisDayScale { get; set; }
+		bool YAxisDayScale { get; set; }
+		float XAxisFontAngle { get; set; }
+		float YAxisFontAngle { get; set; }
 		IDictionary<double[],double[]> Points { get; }
 	}
 	
@@ -43,14 +49,25 @@ namespace MSR.Tools.Visualizer
 			
 			InitColorsQueue();
 		}
+		public void PrepairPointsForDateScale(double[] points, DateTime startDate)
+		{
+			for (int i = 0; i < points.Length; i++)
+			{
+				points[i] = new XDate(startDate.AddDays(points[i]));
+			}
+		}
 		public void ShowPoints(string legend, double[] x, double[] y)
 		{
 			points.Add(x, y);
-			ShowCurve(legend, x, y, NextColor(), false);
+			ShowCurve(legend, x, y, NextColor(), false, true);
 		}
 		public void ShowLine(string legend, double[] x, double[] y)
 		{
-			ShowCurve(legend, x, y, NextColor(), true);
+			ShowCurve(legend, x, y, NextColor(), true, false);
+		}
+		public void ShowLineWithPoints(string legend, double[] x, double[] y)
+		{
+			ShowCurve(legend, x, y, NextColor(), true, true);
 		}
 		public void ShowHistogram(string legend, double[] x, double[] y)
 		{
@@ -82,22 +99,42 @@ namespace MSR.Tools.Visualizer
 		}
 		public bool XAxisLogScale
 		{
-			get { return IsLogScale(GraphPane.XAxis); }
-			set { SetLogScale(GraphPane.XAxis, value); }
+			get { return IsScale(GraphPane.XAxis, AxisType.Log); }
+			set { SetScale(GraphPane.XAxis, value ? AxisType.Log : AxisType.Linear); }
 		}
 		public bool YAxisLogScale
 		{
-			get { return IsLogScale(GraphPane.YAxis); }
-			set { SetLogScale(GraphPane.YAxis, value); }
+			get { return IsScale(GraphPane.YAxis, AxisType.Log); }
+			set { SetScale(GraphPane.YAxis, value ? AxisType.Log : AxisType.Linear); }
+		}
+		public bool XAxisDayScale
+		{
+			get { return IsScale(GraphPane.XAxis, AxisType.Date); }
+			set { SetScale(GraphPane.XAxis, value ? AxisType.Date : AxisType.Linear); }
+		}
+		public bool YAxisDayScale
+		{
+			get { return IsScale(GraphPane.YAxis, AxisType.Date); }
+			set { SetScale(GraphPane.YAxis, value ? AxisType.Date : AxisType.Linear); }
+		}
+		public float XAxisFontAngle
+		{
+			get { return GraphPane.XAxis.Scale.FontSpec.Angle; }
+			set { GraphPane.XAxis.Scale.FontSpec.Angle = value; }
+		}
+		public float YAxisFontAngle
+		{
+			get { return GraphPane.YAxis.Scale.FontSpec.Angle; }
+			set { GraphPane.YAxis.Scale.FontSpec.Angle = value; }
 		}
 		public IDictionary<double[],double[]> Points
 		{
 			get { return points; }
 		}
-		private void ShowCurve(string legend, double[] x, double[] y, Color color, bool line)
+		private void ShowCurve(string legend, double[] x, double[] y, Color color, bool line, bool points)
 		{
-			LineItem myCurve = GraphPane.AddCurve(legend, x, y, color, line ? SymbolType.None : SymbolType.Diamond);
-			myCurve.Symbol.Fill = new Fill(Color.White);
+			LineItem myCurve = GraphPane.AddCurve(legend, x, y, color, points ? SymbolType.Circle : SymbolType.None);
+			myCurve.Symbol.Fill = new Fill(line ? color : Color.White);
 			myCurve.Line.IsVisible = line;
 			AxisChange();
 			Invalidate();
@@ -124,20 +161,13 @@ namespace MSR.Tools.Visualizer
 			differentColors.Enqueue(result);
 			return result;
 		}
-		private bool IsLogScale(Axis axis)
+		private bool IsScale(Axis axis, AxisType scale)
 		{
-			return axis.Type == AxisType.Log;
+			return axis.Type == scale;
 		}
-		private void SetLogScale(Axis axis, bool logScale)
+		private void SetScale(Axis axis, AxisType scale)
 		{
-			if (logScale)
-			{
-				axis.Type = AxisType.Log;
-			}
-			else
-			{
-				axis.Type = AxisType.Linear;
-			}
+			axis.Type = scale;
 			AxisChange();
 			Invalidate();
 		}

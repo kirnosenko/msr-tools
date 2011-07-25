@@ -16,15 +16,58 @@ using MSR.Data.Entities.DSL.Selection.Metrics;
 
 namespace MSR.Tools.Visualizer.Visualizations
 {
+	public enum DatePeriod
+	{
+		DAY,
+		WEEK,
+		MONTH,
+		YEAR
+	}
+	
+	public class DatePeriodConvertor : TypeConverter
+	{
+		public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
+		{
+			return true;
+		}
+		public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+		{
+			return new StandardValuesCollection(new DatePeriod[]
+			{
+				DatePeriod.DAY, DatePeriod.WEEK, DatePeriod.MONTH, DatePeriod.YEAR
+			});
+		}
+		public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
+		{
+			return true;
+		}
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+		{
+			return sourceType == typeof(string);
+		}
+		public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
+		{
+			switch ((string)value)
+			{
+				case "DAY": return DatePeriod.DAY;
+				case "WEEK": return DatePeriod.WEEK;
+				case "MONTH": return DatePeriod.MONTH;
+				case "YEAR": return DatePeriod.YEAR;
+				default: return null;
+			}
+		}
+	}
+	
 	public class CommitsByDateAndAuthor : Visualization
 	{
-		Dictionary<string,double[]> yByAuthor;
+		private Dictionary<string,double[]> yByAuthor;
+		private DateTime startDate;
 		
 		public CommitsByDateAndAuthor()
 		{
-			Type = VisualizationType.LINE;
+			Type = VisualizationType.LINEWITHPOINTS;
 			Title = "Commits by date and author";
-			DaysPerStep = 30;
+			DatePeriod = DatePeriod.MONTH;
 		}
 		public override void Init(IRepositoryResolver repositories)
 		{
@@ -36,6 +79,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 		public override void Calc(IRepositoryResolver repositories)
 		{
 			var dates = GetDates(repositories);
+			startDate = dates[0];
 			
 			x = new double[dates.Count()-1];
 			yByAuthor = new Dictionary<string,double[]>();
@@ -47,37 +91,46 @@ namespace MSR.Tools.Visualizer.Visualizations
 			for (int i = 0; i < Authors.Length; i++)
 			{
 				y = yByAuthor[Authors[i]];
-				DateTime prev = dates.First();
+				DateTime prev = dates[0];
 				int counter = 0;
-				
-				foreach (var date in dates)
+
+				for (int j = 1; j < dates.Length; j++)
 				{
-					if (counter >= 30)
-					{
-						Console.WriteLine();
-					}
-					if (date == prev)
-					{
-						continue;
-					}
 					if (i == 0)
 					{
-						x[counter] = (date - dates.First()).TotalDays;
+						x[counter] = (dates[j] - dates[0]).TotalDays;
 					}
 					y[counter] = repositories.SelectionDSL().Commits()
 						.DateIsGreaterOrEquelThan(prev)
-						.DateIsLesserThan(date)
+						.DateIsLesserThan(dates[j])
 						.AuthorIs(Authors[i])
 						.Count();
 					
-					prev = date;
+					prev = dates[j];
 					counter++;
 				}
 			}
 		}
 		public override void Draw(IGraphView graph)
 		{
-			graph.XAxisTitle = "Days";
+			switch (DatePeriod)
+			{
+				case DatePeriod.DAY:
+					graph.XAxisTitle = "Days";
+					break;
+				case DatePeriod.WEEK:
+					graph.XAxisTitle = "Weeks";
+					break;
+				case DatePeriod.MONTH:
+					graph.XAxisTitle = "Months";
+					break;
+				case DatePeriod.YEAR:
+					graph.XAxisTitle = "Years";
+					break;
+			}
+			graph.XAxisDayScale = true;
+			graph.XAxisFontAngle = 90;
+			graph.PrepairPointsForDateScale(x, startDate);
 			graph.YAxisTitle = "Commits";
 			foreach (var y in yByAuthor)
 			{
@@ -86,8 +139,8 @@ namespace MSR.Tools.Visualizer.Visualizations
 				base.Draw(graph);
 			}
 		}
-		[DescriptionAttribute("Days per step")]
-		public int DaysPerStep
+		[TypeConverter(typeof(DatePeriodConvertor)), DescriptionAttribute("Date period"), DefaultValue(DatePeriod.MONTH)]
+		public DatePeriod DatePeriod
 		{
 			get; set;
 		}
@@ -96,19 +149,43 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			get; set;
 		}
-		protected IEnumerable<DateTime> GetDates(IRepositoryResolver repositories)
+		protected DateTime[] GetDates(IRepositoryResolver repositories)
 		{
-			int daysPerStep = Convert.ToInt32(DaysPerStep);
-
+			List<DateTime> dates = new List<DateTime>();
+			
 			DateTime min = repositories.Repository<Commit>().Min(c => c.Date);
 			DateTime max = repositories.Repository<Commit>().Max(c => c.Date);
 			
 			DateTime date = min;
-			while (date <= max)
+			switch (DatePeriod)
 			{
-				yield return date;
-				date = date.AddDays(daysPerStep);
+				case DatePeriod.DAY: date = date.StartOfDay(); break;
+				case DatePeriod.WEEK: date = date.StartOfWeek(); break;
+				case DatePeriod.MONTH: date = date.StartOfMonth(); break;
+				case DatePeriod.YEAR: date = date.StartOfYear(); break;
+				default: break;
 			}
+			
+			DateTime prevDate = date;
+			while (prevDate < max)
+			{
+				if (date > max)
+				{
+					date = max;
+				}
+				dates.Add(date);
+				prevDate = date;
+				switch (DatePeriod)
+				{
+					case DatePeriod.DAY: date = date.AddDays(1); break;
+					case DatePeriod.WEEK: date = date.AddWeeks(1); break;
+					case DatePeriod.MONTH: date = date.AddMonths(1); break;
+					case DatePeriod.YEAR: date = date.AddYears(1); break;
+					default: break;
+				}
+			}
+			
+			return dates.ToArray();
 		}
 	}
 }

@@ -42,6 +42,7 @@
     </Compile>
     <Compile Include="Collections\Generic\FixedSizeDictionary.cs" />
     <Compile Include="Collections\Generic\SmartDictionary.cs" />
+    <Compile Include="DateTimeExtension.cs" />
     <Compile Include="Diagnostics\ConsoleTimeLogger.cs" />
     <Compile Include="Diagnostics\TimeLogger.cs" />
     <Compile Include="IO\Shell.cs" />

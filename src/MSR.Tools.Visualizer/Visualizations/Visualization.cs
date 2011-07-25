@@ -16,6 +16,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 	{
 		POINTS,
 		LINE,
+		LINEWITHPOINTS,
 		HISTOGRAM
 	}
 	
@@ -45,6 +46,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 					break;
 				case VisualizationType.LINE:
 					graph.ShowLine(Legend, x, y);
+					break;
+				case VisualizationType.LINEWITHPOINTS:
+					graph.ShowLineWithPoints(Legend, x, y);
 					break;
 				case VisualizationType.HISTOGRAM:
 					graph.ShowHistogram(Legend, x, y);
