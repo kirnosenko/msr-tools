@@ -54,6 +54,7 @@
     <Compile Include="Prediction\PredictorContext.cs" />
     <Compile Include="Prediction\Predictors\CodeBlockPredictors.cs" />
     <Compile Include="Prediction\Predictors\ProjectFilePredictors.cs" />
+    <Compile Include="Prediction\ROCEvaluationResult.cs" />
     <Compile Include="Prediction\SRGM\ExponentialSRGM.cs" />
     <Compile Include="Prediction\SRGM\ISRGM.cs" />
     <Compile Include="Prediction\SRGM\LogarithmicSRGM.cs" />

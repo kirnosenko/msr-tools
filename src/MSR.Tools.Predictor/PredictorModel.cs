@@ -234,7 +234,7 @@ namespace MSR.Tools.Predictor
 							:
 							"";
 						string evaluateUsingROCResult = EvaluateUsingROC ?
-							string.Format("AUC = {0:0.00}", model.EvaluateUsingROC())
+							model.EvaluateUsingROC().ToString()
 							:
 							"";
 						

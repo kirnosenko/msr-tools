@@ -20,7 +20,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	{
 		public event Action<PostReleaseDefectFilesPrediction,double> CallBack;
 		
-		private double defaultCutOffValue;
+		protected double defaultCutOffValue;
 		private Dictionary<string,double> possibleDefectFiles;
 		private IEnumerable<string> defectFiles;
 		
@@ -65,10 +65,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			return Evaluate(PredictedDefectFiles);
 		}
-		public double EvaluateUsingROC()
+		public ROCEvaluationResult EvaluateUsingROC()
 		{
-			List<double> xlist = new List<double>(100);
-			List<double> ylist = new List<double>(100);
+			List<EvaluationResult> results = new List<EvaluationResult>(101);
 			
 			for (int cutOffValue = 0; cutOffValue <= 100; cutOffValue++)
 			{
@@ -77,18 +76,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.Select(x => x.Key)
 					.ToArray();
 				
-				var er = Evaluate(predictedDefectFiles);
-				
-				xlist.Add(1 - er.Specificity);
-				ylist.Add(er.Sensitivity);
+				results.Add(Evaluate(predictedDefectFiles));
 			}
 			
-			double sum = 0;
-			for (int i = 0; i < xlist.Count-1; i++)
-			{
-				sum += ((ylist[i+1] + ylist[i]) / 2) * (xlist[i] - xlist[i+1]);
-			}
-			return sum;
+			return new ROCEvaluationResult(results.ToArray());
 		}
 		
 		public IEnumerable<ProjectFile> AllFiles
