@@ -38,7 +38,6 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			releases.Add(repositories.LastRevision(), "upcoming");
 			
 			DateTime statFrom = repositories.Repository<Commit>().Min(x => x.Date);
-			DateTime statTo = repositories.Repository<Commit>().Max(x => x.Date);
 			
 			string prevRelease = null;
 			foreach (var release in releases)
@@ -47,19 +46,29 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					.Commits()
 						.AfterRevision(prevRelease)
 						.TillRevision(release.Key)
-						.Fixed();
+					.Fixed();
 				var releaseCode = releaseCommits
-					.Files().InDirectory(TargetDir)
-					.Modifications().InCommits().InFiles()
-					.CodeBlocks().InModifications().Fixed();
+					.Files()
+						.InDirectory(TargetDir)
+					.Modifications()
+						.InCommits()
+						.InFiles()
+					.CodeBlocks()
+						.InModifications()
+					.Fixed();
 				var totalReleaseCommits = repositories.SelectionDSL()
 					.Commits()
 						.TillRevision(release.Key)
-						.Fixed();
+					.Fixed();
 				var totalReleaseCode = totalReleaseCommits
-					.Files().InDirectory(TargetDir)
-					.Modifications().InCommits().InFiles()
-					.CodeBlocks().InModifications().Fixed();
+					.Files()
+						.InDirectory(TargetDir)
+					.Modifications()
+						.InCommits()
+						.InFiles()
+					.CodeBlocks()
+						.InModifications()
+					.Fixed();
 
 				DateTime releaseStatFrom = releaseCommits.Min(x => x.Date);
 				DateTime releaseStatTo = releaseCommits.Max(x => x.Date);
@@ -67,6 +76,26 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				int releaseCommitsCount = releaseCommits.Count();
 				int releaseAuthorsCount = releaseCommits.Select(c => c.Author).Distinct().Count();
 				int releaseFixesCount = releaseCommits.AreBugFixes().Count();
+				int releaseFilesCount = repositories.SelectionDSL()
+					.Files().ExistInRevision(release.Key).Count();
+				int releaseTouchedFilesCount = releaseCommits
+					.Files()
+						.ExistInRevision(release.Key)
+						.TouchedInCommits()
+					.Count();
+				int releaseDefectiveFilesCount = releaseCode
+						.ModifiedBy()
+					.Modifications()
+						.ContainCodeBlocks()
+					.Commits()
+						.AfterRevision(prevRelease)
+						.ContainModifications()
+						.AreBugFixes()
+					.Files()
+						.Again()
+						.ExistInRevision(release.Key)
+						.TouchedInCommits()
+					.Count();
 				int totalReleaseCommitsCount = totalReleaseCommits.Count();
 				int totalReleaseAuthorsCount = totalReleaseCommits.Select(c => c.Author).Distinct().Count();
 				int totalReleaseFixesCount = totalReleaseCommits.AreBugFixes().Count();
@@ -95,8 +124,17 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 						releaseAuthorsCount,
 						totalReleaseAuthorsCount
 					),
-					files = repositories.SelectionDSL().Files()
-						.ExistInRevision(release.Key).Count(),
+					files = releaseFilesCount,
+					files_changed = string.Format(
+						"{0} ({1}%)",
+						releaseTouchedFilesCount,
+						(((double)releaseTouchedFilesCount / releaseFilesCount) * 100).ToString("F02")
+					),
+					files_defective = string.Format(
+						"{0} ({1}%)",
+						releaseDefectiveFilesCount,
+						(((double)releaseDefectiveFilesCount / releaseFilesCount) * 100).ToString("F02")
+					),
 					dd = string.Format("{0} ({1})",
 						releaseDD.ToString("F03"),
 						totalReleaseDD.ToString("F03")
