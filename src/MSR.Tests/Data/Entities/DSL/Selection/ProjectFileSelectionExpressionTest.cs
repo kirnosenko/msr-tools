@@ -206,5 +206,99 @@ namespace MSR.Data.Entities.DSL.Selection
 				.Files().InDirectory("/").Count()
 					.Should().Be(4);
 		}
+		[Test]
+		public void Should_get_defective_files()
+		{
+			mappingDSL
+				.AddCommit("1")
+					.AddFile("file1").Modified()
+						.Code(100)
+					.AddFile("file2").Modified()
+						.Code(200)
+			.Submit()
+				.AddCommit("2").IsBugFix()
+					.File("file1").Modified()
+						.Code(-10).ForCodeAddedInitiallyInRevision("1")
+						.Code(20)
+			.Submit()
+				.AddCommit("3")
+					.File("file1").Modified()
+						.Code(-10).ForCodeAddedInitiallyInRevision("1")
+						.Code(20)
+					.File("file2").Modified()
+						.Code(-20)
+						.Code(50)
+					.AddFile("file3").Modified()
+						.Code(300)
+			.Submit()
+				.AddCommit("4").IsBugFix()
+					.File("file3").Modified()
+						.Code(-10).ForCodeAddedInitiallyInRevision("3")
+						.Code(10)
+			.Submit()
+				.AddCommit("5").IsBugFix()
+					.File("file1").Modified()
+						.Code(-10).ForCodeAddedInitiallyInRevision("2")
+						.Code(10)
+			.Submit();
+			
+			selectionDSL
+				.Commits()
+					.TillRevision("2")
+				.Modifications()
+					.InCommits()
+				.CodeBlocks()
+					.InModifications().DefectiveFiles(null, null)
+						.Select(x => x.Path).ToArray()
+							.Should().Have.SameValuesAs(new string[]
+							{
+								"file1"
+							});
+			selectionDSL
+				.Commits()
+					.TillRevision("2")
+				.Modifications()
+					.InCommits()
+				.CodeBlocks()
+					.InModifications().DefectiveFiles(null, "2")
+						.Select(x => x.Path).ToArray()
+							.Should().Have.SameValuesAs(new string[]
+							{
+								"file1"
+							});
+			selectionDSL
+				.Commits()
+					.TillRevision("2")
+				.Modifications()
+					.InCommits()
+				.CodeBlocks()
+					.InModifications().DefectiveFiles("2", null)
+						.Select(x => x.Path).ToArray()
+							.Should().Have.SameValuesAs(new string[]
+							{
+								"file1"
+							});
+			selectionDSL
+				.Commits()
+					.TillRevision("2")
+				.Modifications()
+					.InCommits()
+				.CodeBlocks()
+					.InModifications().DefectiveFiles("2", "4")
+						.Select(x => x.Path).ToArray()
+							.Should().Be.Empty();
+			selectionDSL
+				.Commits()
+					.TillRevision("3")
+				.Modifications()
+					.InCommits()
+				.CodeBlocks()
+					.InModifications().DefectiveFiles("3", "4")
+						.Select(x => x.Path).ToArray()
+							.Should().Have.SameSequenceAs(new string[]
+							{
+								"file3"
+							});
+		}
 	}
 }

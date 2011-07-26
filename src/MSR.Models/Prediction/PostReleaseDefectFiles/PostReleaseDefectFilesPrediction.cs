@@ -105,7 +105,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			{
 				if (defectFiles == null)
 				{
-					defectFiles = GetPostReleaseDefectFiles();
+					defectFiles = GetPostReleaseDefectiveFiles();
 				}
 				return defectFiles;
 			}
@@ -142,22 +142,33 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.ToArray();
 		}
 		
-		private IEnumerable<string> GetPostReleaseDefectFiles()
+		private IEnumerable<string> GetPostReleaseDefectiveFiles()
 		{
-			return repositories.SelectionDSL()
-				.Commits()
-					.TillRevision(PredictionRelease)
-				.Modifications().InCommits()
-				.CodeBlocks().InModifications().ModifiedBy()
-				.Modifications().ContainCodeBlocks()
-				.Commits()
-					.AfterRevision(PredictionRelease)
-					.AreBugFixes()
-					.ContainModifications()
-				.Files()
+			return GetPostReleaseDefectiveFiles(
+				repositories.SelectionDSL()
+					.Commits()
+						.TillRevision(PredictionRelease)
+			);
+		}
+		private IEnumerable<string> GetPostReleaseDefectiveFilesFromTouchedInRelease()
+		{
+			return GetPostReleaseDefectiveFiles(
+				repositories.SelectionDSL()
+					.Commits()
+						.AfterRevision(TrainReleases.Last())
+						.TillRevision(PredictionRelease)
+			);
+		}
+		private IEnumerable<string> GetPostReleaseDefectiveFiles(CommitSelectionExpression commits)
+		{
+			return commits
+				.Modifications()
+					.InCommits()
+				.CodeBlocks()
+					.InModifications()
+				.DefectiveFiles(PredictionRelease, null)
 					.Reselect(FileSelector)
 					.ExistInRevision(PredictionRelease)
-					.TouchedInCommits()
 				.Select(x => x.Path)
 				.ToArray();
 		}

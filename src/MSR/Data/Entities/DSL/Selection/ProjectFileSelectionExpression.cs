@@ -15,6 +15,23 @@ namespace MSR.Data.Entities.DSL.Selection
 		{
 			return new ProjectFileSelectionExpression(parentExp);
 		}
+		public static ProjectFileSelectionExpression DefectiveFiles(
+			this CodeBlockSelectionExpression parentExp,
+			string detectAfterRevision,
+			string detectTillRevision)
+		{
+			return parentExp.ModifiedBy()
+				.Modifications()
+					.ContainCodeBlocks()
+				.Commits()
+					.AfterRevision(detectAfterRevision)
+					.TillRevision(detectTillRevision)
+					.AreBugFixes()
+					.ContainModifications()
+				.Files()
+					.TouchedInCommits()
+				.Reselect(x => x.Distinct());
+		}
 	}
 
 	public class ProjectFileSelectionExpression : EntitySelectionExpression<ProjectFile,ProjectFileSelectionExpression>

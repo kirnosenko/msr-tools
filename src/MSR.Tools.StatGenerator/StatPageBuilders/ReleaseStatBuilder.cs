@@ -84,17 +84,8 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 						.TouchedInCommits()
 					.Count();
 				int releaseDefectiveFilesCount = releaseCode
-						.ModifiedBy()
-					.Modifications()
-						.ContainCodeBlocks()
-					.Commits()
-						.AfterRevision(prevRelease)
-						.ContainModifications()
-						.AreBugFixes()
-					.Files()
-						.Again()
+					.DefectiveFiles(prevRelease, null)
 						.ExistInRevision(release.Key)
-						.TouchedInCommits()
 					.Count();
 				int totalReleaseCommitsCount = totalReleaseCommits.Count();
 				int totalReleaseAuthorsCount = totalReleaseCommits.Select(c => c.Author).Distinct().Count();
