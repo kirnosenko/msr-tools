@@ -28,8 +28,8 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\gnome-terminal\gnome-terminal.config"; // 3436 revisions
 			//configFile = @"E:\repo\dia\dia.config"; // 4384 revisions
 			//configFile = @"E:\repo\gnome-vfs\gnome-vfs.config"; // 5550 revisions
-			configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
-			//configFile = @"E:\repo\git\git.config";
+			//configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
+			configFile = @"E:\repo\git\git.config";
 			//configFile = @"E:\repo\linux-2.6\linux-2.6.config";
 			//configFile = @"E:\repo\django\django.config";
 			//configFile = @"E:\repo\postgresql\postgresql.config";
@@ -43,8 +43,8 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\pgadmin3\pgadmin3.config";
 			//configFile = @"E:\repo\gnuplot\gnuplot.config";
 
-			//Debug();
-			Mapping();
+			Debug();
+			//Mapping();
 			//PartialMapping();
 			//MapReleases();
 			//MapSyntheticReleases(10, 0.8);
@@ -55,7 +55,7 @@ namespace MSR.Tools.Debugger
 		static void Debug()
 		{
 			DebuggingTool debugger = new DebuggingTool(configFile);
-			debugger.FindDiffError(256);
+			debugger.FindDiffError(1, "/sha1_file.c");
 		}
 		static void Mapping()
 		{

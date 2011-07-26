@@ -30,7 +30,7 @@ namespace MSR.Tools.Debugger
 		{
 			scmDataWithoutCache = GetScmDataWithoutCache();
 		}
-		public void FindDiffError(int startRevision)
+		public void FindDiffError(int startRevision, string path)
 		{
 			int revisionNumber = startRevision;
 			string revision = scmDataWithoutCache.RevisionByNumber(revisionNumber);
@@ -42,6 +42,10 @@ namespace MSR.Tools.Debugger
 				List<string> fileErrors = new List<string>();
 				foreach (var file in scmDataWithoutCache.Log(revision).TouchedFiles.Select(x => x.Path))
 				{
+					if ((path != null) && (path != file))
+					{
+						continue;
+					}
 					var diff = scmDataWithoutCache.Diff(revision, file);
 					if (diff.AddedLines.Count() > 0)
 					{
