@@ -80,9 +80,17 @@
       <Project>{E8BE4CCD-C394-41F0-8D7B-28515D2DDD5F}</Project>
       <Name>MSR.Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MSR.Tools.Visualizer\MSR.Tools.Visualizer.csproj">
+      <Project>{D5DD89EA-3748-409F-B415-4AD06730AE99}</Project>
+      <Name>MSR.Tools.Visualizer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MSR.Tools\MSR.Tools.csproj">
       <Project>{B6039F7F-3580-4FAC-A929-E9CA05C1A113}</Project>
       <Name>MSR.Tools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MSR.Util\MSR.Util.csproj">
+      <Project>{8F9A4FAD-4EEB-4590-BEF5-034CDE2BFFBB}</Project>
+      <Name>MSR.Util</Name>
     </ProjectReference>
     <ProjectReference Include="..\MSR\MSR.csproj">
       <Project>{25E8A69D-6400-423F-8B83-C22C096E9D72}</Project>

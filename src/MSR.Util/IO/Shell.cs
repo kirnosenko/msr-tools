@@ -10,6 +10,14 @@ namespace System.IO
 	
 	public class Shell
 	{
+		public static void Run(string command, string arguments)
+		{
+			ProcessStartInfo psi = new ProcessStartInfo(command, arguments);
+			
+			Process process = new Process();
+			process.StartInfo = psi;
+			process.Start();
+		}
 		public static void RunAndWaitForExit(string command, string arguments, Stream output)
 		{
 			TextWriter writer = new StreamWriter(output);

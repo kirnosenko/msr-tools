@@ -17,6 +17,7 @@ namespace MSR.Tools.Predictor
 	{
 		event Action<string> OnOpenConfigFile;
 		event Action OnPredict;
+		event Action OnShowLastROC;
 		
 		void Show();
 		void ShowError(string text);
@@ -44,6 +45,7 @@ namespace MSR.Tools.Predictor
 	{
 		public event Action<string> OnOpenConfigFile;
 		public event Action OnPredict;
+		public event Action OnShowLastROC;
 		
 		private Queue<Action> workToDo = new Queue<Action>();
 		
@@ -235,6 +237,10 @@ namespace MSR.Tools.Predictor
 		private void predictMenuClick(object sender, EventArgs e)
 		{
 			OnPredict();
+		}
+		private void showLastROCMenuClick(object sender, EventArgs e)
+		{
+			OnShowLastROC();
 		}
 		private void SwitchMenuOptionClick(object sender, EventArgs e)
 		{

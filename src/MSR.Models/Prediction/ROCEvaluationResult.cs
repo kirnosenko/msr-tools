@@ -14,9 +14,9 @@ namespace MSR.Models.Prediction
 	{
 		public ROCEvaluationResult(EvaluationResult[] results)
 		{
-			var se = results.Select(x => x.Sensitivity).ToArray();
-			var sp = results.Select(x => x.Specificity).ToArray();
-			var pf = results.Select(x => x.Pf).ToArray();
+			Se = results.Select(x => x.Sensitivity).ToArray();
+			Sp = results.Select(x => x.Specificity).ToArray();
+			Pf = results.Select(x => x.Pf).ToArray();
 			
 			AUC = 0;
 			MaxPoint = 0;
@@ -27,23 +27,35 @@ namespace MSR.Models.Prediction
 			
 			for (int i = 0; i < results.Length - 1; i++)
 			{
-				AUC += ((se[i + 1] + se[i]) / 2) * (pf[i] - pf[i + 1]);
+				AUC += ((Se[i + 1] + Se[i]) / 2) * (Pf[i] - Pf[i + 1]);
 			}
 			for (int i = 0; i < results.Length; i++)
 			{
-				double tmax = se[i] + sp[i];
+				double tmax = Se[i] + Sp[i];
 				if (tmax > max)
 				{
 					max = tmax;
 					MaxPoint = (double)i * 0.01;
 				}
-				double tmin = Math.Abs(se[i] - sp[i]);
+				double tmin = Math.Abs(Se[i] - Sp[i]);
 				if (tmin < min)
 				{
 					min = tmin;
 					BalancePoint = (double)i * 0.01;
 				}
 			}
+		}
+		public double[] Se
+		{
+			get; private set;
+		}
+		public double[] Sp
+		{
+			get; private set;
+		}
+		public double[] Pf
+		{
+			get; private set;
 		}
 		public double AUC
 		{

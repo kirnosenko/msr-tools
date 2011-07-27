@@ -7,10 +7,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading;
 
 using MSR.Data.Entities;
+using MSR.Models.Prediction;
 using MSR.Models.Prediction.PostReleaseDefectFiles;
 
 namespace MSR.Tools.Predictor
@@ -82,6 +84,7 @@ namespace MSR.Tools.Predictor
 		
 		void OpenConfig(string fileName);
 		void Predict();
+		void ShowLastROC();
 		IDictionary<string,string> Releases { get; }
 		IDictionary<string,string> SelectedReleases { get; set; }
 		PostReleaseDefectFilesPrediction[] Models { get; }
@@ -104,6 +107,7 @@ namespace MSR.Tools.Predictor
 		public event Action<string> OnError;
 		
 		private PredictionTool predictor;
+		private ROCEvaluationResult lastROC;
 		
 		public PredictorModel()
 		{
@@ -149,6 +153,33 @@ namespace MSR.Tools.Predictor
 			Thread thread = new Thread(PredictWork);
 			thread.IsBackground = true;
 			thread.Start();
+		}
+		public void ShowLastROC()
+		{
+			if (lastROC == null)
+			{
+				return;
+			}
+			string tempfile = Path.GetTempFileName();
+			using (TextWriter w = new StreamWriter(tempfile))
+			{
+				w.WriteLine("l ROC");
+				for (int i = 0; i < lastROC.Pf.Length; i++)
+				{
+					w.WriteLine("{0} {1}", lastROC.Pf[i], lastROC.Se[i]);
+				}
+				w.WriteLine("l Sensitivity");
+				for (int i = 0; i < lastROC.Se.Length; i++)
+				{
+					w.WriteLine("{0} {1}", (double)i * 0.01, lastROC.Se[i]);
+				}
+				w.WriteLine("l Specificity");
+				for (int i = 0; i < lastROC.Se.Length; i++)
+				{
+					w.WriteLine("{0} {1}", (double)i * 0.01, lastROC.Sp[i]);
+				}
+			}
+			Shell.Run("MSR.Tools.Visualizer.exe", tempfile);
 		}
 		public bool ShowFiles
 		{
@@ -233,8 +264,12 @@ namespace MSR.Tools.Predictor
 							model.Evaluate().ToString()
 							:
 							"";
+						if (EvaluateUsingROC)
+						{
+							lastROC = model.EvaluateUsingROC();
+						}
 						string evaluateUsingROCResult = EvaluateUsingROC ?
-							model.EvaluateUsingROC().ToString()
+							lastROC.ToString()
 							:
 							"";
 						

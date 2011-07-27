@@ -29,6 +29,7 @@ namespace MSR.Tools.Predictor
 			model.OnError += x => view.ShowError(x);
 			view.OnOpenConfigFile += OpenConfigFile;
 			view.OnPredict += Predict;
+			view.OnShowLastROC += model.ShowLastROC;
 			view.ShowFiles = model.ShowFiles;
 			view.Evaluate = model.Evaluate;
 			view.EvaluateUsingROC = model.EvaluateUsingROC;
@@ -101,15 +102,8 @@ namespace MSR.Tools.Predictor
 		}
 		private void Predict()
 		{
-			try
-			{
-				UpdateOptions();
-				model.Predict();
-			}
-			catch (Exception e)
-			{
-				view.ShowError(e.Message);
-			}
+			UpdateOptions();
+			model.Predict();
 		}
 	}
 }

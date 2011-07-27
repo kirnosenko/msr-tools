@@ -12,7 +12,7 @@ namespace MSR.Tools.Visualizer
 	class Program
 	{
 		[STAThread]
-		static void Main()
+		static void Main(string[] args)
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
@@ -22,7 +22,7 @@ namespace MSR.Tools.Visualizer
 				new VisualizerView()
 			);
 
-			visualizer.Run();
+			visualizer.Run(args);
 		}
 	}
 }
