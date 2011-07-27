@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using MathNet.Numerics.Statistics;
+
 using MSR.Data;
 using MSR.Data.Entities;
 using MSR.Data.Entities.DSL.Selection;
@@ -55,7 +57,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					CallBack(this, (double)processedFilesCount / allFilesCount);
 				}
 			}
-
+			
+			FaultProneProbabilityMean = possibleDefectFiles.Values.Mean();
+			
 			PredictedDefectFiles = possibleDefectFiles
 				.Where(x => x.Value >= defaultCutOffValue)
 				.Select(x => x.Key)
@@ -80,6 +84,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			}
 			
 			return new ROCEvaluationResult(results.ToArray());
+		}
+		public double FaultProneProbabilityMean
+		{
+			get; private set;
 		}
 		
 		public IEnumerable<ProjectFile> AllFiles

@@ -289,6 +289,9 @@ namespace MSR.Tools.Predictor
 							((evaluateResult != "") && (evaluateUsingROCResult != "")) ? ", " : "",
 							evaluateUsingROCResult
 						));
+						output.AppendLine(string.Format("Fault prone probability mean = {0:0.00}",
+							model.FaultProneProbabilityMean
+						));
 					}
 					output.AppendLine();
 
