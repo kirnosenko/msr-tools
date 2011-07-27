@@ -61,7 +61,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.AfterRevision(previousRevision)
 					.TillRevision(revision)
 				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().CalculateNumberOfDefects() > 0 ? 1 : 0;
+				.CodeBlocks().InModifications().CalculateNumberOfDefectsAtRevision(revision) > 0 ? 1 : 0;
 		}
 	}
 }
