@@ -21,6 +21,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 		DAY,
 		WEEK,
 		MONTH,
+		QUARTER,
 		YEAR
 	}
 	
@@ -34,7 +35,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			return new StandardValuesCollection(new DatePeriod[]
 			{
-				DatePeriod.DAY, DatePeriod.WEEK, DatePeriod.MONTH, DatePeriod.YEAR
+				DatePeriod.DAY, DatePeriod.WEEK, DatePeriod.MONTH, DatePeriod.QUARTER, DatePeriod.YEAR
 			});
 		}
 		public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
@@ -52,6 +53,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 				case "DAY": return DatePeriod.DAY;
 				case "WEEK": return DatePeriod.WEEK;
 				case "MONTH": return DatePeriod.MONTH;
+				case "QUARTER": return DatePeriod.QUARTER;
 				case "YEAR": return DatePeriod.YEAR;
 				default: return null;
 			}
@@ -124,6 +126,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 				case DatePeriod.MONTH:
 					graph.XAxisTitle = "Months";
 					break;
+				case DatePeriod.QUARTER:
+					graph.XAxisTitle = "Quarters";
+					break;
 				case DatePeriod.YEAR:
 					graph.XAxisTitle = "Years";
 					break;
@@ -162,6 +167,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 				case DatePeriod.DAY: date = date.StartOfDay(); break;
 				case DatePeriod.WEEK: date = date.StartOfWeek(); break;
 				case DatePeriod.MONTH: date = date.StartOfMonth(); break;
+				case DatePeriod.QUARTER: date = date.StartOfQuarter(); break;
 				case DatePeriod.YEAR: date = date.StartOfYear(); break;
 				default: break;
 			}
@@ -180,6 +186,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 					case DatePeriod.DAY: date = date.AddDays(1); break;
 					case DatePeriod.WEEK: date = date.AddWeeks(1); break;
 					case DatePeriod.MONTH: date = date.AddMonths(1); break;
+					case DatePeriod.QUARTER: date = date.AddQuarters(1); break;
 					case DatePeriod.YEAR: date = date.AddYears(1); break;
 					default: break;
 				}

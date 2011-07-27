@@ -22,6 +22,10 @@ namespace System
 		{
 			return new DateTime(date.Year, date.Month, 1);
 		}
+		public static DateTime StartOfQuarter(this DateTime date)
+		{
+			return new DateTime(date.Year, ((date.Month - 1) / 3) * 3 + 1, 1);
+		}
 		public static DateTime StartOfYear(this DateTime date)
 		{
 			return new DateTime(date.Year, 1, 1);
@@ -29,6 +33,10 @@ namespace System
 		public static DateTime AddWeeks(this DateTime date, int weeks)
 		{
 			return date.AddDays(weeks * 7);
+		}
+		public static DateTime AddQuarters(this DateTime date, int quarters)
+		{
+			return date.AddMonths(quarters * 3);
 		}
 	}
 }
