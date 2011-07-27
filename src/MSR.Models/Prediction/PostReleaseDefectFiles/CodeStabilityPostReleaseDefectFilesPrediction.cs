@@ -77,44 +77,47 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				let revision = c.Revision
 				let age = (ReleaseDate - c.Date).TotalDays
 				let codeSize = cb.Value
+				let defectCodeSize = DefectCodeSizeByRevision[revision]
+				let addedCodeSize = AddedCodeSizeByRevision[revision]
 				select new
 				{
 					// Probability that code from revision has errors
 					// (code size predictor)
-					EP = 1 - Math.Pow(1 - DefectLineProbability, AddedCodeSizeByRevision[revision]),
+					EP = 1 - Math.Pow(1 - DefectLineProbability, addedCodeSize),
 					// Probability that code from revision has errors will be detected in future
 					// (code age predictor)
 					EFDP = (double)BugLifetimes.Where(t => t > age).Count() / BugLifetimes.Count(),
 					// Probability that code from revision has errors were not removed
 					// (code removing predictor)
 					//EWNRFP = codeSize / AddedCodeSizeByRevision[revision],
+					// Probability that code from revision has errors were not removed during refactoring
+					// (code refactoring predictor)
+					EWNRP = (codeSize + defectCodeSize) / addedCodeSize,
 					// Probability that code from revision has errors were not fixed before
 					// (fixed code predictor)
-					/*EWNFP = DefectCodeSizeByRevision[revision] == 0 ?
-						1
-						:
-						1 - LaplaceIntegralTheorem(
-							DefectLineProbability,
-							AddedCodeSizeByRevision[revision],
-							DefectCodeSizeByRevision[revision] + 1,
-							DefectCodeSizeByRevision[revision] + codeSize
-						)*/
+					EWNFP = LaplaceIntegralTheorem(
+						DefectLineProbability,
+						addedCodeSize,
+						defectCodeSize + 1,
+						defectCodeSize + codeSize
+					)
 
 				}).ToArray();
 
 			double fileHasDefectsProbability = 0;
 			foreach (var codeFromRevision in codeByRevision)
 			{
-				double codeFromRevisionHasDefectsProbability = (
+				double codeFromRevisionHasDefectsProbability =
+				(
 					codeFromRevision.EP
-					* codeFromRevision.EFDP
-					//* codeFromRevision.EWNRFP
-					//* codeFromRevision.EWNFP
+					*
+					((codeFromRevision.EFDP + (codeFromRevision.EWNRP * codeFromRevision.EWNFP)) / 2)
 				);
-				fileHasDefectsProbability +=
-					codeFromRevisionHasDefectsProbability
+				
+				fileHasDefectsProbability =
+					(fileHasDefectsProbability + codeFromRevisionHasDefectsProbability)
 					-
-					fileHasDefectsProbability * codeFromRevisionHasDefectsProbability;
+					(fileHasDefectsProbability * codeFromRevisionHasDefectsProbability);
 			}
 			
 			return fileHasDefectsProbability;
