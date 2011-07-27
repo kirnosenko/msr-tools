@@ -26,9 +26,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			base.SetUp();
 			visualization = new CodeSizeToDate();
-			visualization.DaysPerStep = 1;
+			visualization.DatePeriod = DatePeriod.DAY;
 			graphStub = MockRepository.GenerateStub<IGraphView>();
-			graphStub.Stub(x => x.ShowPoints(null, null, null))
+			graphStub.Stub(x => x.ShowLineWithPoints(null, null, null))
 				.IgnoreArguments()
 				.Callback(new Func<string,double[],double[],bool>((l,x,y) =>
 				{
@@ -75,12 +75,12 @@ namespace MSR.Tools.Visualizer.Visualizations
 		[Test]
 		public void Should_use_number_of_points_to_keep_all_period()
 		{
-			visualization.DaysPerStep = 10;
+			visualization.DatePeriod = DatePeriod.WEEK;
 			
 			mappingDSL
-				.AddCommit("1").At(DateTime.Today.AddDays(-22))
+				.AddCommit("1").At(DateTime.Today.AddDays(-15))
 			.Submit()
-				.AddCommit("2").At(DateTime.Today.AddDays(-15))
+				.AddCommit("2").At(DateTime.Today.AddDays(-10))
 			.Submit()
 				.AddCommit("3").At(DateTime.Today)
 			.Submit();

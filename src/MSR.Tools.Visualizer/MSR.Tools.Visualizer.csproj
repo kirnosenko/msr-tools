@@ -67,6 +67,7 @@
     </Compile>
     <Compile Include="VisualizationPool.cs" />
     <Compile Include="Visualizations\CommitsByDateAndAuthor.cs" />
+    <Compile Include="Visualizations\DatePeriodVisualization.cs" />
     <Compile Include="Visualizations\Distributions\CommitSizeDistribution.cs" />
     <Compile Include="Visualizations\Distributions\Distribution.cs" />
     <Compile Include="Visualizations\Distributions\FileDefectDensityDistribution.cs" />
@@ -76,9 +77,9 @@
     <Compile Include="Visualizations\CodeSizeToDate.cs" />
     <Compile Include="Visualizations\DefectDensityToCommitSize.cs" />
     <Compile Include="Visualizations\DefectDensityToFileSize.cs" />
-    <Compile Include="Visualizations\LinearRegression.cs" />
-    <Compile Include="Visualizations\PolynomialRegression.cs" />
-    <Compile Include="Visualizations\RegressionVisualization.cs" />
+    <Compile Include="Visualizations\Regressions\LinearRegression.cs" />
+    <Compile Include="Visualizations\Regressions\PolynomialRegression.cs" />
+    <Compile Include="Visualizations\Regressions\RegressionVisualization.cs" />
     <Compile Include="Visualizations\Visualization.cs" />
     <Compile Include="VisualizerModel.cs" />
     <Compile Include="VisualizerPresenter.cs" />
