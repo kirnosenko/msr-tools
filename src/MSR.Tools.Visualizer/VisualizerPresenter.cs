@@ -51,11 +51,12 @@ namespace MSR.Tools.Visualizer
 				{
 					if (line[0] == 'l')
 					{
-						if (legend != null)
+						if (x != null)
 						{
 							view.Graph.ShowLineWithPoints(legend, x.ToArray(), y.ToArray());
 						}
-						legend = line.Remove(0, 2);
+						
+						legend = line.Length > 1 ? line.Remove(0, 2) : null;
 						x = new List<double>();
 						y = new List<double>();
 					}
@@ -66,7 +67,7 @@ namespace MSR.Tools.Visualizer
 						y.Add(Convert.ToDouble(elem[1]));
 					}
 				}
-				if (legend != null)
+				if (x != null)
 				{
 					view.Graph.ShowLineWithPoints(legend, x.ToArray(), y.ToArray());
 				}

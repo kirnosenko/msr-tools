@@ -163,6 +163,9 @@ namespace MSR.Tools.Predictor
 			string tempfile = Path.GetTempFileName();
 			using (TextWriter w = new StreamWriter(tempfile))
 			{
+				w.WriteLine("l");
+				w.WriteLine("{0} {1}", 0, 0);
+				w.WriteLine("{0} {1}", 1, 1);
 				w.WriteLine("l ROC");
 				for (int i = 0; i < lastROC.Pf.Length; i++)
 				{
