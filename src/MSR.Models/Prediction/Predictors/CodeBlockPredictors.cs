@@ -54,7 +54,7 @@ namespace MSR.Models.Prediction.Predictors
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
 				return c.CodeInCommitsInFiles()
-					.CalculateTraditionalDefectDensity();
+					.CalculateTraditionalDefectDensityAtRevision(c.GetValue<string>("till_revision"));
 			}));
 			return p;
 		}
@@ -63,7 +63,7 @@ namespace MSR.Models.Prediction.Predictors
 			p.AddPredictor((Func<PredictorContext, double>)(c =>
 			{
 				return c.CodeInCommitsInFiles()
-					.CalculateDefectDensity();
+					.CalculateDefectDensityAtRevision(c.GetValue<string>("till_revision"));
 			}));
 			return p;
 		}
@@ -72,7 +72,7 @@ namespace MSR.Models.Prediction.Predictors
 			p.AddPredictor((Func<PredictorContext,double>)(c =>
 			{
 				return c.CodeInCommitsInFiles()
-					.CalculateDefectCodeDensity();
+					.CalculateDefectCodeDensityAtRevision(c.GetValue<string>("till_revision"));
 			}));
 			return p;
 		}
