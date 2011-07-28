@@ -1,4 +1,12 @@
-﻿2011-07-18 - version 0.3.0
+﻿2011-07-28 - version 0.3.1
+	
+	* ROC evaluation for prediction models
+	* some additional statistics
+	* some changes for visualizations
+	* minor improvements for predictor GUI
+	* fixed bugs
+
+2011-07-18 - version 0.3.0
 	
 	* partial mapping for ignored paths
 	* activity stats page
@@ -25,8 +33,8 @@
 
 2011-01-28 - version 0.1.1
 
-	* Generator and visualizator no more require access to SCM
+	* generator and visualizator no more require access to SCM
 
 2011-01-21 - version 0.1.0
 
-	* Initial release
+	* first public release
