@@ -30,6 +30,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			defaultCutOffValue = 0.5;
 			UseFaultProneProbabilityMeanAsCutOffValue = false;
+			FilePortionLimit = 1;
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
@@ -63,6 +64,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			
 			PredictedDefectFiles = possibleDefectFiles
 				.Where(x => x.Value >= CutOffValue)
+				.TakeNoMoreThan((int)(allFilesCount * FilePortionLimit))
 				.Select(x => x.Key)
 				.ToArray();
 		}
@@ -87,6 +89,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			return new ROCEvaluationResult(results.ToArray());
 		}
 		public bool UseFaultProneProbabilityMeanAsCutOffValue
+		{
+			get; set;
+		}
+		public double FilePortionLimit
 		{
 			get; set;
 		}
