@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using ZedGraph;
 
@@ -30,6 +31,7 @@ namespace MSR.Tools.Visualizer
 		bool YAxisDayScale { get; set; }
 		float XAxisFontAngle { get; set; }
 		float YAxisFontAngle { get; set; }
+		bool BlackAndWhite { get; set; }
 		IDictionary<double[],double[]> Points { get; }
 	}
 	
@@ -37,6 +39,8 @@ namespace MSR.Tools.Visualizer
 	{
 		private Dictionary<double[],double[]> points = new Dictionary<double[],double[]>();
 		private Queue<Color> differentColors;
+		private Queue<SymbolType> differentSymbols;
+		private bool blackAndWhite;
 		
 		public GraphView(Control parent)
 		{
@@ -47,7 +51,7 @@ namespace MSR.Tools.Visualizer
 			XAxisTitle = "";
 			YAxisTitle = "";
 			
-			InitColorsQueue();
+			InitColorsAndSymbols();
 		}
 		public void PrepairPointsForDateScale(double[] points, DateTime startDate)
 		{
@@ -59,15 +63,15 @@ namespace MSR.Tools.Visualizer
 		public void ShowPoints(string legend, double[] x, double[] y)
 		{
 			points.Add(x, y);
-			ShowCurve(legend, x, y, NextColor(), false, true);
+			ShowCurve(legend, x, y, false, true);
 		}
 		public void ShowLine(string legend, double[] x, double[] y)
 		{
-			ShowCurve(legend, x, y, NextColor(), true, false);
+			ShowCurve(legend, x, y, true, false);
 		}
 		public void ShowLineWithPoints(string legend, double[] x, double[] y)
 		{
-			ShowCurve(legend, x, y, NextColor(), true, true);
+			ShowCurve(legend, x, y, true, true);
 		}
 		public void ShowHistogram(string legend, double[] x, double[] y)
 		{
@@ -80,7 +84,7 @@ namespace MSR.Tools.Visualizer
 			GraphPane.CurveList.Clear();
 			Invalidate();
 			points.Clear();
-			InitColorsQueue();
+			InitColorsAndSymbols();
 		}
 		public string Title
 		{
@@ -127,19 +131,54 @@ namespace MSR.Tools.Visualizer
 			get { return GraphPane.YAxis.Scale.FontSpec.Angle; }
 			set { GraphPane.YAxis.Scale.FontSpec.Angle = value; }
 		}
+		public bool BlackAndWhite
+		{
+			get { return blackAndWhite; }
+			set
+			{
+				if (blackAndWhite != value)
+				{
+					blackAndWhite = value;
+					InitColorsAndSymbols();
+					
+					var curves = GraphPane.CurveList.Where(x => x.Tag != null).ToArray();
+					foreach (var curve in curves)
+					{
+						GraphPane.CurveList.Remove(curve);
+						
+						Color color = BlackAndWhite ? Color.Black : NextColor();
+						SymbolType symbol = BlackAndWhite ? NextSymbol() : SymbolType.Circle;
+						
+						LineItem myCurve = GraphPane.AddCurve(curve.Label.Text, curve.Points, color, symbol);
+						myCurve.Symbol.Fill = new Fill(color);
+						myCurve.Line.IsVisible = true;
+						myCurve.Tag = this;
+					}
+					Invalidate();
+				}
+			}
+		}
 		public IDictionary<double[],double[]> Points
 		{
 			get { return points; }
 		}
-		private void ShowCurve(string legend, double[] x, double[] y, Color color, bool line, bool points)
+		private void ShowCurve(string legend, double[] x, double[] y, bool line, bool points)
 		{
-			LineItem myCurve = GraphPane.AddCurve(legend, x, y, color, points ? SymbolType.Circle : SymbolType.None);
+			Color color = BlackAndWhite ? Color.Black : NextColor();
+			SymbolType symbol = BlackAndWhite ? NextSymbol() : SymbolType.Circle;
+			if (! points)
+			{
+				symbol = SymbolType.None;
+			}
+			
+			LineItem myCurve = GraphPane.AddCurve(legend, x, y, color, symbol);
 			myCurve.Symbol.Fill = new Fill(line ? color : Color.White);
 			myCurve.Line.IsVisible = line;
+			myCurve.Tag = (line && points) ? this : null;
 			AxisChange();
 			Invalidate();
 		}
-		private void InitColorsQueue()
+		private void InitColorsAndSymbols()
 		{
 			differentColors = new Queue<Color>(new Color[]
 			{
@@ -154,11 +193,26 @@ namespace MSR.Tools.Visualizer
 				Color.Purple,
 				Color.Silver
 			});
+			differentSymbols = new Queue<SymbolType>(new SymbolType[]
+			{
+				SymbolType.None,
+				SymbolType.Diamond,
+				SymbolType.Triangle,
+				SymbolType.TriangleDown,
+				SymbolType.Square,
+				SymbolType.Circle
+			});
 		}
 		private Color NextColor()
 		{
 			Color result = differentColors.Dequeue();
 			differentColors.Enqueue(result);
+			return result;
+		}
+		private SymbolType NextSymbol()
+		{
+			SymbolType result = differentSymbols.Dequeue();
+			differentSymbols.Enqueue(result);
 			return result;
 		}
 		private bool IsScale(Axis axis, AxisType scale)

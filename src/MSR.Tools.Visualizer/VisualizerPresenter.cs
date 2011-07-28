@@ -23,7 +23,7 @@ namespace MSR.Tools.Visualizer
 			model.OnTitleUpdated += x => view.Title = x;
 			view.OnOpenConfigFile += OpenConfigFile;
 			view.OnVisualizationActivate += UseVisualization;
-			view.OnChengeCleanUpOption += x => model.AutomaticallyCleanUp = x;
+			view.OnChangeCleanUpOption += x => model.AutomaticallyCleanUp = x;
 		}
 		public void Run(string[] args)
 		{

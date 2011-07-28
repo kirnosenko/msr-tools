@@ -29,12 +29,12 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\dia\dia.config"; // 4384 revisions
 			//configFile = @"E:\repo\gnome-vfs\gnome-vfs.config"; // 5550 revisions
 			//configFile = @"E:\repo\gedit\gedit.config"; // 6556 revisions
-			configFile = @"E:\repo\git\git.config";
+			//configFile = @"E:\repo\git\git.config";
 			//configFile = @"E:\repo\linux-2.6\linux-2.6.config";
 			//configFile = @"E:\repo\django\django.config";
 			//configFile = @"E:\repo\postgresql\postgresql.config";
 			//configFile = @"E:\repo\nhibernate\nhibernate.config";
-			//configFile = @"E:\repo\msr\msr.config";
+			configFile = @"E:\repo\msr\msr.config";
 			//configFile = @"E:\repo\wordpress\wordpress.config"; // 13998 revisions
 			//configFile = @"E:\repo\frund\frund.config";
 			//configFile = @"E:\repo\httpd\httpd.config";
@@ -42,9 +42,10 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\hc\hc.config";
 			//configFile = @"E:\repo\pgadmin3\pgadmin3.config";
 			//configFile = @"E:\repo\gnuplot\gnuplot.config";
+			//configFile = @"E:\repo\couchdb\couchdb.config";
 
-			Debug();
-			//Mapping();
+			//Debug();
+			Mapping();
 			//PartialMapping();
 			//MapReleases();
 			//MapSyntheticReleases(10, 0.8);
@@ -62,10 +63,10 @@ namespace MSR.Tools.Debugger
 			MappingTool mapper = new MappingTool(configFile);
 
 			//mapper.Info();
-			mapper.Map(true, 10);
+			//mapper.Map(true, 215);
 			//mapper.Map(false, 800);
 			//mapper.Truncate(10);
-			//mapper.Check(6651);
+			mapper.Check(215);
 		}
 		static void PartialMapping()
 		{

@@ -15,7 +15,7 @@ namespace MSR.Tools.Visualizer
 	{
 		event Action<string> OnOpenConfigFile;
 		event Action<int> OnVisualizationActivate;
-		event Action<bool> OnChengeCleanUpOption;
+		event Action<bool> OnChangeCleanUpOption;
 		
 		void Show();
 		void ShowError(string text);
@@ -26,19 +26,22 @@ namespace MSR.Tools.Visualizer
 		string Status { get; set; }
 		IGraphView Graph { get; }
 		bool AutomaticallyCleanUp { get; set; }
+		bool BlackAndWhite { get; set; }
 	}
 	
 	public partial class VisualizerView : Form, IVisualizerView
 	{
 		public event Action<string> OnOpenConfigFile;
 		public event Action<int> OnVisualizationActivate;
-		public event Action<bool> OnChengeCleanUpOption;
+		public event Action<bool> OnChangeCleanUpOption;
 		
 		public VisualizerView()
 		{
 			InitializeComponent();
 
 			Graph = new GraphView(panel1);
+			
+			BlackAndWhite = false;
 		}
 		public new void Show()
 		{
@@ -50,11 +53,11 @@ namespace MSR.Tools.Visualizer
 		}
 		public void SetVisualizationList(IEnumerable<string> visualizations)
 		{
-			visualizationsToolStripMenuItem.DropDownItems.Clear();
+			visualizationsMenu.DropDownItems.Clear();
 			int i = 0;
 			foreach (var v in visualizations)
 			{
-				var menuItem = visualizationsToolStripMenuItem.DropDownItems.Add(v);
+				var menuItem = visualizationsMenu.DropDownItems.Add(v);
 				menuItem.Tag = i;
 				menuItem.Click += (s,e) =>
 				{
@@ -84,8 +87,17 @@ namespace MSR.Tools.Visualizer
 		}
 		public bool AutomaticallyCleanUp
 		{
-			get { return automaticallyToolStripMenuItem.Checked; }
-			set { automaticallyToolStripMenuItem.Checked = value; }
+			get { return automaticallyMenu.Checked; }
+			set { automaticallyMenu.Checked = value; }
+		}
+		public bool BlackAndWhite
+		{
+			get { return Graph.BlackAndWhite; }
+			set
+			{
+				Graph.BlackAndWhite = value;
+				blackAndWhiteMenu.Checked = value;
+			}
 		}
 
 		private void openConfigToolStripMenuItem_Click(object sender, EventArgs e)
@@ -113,11 +125,16 @@ namespace MSR.Tools.Visualizer
 		{
 			var item = (sender as ToolStripMenuItem);
 			item.Checked = ! item.Checked;
-			OnChengeCleanUpOption(item.Checked);
+			OnChangeCleanUpOption(item.Checked);
 		}
 		private void cleanUpNowToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Graph.CleanUp();
+		}
+		private void blackAndWhiteMenu_Click(object sender, EventArgs e)
+		{
+			var item = (sender as ToolStripMenuItem);
+			BlackAndWhite = ! item.Checked;
 		}
 	}
 }
