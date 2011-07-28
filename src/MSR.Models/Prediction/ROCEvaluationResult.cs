@@ -27,7 +27,7 @@ namespace MSR.Models.Prediction
 			
 			for (int i = 0; i < results.Length - 1; i++)
 			{
-				AUC += ((Se[i + 1] + Se[i]) / 2) * (Pf[i] - Pf[i + 1]);
+				AUC += (Pf[i] - Pf[i + 1]) * (Se[i] + Se[i + 1]) / 2;
 			}
 			for (int i = 0; i < results.Length; i++)
 			{

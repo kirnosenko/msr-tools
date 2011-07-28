@@ -29,6 +29,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public PostReleaseDefectFilesPrediction()
 		{
 			defaultCutOffValue = 0.5;
+			UseFaultProneProbabilityMeanAsCutOffValue = false;
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
@@ -61,7 +62,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			FaultProneProbabilityMean = possibleDefectFiles.Values.Mean();
 			
 			PredictedDefectFiles = possibleDefectFiles
-				.Where(x => x.Value >= defaultCutOffValue)
+				.Where(x => x.Value >= CutOffValue)
 				.Select(x => x.Key)
 				.ToArray();
 		}
@@ -85,11 +86,15 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			
 			return new ROCEvaluationResult(results.ToArray());
 		}
+		public bool UseFaultProneProbabilityMeanAsCutOffValue
+		{
+			get; set;
+		}
+		
 		public double FaultProneProbabilityMean
 		{
 			get; private set;
 		}
-		
 		public IEnumerable<ProjectFile> AllFiles
 		{
 			get; protected set;
@@ -113,7 +118,18 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; set;
 		}
-
+		
+		protected double CutOffValue
+		{
+			get
+			{
+				if (UseFaultProneProbabilityMeanAsCutOffValue)
+				{
+					return FaultProneProbabilityMean;
+				}
+				return defaultCutOffValue;
+			}
+		}
 		protected EvaluationResult Evaluate(
 			IEnumerable<string> predictedDefectFiles
 		)
