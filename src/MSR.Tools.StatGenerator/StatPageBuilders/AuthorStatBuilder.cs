@@ -79,16 +79,16 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					added_loc = a.AddedCode.CalculateLOC(),
 					removed_loc = - a.RemovedCode.CalculateLOC(),
 					remain_loc = authorCurrentLoc,
-					contribution = ((authorCurrentLoc / totalLoc) * 100).ToString("F02"),
-					specialization = ((double)authorTouchedFiles / totalFiles * 100).ToString("F02"),
+					contribution = ((authorCurrentLoc / totalLoc) * 100).ToString("F02") + "%",
+					specialization = ((double)authorTouchedFiles / totalFiles * 100).ToString("F02") + "%",
 					unique_specialization = (authorTouchedFiles > 0 ?
 						((double)(authorTouchedFiles - authorFilesTouchedByOtherAuthors) / totalFiles * 100)
 						:
-						0).ToString("F02"),
+						0).ToString("F02") + "%",
 					demand_for_code = (authorAddedLoc > 0 ?
 						((authorCurrentLoc / authorAddedLoc) * 100)
 						:
-						0).ToString("F02")
+						0).ToString("F02") + "%"
 				};
 
 			result.Add("authors", statByAuthor.OrderBy(x => x.name).ToArray());

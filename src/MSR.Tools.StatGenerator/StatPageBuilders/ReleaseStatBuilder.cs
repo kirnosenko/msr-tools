@@ -149,11 +149,11 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					),
 					loc = totalReleaseLoc,
 					remain_loc = releaseRemainLoc,
-					contribution = ((releaseRemainLoc / totalLoc) * 100).ToString("F02"),
+					contribution = ((releaseRemainLoc / totalLoc) * 100).ToString("F02") + "%",
 					demand_for_code = (releaseAddedLoc > 0 ?
 						((releaseRemainLoc / releaseAddedLoc) * 100)
 						:
-						0).ToString("F02")
+						0).ToString("F02") + "%"
 				});
 				
 				prevRelease = release.Key;
