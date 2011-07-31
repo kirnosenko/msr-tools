@@ -24,17 +24,12 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 		public override void Draw(IGraphView graph)
 		{
 			graph.XAxisTitle = "Days";
-			graph.YAxisTitle = "Probability";
 			base.Draw(graph);
 		}
-		public override bool Configurable
-		{
-			get { return false; }
-		}
-		protected override IEnumerable<double> DistributionData(IRepositoryResolver repositories)
+		protected override double[] DistributionData(IRepositoryResolver repositories)
 		{
 			return repositories.SelectionDSL()
-				.BugFixes().CalculateAvarageBugLifetime();
+				.BugFixes().CalculateAvarageBugLifetime().ToArray();
 		}
 	}
 }

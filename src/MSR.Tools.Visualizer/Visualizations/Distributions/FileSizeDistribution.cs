@@ -24,17 +24,15 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 		public override void Draw(IGraphView graph)
 		{
 			graph.XAxisTitle = "File size in LOC";
-			graph.YAxisTitle = "Probability";
 			base.Draw(graph);
 		}
-		public override bool Configurable
-		{
-			get { return false; }
-		}
-		protected override IEnumerable<double> DistributionData(IRepositoryResolver repositories)
+		protected override double[] DistributionData(IRepositoryResolver repositories)
 		{			
 			var fileIDs = repositories.SelectionDSL()
-				.Files().Exist().Select(x => x.ID).ToArray();
+				.Files()
+					.InDirectory(TargetDir)
+					.Exist()
+				.Select(x => x.ID).ToArray();
 
 			List<double> data = new List<double>(fileIDs.Count());
 			
@@ -47,7 +45,7 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 				);
 			}
 			
-			return data;
+			return data.ToArray();
 		}
 	}
 }

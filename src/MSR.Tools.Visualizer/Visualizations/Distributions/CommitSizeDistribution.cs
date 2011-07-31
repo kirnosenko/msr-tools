@@ -24,17 +24,13 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 		public override void Draw(IGraphView graph)
 		{
 			graph.XAxisTitle = "Commit size in LOC";
-			graph.YAxisTitle = "Probability";
 			base.Draw(graph);
 		}
-		public override bool Configurable
-		{
-			get { return false; }
-		}
-		protected override IEnumerable<double> DistributionData(IRepositoryResolver repositories)
+		protected override double[] DistributionData(IRepositoryResolver repositories)
 		{
 			var commits = repositories.SelectionDSL()
-				.Commits().Select(x => x.Revision).ToArray();
+				.Commits()
+				.Select(x => x.Revision).ToArray();
 
 			List<double> data = new List<double>(commits.Count());
 			
@@ -47,7 +43,7 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 				);
 			}
 			
-			return data;
+			return data.ToArray();
 		}
 	}
 }
