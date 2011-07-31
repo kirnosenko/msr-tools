@@ -75,7 +75,18 @@ namespace MSR.Tools.Visualizer
 		}
 		private void ReadOptions()
 		{
-			view.SetVisualizationList(model.Visualizations.Select(x => x.Title));
+			Dictionary<string,string[]> visualizations = new Dictionary<string,string[]>();
+			foreach (var m in model.Visualizations)
+			{
+				visualizations.Add(
+					m.Title,
+					m.GetType().Namespace
+						.Replace("MSR.Tools.Visualizer.Visualizations", "")
+						.Split(new char[] { '.' })
+				);
+			}
+			
+			view.SetVisualizationList(visualizations);
 			view.AutomaticallyCleanUp = model.AutomaticallyCleanUp;
 		}
 		private void OpenConfigFile(string fileName)

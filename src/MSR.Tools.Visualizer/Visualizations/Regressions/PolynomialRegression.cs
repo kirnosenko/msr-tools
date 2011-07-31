@@ -12,7 +12,7 @@ using System.Linq;
 using MSR.Data;
 using MSR.Models.Regressions;
 
-namespace MSR.Tools.Visualizer.Visualizations
+namespace MSR.Tools.Visualizer.Visualizations.Regressions
 {
 	public class PolynomialRegression : RegressionVisualization
 	{

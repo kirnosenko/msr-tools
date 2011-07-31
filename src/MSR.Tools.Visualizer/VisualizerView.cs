@@ -19,7 +19,7 @@ namespace MSR.Tools.Visualizer
 		
 		void Show();
 		void ShowError(string text);
-		void SetVisualizationList(IEnumerable<string> visualizations);
+		void SetVisualizationList(IDictionary<string,string[]> visualizations);
 		bool ConfigureVisualization(IVisualization visualization);
 
 		string Title { get; set; }
@@ -51,13 +51,14 @@ namespace MSR.Tools.Visualizer
 		{
 			MessageBox.Show(text, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
-		public void SetVisualizationList(IEnumerable<string> visualizations)
+		public void SetVisualizationList(IDictionary<string,string[]> visualizations)
 		{
 			visualizationsMenu.DropDownItems.Clear();
 			int i = 0;
 			foreach (var v in visualizations)
 			{
-				var menuItem = visualizationsMenu.DropDownItems.Add(v);
+				//var menuItem = visualizationsMenu.DropDownItems.Add(v.Key);
+				var menuItem = CreateVisualizationMenuCommand(v.Key, v.Value);
 				menuItem.Tag = i;
 				menuItem.Click += (s,e) =>
 				{
@@ -99,7 +100,34 @@ namespace MSR.Tools.Visualizer
 				blackAndWhiteMenu.Checked = value;
 			}
 		}
-
+		
+		private ToolStripItem CreateVisualizationMenuCommand(string title, string[] hierarchy)
+		{
+			ToolStripMenuItem menu = visualizationsMenu;
+			
+			foreach (var h in hierarchy)
+			{
+				if (h == string.Empty)
+				{
+					continue;
+				}
+				ToolStripMenuItem nextmenu = null;
+				foreach (ToolStripMenuItem item in menu.DropDownItems)
+				{
+					if (item.Text == h)
+					{
+						nextmenu = item;
+					}
+				}
+				if (nextmenu == null)
+				{
+					nextmenu = (ToolStripMenuItem)menu.DropDownItems.Add(h);
+				}
+				menu = nextmenu;
+			}
+			
+			return menu.DropDownItems.Add(title);
+		}
 		private void openConfigToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog dialog = new OpenFileDialog();
@@ -108,7 +136,6 @@ namespace MSR.Tools.Visualizer
 				OnOpenConfigFile(dialog.FileName);
 			}
 		}
-
 		private void logXToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			var item = (sender as ToolStripMenuItem);
