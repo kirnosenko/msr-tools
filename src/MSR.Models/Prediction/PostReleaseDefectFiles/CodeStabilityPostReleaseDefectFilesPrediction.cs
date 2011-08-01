@@ -30,17 +30,17 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 
 			List<double> bugLifetimes = new List<double>(
 				repositories.SelectionDSL()
-					.Commits().TillRevision(TrainReleases.Last())
+					.Commits().TillRevision(PredictionRelease)
 					.BugFixes().InCommits().CalculateAvarageBugLifetime()
 			);
 			bugLifetimes.Add(1000000);
 			BugLifetimes = bugLifetimes;
 
 			DefectLineProbability = repositories.SelectionDSL()
-				.Commits().TillRevision(TrainReleases.Last())
+				.Commits().TillRevision(PredictionRelease)
 				.Files().Reselect(FileSelector)
 				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(TrainReleases.Last());
+				.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(PredictionRelease);
 
 			AddedCodeSizeByRevision = new SmartDictionary<string, double>(r =>
 				repositories.SelectionDSL()
