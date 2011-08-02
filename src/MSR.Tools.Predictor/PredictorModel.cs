@@ -263,19 +263,6 @@ namespace MSR.Tools.Predictor
 					}
 					if (Evaluate || EvaluateUsingROC)
 					{
-						string evaluateResult = Evaluate ?
-							model.Evaluate().ToString()
-							:
-							"";
-						if (EvaluateUsingROC)
-						{
-							lastROC = model.EvaluateUsingROC();
-						}
-						string evaluateUsingROCResult = EvaluateUsingROC ?
-							lastROC.ToString()
-							:
-							"";
-						
 						if (ShowFiles)
 						{
 							output.AppendLine("Defect files:");
@@ -286,12 +273,16 @@ namespace MSR.Tools.Predictor
 								);
 							}
 						}
-
-						output.AppendLine(string.Format("{0}{1}{2}",
-							evaluateResult,
-							((evaluateResult != "") && (evaluateUsingROCResult != "")) ? ", " : "",
-							evaluateUsingROCResult
-						));
+						
+						if (Evaluate)
+						{
+							output.AppendLine(model.Evaluate().ToString());
+						}
+						if (EvaluateUsingROC)
+						{
+							lastROC = model.EvaluateUsingROC();
+							output.AppendLine(lastROC.ToString());
+						}
 						output.AppendLine(string.Format("Fault prone probability mean = {0:0.00}",
 							model.FaultProneProbabilityMean
 						));

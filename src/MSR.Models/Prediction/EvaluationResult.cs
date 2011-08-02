@@ -56,8 +56,8 @@ namespace MSR.Models.Prediction
 		}
 		public override string ToString()
 		{
-			return string.Format("Precision = {0:0.00}, Recall = {1:0.00}, NegPos = {2:0.00}",
-				Precision, Recall, NegPos
+			return string.Format("Precision = {0:0.00}, Recall = {1:0.00}, Accuracy = {2:0.00}, NegPos = {3:0.00}",
+				Precision, Recall, Accuracy, NegPos
 			);
 		}
 	}
