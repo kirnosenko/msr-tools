@@ -70,6 +70,7 @@
     <Compile Include="Data\Entities\DSL\Selection\Metrics\StabilizationPeriod.cs" />
     <Compile Include="Data\Entities\DSL\Selection\ModificationSelectionExpression.cs" />
     <Compile Include="Data\Entities\DSL\Selection\ProjectFileSelectionExpression.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\ReleaseSelectionExpression.cs" />
     <Compile Include="Data\Entities\DSL\Selection\RepositoryResolverHelper.cs" />
     <Compile Include="Data\Entities\DSL\Selection\RepositorySelectionExpression.cs" />
     <Compile Include="Data\Entities\Mapping\BugFixDetectorBasedOnLogMessage.cs" />

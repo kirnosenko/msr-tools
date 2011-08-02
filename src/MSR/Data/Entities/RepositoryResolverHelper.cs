@@ -46,7 +46,7 @@ namespace MSR.Data.Entities
 				-
 				repositories.Repository<Commit>().Min(c => c.Date);
 		}
-		public static IDictionary<string,string> Releases(this IRepositoryResolver repositories)
+		public static IDictionary<string,string> AllReleases(this IRepositoryResolver repositories)
 		{
 			var releases =
 				from r in repositories.Repository<Release>()

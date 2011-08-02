@@ -21,7 +21,7 @@ namespace MSR.Tools.Predictor
 			Models = GetConfiguredType<PredictionModelPool>();
 			using (var s = data.OpenSession())
 			{
-				Releases = s.Releases();
+				Releases = s.AllReleases();
 			}
 		}
 		public IDictionary<string,string> Releases

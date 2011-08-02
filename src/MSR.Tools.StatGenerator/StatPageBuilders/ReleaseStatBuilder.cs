@@ -34,7 +34,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 
 			List<object> releaseObjects = new List<object>();
 			
-			var releases = repositories.Releases();
+			var releases = repositories.AllReleases();
 			releases.Add(repositories.LastRevision(), "upcoming");
 			
 			DateTime statFrom = repositories.Repository<Commit>().Min(x => x.Date);

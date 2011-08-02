@@ -76,6 +76,7 @@
     <Compile Include="Data\Entities\DSL\Selection\Metrics\DefectDensityTest.cs" />
     <Compile Include="Data\Entities\DSL\Selection\ModificationSelectionExpressionTest.cs" />
     <Compile Include="Data\Entities\DSL\Selection\ProjectFileSelectionExpressionTest.cs" />
+    <Compile Include="Data\Entities\DSL\Selection\ReleaseSelectionExpression.cs" />
     <Compile Include="Data\Entities\Mapping\BaseMapperTest.cs" />
     <Compile Include="Data\Entities\Mapping\BlameStub.cs" />
     <Compile Include="Data\Entities\Mapping\BugFixDetectorBasedOnLogMessageTest.cs" />

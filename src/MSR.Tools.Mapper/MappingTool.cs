@@ -40,10 +40,26 @@ namespace MSR.Tools.Mapper
 			Console.WriteLine("Database info:");
 			using (var s = data.OpenSession())
 			{
-				Console.WriteLine("Revisions: {0}", s.Repository<Commit>().Count());
+				Console.WriteLine("Revisions: {0}",
+					s.Repository<Commit>().Count()
+				);
 				Console.WriteLine("Last revision: {0}", s.LastRevision());
-				Console.WriteLine("Files: {0}", s.Repository<ProjectFile>().Count());
-				Console.WriteLine("CodeBlocks: {0}", s.Repository<CodeBlock>().Count());
+				Console.WriteLine("Period: {0}-{1}",
+					s.Repository<Commit>().Min(c => c.Date),
+					s.Repository<Commit>().Max(c => c.Date)
+				);
+				Console.WriteLine("LOC: {0}",
+					s.SelectionDSL().CodeBlocks().CalculateLOC()
+				);
+				Console.WriteLine("Releases: {0}",
+					s.Repository<Release>().Count()
+				);
+				Console.WriteLine("Files: {0}",
+					s.Repository<ProjectFile>().Count()
+				);
+				Console.WriteLine("Fixes: {0}",
+					s.Repository<BugFix>().Count()
+				);
 			}
 		}
 		public void Map(bool createSchema, int stopRevisionNumber)
