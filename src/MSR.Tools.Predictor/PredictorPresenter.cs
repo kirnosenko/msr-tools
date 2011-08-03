@@ -24,12 +24,13 @@ namespace MSR.Tools.Predictor
 			model.OnTitleUpdated += x => view.Title = x;
 			model.OnClearReport += () => view.ClearReport();
 			model.OnAddReport += x => view.AddReport(x);
+			model.OnRocAdded += view.AddRoc;
 			model.OnReadyStateChanged += x => view.Ready = x;
 			model.OnProgressStateChanged += x => view.Status = x;
 			model.OnError += x => view.ShowError(x);
 			view.OnOpenConfigFile += OpenConfigFile;
 			view.OnPredict += Predict;
-			view.OnShowLastROC += model.ShowLastROC;
+			view.OnShowROC += model.ShowROC;
 			view.ShowFiles = model.ShowFiles;
 			view.Evaluate = model.Evaluate;
 			view.EvaluateUsingROC = model.EvaluateUsingROC;

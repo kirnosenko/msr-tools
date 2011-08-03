@@ -17,7 +17,7 @@ namespace MSR.Tools.Predictor
 	{
 		event Action<string> OnOpenConfigFile;
 		event Action OnPredict;
-		event Action OnShowLastROC;
+		event Action<int> OnShowROC;
 		
 		void Show();
 		void ShowError(string text);
@@ -25,6 +25,8 @@ namespace MSR.Tools.Predictor
 		void SetModelList(IEnumerable<string> models);
 		void ClearReport();
 		void AddReport(string text);
+		void ClearROCs();
+		void AddRoc(string model, string release, int id);
 		
 		string Title { get; set; }
 		string Status { set; }
@@ -45,7 +47,7 @@ namespace MSR.Tools.Predictor
 	{
 		public event Action<string> OnOpenConfigFile;
 		public event Action OnPredict;
-		public event Action OnShowLastROC;
+		public event Action<int> OnShowROC;
 		
 		private Queue<Action> workToDo = new Queue<Action>();
 		
@@ -94,6 +96,34 @@ namespace MSR.Tools.Predictor
 				outputText.Text += text;
 				outputText.SelectionStart = outputText.TextLength;
 				outputText.ScrollToCaret();
+			});
+		}
+		public void ClearROCs()
+		{
+			AddWorkToDo(() =>
+				showRocForMenu.DropDownItems.Clear()
+			);
+		}
+		public void AddRoc(string model, string release, int id)
+		{
+			AddWorkToDo(() =>
+			{
+				ToolStripMenuItem modelMenu = null;
+				
+				foreach (ToolStripMenuItem item in showRocForMenu.DropDownItems)
+				{
+					if (item.Text == model)
+					{
+						modelMenu = item;
+					}
+				}
+				if (modelMenu == null)
+				{
+					modelMenu = (ToolStripMenuItem)showRocForMenu.DropDownItems.Add(model);
+				}
+				ToolStripMenuItem rocMenu = (ToolStripMenuItem)modelMenu.DropDownItems.Add(release);
+				rocMenu.Tag = id;
+				rocMenu.Click += ShowRocClick;
 			});
 		}
 
@@ -238,10 +268,6 @@ namespace MSR.Tools.Predictor
 		{
 			OnPredict();
 		}
-		private void showLastROCMenuClick(object sender, EventArgs e)
-		{
-			OnShowLastROC();
-		}
 		private void SwitchMenuOptionClick(object sender, EventArgs e)
 		{
 			(sender as ToolStripMenuItem).Checked = !(sender as ToolStripMenuItem).Checked;
@@ -249,6 +275,10 @@ namespace MSR.Tools.Predictor
 		private void rbAll_CheckedChanged(object sender, EventArgs e)
 		{
 			releaseSetSize.Enabled = rbFixed.Checked;
+		}
+		private void ShowRocClick(object sender, EventArgs e)
+		{
+			OnShowROC((int)(sender as ToolStripMenuItem).Tag);
 		}
 	}
 }

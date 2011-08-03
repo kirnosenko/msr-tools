@@ -37,6 +37,7 @@
 			this.evaluateUsingROCMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.commandMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.predictMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.showRocForMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.releaseList = new System.Windows.Forms.CheckedListBox();
 			this.outputText = new System.Windows.Forms.TextBox();
 			this.modelList = new System.Windows.Forms.CheckedListBox();
@@ -54,7 +55,6 @@
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.splitter2 = new System.Windows.Forms.Splitter();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.showLastROCMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.releaseSetSize)).BeginInit();
@@ -128,7 +128,7 @@
 			// 
 			this.commandMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.predictMenu,
-            this.showLastROCMenu});
+            this.showRocForMenu});
 			this.commandMenu.Name = "commandMenu";
 			this.commandMenu.Size = new System.Drawing.Size(76, 20);
 			this.commandMenu.Text = "Command";
@@ -139,6 +139,12 @@
 			this.predictMenu.Size = new System.Drawing.Size(152, 22);
 			this.predictMenu.Text = "Predict";
 			this.predictMenu.Click += new System.EventHandler(this.predictMenuClick);
+			// 
+			// showRocForMenu
+			// 
+			this.showRocForMenu.Name = "showRocForMenu";
+			this.showRocForMenu.Size = new System.Drawing.Size(152, 22);
+			this.showRocForMenu.Text = "Show ROC for";
 			// 
 			// releaseList
 			// 
@@ -329,13 +335,6 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Prediction models";
 			// 
-			// showLastROCMenu
-			// 
-			this.showLastROCMenu.Name = "showLastROCMenu";
-			this.showLastROCMenu.Size = new System.Drawing.Size(152, 22);
-			this.showLastROCMenu.Text = "Show last ROC";
-			this.showLastROCMenu.Click += new System.EventHandler(this.showLastROCMenuClick);
-			// 
 			// PredictorView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -395,7 +394,7 @@
 		private System.Windows.Forms.RadioButton rbIncrementalGrowth;
 		private System.Windows.Forms.ToolStripMenuItem evaluateMenu;
 		private System.Windows.Forms.ToolStripMenuItem evaluateUsingROCMenu;
-		private System.Windows.Forms.ToolStripMenuItem showLastROCMenu;
+		private System.Windows.Forms.ToolStripMenuItem showRocForMenu;
 	}
 }
 

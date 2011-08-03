@@ -78,13 +78,14 @@ namespace MSR.Tools.Predictor
 		event Action<string> OnTitleUpdated;
 		event Action OnClearReport;
 		event Action<string> OnAddReport;
+		event Action<string,string,int> OnRocAdded;
 		event Action<bool> OnReadyStateChanged;
 		event Action<string> OnProgressStateChanged;
 		event Action<string> OnError;
 		
 		void OpenConfig(string fileName);
 		void Predict();
-		void ShowLastROC();
+		void ShowROC(int number);
 		IDictionary<string,string> Releases { get; }
 		IDictionary<string,string> SelectedReleases { get; set; }
 		PostReleaseDefectFilesPrediction[] Models { get; }
@@ -102,12 +103,13 @@ namespace MSR.Tools.Predictor
 		public event Action<string> OnTitleUpdated;
 		public event Action OnClearReport;
 		public event Action<string> OnAddReport;
+		public event Action<string,string,int> OnRocAdded;
 		public event Action<bool> OnReadyStateChanged;
 		public event Action<string> OnProgressStateChanged;
 		public event Action<string> OnError;
 		
 		private PredictionTool predictor;
-		private ROCEvaluationResult lastROC;
+		private List<ROCEvaluationResult> rocs = new List<ROCEvaluationResult>();
 		
 		public PredictorModel()
 		{
@@ -154,12 +156,10 @@ namespace MSR.Tools.Predictor
 			thread.IsBackground = true;
 			thread.Start();
 		}
-		public void ShowLastROC()
+		public void ShowROC(int number)
 		{
-			if (lastROC == null)
-			{
-				return;
-			}
+			ROCEvaluationResult roc = rocs[number];
+			
 			string tempfile = Path.GetTempFileName();
 			using (TextWriter w = new StreamWriter(tempfile))
 			{
@@ -167,19 +167,19 @@ namespace MSR.Tools.Predictor
 				w.WriteLine("{0} {1}", 0, 0);
 				w.WriteLine("{0} {1}", 1, 1);
 				w.WriteLine("l ROC");
-				for (int i = 0; i < lastROC.Pf.Length; i++)
+				for (int i = 0; i < roc.Pf.Length; i++)
 				{
-					w.WriteLine("{0} {1}", lastROC.Pf[i], lastROC.Se[i]);
+					w.WriteLine("{0} {1}", roc.Pf[i], roc.Se[i]);
 				}
 				w.WriteLine("l Sensitivity");
-				for (int i = 0; i < lastROC.Se.Length; i++)
+				for (int i = 0; i < roc.Se.Length; i++)
 				{
-					w.WriteLine("{0} {1}", (double)i * 0.01, lastROC.Se[i]);
+					w.WriteLine("{0} {1}", (double)i * 0.01, roc.Se[i]);
 				}
 				w.WriteLine("l Specificity");
-				for (int i = 0; i < lastROC.Se.Length; i++)
+				for (int i = 0; i < roc.Se.Length; i++)
 				{
-					w.WriteLine("{0} {1}", (double)i * 0.01, lastROC.Sp[i]);
+					w.WriteLine("{0} {1}", (double)i * 0.01, roc.Sp[i]);
 				}
 			}
 			Shell.Run("MSR.Tools.Visualizer.exe", tempfile);
@@ -238,7 +238,8 @@ namespace MSR.Tools.Predictor
 			output.AppendLine();
 			output.AppendLine();
 			OnAddReport(output.ToString());
-
+			rocs.Clear();
+			
 			foreach (var model in SelectedModels)
 			{
 				output = new StringBuilder();
@@ -280,8 +281,9 @@ namespace MSR.Tools.Predictor
 						}
 						if (EvaluateUsingROC)
 						{
-							lastROC = model.EvaluateUsingROC();
-							output.AppendLine(lastROC.ToString());
+							rocs.Add(model.EvaluateUsingROC());
+							OnRocAdded(model.Title, releases.Last().Value, rocs.Count-1);
+							output.AppendLine(rocs.Last().ToString());
 						}
 						output.AppendLine(string.Format("Fault prone probability mean = {0:0.00}",
 							model.FaultProneProbabilityMean

@@ -57,7 +57,6 @@ namespace MSR.Tools.Visualizer
 			int i = 0;
 			foreach (var v in visualizations)
 			{
-				//var menuItem = visualizationsMenu.DropDownItems.Add(v.Key);
 				var menuItem = CreateVisualizationMenuCommand(v.Key, v.Value);
 				menuItem.Tag = i;
 				menuItem.Click += (s,e) =>
