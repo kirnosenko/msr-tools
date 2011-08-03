@@ -78,6 +78,7 @@ namespace MSR.Tools.Predictor
 		event Action<string> OnTitleUpdated;
 		event Action OnClearReport;
 		event Action<string> OnAddReport;
+		event Action OnClearRocList;
 		event Action<string,string,int> OnRocAdded;
 		event Action<bool> OnReadyStateChanged;
 		event Action<string> OnProgressStateChanged;
@@ -103,6 +104,7 @@ namespace MSR.Tools.Predictor
 		public event Action<string> OnTitleUpdated;
 		public event Action OnClearReport;
 		public event Action<string> OnAddReport;
+		public event Action OnClearRocList;
 		public event Action<string,string,int> OnRocAdded;
 		public event Action<bool> OnReadyStateChanged;
 		public event Action<string> OnProgressStateChanged;
@@ -211,6 +213,8 @@ namespace MSR.Tools.Predictor
 			{
 				OnReadyStateChanged(false);
 				OnClearReport();
+				rocs.Clear();
+				OnClearRocList();
 				
 				foreach (var releaseSet in ReleaseSetGetting.ReleaseSets(this))
 				{
@@ -238,7 +242,6 @@ namespace MSR.Tools.Predictor
 			output.AppendLine();
 			output.AppendLine();
 			OnAddReport(output.ToString());
-			rocs.Clear();
 			
 			foreach (var model in SelectedModels)
 			{

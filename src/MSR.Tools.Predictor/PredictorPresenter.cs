@@ -24,6 +24,7 @@ namespace MSR.Tools.Predictor
 			model.OnTitleUpdated += x => view.Title = x;
 			model.OnClearReport += () => view.ClearReport();
 			model.OnAddReport += x => view.AddReport(x);
+			model.OnClearRocList += () => view.ClearROCs();
 			model.OnRocAdded += view.AddRoc;
 			model.OnReadyStateChanged += x => view.Ready = x;
 			model.OnProgressStateChanged += x => view.Status = x;
