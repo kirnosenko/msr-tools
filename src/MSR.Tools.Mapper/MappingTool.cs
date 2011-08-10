@@ -96,6 +96,21 @@ namespace MSR.Tools.Mapper
 
 			Map(mapping);
 		}
+		public void MapReleaseEntity(string revision, string tag)
+		{
+			using (ConsoleTimeLogger.Start("entity mapping time"))
+			using (var s = data.OpenSession())
+			{
+				s.Repository<Release>().Add(new Release()
+				{
+					Commit = s.Repository<Commit>().Single(c =>
+						c.Revision == revision
+					),
+					Tag = tag
+				});
+				s.SubmitChanges();
+			}
+		}
 		public void Truncate(int numberOfRevisionsToKeep)
 		{
 			Truncate(scmData.RevisionByNumber(numberOfRevisionsToKeep));

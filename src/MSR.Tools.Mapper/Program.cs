@@ -61,23 +61,25 @@ namespace MSR.Tools.Mapper
 			{
 				Console.WriteLine("usage: MSR.Tools.Mapper CONFIG_FILE_NAME COMMAND [ARGS]");
 				Console.WriteLine("Commands:");
-				Console.WriteLine("  info		print general information about database");
-				Console.WriteLine("  map		map data incrementally from software repositories to database");
-				Console.WriteLine("    -c		create database");
-				Console.WriteLine("    -n N		map data till revision number N");
-				Console.WriteLine("    -r R		map data till revision R");
-				Console.WriteLine("  pmap		map data partially from software repositories to database");
-				Console.WriteLine("    -n N		map data from a revision number N to the last one in database");
-				Console.WriteLine("    -r R		map data from a revision R to the last one in database");
-				Console.WriteLine("    -p PATH	map file in the path");
-				Console.WriteLine("    -d DIR	map files in the directory");
-				Console.WriteLine("  truncate	remove mapped data from database");
-				Console.WriteLine("    -n N		keep the first N revisions");
-				Console.WriteLine("    -r R		keep all revisions until revision R");
-				Console.WriteLine("  check		check validity of mapped data");
-				Console.WriteLine("    -n N		check data till revision number N");
-				Console.WriteLine("    -p PATH	check the file on path");
-				Console.WriteLine("    -f		automatically fix diff errors");
+				Console.WriteLine("  info              print general information about database");
+				Console.WriteLine("  map               map data incrementally from software repositories to database");
+				Console.WriteLine("    -c              create database");
+				Console.WriteLine("    -n N            map data till revision number N");
+				Console.WriteLine("    -r R            map data till revision R");
+				Console.WriteLine("  pmap              map data partially from software repositories to database");
+				Console.WriteLine("    -n N            map data from a revision number N to the last one in database");
+				Console.WriteLine("    -r R            map data from a revision R to the last one in database");
+				Console.WriteLine("    -p PATH         map file in the path");
+				Console.WriteLine("    -d DIR          map files in the directory");
+				Console.WriteLine("  emap              map a single data entity to database");
+				Console.WriteLine("    release R TAG   map a release entity with TAG for revision R to database");
+				Console.WriteLine("  truncate          remove mapped data from database");
+				Console.WriteLine("    -n N            keep the first N revisions");
+				Console.WriteLine("    -r R            keep all revisions until revision R");
+				Console.WriteLine("  check             check validity of mapped data");
+				Console.WriteLine("    -n N            check data till revision number N");
+				Console.WriteLine("    -p PATH         check the file on path");
+				Console.WriteLine("    -f              automatically fix diff errors");
 				
 				return;
 			}
@@ -127,6 +129,18 @@ namespace MSR.Tools.Mapper
 							mapper.PartialMap(revision, pathSelectors);
 						}
 						break;
+					case "emap":
+					{
+						switch (args[2])
+						{
+							case "release":
+							{
+								mapper.MapReleaseEntity(args[3], args[4]);
+								break;
+							}
+						}
+						break;
+					}
 					case "truncate":
 						if (revisionNumber != 0)
 						{
