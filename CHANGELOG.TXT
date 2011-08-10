@@ -1,4 +1,9 @@
-﻿2011-07-28 - version 0.3.1
+﻿2011-08-10 - version 0.3.2
+	
+	* a command for manual release mapping
+	* some minor improvements
+
+2011-07-28 - version 0.3.1
 	
 	* ROC evaluation for prediction models
 	* some additional statistics
