@@ -23,6 +23,10 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 			selectionDSL
 				.CodeBlocks().CalculateDefectCodeSize()
 					.Should().Be(0);
+			
+			selectionDSL
+				.CodeBlocks().CalculateDefectCodeSizePerDefect()
+					.Should().Be(0);
 		}
 		[Test]
 		public void Should_calc_size_of_defect_code()
@@ -60,6 +64,40 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 			selectionDSL
 				.CodeBlocks().CalculateDefectCodeSize("4")
 					.Should().Be(7);
+		}
+		[Test]
+		public void Should_calc_size_of_defect_code_per_defect()
+		{
+			AddCode();
+
+			selectionDSL
+				.CodeBlocks().CalculateDefectCodeSizePerDefect()
+					.Should().Be(3.5);
+			selectionDSL
+				.Commits().TillRevision("1")
+				.Modifications().InCommits()
+				.CodeBlocks().InModifications().CalculateDefectCodeSizePerDefect()
+					.Should().Be(3);
+			selectionDSL
+				.Commits().AfterRevision("1")
+				.Modifications().InCommits()
+				.CodeBlocks().InModifications().CalculateDefectCodeSizePerDefect()
+					.Should().Be(1);
+		}
+		[Test]
+		public void Should_calc_size_of_defect_code_per_defect_in_revision()
+		{
+			AddCode();
+
+			selectionDSL
+				.CodeBlocks().CalculateDefectCodeSizePerDefect("2")
+					.Should().Be(5);
+			selectionDSL
+				.CodeBlocks().CalculateDefectCodeSizePerDefect("3")
+					.Should().Be(5);
+			selectionDSL
+				.CodeBlocks().CalculateDefectCodeSizePerDefect("4")
+					.Should().Be(3.5);
 		}
 		private void AddCode()
 		{

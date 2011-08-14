@@ -163,18 +163,18 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				.Modifications().InFiles()
 				.CodeBlocks().InModifications();
 
-			code.CalculateTraditionalDefectDensityAtRevision("1")
+			code.CalculateTraditionalDefectDensity("1")
 				.Should().Be(0);
-			code.CalculateTraditionalDefectDensityAtRevision("2")
+			code.CalculateTraditionalDefectDensity("2")
 				.Should().Be(1d / (100 / DefectDensity.KLOC));
-			code.CalculateTraditionalDefectDensityAtRevision("3")
+			code.CalculateTraditionalDefectDensity("3")
 				.Should().Be(2d / (99 / DefectDensity.KLOC));
 
-			code.CalculateDefectDensityAtRevision("1")
+			code.CalculateDefectDensity("1")
 				.Should().Be(0);
-			code.CalculateDefectDensityAtRevision("2")
+			code.CalculateDefectDensity("2")
 				.Should().Be(1d / (105 / DefectDensity.KLOC));
-			code.CalculateDefectDensityAtRevision("3")
+			code.CalculateDefectDensity("3")
 				.Should().Be(2d / (110 / DefectDensity.KLOC));
 		}
 	}

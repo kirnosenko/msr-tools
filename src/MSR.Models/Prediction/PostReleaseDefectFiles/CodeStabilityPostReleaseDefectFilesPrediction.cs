@@ -40,7 +40,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				.Commits().TillRevision(PredictionRelease)
 				.Files().Reselect(FileSelector)
 				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().CalculateDefectCodeDensityAtRevision(PredictionRelease);
+				.CodeBlocks().InModifications().CalculateDefectCodeDensity(PredictionRelease);
 
 			AddedCodeSizeByRevision = new SmartDictionary<string, double>(r =>
 				repositories.SelectionDSL()

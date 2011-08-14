@@ -36,7 +36,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				code.CalculateNumberOfDefects()
 			);
 		}
-		public static double CalculateTraditionalDefectDensityAtRevision(this CodeBlockSelectionExpression code, string revision)
+		public static double CalculateTraditionalDefectDensity(this CodeBlockSelectionExpression code, string revision)
 		{
 			code = code
 				.Commits().TillRevision(revision)
@@ -48,7 +48,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				code
 					.Modifications().InCommits()
 					.CodeBlocks().Again().ModifiedBy().Deleted().InModifications().CalculateLOC(),
-				code.CalculateNumberOfDefectsAtRevision(revision)
+				code.CalculateNumberOfDefects(revision)
 			);
 		}
 		/// <summary>
@@ -66,7 +66,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				code.CalculateNumberOfDefects()
 			);
 		}
-		public static double CalculateDefectDensityAtRevision(this CodeBlockSelectionExpression code, string revision)
+		public static double CalculateDefectDensity(this CodeBlockSelectionExpression code, string revision)
 		{
 			code = code
 				.Commits().TillRevision(revision)
@@ -74,7 +74,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 
 			return CalculateDefectDensity(
 				code.CalculateLOC(),
-				code.CalculateNumberOfDefectsAtRevision(revision)
+				code.CalculateNumberOfDefects(revision)
 			);
 		}
 		private static double CalculateDefectDensity(double codeSize, double numberOfDefects)

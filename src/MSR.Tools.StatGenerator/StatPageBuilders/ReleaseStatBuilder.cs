@@ -98,7 +98,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				
 				double releaseDD = releaseCode.CalculateDefectDensity();
 				double totalReleaseDD = totalReleaseCode.CalculateDefectDensity();
-				double postReleaseDD = releaseDD - releaseCode.CalculateDefectDensityAtRevision(release.Key);
+				double postReleaseDD = releaseDD - releaseCode.CalculateDefectDensity(release.Key);
 				
 				releaseObjects.Add(new
 				{

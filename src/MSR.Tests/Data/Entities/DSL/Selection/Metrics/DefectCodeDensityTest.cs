@@ -111,13 +111,13 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				.Commits().RevisionIs("1")
 				.Modifications().InCommits()
 				.CodeBlocks().InModifications()
-				.CalculateDefectCodeDensityAtRevision("2")
+				.CalculateDefectCodeDensity("2")
 					.Should().Be(5d / 100);
 			selectionDSL
 				.Commits().RevisionIs("1")
 				.Modifications().InCommits()
 				.CodeBlocks().InModifications()
-				.CalculateDefectCodeDensityAtRevision("3")
+				.CalculateDefectCodeDensity("3")
 					.Should().Be(10d / 100);
 			
 			var code = selectionDSL
@@ -125,11 +125,11 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				.Modifications().InFiles()
 				.CodeBlocks().InModifications();
 
-			code.CalculateDefectCodeDensityAtRevision("1")
+			code.CalculateDefectCodeDensity("1")
 				.Should().Be(0);
-			code.CalculateDefectCodeDensityAtRevision("2")
+			code.CalculateDefectCodeDensity("2")
 				.Should().Be(5d / 105);
-			code.CalculateDefectCodeDensityAtRevision("3")
+			code.CalculateDefectCodeDensity("3")
 				.Should().Be(11d / 110);
 		}
 	}

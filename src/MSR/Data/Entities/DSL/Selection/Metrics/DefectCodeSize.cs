@@ -25,5 +25,27 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				.Modifications().InCommits()
 				.CodeBlocks().Again().ModifiedBy().InModifications().InBugFixes().CalculateLOC();
 		}
+		public static double CalculateDefectCodeSizePerDefect(this CodeBlockSelectionExpression code)
+		{
+			code = code.Fixed();
+			
+			int numberOfDefects = code.CalculateNumberOfDefects();
+			
+			return numberOfDefects > 0 ?
+				code.CalculateDefectCodeSize() / numberOfDefects
+				:
+				0;
+		}
+		public static double CalculateDefectCodeSizePerDefect(this CodeBlockSelectionExpression code, string revision)
+		{
+			code = code.Fixed();
+			
+			int numberOfDefects = code.CalculateNumberOfDefects(revision);
+
+			return numberOfDefects > 0 ?
+				code.CalculateDefectCodeSize(revision) / numberOfDefects
+				:
+				0;
+		}
 	}
 }

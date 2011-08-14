@@ -23,7 +23,7 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				code.CalculateDefectCodeSize()
 			);
 		}
-		public static double CalculateDefectCodeDensityAtRevision(this CodeBlockSelectionExpression code, string revision)
+		public static double CalculateDefectCodeDensity(this CodeBlockSelectionExpression code, string revision)
 		{
 			code = code
 				.Commits().TillRevision(revision)
