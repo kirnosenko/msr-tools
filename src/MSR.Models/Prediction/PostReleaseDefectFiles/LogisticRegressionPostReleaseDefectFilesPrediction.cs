@@ -47,7 +47,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 
 			context.SetCommits(TrainReleases.Last(), PredictionRelease);
 		}
-		protected override double FileFaultProneProbability(ProjectFile file)
+		protected override double GetFileEstimation(ProjectFile file)
 		{
 			return regression.Predict(
 				GetPredictorValuesFor(context.SetFiles(e => e.IdIs(file.ID)))

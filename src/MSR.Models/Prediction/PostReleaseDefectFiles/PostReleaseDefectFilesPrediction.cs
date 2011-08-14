@@ -29,7 +29,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public PostReleaseDefectFilesPrediction()
 		{
 			defaultCutOffValue = 0.5;
-			UseFaultProneProbabilityMeanAsCutOffValue = false;
+			UseFileEstimationMeanAsCutOffValue = false;
 			FilePortionLimit = 1;
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
@@ -50,7 +50,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			{
 				possibleDefectFiles.Add(
 					file.Path,
-					FileFaultProneProbability(file)
+					GetFileEstimation(file)
 				);
 				
 				if (CallBack != null)
@@ -59,8 +59,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					CallBack(this, (double)processedFilesCount / allFilesCount);
 				}
 			}
-			
-			FaultProneProbabilityMean = possibleDefectFiles.Values.Mean();
 			
 			PredictedDefectFiles = possibleDefectFiles
 				.Where(x => x.Value >= CutOffValue)
@@ -88,7 +86,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			
 			return new ROCEvaluationResult(results.ToArray());
 		}
-		public bool UseFaultProneProbabilityMeanAsCutOffValue
+		public bool UseFileEstimationMeanAsCutOffValue
 		{
 			get; set;
 		}
@@ -96,10 +94,18 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; set;
 		}
-		
-		public double FaultProneProbabilityMean
+
+		public double FileEstimationMean
 		{
-			get; private set;
+			get { return possibleDefectFiles.Values.Mean(); }
+		}
+		public double FileEstimationMax
+		{
+			get { return possibleDefectFiles.Values.Max(); }
+		}
+		public double FileEstimationMin
+		{
+			get { return possibleDefectFiles.Values.Min(); }
 		}
 		public IEnumerable<ProjectFile> AllFiles
 		{
@@ -129,9 +135,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get
 			{
-				if (UseFaultProneProbabilityMeanAsCutOffValue)
+				if (UseFileEstimationMeanAsCutOffValue)
 				{
-					return FaultProneProbabilityMean;
+					return FileEstimationMean;
 				}
 				return defaultCutOffValue;
 			}
@@ -153,7 +159,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 
 			return new EvaluationResult(TP, TN, FP, FN);
 		}
-		protected abstract double FileFaultProneProbability(ProjectFile file);
+		protected abstract double GetFileEstimation(ProjectFile file);
 		protected IEnumerable<ProjectFile> GetFilesInRevision(string revision)
 		{
 			return repositories.SelectionDSL()

@@ -58,7 +58,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				.Single(x => x.Revision == PredictionRelease)
 				.Date;
 		}
-		protected override double FileFaultProneProbability(ProjectFile file)
+		protected override double GetFileEstimation(ProjectFile file)
 		{
 			var codeBlocks = repositories.SelectionDSL()
 				.Commits().TillRevision(PredictionRelease)

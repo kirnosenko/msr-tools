@@ -288,8 +288,8 @@ namespace MSR.Tools.Predictor
 							OnRocAdded(model.Title, releases.Last().Value, rocs.Count-1);
 							output.AppendLine(rocs.Last().ToString());
 						}
-						output.AppendLine(string.Format("Fault prone probability mean = {0:0.00}",
-							model.FaultProneProbabilityMean
+						output.AppendLine(string.Format("File estimations: Mean = {0:0.00}, Max = {1:0.00}, Min = {2:0.00}",
+							model.FileEstimationMean, model.FileEstimationMax, model.FileEstimationMin
 						));
 					}
 					output.AppendLine();
