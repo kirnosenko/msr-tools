@@ -30,8 +30,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			defaultCutOffValue = 0.5;
 			UseFileEstimationMeanAsCutOffValue = false;
-			PossibleFileEstimationMax = 1;
-			PossibleFileEstimationMin = 0;
 			FilePortionLimit = 1;
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
@@ -74,22 +72,18 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		public ROCEvaluationResult EvaluateUsingROC()
 		{
-			List<double> estimations = new List<double>(possibleDefectFiles.Values);
-			estimations.Add(PossibleFileEstimationMax);
-			estimations.Add(PossibleFileEstimationMin);
-			
-			List<EvaluationResult> results = new List<EvaluationResult>();
-			
-			foreach (var estimation in estimations.Distinct().OrderBy(x => x))
+			List<EvaluationResult> results = new List<EvaluationResult>(101);
+
+			for (int cutOffValue = 0; cutOffValue <= 100; cutOffValue++)
 			{
 				var predictedDefectFiles = possibleDefectFiles
-					.Where(x => x.Value >= estimation)
+					.Where(x => x.Value >= (double)cutOffValue * 0.01)
 					.Select(x => x.Key)
 					.ToArray();
 
 				results.Add(Evaluate(predictedDefectFiles));
 			}
-			
+
 			return new ROCEvaluationResult(results.ToArray());
 		}
 		public bool UseFileEstimationMeanAsCutOffValue
@@ -147,14 +141,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				}
 				return defaultCutOffValue;
 			}
-		}
-		protected double PossibleFileEstimationMax
-		{
-			get; set;
-		}
-		protected double PossibleFileEstimationMin
-		{
-			get; set;
 		}
 		protected EvaluationResult Evaluate(
 			IEnumerable<string> predictedDefectFiles

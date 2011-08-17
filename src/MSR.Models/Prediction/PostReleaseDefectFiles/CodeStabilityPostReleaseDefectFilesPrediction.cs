@@ -20,6 +20,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
 	struct CodeSetData
 	{
+		public string Revision { get; set; }
 		public double CodeSize { get; set; }
 		public double AddedCodeSize { get; set; }
 		public double DefectCodeSize { get; set; }
@@ -167,18 +168,38 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			ReleaseDate = repositories.Repository<Commit>()
 				.Single(x => x.Revision == PredictionRelease)
 				.Date;
-			AddedCodeSizeByRevision = new SmartDictionary<string, double>(r =>
+
+			RemainCodeSizeByRevision = new SmartDictionary<string,double>(r =>
+				repositories.SelectionDSL()
+					.Commits().RevisionIs(r)
+					.Modifications().InCommits()
+					.CodeBlocks().InModifications().Added().CalculateRemainingCodeSize(PredictionRelease).Sum(x => x.Value)
+			);
+			AddedCodeSizeByRevision = new SmartDictionary<string,double>(r =>
 				repositories.SelectionDSL()
 					.Commits().RevisionIs(r)
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().Added().CalculateLOC()
 			);
-			DefectCodeSizeByRevision = new SmartDictionary<string, double>(r =>
+			DefectCodeSizeByRevision = new SmartDictionary<string,double>(r =>
 				repositories.SelectionDSL()
 					.Commits().RevisionIs(r)
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().CalculateDefectCodeSize(PredictionRelease)
 			);
+			
+			AddedCodeSize = (revision,pathid) =>
+				repositories.SelectionDSL()
+					.Commits().RevisionIs(revision)
+					.Files().IdIs(pathid)
+					.Modifications().InCommits().InFiles()
+					.CodeBlocks().InModifications().Added().CalculateLOC();
+			DefectCodeSize = (revision,pathid) =>
+				repositories.SelectionDSL()
+					.Commits().RevisionIs(revision)
+					.Files().IdIs(pathid)
+					.Modifications().InCommits().InFiles()
+					.CodeBlocks().InModifications().CalculateDefectCodeSize(PredictionRelease);
 			
 			EstimateDefectLineProbability(repositories);
 			EstimateBugLifetimeDistribution(repositories);
@@ -201,20 +222,18 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				.CodeBlocks().InModifications().CalculateRemainingCodeSize(PredictionRelease);
 
 			var codeByRevision = (
-				from cb in codeBlocks
-				let CommitID = repositories.Repository<CodeBlock>()
-					.Single(x => x.ID == cb.Key)
-					.AddedInitiallyInCommitID
-				from c in repositories.Repository<Commit>()
-				where
-					c.ID == CommitID
-				let revision = c.Revision
+				from rcb in codeBlocks
+				join cb in repositories.Repository<CodeBlock>() on rcb.Key equals cb.ID
+				join m in repositories.Repository<Modification>() on cb.ModificationID equals m.ID
+				join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
+				join ic in repositories.Repository<Commit>() on cb.AddedInitiallyInCommitID equals ic.ID
 				select new CodeSetData()
 				{
-					CodeSize = cb.Value,
-					AddedCodeSize = AddedCodeSizeByRevision[revision],
-					DefectCodeSize = DefectCodeSizeByRevision[revision],
-					AgeInDays = (ReleaseDate - c.Date).TotalDays
+					Revision = c.Revision,
+					CodeSize = rcb.Value,
+					AddedCodeSize = AddedCodeSize(c.Revision,file.ID),
+					DefectCodeSize = DefectCodeSize(c.Revision,file.ID),
+					AgeInDays = (ReleaseDate - ic.Date).TotalDays
 				}).ToArray();
 
 			double fileHasDefectsProbability = 0;
@@ -232,6 +251,12 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		protected virtual void EstimateDefectLineProbability(IRepositoryResolver repositories)
 		{
+			DefectLineProbability = repositories.SelectionDSL()
+				.Commits().TillRevision(PredictionRelease)
+				.Files().Reselect(FileSelector)
+				.Modifications().InCommits().InFiles()
+				.CodeBlocks().InModifications().CalculateDefectCodeDensity(PredictionRelease);
+			/*
 			double stabilizationPeriod = repositories.SelectionDSL()
 				.Commits().TillRevision(PredictionRelease)
 				.BugFixes().InCommits().CalculateStabilizationPeriod(0.9);
@@ -242,7 +267,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				.Modifications().InCommits().InFiles()
 				.CodeBlocks().InModifications();
 
-			DefectLineProbability = stableCode.CalculateDefectCodeDensity(PredictionRelease);
+			DefectLineProbability = stableCode.CalculateDefectCodeDensity(PredictionRelease);*/
 		}
 		protected virtual void EstimateBugLifetimeDistribution(IRepositoryResolver repositories)
 		{
@@ -258,11 +283,23 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				return (double)bugLifetimes.Where(t => t <= time).Count() / bugLifetimes.Count();
 			};
 		}
+		protected IDictionary<string,double> RemainCodeSizeByRevision
+		{
+			get; set;
+		}
 		protected IDictionary<string,double> AddedCodeSizeByRevision
 		{
 			get; set;
 		}
 		protected IDictionary<string,double> DefectCodeSizeByRevision
+		{
+			get; set;
+		}
+		protected Func<string,int,double> AddedCodeSize
+		{
+			get; set;
+		}
+		protected Func<string,int,double> DefectCodeSize
 		{
 			get; set;
 		}
