@@ -20,11 +20,83 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
 	struct CodeSetData
 	{
+		private double addedCodeSize;
+		private double defectCodeSize;
+		private double remainCodeSizeFromRevision;
+		private double addedCodeSizeFromRevision;
+		private double defectCodeSizeFromRevision;
+		
 		public string Revision { get; set; }
-		public double CodeSize { get; set; }
-		public double AddedCodeSize { get; set; }
-		public double DefectCodeSize { get; set; }
+		public int PathID { get; set; }
+		public double RemainCodeSize { get; set; }
 		public double AgeInDays { get; set; }
+
+		public double AddedCodeSize
+		{
+			get
+			{
+				if (AddedCodeSizeResolver != null)
+				{
+					addedCodeSize = AddedCodeSizeResolver(Revision, PathID);
+					AddedCodeSizeResolver = null;
+				}
+				return addedCodeSize;
+			}
+		}
+		public double DefectCodeSize
+		{
+			get
+			{
+				if (DefectCodeSizeResolver != null)
+				{
+					defectCodeSize = DefectCodeSizeResolver(Revision, PathID);
+					DefectCodeSizeResolver = null;
+				}
+				return defectCodeSize;
+			}
+		}
+		public double RemainCodeSizeFromRevision
+		{
+			get
+			{
+				if (RemainCodeSizeFromRevisionResolver != null)
+				{
+					remainCodeSizeFromRevision = RemainCodeSizeFromRevisionResolver(Revision);
+					RemainCodeSizeFromRevisionResolver = null;
+				}
+				return remainCodeSizeFromRevision;
+			}
+		}
+		public double AddedCodeSizeFromRevision
+		{
+			get
+			{
+				if (AddedCodeSizeFromRevisionResolver != null)
+				{
+					addedCodeSizeFromRevision = AddedCodeSizeFromRevisionResolver(Revision);
+					AddedCodeSizeFromRevisionResolver = null;
+				}
+				return addedCodeSizeFromRevision;
+			}
+		}
+		public double DefectCodeSizeFromRevision
+		{
+			get
+			{
+				if (DefectCodeSizeFromRevisionResolver != null)
+				{
+					defectCodeSizeFromRevision = DefectCodeSizeFromRevisionResolver(Revision);
+					DefectCodeSizeFromRevisionResolver = null;
+				}
+				return defectCodeSizeFromRevision;
+			}
+		}
+		
+		public Func<string,int,double> AddedCodeSizeResolver { private get; set; }
+		public Func<string,int,double> DefectCodeSizeResolver { private get; set; }
+		public Func<string,double> RemainCodeSizeFromRevisionResolver { private get; set; }
+		public Func<string,double> AddedCodeSizeFromRevisionResolver { private get; set; }
+		public Func<string,double> DefectCodeSizeFromRevisionResolver { private get; set; }
 	}
 
 	static class CodeSetDataMetrics
@@ -40,6 +112,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			return 1 - Math.Pow(1 - defectLineProbability, codeSet.AddedCodeSize);
 		}
+		public static double EP_REVISION(this CodeSetData codeSet, double defectLineProbability)
+		{
+			return 1 - Math.Pow(1 - defectLineProbability, codeSet.AddedCodeSizeFromRevision);
+		}
 		/// <summary>
 		/// Probability that code from revision has errors will be detected in future
 		/// (code age predictor)
@@ -52,6 +128,24 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			return 1 - bugLifetimeDistribution(codeSet.AgeInDays);
 		}
 		/// <summary>
+		/// Probability that code from revision has errors were not removed
+		/// (remain code predictor)
+		/// </summary>
+		/// <param name="codeSet"></param>
+		/// <returns></returns>
+		public static double EWNRFP(this CodeSetData codeSet)
+		{
+			return codeSet.RemainCodeSize / codeSet.AddedCodeSize;
+		}
+		public static double EWNRFP_REVISION(this CodeSetData codeSet)
+		{
+			return codeSet.RemainCodeSizeFromRevision / codeSet.AddedCodeSizeFromRevision;
+		}
+		public static double EWNRFP_MIXED(this CodeSetData codeSet)
+		{
+			return codeSet.RemainCodeSize / codeSet.AddedCodeSizeFromRevision;
+		}
+		/// <summary>
 		/// Probability that code from revision has errors were not removed during refactoring
 		/// (code refactoring predictor)
 		/// </summary>
@@ -59,7 +153,15 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		/// <returns></returns>
 		public static double EWNRP(this CodeSetData codeSet)
 		{
-			return (codeSet.CodeSize + codeSet.DefectCodeSize) / codeSet.AddedCodeSize;
+			return (codeSet.RemainCodeSize + codeSet.DefectCodeSize) / codeSet.AddedCodeSize;
+		}
+		public static double EWNRP_REVISION(this CodeSetData codeSet)
+		{
+			return (codeSet.RemainCodeSizeFromRevision + codeSet.DefectCodeSizeFromRevision) / codeSet.AddedCodeSizeFromRevision;
+		}
+		public static double EWNRP_MIXED(this CodeSetData codeSet)
+		{
+			return (codeSet.RemainCodeSize + codeSet.DefectCodeSizeFromRevision) / codeSet.AddedCodeSizeFromRevision;
 		}
 		/// <summary>
 		/// Probability that code from revision has errors were not fixed before
@@ -74,8 +176,37 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				defectLineProbability,
 				codeSet.AddedCodeSize,
 				codeSet.DefectCodeSize + 1,
-				codeSet.DefectCodeSize + codeSet.CodeSize
+				codeSet.DefectCodeSize + codeSet.RemainCodeSize
 			);
+		}
+		public static double EWNFP_REVISION(this CodeSetData codeSet, double defectLineProbability)
+		{
+			return LaplaceIntegralTheorem(
+				defectLineProbability,
+				codeSet.AddedCodeSizeFromRevision,
+				codeSet.DefectCodeSizeFromRevision + 1,
+				codeSet.DefectCodeSizeFromRevision + codeSet.RemainCodeSizeFromRevision
+			);
+		}
+		public static double EWNFP_MIXED(this CodeSetData codeSet, double defectLineProbability)
+		{
+			return LaplaceIntegralTheorem(
+				defectLineProbability,
+				codeSet.AddedCodeSizeFromRevision,
+				codeSet.DefectCodeSizeFromRevision + 1,
+				codeSet.DefectCodeSizeFromRevision + codeSet.RemainCodeSize
+			);
+		}
+		/// <summary>
+		/// Probability that errors in revision are located in specified code set.
+		/// (code set size predictor)
+		/// </summary>
+		/// <param name="codeSet"></param>
+		/// <param name="defectLineProbability"></param>
+		/// <returns></returns>
+		public static double ELP(this CodeSetData codeSet)
+		{
+			return codeSet.RemainCodeSize / codeSet.RemainCodeSizeFromRevision;
 		}
 		
 		static double LaplaceIntegralTheorem(double p, double n, double k1, double k2)
@@ -102,14 +233,86 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 
 	abstract class CodeSetEstimationStrategy
 	{
-		public static readonly CodeSetEstimationStrategy M0 = new M0();
-		public static readonly CodeSetEstimationStrategy M1 = new M1();
-		public static readonly CodeSetEstimationStrategy M2 = new M2();
-
+		public static readonly CodeSetEstimationStrategy G1M0 = new G1M0();
+		public static readonly CodeSetEstimationStrategy G1M1 = new G1M1();
+		public static readonly CodeSetEstimationStrategy G1M2 = new G1M2();
+		public static readonly CodeSetEstimationStrategy G1M3 = new G1M3();
+		public static readonly CodeSetEstimationStrategy G2M0 = new G2M0();
+		public static readonly CodeSetEstimationStrategy G2M1 = new G2M1();
+		public static readonly CodeSetEstimationStrategy G2M2 = new G2M2();
+		public static readonly CodeSetEstimationStrategy G2M3 = new G2M3();
+		public static readonly CodeSetEstimationStrategy G3M1 = new G3M1();
+		public static readonly CodeSetEstimationStrategy G3M2 = new G3M2();
+		public static readonly CodeSetEstimationStrategy G3M3 = new G3M3();
+		
 		public abstract double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet);
 	}
 
-	class M0 : CodeSetEstimationStrategy
+	class G1M0 : CodeSetEstimationStrategy
+	{
+		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			return
+				codeSet.EP_REVISION(model.DefectLineProbability)
+				*
+				codeSet.EWNRFP_MIXED();
+		}
+	}
+	class G1M1 : CodeSetEstimationStrategy
+	{
+		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			return
+				codeSet.EP_REVISION(model.DefectLineProbability)
+				*
+				codeSet.EWNRP_MIXED()
+				*
+				codeSet.EWNFP_MIXED(model.DefectLineProbability);
+		}
+	}
+	class G1M2 : CodeSetEstimationStrategy
+	{
+		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			return
+				codeSet.EP_REVISION(model.DefectLineProbability)
+				*
+				codeSet.EFDP(model.BugLifetimeDistribution);
+		}
+	}
+	class G1M3 : CodeSetEstimationStrategy
+	{
+		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			return
+				codeSet.EP_REVISION(model.DefectLineProbability)
+				*
+				(
+					(
+						codeSet.EFDP(model.BugLifetimeDistribution)
+						+
+						(
+							codeSet.EWNRP_MIXED()
+							*
+							codeSet.EWNFP_MIXED(model.DefectLineProbability)
+						)
+					)
+					/
+					2
+				);
+		}
+	}
+	class G2M0 : CodeSetEstimationStrategy
+	{
+		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			return
+				codeSet.EP(model.DefectLineProbability)
+				*
+				codeSet.EWNRFP();
+		}
+	}
+	class G2M1 : CodeSetEstimationStrategy
 	{
 		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
 		{
@@ -121,7 +324,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				codeSet.EWNFP(model.DefectLineProbability);
 		}
 	}
-	class M1 : CodeSetEstimationStrategy
+	class G2M2 : CodeSetEstimationStrategy
 	{
 		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
 		{
@@ -131,7 +334,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				codeSet.EFDP(model.BugLifetimeDistribution);
 		}
 	}
-	class M2 : CodeSetEstimationStrategy
+	class G2M3 : CodeSetEstimationStrategy
 	{
 		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
 		{
@@ -153,13 +356,63 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				);
 		}
 	}
+	class G3M1 : CodeSetEstimationStrategy
+	{
+		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			return
+				codeSet.EP_REVISION(model.DefectLineProbability)
+				*
+				codeSet.EWNRP_REVISION()
+				*
+				codeSet.EWNFP_REVISION(model.DefectLineProbability)
+				*
+				codeSet.ELP();
+		}
+	}
+	class G3M2 : CodeSetEstimationStrategy
+	{
+		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			return
+				codeSet.EP_REVISION(model.DefectLineProbability)
+				*
+				codeSet.EFDP(model.BugLifetimeDistribution)
+				*
+				codeSet.ELP();
+		}
+	}
+	class G3M3 : CodeSetEstimationStrategy
+	{
+		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			return
+				codeSet.EP_REVISION(model.DefectLineProbability)
+				*
+				(
+					(
+						codeSet.EFDP(model.BugLifetimeDistribution)
+						+
+						(
+							codeSet.EWNRP_REVISION()
+							*
+							codeSet.EWNFP_REVISION(model.DefectLineProbability)
+						)
+					)
+					/
+					2
+				)
+				*
+				codeSet.ELP();
+		}
+	}
 	
 	public class CodeStabilityPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
 	{	
 		public CodeStabilityPostReleaseDefectFilesPrediction()
 		{
 			Title = "Code stability model";
-			CodeSetEstimation = CodeSetEstimationStrategy.M2;
+			CodeSetEstimation = CodeSetEstimationStrategy.G3M3;
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
@@ -169,37 +422,43 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				.Single(x => x.Revision == PredictionRelease)
 				.Date;
 
-			RemainCodeSizeByRevision = new SmartDictionary<string,double>(r =>
+			RemainCodeSizeFromRevision = new SmartDictionary<string,double>(r =>
 				repositories.SelectionDSL()
 					.Commits().RevisionIs(r)
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().Added().CalculateRemainingCodeSize(PredictionRelease).Sum(x => x.Value)
 			);
-			AddedCodeSizeByRevision = new SmartDictionary<string,double>(r =>
+			AddedCodeSizeFromRevision = new SmartDictionary<string,double>(r =>
 				repositories.SelectionDSL()
 					.Commits().RevisionIs(r)
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().Added().CalculateLOC()
 			);
-			DefectCodeSizeByRevision = new SmartDictionary<string,double>(r =>
+			DefectCodeSizeFromRevision = new SmartDictionary<string,double>(r =>
 				repositories.SelectionDSL()
 					.Commits().RevisionIs(r)
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().CalculateDefectCodeSize(PredictionRelease)
 			);
 			
-			AddedCodeSize = (revision,pathid) =>
+			AddedCodeSizeResolver = (revision,pathid) =>
 				repositories.SelectionDSL()
 					.Commits().RevisionIs(revision)
 					.Files().IdIs(pathid)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().Added().CalculateLOC();
-			DefectCodeSize = (revision,pathid) =>
+			DefectCodeSizeResolver = (revision,pathid) =>
 				repositories.SelectionDSL()
 					.Commits().RevisionIs(revision)
 					.Files().IdIs(pathid)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().CalculateDefectCodeSize(PredictionRelease);
+			RemainCodeSizeFromRevisionResolver = (revision) =>
+				RemainCodeSizeFromRevision[revision];
+			AddedCodeSizeFromRevisionResolver = (revision) =>
+				AddedCodeSizeFromRevision[revision];
+			DefectCodeSizeFromRevisionResolver = (revision) =>
+				DefectCodeSizeFromRevision[revision];
 			
 			EstimateDefectLineProbability(repositories);
 			EstimateBugLifetimeDistribution(repositories);
@@ -230,10 +489,15 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				select new CodeSetData()
 				{
 					Revision = c.Revision,
-					CodeSize = rcb.Value,
-					AddedCodeSize = AddedCodeSize(c.Revision,file.ID),
-					DefectCodeSize = DefectCodeSize(c.Revision,file.ID),
-					AgeInDays = (ReleaseDate - ic.Date).TotalDays
+					PathID = file.ID,
+					RemainCodeSize = rcb.Value,
+					AgeInDays = (ReleaseDate - ic.Date).TotalDays,
+					
+					AddedCodeSizeResolver = AddedCodeSizeResolver,
+					DefectCodeSizeResolver = DefectCodeSizeResolver,
+					RemainCodeSizeFromRevisionResolver = RemainCodeSizeFromRevisionResolver,
+					AddedCodeSizeFromRevisionResolver = AddedCodeSizeFromRevisionResolver,
+					DefectCodeSizeFromRevisionResolver = DefectCodeSizeFromRevisionResolver
 				}).ToArray();
 
 			double fileHasDefectsProbability = 0;
@@ -283,23 +547,35 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				return (double)bugLifetimes.Where(t => t <= time).Count() / bugLifetimes.Count();
 			};
 		}
-		protected IDictionary<string,double> RemainCodeSizeByRevision
+		protected IDictionary<string,double> RemainCodeSizeFromRevision
 		{
 			get; set;
 		}
-		protected IDictionary<string,double> AddedCodeSizeByRevision
+		protected IDictionary<string,double> AddedCodeSizeFromRevision
 		{
 			get; set;
 		}
-		protected IDictionary<string,double> DefectCodeSizeByRevision
+		protected IDictionary<string,double> DefectCodeSizeFromRevision
 		{
 			get; set;
 		}
-		protected Func<string,int,double> AddedCodeSize
+		protected Func<string,int,double> AddedCodeSizeResolver
 		{
 			get; set;
 		}
-		protected Func<string,int,double> DefectCodeSize
+		protected Func<string,int,double> DefectCodeSizeResolver
+		{
+			get; set;
+		}
+		protected Func<string,double> RemainCodeSizeFromRevisionResolver
+		{
+			get; set;
+		}
+		protected Func<string,double> AddedCodeSizeFromRevisionResolver
+		{
+			get; set;
+		}
+		protected Func<string,double> DefectCodeSizeFromRevisionResolver
 		{
 			get; set;
 		}
