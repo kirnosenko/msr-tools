@@ -99,6 +99,16 @@ namespace MSR.Tools.Predictor
 		int ReleaseSetSize { get; set; }
 	}
 	
+	struct ModelResult
+	{
+		public string ModelTitle { get; set; }
+		public EvaluationResult ER { get; set; }
+		public ROCEvaluationResult RER { get; set; }
+		public double[] FileEstimations { get; set; }
+		public string[] PredictedDefectFiles { get; set; }
+		public string[] DefectFiles { get; set; }
+	}
+	
 	public class PredictorModel : IPredictorModel
 	{
 		public event Action<string> OnTitleUpdated;
@@ -216,10 +226,13 @@ namespace MSR.Tools.Predictor
 				rocs.Clear();
 				OnClearRocList();
 				
+				List<List<ModelResult>> results = new List<List<ModelResult>>();
 				foreach (var releaseSet in ReleaseSetGetting.ReleaseSets(this))
 				{
-					Predict(releaseSet);
+					ShowReleases(releaseSet.Values);
+					results.Add(new List<ModelResult>(Predict(releaseSet)));
 				}
+				ShowTotalModelResult(results);
 			}
 			catch (Exception e)
 			{
@@ -230,73 +243,181 @@ namespace MSR.Tools.Predictor
 				OnReadyStateChanged(true);
 			}
 		}
-		private void Predict(IDictionary<string,string> releases)
+		private IEnumerable<ModelResult> Predict(IDictionary<string,string> releases)
+		{
+			ModelResult modelResult;
+			
+			foreach (var model in SelectedModels)
+			{
+				modelResult = new ModelResult();
+				modelResult.ModelTitle = model.Title;
+				
+				using (var s = predictor.Data.OpenSession())
+				{
+					model.Init(s, releases.Keys);
+					model.Predict();
+					
+					modelResult.FileEstimations = model.FileEstimations;
+					if (ShowFiles)
+					{
+						modelResult.PredictedDefectFiles = model.PredictedDefectFiles.ToArray();
+					}
+					if (Evaluate || EvaluateUsingROC)
+					{
+						modelResult.DefectFiles = model.DefectFiles.ToArray();
+					}
+					if (Evaluate)
+					{
+						modelResult.ER = model.Evaluate();
+					}
+					if (EvaluateUsingROC)
+					{
+						modelResult.RER = model.EvaluateUsingROC();
+						rocs.Add(modelResult.RER);
+						OnRocAdded(model.Title, releases.Last().Value, rocs.Count - 1);
+					}
+				}
+				
+				ShowModelResult(modelResult);
+				yield return modelResult;
+			}
+		}
+		private void ShowReleases(IEnumerable<string> releases)
 		{
 			StringBuilder output = new StringBuilder();
 
 			output.Append("Releases: ");
-			foreach (var r in releases.Values)
+			foreach (var r in releases)
 			{
 				output.Append(r + " ");
 			}
 			output.AppendLine();
 			output.AppendLine();
 			OnAddReport(output.ToString());
+		}
+		private void ShowModelResult(ModelResult modelResult)
+		{
+			StringBuilder output = new StringBuilder();
+			output.AppendLine(modelResult.ModelTitle);
+			output.AppendLine();
 			
-			foreach (var model in SelectedModels)
+			if (modelResult.PredictedDefectFiles != null)
 			{
-				output = new StringBuilder();
+				bool evaluated = modelResult.DefectFiles != null;
 				
-				using (var s = predictor.Data.OpenSession())
+				output.AppendLine("Predicted defect files:");
+				foreach (var f in modelResult.PredictedDefectFiles)
 				{
-					model.Init(s, releases.Keys);
-					model.Predict();
-
-					output.AppendLine(model.Title);
-					output.AppendLine();
-					
-					if (ShowFiles || (!Evaluate && !EvaluateUsingROC))
+					output.AppendLine(
+						string.Format("{0} {1}", f, evaluated ? modelResult.DefectFiles.Contains(f) ? "+" : "-" : "")
+					);
+				}
+				
+				if (evaluated)
+				{
+					output.AppendLine("Defect files:");
+					foreach (var f in modelResult.DefectFiles.OrderBy(x => x))
 					{
-						output.AppendLine("Predicted defect files:");
-						foreach (var f in model.PredictedDefectFiles)
-						{
-							output.AppendLine(
-								string.Format("{0} {1}", f, Evaluate ? model.DefectFiles.Contains(f) ? "+" : "-" : "")
-							);
-						}
+						output.AppendLine(
+							string.Format("{0} {1}", f, modelResult.PredictedDefectFiles.Contains(f) ? "+" : "-")
+						);
 					}
-					if (Evaluate || EvaluateUsingROC)
-					{
-						if (ShowFiles)
-						{
-							output.AppendLine("Defect files:");
-							foreach (var f in model.DefectFiles.OrderBy(x => x))
-							{
-								output.AppendLine(
-									string.Format("{0} {1}", f, model.PredictedDefectFiles.Contains(f) ? "+" : "-")
-								);
-							}
-						}
-						
-						if (Evaluate)
-						{
-							output.AppendLine(model.Evaluate().ToString());
-						}
-						if (EvaluateUsingROC)
-						{
-							rocs.Add(model.EvaluateUsingROC());
-							OnRocAdded(model.Title, releases.Last().Value, rocs.Count-1);
-							output.AppendLine(rocs.Last().ToString());
-						}
-						output.AppendLine(string.Format("File estimations: Mean = {0:0.00}, Max = {1:0.00}, Min = {2:0.00}",
-							model.FileEstimationMean, model.FileEstimationMax, model.FileEstimationMin
-						));
-					}
-					output.AppendLine();
-
-					OnAddReport(output.ToString());
 				}
 			}
+			
+			if (modelResult.ER != null)
+			{
+				output.AppendLine(EvaluationResultToString(modelResult.ER));
+			}
+			if (modelResult.RER != null)
+			{
+				output.AppendLine(RocEvaluationResultToString(modelResult.RER));
+			}
+			if (modelResult.FileEstimations != null)
+			{
+				output.AppendLine(FileEstimationsToString(
+					modelResult.FileEstimations.Average(),
+					modelResult.FileEstimations.Max(),
+					modelResult.FileEstimations.Min()
+				));
+			}
+			output.AppendLine();
+			OnAddReport(output.ToString());
+		}
+		private void ShowTotalModelResult(List<List<ModelResult>> results)
+		{
+			int releaseCount = results.Count;
+			if (releaseCount == 0)
+			{
+				return;
+			}
+			int modelCount = results[0].Count;
+			if (modelCount == 0)
+			{
+				return;
+			}
+			for (int i = 0; i < modelCount; i++)
+			{
+				var modelResults = results.Select(x => x[i]);
+				
+				StringBuilder output = new StringBuilder();
+				output.AppendLine(modelResults.First().ModelTitle + " " + "TOTAL");
+				output.AppendLine();
+
+				if (modelResults.First().ER != null)
+				{
+					output.AppendLine(EvaluationResultToString(
+						modelResults.Average(x => x.ER.Precision),
+						modelResults.Average(x => x.ER.Recall),
+						modelResults.Average(x => x.ER.Accuracy),
+						modelResults.Average(x => x.ER.NegPos)
+					));
+				}
+				if (modelResults.First().RER != null)
+				{
+					output.AppendLine(RocEvaluationResultToString(
+						modelResults.Average(x => x.RER.AUC),
+						modelResults.Average(x => x.RER.MaxPoint),
+						modelResults.Average(x => x.RER.BalancePoint)
+					));
+				}
+				if (modelResults.First().FileEstimations != null)
+				{
+					output.AppendLine(FileEstimationsToString(
+						modelResults.Average(x => x.FileEstimations.Average()),
+						modelResults.Average(x => x.FileEstimations.Max()),
+						modelResults.Average(x => x.FileEstimations.Min())
+					));
+				}
+				output.AppendLine();
+				OnAddReport(output.ToString());
+			}
+		}
+		private string EvaluationResultToString(EvaluationResult er)
+		{
+			return EvaluationResultToString(er.Precision, er.Recall, er.Accuracy, er.NegPos);
+		}
+		private string EvaluationResultToString(double P, double R, double A, double NP)
+		{
+			return string.Format("Precision = {0:0.00}, Recall = {1:0.00}, Accuracy = {2:0.00}, NegPos = {3:0.00}",
+				P, R, A, NP
+			);
+		}
+		private string RocEvaluationResultToString(ROCEvaluationResult rer)
+		{
+			return RocEvaluationResultToString(rer.AUC, rer.MaxPoint, rer.BalancePoint);
+		}
+		private string RocEvaluationResultToString(double AUC, double MP, double BP)
+		{
+			return string.Format("AUC = {0:0.00}, MaxPoint = {1:0.00}, BalancePoint = {2:0.00}",
+				AUC, MP, BP
+			);
+		}
+		private string FileEstimationsToString(double mean, double max, double min)
+		{
+			return string.Format("File estimations: Mean = {0:0.00}, Max = {1:0.00}, Min = {2:0.00}",
+				mean, max, min
+			);
 		}
 	}
 }

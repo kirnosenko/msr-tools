@@ -95,17 +95,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			get; set;
 		}
 
-		public double FileEstimationMean
+		public double[] FileEstimations
 		{
-			get { return possibleDefectFiles.Values.Mean(); }
-		}
-		public double FileEstimationMax
-		{
-			get { return possibleDefectFiles.Values.Max(); }
-		}
-		public double FileEstimationMin
-		{
-			get { return possibleDefectFiles.Values.Min(); }
+			get { return possibleDefectFiles.Values.ToArray(); }
 		}
 		public IEnumerable<ProjectFile> AllFiles
 		{
@@ -137,7 +129,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			{
 				if (UseFileEstimationMeanAsCutOffValue)
 				{
-					return FileEstimationMean;
+					return FileEstimations.Mean();
 				}
 				return defaultCutOffValue;
 			}

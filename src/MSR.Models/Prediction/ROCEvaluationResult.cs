@@ -69,11 +69,5 @@ namespace MSR.Models.Prediction
 		{
 			get; private set;
 		}
-		public override string ToString()
-		{
-			return string.Format("AUC = {0:0.00}, MaxPoint = {1:0.00}, BalancePoint = {2:0.00}",
-				AUC, MaxPoint, BalancePoint
-			);
-		}
 	}
 }
