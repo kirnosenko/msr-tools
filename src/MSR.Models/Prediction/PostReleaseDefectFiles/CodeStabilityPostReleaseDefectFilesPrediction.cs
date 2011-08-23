@@ -117,6 +117,16 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			return 1 - Math.Pow(1 - defectLineProbability, codeSet.AddedCodeSizeFromRevision);
 		}
 		/// <summary>
+		/// Number of residual defect lines in code from revision
+		/// </summary>
+		/// <param name="codeSet"></param>
+		/// <param name="defectLineProbability"></param>
+		/// <returns></returns>
+		public static double DLN_REVISION(this CodeSetData codeSet, double defectLineProbability)
+		{
+			return defectLineProbability * codeSet.AddedCodeSizeFromRevision;
+		}
+		/// <summary>
 		/// Probability that code from revision has errors will be detected in future
 		/// (code age predictor)
 		/// </summary>
@@ -141,10 +151,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			return codeSet.RemainCodeSizeFromRevision / codeSet.AddedCodeSizeFromRevision;
 		}
-		public static double EWNRFP_MIXED(this CodeSetData codeSet)
-		{
-			return codeSet.RemainCodeSize / codeSet.AddedCodeSizeFromRevision;
-		}
 		/// <summary>
 		/// Probability that code from revision has errors were not removed during refactoring
 		/// (code refactoring predictor)
@@ -158,10 +164,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public static double EWNRP_REVISION(this CodeSetData codeSet)
 		{
 			return (codeSet.RemainCodeSizeFromRevision + codeSet.DefectCodeSizeFromRevision) / codeSet.AddedCodeSizeFromRevision;
-		}
-		public static double EWNRP_MIXED(this CodeSetData codeSet)
-		{
-			return (codeSet.RemainCodeSize + codeSet.DefectCodeSizeFromRevision) / codeSet.AddedCodeSizeFromRevision;
 		}
 		/// <summary>
 		/// Probability that code from revision has errors were not fixed before
@@ -188,15 +190,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				codeSet.DefectCodeSizeFromRevision + codeSet.RemainCodeSizeFromRevision
 			);
 		}
-		public static double EWNFP_MIXED(this CodeSetData codeSet, double defectLineProbability)
-		{
-			return LaplaceIntegralTheorem(
-				defectLineProbability,
-				codeSet.AddedCodeSizeFromRevision,
-				codeSet.DefectCodeSizeFromRevision + 1,
-				codeSet.DefectCodeSizeFromRevision + codeSet.RemainCodeSize
-			);
-		}
 		/// <summary>
 		/// Probability that errors in revision are located in specified code set.
 		/// (code set size predictor)
@@ -204,9 +197,13 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		/// <param name="codeSet"></param>
 		/// <param name="defectLineProbability"></param>
 		/// <returns></returns>
-		public static double ELP(this CodeSetData codeSet)
+		public static double ESP(this CodeSetData codeSet)
 		{
 			return codeSet.RemainCodeSize / codeSet.RemainCodeSizeFromRevision;
+		}
+		public static double EISP(this CodeSetData codeSet)
+		{
+			return codeSet.AddedCodeSize / codeSet.AddedCodeSizeFromRevision;
 		}
 		
 		static double LaplaceIntegralTheorem(double p, double n, double k1, double k2)
@@ -231,114 +228,82 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 	}
 
-	abstract class CodeSetEstimationStrategy
+	abstract class FileEstimationStrategy
 	{
-		public static readonly CodeSetEstimationStrategy G1M0 = new G1M0();
-		public static readonly CodeSetEstimationStrategy G1M1 = new G1M1();
-		public static readonly CodeSetEstimationStrategy G1M2 = new G1M2();
-		public static readonly CodeSetEstimationStrategy G1M3 = new G1M3();
-		public static readonly CodeSetEstimationStrategy G2M0 = new G2M0();
-		public static readonly CodeSetEstimationStrategy G2M1 = new G2M1();
-		public static readonly CodeSetEstimationStrategy G2M2 = new G2M2();
-		public static readonly CodeSetEstimationStrategy G2M3 = new G2M3();
-		public static readonly CodeSetEstimationStrategy G3M1 = new G3M1();
-		public static readonly CodeSetEstimationStrategy G3M2 = new G3M2();
-		public static readonly CodeSetEstimationStrategy G3M3 = new G3M3();
+		protected List<double> codeSetEstimations;
 		
-		public abstract double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet);
-	}
-
-	class G1M0 : CodeSetEstimationStrategy
-	{
-		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public void NewFile()
 		{
-			return
-				codeSet.EP_REVISION(model.DefectLineProbability)
-				*
-				codeSet.EWNRFP_MIXED();
+			codeSetEstimations = new List<double>();
+		}
+		public abstract void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet);
+		public virtual double FileEstimation
+		{
+			get
+			{
+				double fileHasDefectsProbability = 0;
+				
+				foreach (var codeSetEstimation in codeSetEstimations)
+				{
+					fileHasDefectsProbability =
+						(fileHasDefectsProbability + codeSetEstimation)
+						-
+						(fileHasDefectsProbability * codeSetEstimation);
+				}
+				
+				return fileHasDefectsProbability;
+			}
+		}
+		public virtual double DefaultCutOffValue(CodeStabilityPostReleaseDefectFilesPrediction model)
+		{
+			return 0.5;
+		}
+		public virtual double RocEvaluationDelta(CodeStabilityPostReleaseDefectFilesPrediction model)
+		{
+			return 0.01;
 		}
 	}
-	class G1M1 : CodeSetEstimationStrategy
+	
+	class G2M0 : FileEstimationStrategy
 	{
-		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
 		{
-			return
-				codeSet.EP_REVISION(model.DefectLineProbability)
-				*
-				codeSet.EWNRP_MIXED()
-				*
-				codeSet.EWNFP_MIXED(model.DefectLineProbability);
-		}
-	}
-	class G1M2 : CodeSetEstimationStrategy
-	{
-		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
-		{
-			return
-				codeSet.EP_REVISION(model.DefectLineProbability)
-				*
-				codeSet.EFDP(model.BugLifetimeDistribution);
-		}
-	}
-	class G1M3 : CodeSetEstimationStrategy
-	{
-		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
-		{
-			return
-				codeSet.EP_REVISION(model.DefectLineProbability)
-				*
-				(
-					(
-						codeSet.EFDP(model.BugLifetimeDistribution)
-						+
-						(
-							codeSet.EWNRP_MIXED()
-							*
-							codeSet.EWNFP_MIXED(model.DefectLineProbability)
-						)
-					)
-					/
-					2
-				);
-		}
-	}
-	class G2M0 : CodeSetEstimationStrategy
-	{
-		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
-		{
-			return
+			codeSetEstimations.Add(
 				codeSet.EP(model.DefectLineProbability)
 				*
-				codeSet.EWNRFP();
+				codeSet.EWNRFP()
+			);
 		}
 	}
-	class G2M1 : CodeSetEstimationStrategy
+	class G2M1 : FileEstimationStrategy
 	{
-		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
 		{
-			return
+			codeSetEstimations.Add(
 				codeSet.EP(model.DefectLineProbability)
 				*
 				codeSet.EWNRP()
 				*
-				codeSet.EWNFP(model.DefectLineProbability);
+				codeSet.EWNFP(model.DefectLineProbability)
+			);
 		}
 	}
-	class G2M2 : CodeSetEstimationStrategy
+	class G2M2 : FileEstimationStrategy
 	{
-		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
 		{
-			return
+			codeSetEstimations.Add(
 				codeSet.EP(model.DefectLineProbability)
 				*
-				codeSet.EFDP(model.BugLifetimeDistribution);
+				codeSet.EFDP(model.BugLifetimeDistribution)
+			);
 		}
 	}
-	class G2M3 : CodeSetEstimationStrategy
+	class G2M3 : FileEstimationStrategy
 	{
-		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
 		{
-			return
+			codeSetEstimations.Add(
 				codeSet.EP(model.DefectLineProbability)
 				*
 				(
@@ -353,40 +318,43 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					)
 					/
 					2
-				);
+				)
+			);
 		}
 	}
-	class G3M1 : CodeSetEstimationStrategy
+	class G3M1 : FileEstimationStrategy
 	{
-		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
 		{
-			return
+			codeSetEstimations.Add(
 				codeSet.EP_REVISION(model.DefectLineProbability)
 				*
 				codeSet.EWNRP_REVISION()
 				*
 				codeSet.EWNFP_REVISION(model.DefectLineProbability)
 				*
-				codeSet.ELP();
+				codeSet.ESP()
+			);
 		}
 	}
-	class G3M2 : CodeSetEstimationStrategy
+	class G3M2 : FileEstimationStrategy
 	{
-		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
 		{
-			return
+			codeSetEstimations.Add(
 				codeSet.EP_REVISION(model.DefectLineProbability)
 				*
 				codeSet.EFDP(model.BugLifetimeDistribution)
 				*
-				codeSet.ELP();
+				codeSet.ESP()
+			);
 		}
 	}
-	class G3M3 : CodeSetEstimationStrategy
+	class G3M3 : FileEstimationStrategy
 	{
-		public override double Estimate(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
 		{
-			return
+			codeSetEstimations.Add(
 				codeSet.EP_REVISION(model.DefectLineProbability)
 				*
 				(
@@ -403,16 +371,76 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					2
 				)
 				*
-				codeSet.ELP();
+				codeSet.ESP()
+			);
+		}
+	}
+	class G3M6 : FileEstimationStrategy
+	{
+		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			double efdp = codeSet.EFDP(model.BugLifetimeDistribution);
+			double ewnrfp = 
+				codeSet.EWNRP_REVISION()
+				*
+				codeSet.EWNFP_REVISION(model.DefectLineProbability);
+			
+			codeSetEstimations.Add(
+				codeSet.EP_REVISION(model.DefectLineProbability)
+				*
+				(
+					(((efdp + ewnrfp) / 2) + Math.Min(efdp, ewnrfp)) / 2
+				)
+				*
+				codeSet.ESP()
+			);
+		}
+	}
+	class G4M1 : FileEstimationStrategy
+	{
+		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			codeSetEstimations.Add(
+				codeSet.DLN_REVISION(model.DefectLineProbability)
+				*
+				codeSet.EWNRP_REVISION()
+				*
+				codeSet.EWNFP_REVISION(model.DefectLineProbability)
+				*
+				codeSet.ESP()
+			);
+		}
+		public override double FileEstimation
+		{
+			get
+			{
+				double numberOfDefectLinesInFile = 0;
+
+				foreach (var codeSetEstimation in codeSetEstimations)
+				{
+					numberOfDefectLinesInFile += codeSetEstimation;
+				}
+
+				return numberOfDefectLinesInFile;
+			}
+		}
+		public override double DefaultCutOffValue(CodeStabilityPostReleaseDefectFilesPrediction model)
+		{
+			return model.DefectCodeSizePerDefect;
+		}
+		public override double RocEvaluationDelta(CodeStabilityPostReleaseDefectFilesPrediction model)
+		{
+			double maxFileEstimation = model.FileEstimations.Max();
+			return (maxFileEstimation + maxFileEstimation / 100) / 100;
 		}
 	}
 	
 	public class CodeStabilityPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
-	{	
+	{
 		public CodeStabilityPostReleaseDefectFilesPrediction()
 		{
 			Title = "Code stability model";
-			CodeSetEstimation = CodeSetEstimationStrategy.G3M3;
+			FileEstimation = new G3M3();
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
@@ -421,6 +449,11 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			ReleaseDate = repositories.Repository<Commit>()
 				.Single(x => x.Revision == PredictionRelease)
 				.Date;
+			DefectCodeSizePerDefect = repositories.SelectionDSL()
+				.Commits().TillRevision(PredictionRelease)
+				.Files().Reselect(FileSelector)
+				.Modifications().InCommits().InFiles()
+				.CodeBlocks().InModifications().CalculateDefectCodeSizePerDefect(PredictionRelease);
 
 			RemainCodeSizeFromRevision = new SmartDictionary<string,double>(r =>
 				repositories.SelectionDSL()
@@ -471,6 +504,23 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; protected set;
 		}
+		public double DefectCodeSizePerDefect
+		{
+			get; protected set;
+		}
+		public override string[] PredictedDefectFiles
+		{
+			get
+			{
+				defaultCutOffValue = FileEstimation.DefaultCutOffValue(this);
+				return base.PredictedDefectFiles;
+			}
+		}
+		public override ROCEvaluationResult EvaluateUsingROC()
+		{
+			rocEvaluationDelta = FileEstimation.RocEvaluationDelta(this);
+			return base.EvaluateUsingROC();
+		}
 		
 		protected override double GetFileEstimation(ProjectFile file)
 		{
@@ -499,19 +549,14 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					AddedCodeSizeFromRevisionResolver = AddedCodeSizeFromRevisionResolver,
 					DefectCodeSizeFromRevisionResolver = DefectCodeSizeFromRevisionResolver
 				}).ToArray();
-
-			double fileHasDefectsProbability = 0;
+				
+			FileEstimation.NewFile();
 			foreach (var codeFromRevision in codeByRevision)
 			{
-				double codeFromRevisionHasDefectsProbability = CodeSetEstimation.Estimate(this, codeFromRevision);
-				
-				fileHasDefectsProbability =
-					(fileHasDefectsProbability + codeFromRevisionHasDefectsProbability)
-					-
-					(fileHasDefectsProbability * codeFromRevisionHasDefectsProbability);
+				FileEstimation.NewCodeSet(this, codeFromRevision);
 			}
 			
-			return fileHasDefectsProbability;
+			return FileEstimation.FileEstimation;
 		}
 		protected virtual void EstimateDefectLineProbability(IRepositoryResolver repositories)
 		{
@@ -584,7 +629,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			get; set;
 		}
 		
-		private CodeSetEstimationStrategy CodeSetEstimation
+		private FileEstimationStrategy FileEstimation
 		{
 			get; set;
 		}

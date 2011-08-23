@@ -23,20 +23,24 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public event Action<PostReleaseDefectFilesPrediction,double> CallBack;
 		
 		protected double defaultCutOffValue;
+		protected double rocEvaluationDelta;
 		private Dictionary<string,double> possibleDefectFiles;
-		private IEnumerable<string> defectFiles;
+		private string[] defectFiles;
+		private string[] predictedDefectFiles;
 		
 		public PostReleaseDefectFilesPrediction()
 		{
 			defaultCutOffValue = 0.5;
 			UseFileEstimationMeanAsCutOffValue = false;
 			FilePortionLimit = 1;
+			rocEvaluationDelta = 0.01;
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
 			base.Init(repositories, releases);
 			
 			defectFiles = null;
+			predictedDefectFiles = null;
 		}
 		public virtual void Predict()
 		{
@@ -59,25 +63,19 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					CallBack(this, (double)processedFilesCount / allFilesCount);
 				}
 			}
-			
-			PredictedDefectFiles = possibleDefectFiles
-				.Where(x => x.Value >= CutOffValue)
-				.TakeNoMoreThan((int)(allFilesCount * FilePortionLimit))
-				.Select(x => x.Key)
-				.ToArray();
 		}
 		public EvaluationResult Evaluate()
 		{
 			return Evaluate(PredictedDefectFiles);
 		}
-		public ROCEvaluationResult EvaluateUsingROC()
+		public virtual ROCEvaluationResult EvaluateUsingROC()
 		{
 			List<EvaluationResult> results = new List<EvaluationResult>(101);
-
+			
 			for (int cutOffValue = 0; cutOffValue <= 100; cutOffValue++)
 			{
 				var predictedDefectFiles = possibleDefectFiles
-					.Where(x => x.Value >= (double)cutOffValue * 0.01)
+					.Where(x => x.Value >= (double)cutOffValue * rocEvaluationDelta)
 					.Select(x => x.Key)
 					.ToArray();
 
@@ -103,11 +101,22 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; protected set;
 		}
-		public IEnumerable<string> PredictedDefectFiles
+		public virtual string[] PredictedDefectFiles
 		{
-			get; protected set;
+			get
+			{
+				if (predictedDefectFiles == null)
+				{
+					predictedDefectFiles = possibleDefectFiles
+						.Where(x => x.Value >= CutOffValue)
+						.TakeNoMoreThan((int)(possibleDefectFiles.Count * FilePortionLimit))
+						.Select(x => x.Key)
+						.ToArray();
+				}
+				return predictedDefectFiles;
+			}
 		}
-		public IEnumerable<string> DefectFiles
+		public virtual string[] DefectFiles
 		{
 			get
 			{
@@ -161,7 +170,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.ToArray();
 		}
 		
-		private IEnumerable<string> GetPostReleaseDefectiveFiles()
+		private string[] GetPostReleaseDefectiveFiles()
 		{
 			return GetPostReleaseDefectiveFiles(
 				repositories.SelectionDSL()
@@ -169,7 +178,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 						.TillRevision(PredictionRelease)
 			);
 		}
-		private IEnumerable<string> GetPostReleaseDefectiveFilesFromTouchedInRelease()
+		private string[] GetPostReleaseDefectiveFilesFromTouchedInRelease()
 		{
 			return GetPostReleaseDefectiveFiles(
 				repositories.SelectionDSL()
@@ -178,7 +187,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 						.TillRevision(PredictionRelease)
 			);
 		}
-		private IEnumerable<string> GetPostReleaseDefectiveFiles(CommitSelectionExpression commits)
+		private string[] GetPostReleaseDefectiveFiles(CommitSelectionExpression commits)
 		{
 			return commits
 				.Modifications()
