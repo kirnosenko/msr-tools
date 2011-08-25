@@ -24,15 +24,27 @@ namespace MSR.Models.Prediction
 		}
 		public double Precision
 		{
-			get { return TP / (TP + FP); }
+			get
+			{
+				if (TP == 0) return 0;
+				return TP / (TP + FP);
+			}
 		}
 		public double Recall
 		{
-			get { return TP / (TP + FN); }
+			get
+			{
+				if (TP == 0) return 0;
+				return TP / (TP + FN);
+			}
 		}
 		public double Pf
 		{
-			get { return FP / (TN + FP); }
+			get
+			{
+				if (FP == 0) return 0;
+				return FP / (TN + FP);
+			}
 		}
 		public double Accuracy
 		{
@@ -44,11 +56,19 @@ namespace MSR.Models.Prediction
 		}
 		public double Sensitivity
 		{
-			get { return TP / (TP + FN); }
+			get
+			{
+				if (TP == 0) return 0;
+				return TP / (TP + FN);
+			}
 		}
 		public double Specificity
 		{
-			get { return TN / (TN + FP); }
+			get
+			{
+				if (TN == 0) return 0;
+				return TN / (TN + FP);
+			}
 		}
 		public double NegPos
 		{
