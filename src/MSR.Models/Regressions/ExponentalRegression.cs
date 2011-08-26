@@ -27,15 +27,18 @@ namespace MSR.Models.Regressions
 			double ylny = 0;
 			double xylny = 0;
 			
+			double xi, yi = 0;
+			
 			for (int i = 0; i < predictors.Length; i++)
 			{
-				results[i] = 1.000001 - results[i];
+				xi = predictors[i];
+				yi = 1.000001 - results[i];
 				
-				xxy += predictors[i] * predictors[i] * results[i];
-				xy -= predictors[i] * results[i];
-				y += results[i];
-				ylny += results[i] * Math.Log(results[i]);
-				xylny -= predictors[i] * results[i] * Math.Log(results[i]);
+				xxy += xi * xi * yi;
+				xy -= xi * yi;
+				y += yi;
+				ylny += yi * Math.Log(yi);
+				xylny -= xi * yi * Math.Log(yi);
 			}
 			
 			double p1 = 1;
