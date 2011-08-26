@@ -62,6 +62,7 @@
     <Compile Include="Prediction\SRGM\ExponentialSRGM.cs" />
     <Compile Include="Prediction\SRGM\ISRGM.cs" />
     <Compile Include="Prediction\SRGM\LogarithmicSRGM.cs" />
+    <Compile Include="Regressions\ExponentalRegression.cs" />
     <Compile Include="Regressions\LinearRegression.cs" />
     <Compile Include="Regressions\MultipleLinearRegression.cs" />
     <Compile Include="Regressions\LogisticRegression.cs" />

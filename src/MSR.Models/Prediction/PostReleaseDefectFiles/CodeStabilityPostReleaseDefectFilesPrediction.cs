@@ -375,6 +375,42 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			);
 		}
 	}
+	class G3M4 : FileEstimationStrategy
+	{
+		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			codeSetEstimations.Add(
+				codeSet.EP_REVISION(model.DefectLineProbability)
+				*
+				(
+					Math.Min(
+						codeSet.EFDP(model.BugLifetimeDistribution),
+						codeSet.EWNRP_REVISION() * codeSet.EWNFP_REVISION(model.DefectLineProbability)
+					)
+				)
+				*
+				codeSet.ESP()
+			);
+		}
+	}
+	class G3M5 : FileEstimationStrategy
+	{
+		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		{
+			codeSetEstimations.Add(
+				codeSet.EP_REVISION(model.DefectLineProbability)
+				*
+				(
+					Math.Max(
+						codeSet.EFDP(model.BugLifetimeDistribution),
+						codeSet.EWNRP_REVISION() * codeSet.EWNFP_REVISION(model.DefectLineProbability)
+					)
+				)
+				*
+				codeSet.ESP()
+			);
+		}
+	}
 	class G3M6 : FileEstimationStrategy
 	{
 		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
@@ -434,6 +470,80 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			return (maxFileEstimation + maxFileEstimation / 100) / 100;
 		}
 	}
+
+	abstract class BugLifetimeDistributionEstimationStrategy
+	{
+		public Func<double,double> Estimate(IRepositoryResolver repositories, string predictionRelease)
+		{
+			List<double> bugLifetimes = new List<double>(BugLifetimes(
+				repositories.SelectionDSL()
+					.Commits().TillRevision(predictionRelease)
+					.BugFixes().InCommits()
+			));
+			bugLifetimes.Add(1000000);
+
+			return Distribution(bugLifetimes);
+		}
+		protected virtual IEnumerable<double> BugLifetimes(BugFixSelectionExpression bugFixes)
+		{
+			return bugFixes.CalculateAvarageBugLifetime();
+		}
+		protected abstract Func<double,double> Distribution(IEnumerable<double> bugLifetimes);
+	}
+	class BugLifetimeDistributionExperimental : BugLifetimeDistributionEstimationStrategy
+	{
+		protected override Func<double,double> Distribution(IEnumerable<double> bugLifetimes)
+		{
+			return time =>
+			{
+				return (double)bugLifetimes.Where(t => t <= time).Count() / bugLifetimes.Count();
+			};
+		}
+	}
+	class BugLifetimeDistributionExperimentalMin : BugLifetimeDistributionExperimental
+	{
+		protected override IEnumerable<double> BugLifetimes(BugFixSelectionExpression bugFixes)
+		{
+			return bugFixes.CalculateMinBugLifetime();
+		}
+	}
+	class BugLifetimeDistributionExperimentalMax : BugLifetimeDistributionExperimental
+	{
+		protected override IEnumerable<double> BugLifetimes(BugFixSelectionExpression bugFixes)
+		{
+			return bugFixes.CalculateMaxBugLifetime();
+		}
+	}
+	class BugLifetimeDistributionExponental : BugLifetimeDistributionEstimationStrategy
+	{
+		protected override Func<double,double> Distribution(IEnumerable<double> bugLifetimes)
+		{
+			ExponentalRegression expRegression = new ExponentalRegression();
+			foreach (var time in bugLifetimes)
+			{
+				expRegression.AddTrainingData(time, (double)bugLifetimes.Where(t => t <= time).Count() / bugLifetimes.Count());
+			}
+			expRegression.Train();
+			return time =>
+			{
+				return expRegression.Predict(time);
+			};
+		}
+	}
+	class BugLifetimeDistributionExponentalMin : BugLifetimeDistributionExponental
+	{
+		protected override IEnumerable<double> BugLifetimes(BugFixSelectionExpression bugFixes)
+		{
+			return bugFixes.CalculateMinBugLifetime();
+		}
+	}
+	class BugLifetimeDistributionExponentalMax : BugLifetimeDistributionExponental
+	{
+		protected override IEnumerable<double> BugLifetimes(BugFixSelectionExpression bugFixes)
+		{
+			return bugFixes.CalculateMaxBugLifetime();
+		}
+	}
 	
 	public class CodeStabilityPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
 	{
@@ -441,6 +551,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			Title = "Code stability model";
 			FileEstimation = new G3M3();
+			BugLifetimeDistributionEstimation = new BugLifetimeDistributionExperimental();
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
@@ -500,7 +611,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; protected set;
 		}
-		public Func<double, double> BugLifetimeDistribution
+		public Func<double,double> BugLifetimeDistribution
 		{
 			get; protected set;
 		}
@@ -580,17 +691,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		protected virtual void EstimateBugLifetimeDistribution(IRepositoryResolver repositories)
 		{
-			List<double> bugLifetimes = new List<double>(
-				repositories.SelectionDSL()
-					.Commits().TillRevision(PredictionRelease)
-					.BugFixes().InCommits().CalculateAvarageBugLifetime()
+			BugLifetimeDistribution = BugLifetimeDistributionEstimation.Estimate(
+				repositories,
+				PredictionRelease
 			);
-			bugLifetimes.Add(1000000);
-			
-			BugLifetimeDistribution = time =>
-			{
-				return (double)bugLifetimes.Where(t => t <= time).Count() / bugLifetimes.Count();
-			};
 		}
 		protected IDictionary<string,double> RemainCodeSizeFromRevision
 		{
@@ -630,6 +734,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		
 		private FileEstimationStrategy FileEstimation
+		{
+			get; set;
+		}
+		private BugLifetimeDistributionEstimationStrategy BugLifetimeDistributionEstimation
 		{
 			get; set;
 		}
