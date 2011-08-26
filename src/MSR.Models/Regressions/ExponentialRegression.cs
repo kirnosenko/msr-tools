@@ -11,7 +11,7 @@ using MSR.Models.Prediction.SRGM;
 
 namespace MSR.Models.Regressions
 {
-	public class ExponentalRegression : Regression<double>
+	public class ExponentialRegression : Regression<double>
 	{
 		private ExponentialSRGM srgm;
 		

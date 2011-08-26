@@ -77,7 +77,7 @@
     <Compile Include="Visualizations\CodeSizeToDate.cs" />
     <Compile Include="Visualizations\DefectDensityToCommitSize.cs" />
     <Compile Include="Visualizations\DefectDensityToFileSize.cs" />
-    <Compile Include="Visualizations\Regressions\ExponentalRegression.cs" />
+    <Compile Include="Visualizations\Regressions\ExponentialRegression.cs" />
     <Compile Include="Visualizations\Regressions\LinearRegression.cs" />
     <Compile Include="Visualizations\Regressions\PolynomialRegression.cs" />
     <Compile Include="Visualizations\Regressions\RegressionVisualization.cs" />

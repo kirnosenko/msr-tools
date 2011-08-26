@@ -14,11 +14,11 @@ using MSR.Models.Regressions;
 
 namespace MSR.Tools.Visualizer.Visualizations.Regressions
 {
-	public class ExponentalRegression : RegressionVisualization
+	public class ExponentialRegression : RegressionVisualization
 	{
-		public ExponentalRegression()
+		public ExponentialRegression()
 		{
-			Title = "Exponental regression";
+			Title = "Exponential regression";
 		}
 		public override bool Configurable
 		{
@@ -26,7 +26,7 @@ namespace MSR.Tools.Visualizer.Visualizations.Regressions
 		}
 		protected override Regression<double> GetRegression()
 		{
-			return new MSR.Models.Regressions.ExponentalRegression();
+			return new MSR.Models.Regressions.ExponentialRegression();
 		}
 	}
 }

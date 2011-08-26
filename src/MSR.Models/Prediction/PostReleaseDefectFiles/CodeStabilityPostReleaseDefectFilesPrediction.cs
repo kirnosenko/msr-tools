@@ -514,11 +514,11 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			return bugFixes.CalculateMaxBugLifetime();
 		}
 	}
-	class BugLifetimeDistributionExponental : BugLifetimeDistributionEstimationStrategy
+	class BugLifetimeDistributionExponential : BugLifetimeDistributionEstimationStrategy
 	{
 		protected override Func<double,double> Distribution(IEnumerable<double> bugLifetimes)
 		{
-			ExponentalRegression expRegression = new ExponentalRegression();
+			ExponentialRegression expRegression = new ExponentialRegression();
 			foreach (var time in bugLifetimes)
 			{
 				expRegression.AddTrainingData(time, (double)bugLifetimes.Where(t => t <= time).Count() / bugLifetimes.Count());
@@ -530,14 +530,14 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			};
 		}
 	}
-	class BugLifetimeDistributionExponentalMin : BugLifetimeDistributionExponental
+	class BugLifetimeDistributionExponentialMin : BugLifetimeDistributionExponential
 	{
 		protected override IEnumerable<double> BugLifetimes(BugFixSelectionExpression bugFixes)
 		{
 			return bugFixes.CalculateMinBugLifetime();
 		}
 	}
-	class BugLifetimeDistributionExponentalMax : BugLifetimeDistributionExponental
+	class BugLifetimeDistributionExponentialMax : BugLifetimeDistributionExponential
 	{
 		protected override IEnumerable<double> BugLifetimes(BugFixSelectionExpression bugFixes)
 		{
