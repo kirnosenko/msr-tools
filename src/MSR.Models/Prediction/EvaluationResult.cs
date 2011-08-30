@@ -46,6 +46,20 @@ namespace MSR.Models.Prediction
 				return FP / (TN + FP);
 			}
 		}
+		public double Fmeasure
+		{
+			get
+			{
+				double P = Precision;
+				double R = Recall;
+				
+				if (P + R == 0)
+				{
+					return 0;
+				}
+				return 2 * P * R / (P + R);
+			}
+		}
 		public double Accuracy
 		{
 			get { return (TP + TN) / (TP + TN + FP + FN); }
