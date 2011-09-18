@@ -230,13 +230,18 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 
 	abstract class FileEstimationStrategy
 	{
+		protected CodeStabilityPostReleaseDefectFilesPrediction model;
 		protected List<double> codeSetEstimations;
-		
+
+		public virtual void Init(IRepositoryResolver repositories, CodeStabilityPostReleaseDefectFilesPrediction model)
+		{
+			this.model = model;
+		}
 		public void NewFile()
 		{
 			codeSetEstimations = new List<double>();
 		}
-		public abstract void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet);
+		public abstract void NewCodeSet(CodeSetData codeSet);
 		public virtual double FileEstimation
 		{
 			get
@@ -254,19 +259,19 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				return fileHasDefectsProbability;
 			}
 		}
-		public virtual double DefaultCutOffValue(CodeStabilityPostReleaseDefectFilesPrediction model)
+		public virtual double DefaultCutOffValue
 		{
-			return 0.5;
+			get { return 0.5; }
 		}
-		public virtual double RocEvaluationDelta(CodeStabilityPostReleaseDefectFilesPrediction model)
+		public virtual double RocEvaluationDelta
 		{
-			return 0.01;
+			get { return 0.01; }
 		}
 	}
 	
 	class G2M0 : FileEstimationStrategy
 	{
-		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
 				codeSet.EP(model.DefectLineProbability)
@@ -277,7 +282,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G2M1 : FileEstimationStrategy
 	{
-		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
 				codeSet.EP(model.DefectLineProbability)
@@ -290,7 +295,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G2M2 : FileEstimationStrategy
 	{
-		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
 				codeSet.EP(model.DefectLineProbability)
@@ -301,7 +306,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G2M3 : FileEstimationStrategy
 	{
-		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
 				codeSet.EP(model.DefectLineProbability)
@@ -324,7 +329,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G3M1 : FileEstimationStrategy
 	{
-		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
 				codeSet.EP_REVISION(model.DefectLineProbability)
@@ -339,7 +344,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G3M2 : FileEstimationStrategy
 	{
-		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
 				codeSet.EP_REVISION(model.DefectLineProbability)
@@ -352,7 +357,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G3M3 : FileEstimationStrategy
 	{
-		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
 				codeSet.EP_REVISION(model.DefectLineProbability)
@@ -377,7 +382,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G3M4 : FileEstimationStrategy
 	{
-		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
 				codeSet.EP_REVISION(model.DefectLineProbability)
@@ -395,7 +400,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G3M5 : FileEstimationStrategy
 	{
-		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
 				codeSet.EP_REVISION(model.DefectLineProbability)
@@ -411,30 +416,21 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			);
 		}
 	}
-	class G3M6 : FileEstimationStrategy
-	{
-		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
-		{
-			double efdp = codeSet.EFDP(model.BugLifetimeDistribution);
-			double ewnrfp = 
-				codeSet.EWNRP_REVISION()
-				*
-				codeSet.EWNFP_REVISION(model.DefectLineProbability);
-			
-			codeSetEstimations.Add(
-				codeSet.EP_REVISION(model.DefectLineProbability)
-				*
-				(
-					(((efdp + ewnrfp) / 2) + Math.Min(efdp, ewnrfp)) / 2
-				)
-				*
-				codeSet.ESP()
-			);
-		}
-	}
 	class G4M1 : FileEstimationStrategy
 	{
-		public override void NewCodeSet(CodeStabilityPostReleaseDefectFilesPrediction model, CodeSetData codeSet)
+		protected double defectCodeSizePerDefect;
+
+		public override void Init(IRepositoryResolver repositories, CodeStabilityPostReleaseDefectFilesPrediction model)
+		{
+			base.Init(repositories, model);
+			
+			defectCodeSizePerDefect = repositories.SelectionDSL()
+				.Commits().TillRevision(model.PredictionRelease)
+				.Files().Reselect(model.FileSelector)
+				.Modifications().InCommits().InFiles()
+				.CodeBlocks().InModifications().CalculateDefectCodeSizePerDefect(model.PredictionRelease);
+		}
+		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
 				codeSet.DLN_REVISION(model.DefectLineProbability)
@@ -460,14 +456,17 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				return numberOfDefectLinesInFile;
 			}
 		}
-		public override double DefaultCutOffValue(CodeStabilityPostReleaseDefectFilesPrediction model)
+		public override double DefaultCutOffValue
 		{
-			return model.DefectCodeSizePerDefect;
+			get { return defectCodeSizePerDefect; }
 		}
-		public override double RocEvaluationDelta(CodeStabilityPostReleaseDefectFilesPrediction model)
+		public override double RocEvaluationDelta
 		{
-			double maxFileEstimation = model.FileEstimations.Max();
-			return (maxFileEstimation + maxFileEstimation / 100) / 100;
+			get
+			{
+				double maxFileEstimation = model.FileEstimations.Max();
+				return (maxFileEstimation + maxFileEstimation / 100) / 100;
+			}
 		}
 	}
 
@@ -560,11 +559,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			ReleaseDate = repositories.Repository<Commit>()
 				.Single(x => x.Revision == PredictionRelease)
 				.Date;
-			DefectCodeSizePerDefect = repositories.SelectionDSL()
-				.Commits().TillRevision(PredictionRelease)
-				.Files().Reselect(FileSelector)
-				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().CalculateDefectCodeSizePerDefect(PredictionRelease);
 
 			RemainCodeSizeFromRevision = new SmartDictionary<string,double>(r =>
 				repositories.SelectionDSL()
@@ -606,6 +600,8 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			
 			EstimateDefectLineProbability(repositories);
 			EstimateBugLifetimeDistribution(repositories);
+			
+			FileEstimation.Init(repositories, this);
 		}
 		public double DefectLineProbability
 		{
@@ -615,21 +611,17 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; protected set;
 		}
-		public double DefectCodeSizePerDefect
-		{
-			get; protected set;
-		}
 		public override string[] PredictedDefectFiles
 		{
 			get
 			{
-				defaultCutOffValue = FileEstimation.DefaultCutOffValue(this);
+				defaultCutOffValue = FileEstimation.DefaultCutOffValue;
 				return base.PredictedDefectFiles;
 			}
 		}
 		public override ROCEvaluationResult EvaluateUsingROC()
 		{
-			rocEvaluationDelta = FileEstimation.RocEvaluationDelta(this);
+			rocEvaluationDelta = FileEstimation.RocEvaluationDelta;
 			return base.EvaluateUsingROC();
 		}
 		
@@ -664,7 +656,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			FileEstimation.NewFile();
 			foreach (var codeFromRevision in codeByRevision)
 			{
-				FileEstimation.NewCodeSet(this, codeFromRevision);
+				FileEstimation.NewCodeSet(codeFromRevision);
 			}
 			
 			return FileEstimation.FileEstimation;

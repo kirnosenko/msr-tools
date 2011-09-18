@@ -11,6 +11,8 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
+using MathNet.Numerics.Statistics;
+
 using MSR.Data.Entities;
 using MSR.Models.Prediction;
 using MSR.Models.Prediction.PostReleaseDefectFiles;
@@ -336,7 +338,8 @@ namespace MSR.Tools.Predictor
 			if (modelResult.FileEstimations != null)
 			{
 				output.AppendLine(FileEstimationsToString(
-					modelResult.FileEstimations.Average(),
+					modelResult.FileEstimations.Mean(),
+					modelResult.FileEstimations.Median(),
 					modelResult.FileEstimations.Max(),
 					modelResult.FileEstimations.Min()
 				));
@@ -384,7 +387,8 @@ namespace MSR.Tools.Predictor
 				if (modelResults.First().FileEstimations != null)
 				{
 					output.AppendLine(FileEstimationsToString(
-						modelResults.Average(x => x.FileEstimations.Average()),
+						modelResults.Average(x => x.FileEstimations.Mean()),
+						modelResults.Average(x => x.FileEstimations.Median()),
 						modelResults.Average(x => x.FileEstimations.Max()),
 						modelResults.Average(x => x.FileEstimations.Min())
 					));
@@ -399,7 +403,7 @@ namespace MSR.Tools.Predictor
 		}
 		private string EvaluationResultToString(double P, double R, double A, double NP)
 		{
-			return string.Format("Precision = {0:0.00}, Recall = {1:0.00}, Accuracy = {2:0.00}, NegPos = {3:0.00}",
+			return string.Format("P = {0:0.00}, R = {1:0.00}, A = {2:0.00}, NP = {3:0.00}",
 				P, R, A, NP
 			);
 		}
@@ -413,10 +417,10 @@ namespace MSR.Tools.Predictor
 				AUC, MP, BP
 			);
 		}
-		private string FileEstimationsToString(double mean, double max, double min)
+		private string FileEstimationsToString(double mean, double median, double max, double min)
 		{
-			return string.Format("File estimations: Mean = {0:0.00}, Max = {1:0.00}, Min = {2:0.00}",
-				mean, max, min
+			return string.Format("File estimations: Mean = {0:0.00}, Median = {1:0.00}, Max = {2:0.00}, Min = {3:0.00}",
+				mean, median, max, min
 			);
 		}
 	}
