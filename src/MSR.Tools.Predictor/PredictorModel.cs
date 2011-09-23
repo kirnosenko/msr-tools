@@ -11,8 +11,6 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-using MathNet.Numerics.Statistics;
-
 using MSR.Data.Entities;
 using MSR.Models.Prediction;
 using MSR.Models.Prediction.PostReleaseDefectFiles;
@@ -338,8 +336,8 @@ namespace MSR.Tools.Predictor
 			if (modelResult.FileEstimations != null)
 			{
 				output.AppendLine(FileEstimationsToString(
-					modelResult.FileEstimations.Mean(),
-					modelResult.FileEstimations.Median(),
+					Accord.Statistics.Tools.Mean(modelResult.FileEstimations),
+					Accord.Statistics.Tools.Median(modelResult.FileEstimations),
 					modelResult.FileEstimations.Max(),
 					modelResult.FileEstimations.Min()
 				));
@@ -387,8 +385,8 @@ namespace MSR.Tools.Predictor
 				if (modelResults.First().FileEstimations != null)
 				{
 					output.AppendLine(FileEstimationsToString(
-						modelResults.Average(x => x.FileEstimations.Mean()),
-						modelResults.Average(x => x.FileEstimations.Median()),
+						modelResults.Average(x => Accord.Statistics.Tools.Mean(x.FileEstimations)),
+						modelResults.Average(x => Accord.Statistics.Tools.Median(x.FileEstimations)),
 						modelResults.Average(x => x.FileEstimations.Max()),
 						modelResults.Average(x => x.FileEstimations.Min())
 					));

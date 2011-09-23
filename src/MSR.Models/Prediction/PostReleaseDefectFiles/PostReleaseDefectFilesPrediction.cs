@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using MathNet.Numerics.Statistics;
+using Accord.Statistics;
 
 using MSR.Data;
 using MSR.Data.Entities;

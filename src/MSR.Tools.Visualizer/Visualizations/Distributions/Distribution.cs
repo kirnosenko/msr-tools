@@ -8,8 +8,6 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 
-using MathNet.Numerics.Statistics;
-
 using MSR.Data;
 using MSR.Data.Entities;
 using MSR.Data.Entities.DSL.Selection;
@@ -57,7 +55,10 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 				}
 			}
 			
-			Legend = string.Format("Mean = {0:0.00} Standard deviation = {1:0.00}", x.Mean(), x.PopulationStandardDeviation());
+			Legend = string.Format(
+				"Mean = {0:0.00} Standard deviation = {1:0.00}",
+				Accord.Statistics.Tools.Mean(x), Accord.Statistics.Tools.StandardDeviation(x)
+			);
 		}
 		public override void Draw(IGraphView graph)
 		{
