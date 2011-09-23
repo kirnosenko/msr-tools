@@ -68,6 +68,7 @@
     <Compile Include="VisualizationPool.cs" />
     <Compile Include="Visualizations\CommitsByDateAndAuthor.cs" />
     <Compile Include="Visualizations\DatePeriodVisualization.cs" />
+    <Compile Include="Visualizations\DefectDensityToDate.cs" />
     <Compile Include="Visualizations\Distributions\CommitSizeDistribution.cs" />
     <Compile Include="Visualizations\Distributions\Distribution.cs" />
     <Compile Include="Visualizations\Distributions\FileDefectDensityDistribution.cs" />
