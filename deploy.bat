@@ -25,7 +25,7 @@ class Deploy
 		{
 			"./lib/Microsoft.Practices.Unity.dll",
 			"./lib/Microsoft.Practices.Unity.Configuration.dll",
-			"./lib/AForge.dll",
+			"./lib/Accord.dll",
 			"./lib/Accord.Math.dll",
 			"./lib/Accord.Statistics.dll",
 			"./lib/MathNet.Numerics.dll",

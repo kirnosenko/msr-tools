@@ -25,6 +25,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		protected double defaultCutOffValue;
 		protected double rocEvaluationDelta;
 		private Dictionary<string,double> possibleDefectFiles;
+		private ProjectFile[] allFiles;
 		private string[] defectFiles;
 		private string[] predictedDefectFiles;
 		
@@ -39,13 +40,12 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			base.Init(repositories, releases);
 			
+			allFiles = null;
 			defectFiles = null;
 			predictedDefectFiles = null;
 		}
 		public virtual void Predict()
 		{
-			AllFiles = GetFilesInRevision(PredictionRelease);
-			
 			int allFilesCount = AllFiles.Count();
 			int processedFilesCount = 0;
 			
@@ -97,9 +97,16 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get { return possibleDefectFiles.Values.ToArray(); }
 		}
-		public IEnumerable<ProjectFile> AllFiles
+		public ProjectFile[] AllFiles
 		{
-			get; protected set;
+			get
+			{
+				if (allFiles == null)
+				{
+					allFiles = GetFilesInRevision(PredictionRelease);
+				}
+				return allFiles;
+			}
 		}
 		public virtual string[] PredictedDefectFiles
 		{
@@ -161,7 +168,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			return new EvaluationResult(TP, TN, FP, FN);
 		}
 		protected abstract double GetFileEstimation(ProjectFile file);
-		protected IEnumerable<ProjectFile> GetFilesInRevision(string revision)
+		protected ProjectFile[] GetFilesInRevision(string revision)
 		{
 			return repositories.SelectionDSL()
 				.Files()

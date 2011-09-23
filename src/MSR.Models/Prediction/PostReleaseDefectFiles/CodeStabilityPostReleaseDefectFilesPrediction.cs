@@ -18,7 +18,7 @@ using MSR.Models.Regressions;
 
 namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
-	struct CodeSetData
+	public struct CodeSetData
 	{
 		private double addedCodeSize;
 		private double defectCodeSize;
@@ -232,12 +232,18 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	{
 		protected CodeStabilityPostReleaseDefectFilesPrediction model;
 		protected List<double> codeSetEstimations;
-
-		public virtual void Init(IRepositoryResolver repositories, CodeStabilityPostReleaseDefectFilesPrediction model)
+		
+		public FileEstimationStrategy(CodeStabilityPostReleaseDefectFilesPrediction model)
 		{
 			this.model = model;
+			model.OnInit += Init;
+			model.OnNewFile += NewFile;
+			model.OnNewCodeSet += NewCodeSet;
 		}
-		public void NewFile()
+		public virtual void Init(IRepositoryResolver repositories)
+		{
+		}
+		public virtual void NewFile(ProjectFile file)
 		{
 			codeSetEstimations = new List<double>();
 		}
@@ -271,6 +277,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	
 	class G2M0 : FileEstimationStrategy
 	{
+		public G2M0(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
@@ -282,6 +291,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G2M1 : FileEstimationStrategy
 	{
+		public G2M1(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
@@ -295,6 +307,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G2M2 : FileEstimationStrategy
 	{
+		public G2M2(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
@@ -306,6 +321,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G2M3 : FileEstimationStrategy
 	{
+		public G2M3(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
@@ -327,8 +345,27 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			);
 		}
 	}
+	class G2M4 : FileEstimationStrategy
+	{
+		public G2M4(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
+		public override void NewCodeSet(CodeSetData codeSet)
+		{
+			codeSetEstimations.Add(
+				codeSet.EP(model.DefectLineProbability)
+				*
+				codeSet.EWNRP_REVISION()
+				*
+				codeSet.EWNFP_REVISION(model.DefectLineProbability)
+			);
+		}
+	}
 	class G3M1 : FileEstimationStrategy
 	{
+		public G3M1(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
@@ -344,6 +381,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G3M2 : FileEstimationStrategy
 	{
+		public G3M2(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
@@ -357,6 +397,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G3M3 : FileEstimationStrategy
 	{
+		public G3M3(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
@@ -382,6 +425,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G3M4 : FileEstimationStrategy
 	{
+		public G3M4(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
@@ -400,6 +446,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class G3M5 : FileEstimationStrategy
 	{
+		public G3M5(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		public override void NewCodeSet(CodeSetData codeSet)
 		{
 			codeSetEstimations.Add(
@@ -419,10 +468,13 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	class G4M1 : FileEstimationStrategy
 	{
 		protected double defectCodeSizePerDefect;
-
-		public override void Init(IRepositoryResolver repositories, CodeStabilityPostReleaseDefectFilesPrediction model)
+		
+		public G4M1(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
+		public override void Init(IRepositoryResolver repositories)
 		{
-			base.Init(repositories, model);
+			base.Init(repositories);
 			
 			defectCodeSizePerDefect = repositories.SelectionDSL()
 				.Commits().TillRevision(model.PredictionRelease)
@@ -469,14 +521,313 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			}
 		}
 	}
+	
+	abstract class DefectLineProbabilityEstimationStrategy
+	{
+		protected CodeStabilityPostReleaseDefectFilesPrediction model;
 
+		public DefectLineProbabilityEstimationStrategy(CodeStabilityPostReleaseDefectFilesPrediction model)
+		{
+			this.model = model;
+			model.OnInit += Init;
+		}
+		public abstract void Init(IRepositoryResolver repositories);
+		public double Estimation
+		{
+			get; protected set;
+		}
+	}
+	class DefectLineProbabilityForTheWholeCode : DefectLineProbabilityEstimationStrategy
+	{
+		public DefectLineProbabilityForTheWholeCode(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
+		public override void Init(IRepositoryResolver repositories)
+		{
+			Estimation = repositories.SelectionDSL()
+				.Commits().TillRevision(model.PredictionRelease)
+				.Files().Reselect(model.FileSelector)
+				.Modifications().InCommits().InFiles()
+				.CodeBlocks().InModifications().CalculateDefectCodeDensity(model.PredictionRelease);
+		}
+	}
+	class DefectLineProbabilityForTheStableCode : DefectLineProbabilityEstimationStrategy
+	{
+		public DefectLineProbabilityForTheStableCode(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
+		public override void Init(IRepositoryResolver repositories)
+		{
+			double stabilizationPeriod = repositories.SelectionDSL()
+				.Commits().TillRevision(model.PredictionRelease)
+				.BugFixes().InCommits().CalculateStabilizationPeriod(0.9);
+
+			var stableCode = repositories.SelectionDSL()
+				.Commits().DateIsLesserOrEquelThan(model.ReleaseDate.AddDays(-stabilizationPeriod))
+				.Files().Reselect(model.FileSelector)
+				.Modifications().InCommits().InFiles()
+				.CodeBlocks().InModifications();
+
+			Estimation = stableCode.CalculateDefectCodeDensity(model.PredictionRelease);
+		}
+	}
+	class DefectLineProbabilityForTheCodeOfAuthor : DefectLineProbabilityEstimationStrategy
+	{
+		private IDictionary<string,string> authorByRevision;
+		private SmartDictionary<string,double> defectLineProbabilityOfAuthor;
+		
+		public DefectLineProbabilityForTheCodeOfAuthor(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{
+			model.OnNewCodeSet += NewCodeSet;
+		}
+		public override void Init(IRepositoryResolver repositories)
+		{
+			authorByRevision = repositories.SelectionDSL()
+				.Commits().TillRevision(model.PredictionRelease)
+				.ToDictionary(x => x.Revision, x => x.Author);
+			
+			defectLineProbabilityOfAuthor = new SmartDictionary<string,double>(a =>
+				repositories.SelectionDSL()
+					.Commits().AuthorIs(a).BeforeRevision(model.PredictionRelease)
+					.Modifications().InCommits()
+					.CodeBlocks().InModifications().CalculateDefectCodeDensity(model.PredictionRelease)
+			);
+		}
+		protected void NewCodeSet(CodeSetData codeSet)
+		{
+			Estimation = defectLineProbabilityOfAuthor[authorByRevision[codeSet.Revision]];
+		}
+	}
+	class DefectLineProbabilityForTheCodeInFile : DefectLineProbabilityEstimationStrategy
+	{
+		protected IRepositoryResolver repositories;
+
+		public DefectLineProbabilityForTheCodeInFile(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{
+			model.OnNewFile += NewFile;
+		}
+		public override void Init(IRepositoryResolver repositories)
+		{
+			this.repositories = repositories;
+		}
+		protected void NewFile(ProjectFile file)
+		{
+			Estimation = repositories.SelectionDSL()
+				.Commits().BeforeRevision(model.PredictionRelease)
+				.Files().IdIs(file.ID)
+				.Modifications().InCommits().InFiles()
+				.CodeBlocks().InModifications().CalculateDefectCodeDensity(model.PredictionRelease);
+		}
+	}
+	class DefectLineProbabilityForTheCodeOfAuthorInFileAverage : DefectLineProbabilityEstimationStrategy
+	{
+		protected DefectLineProbabilityForTheCodeOfAuthor codeOfAuthor;
+		protected DefectLineProbabilityForTheCodeInFile codeInFile;
+		
+		public DefectLineProbabilityForTheCodeOfAuthorInFileAverage(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{
+			codeOfAuthor = new DefectLineProbabilityForTheCodeOfAuthor(model);
+			codeInFile = new DefectLineProbabilityForTheCodeInFile(model);
+			model.OnNewCodeSet += NewCodeSet;
+		}
+		public override void Init(IRepositoryResolver repositories)
+		{
+		}
+		protected void NewCodeSet(CodeSetData codeSet)
+		{
+			Estimation = (codeOfAuthor.Estimation + codeInFile.Estimation) / 2;
+		}
+	}
+	class DefectLineProbabilityForTheCodeOfAuthorInFileRegression : DefectLineProbabilityEstimationStrategy
+	{
+		private Dictionary<int,double> DCDF;
+		private Dictionary<string,double> DCDA;
+		private Dictionary<string,string> authorByRevision;
+		
+		private double fileEstimation;
+		
+		public DefectLineProbabilityForTheCodeOfAuthorInFileRegression(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{
+			model.OnNewFile += NewFile;
+			model.OnNewCodeSet += NewCodeSet;
+		}
+		public override void Init(IRepositoryResolver repositories)
+		{
+			authorByRevision = repositories.SelectionDSL()
+				.Commits().TillRevision(model.PredictionRelease)
+				.ToDictionary(x => x.Revision, x => x.Author);
+			
+			int releaseRevisionOrderedNumber = repositories.Repository<Commit>()
+				.Single(x => x.Revision == model.PredictionRelease).OrderedNumber;
+			var codeByAuthorAndFile =
+				(
+					from cb in repositories.Repository<CodeBlock>()
+					join m in repositories.Repository<Modification>() on cb.ModificationID equals m.ID
+					join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
+					join f in repositories.Repository<ProjectFile>() on m.FileID equals f.ID
+					where
+						cb.Size > 0
+						&&
+						c.OrderedNumber <= releaseRevisionOrderedNumber
+					group cb by new { Author = c.Author, FileID = f.ID } into g
+					select new
+					{
+						Author = g.Key.Author,
+						FileID = g.Key.FileID,
+						CodeSize = g.Sum(x => x.Size)
+					}
+				).ToArray();
+
+			var allFiles = model.AllFiles.Select(x => x.ID).ToArray();
+			var allAuthors = repositories.SelectionDSL()
+				.Commits().TillRevision(model.PredictionRelease)
+				.Select(x => x.Author).Distinct().ToArray();
+			
+			int numberOfFiles = allFiles.Count();
+			int numberOfAuthors = allAuthors.Count();
+			int numberOfEquations = numberOfFiles + numberOfAuthors + 1;
+			double[,] equations = new double[numberOfEquations,numberOfEquations];
+			double[] results = new double[numberOfEquations];
+
+			int equation = 0;
+			double locAdded = codeByAuthorAndFile.Sum(x => x.CodeSize);
+			
+			for (int i = 0; i < allFiles.Length; i++)
+			{
+				double locAddedInFile = codeByAuthorAndFile
+					.Where(x => x.FileID == allFiles[i])
+					.Sum(x => x.CodeSize);
+				equations[numberOfEquations-1, i] = locAddedInFile / locAdded;
+				equations[equation, i] = 1;
+				
+				for (int j = 0; j < allAuthors.Length; j++)
+				{
+					double locAddedInFileByAuthor = codeByAuthorAndFile
+						.Where(x => x.FileID == allFiles[i] && x.Author == allAuthors[j])
+						.Sum(x => x.CodeSize);
+					equations[equation, numberOfFiles + j] = locAddedInFileByAuthor / locAddedInFile;
+				}
+				results[equation] = repositories.SelectionDSL()
+					.Commits()
+						.TillRevision(model.PredictionRelease)
+					.Files()
+						.IdIs(allFiles[i])
+					.Modifications().InCommits().InFiles()
+					.CodeBlocks().InModifications().CalculateDefectCodeDensity(model.PredictionRelease);
+				equation++;
+			}
+			
+			for (int i = 0; i < allAuthors.Length; i++)
+			{
+				double locAddedByAuthor = codeByAuthorAndFile
+					.Where(x => x.Author == allAuthors[i])
+					.Sum(x => x.CodeSize);
+				equations[numberOfEquations-1, numberOfFiles + i] = locAddedByAuthor / locAdded;
+				equations[equation, numberOfFiles + i] = 1;
+				
+				if (locAddedByAuthor > 0)
+				{
+					for (int j = 0; j < allFiles.Length; j++)
+					{
+						double locAddedByAuthorInFile = codeByAuthorAndFile
+							.Where(x => x.Author == allAuthors[i] && x.FileID == allFiles[j])
+							.Sum(x => x.CodeSize);
+						equations[equation, j] = locAddedByAuthorInFile / locAddedByAuthor;
+					}
+					results[equation] = repositories.SelectionDSL()
+						.Commits()
+							.AuthorIs(allAuthors[i])
+							.TillRevision(model.PredictionRelease)
+						.Modifications().InCommits()
+						.CodeBlocks().InModifications().CalculateDefectCodeDensity(model.PredictionRelease);
+				}
+				equation++;
+			}
+			
+			results[numberOfEquations-1] = repositories.SelectionDSL()
+				.Commits()
+					.TillRevision(model.PredictionRelease)
+				.Modifications().InCommits()
+				.CodeBlocks().InModifications().CalculateDefectCodeDensity(model.PredictionRelease);
+			
+			int varCount = equations.GetUpperBound(1)+1;
+			double[,] normalEquations = new double[varCount, varCount];
+			double[] normalResults = new double[varCount];
+			Func<double[,],double[],int,int,double> nc = (e, r, n1, n2) =>
+			{
+				double sum = 0;
+				for (int i = 0; i < numberOfEquations; i++)
+				{
+					if (n2 < numberOfEquations)
+					{
+						sum += e[i,n1] * e[i,n2];
+					}
+					else
+					{
+						sum += e[i,n1] * r[i];
+					}
+				}
+				return sum;
+			};
+			
+			for (int i = 0; i < varCount; i++)
+			{
+				for (int j = 0; j < varCount; j++)
+				{
+					normalEquations[i,j] = nc(equations,results,i,j);
+				}
+				normalResults[i] = nc(equations,results,i,numberOfEquations);
+			}
+			var DCD = new Accord.Math.Decompositions.SingularValueDecomposition(normalEquations).Solve(normalResults);
+			
+			DCDF = new Dictionary<int,double>();
+			DCDA = new Dictionary<string,double>();
+			double DCD_min = 0.001;
+			for (int i = 0; i < allFiles.Length; i++)
+			{
+				DCDF.Add(allFiles[i], DCD[i] > 0 ? DCD[i] : DCD_min);
+			}
+			for (int i = 0; i < allAuthors.Length; i++)
+			{
+				DCDA.Add(allAuthors[i], DCD[numberOfFiles + i] > 0 ? DCD[numberOfFiles + i] : DCD_min);
+			}
+		}
+		protected void NewFile(ProjectFile file)
+		{
+			fileEstimation = DCDF[file.ID];
+		}
+		protected void NewCodeSet(CodeSetData codeSet)
+		{
+			Estimation = fileEstimation + DCDA[authorByRevision[codeSet.Revision]];
+		}
+	}
+	
 	abstract class BugLifetimeDistributionEstimationStrategy
 	{
-		public Func<double,double> Estimate(IRepositoryResolver repositories, string predictionRelease)
+		protected CodeStabilityPostReleaseDefectFilesPrediction model;
+		
+		public BugLifetimeDistributionEstimationStrategy(CodeStabilityPostReleaseDefectFilesPrediction model)
+		{
+			this.model = model;
+			model.OnInit += Init;
+		}
+		public virtual void Init(IRepositoryResolver repositories)
+		{
+			Estimation = Estimate(repositories);
+		}
+		public Func<double,double> Estimation
+		{
+			get; protected set;
+		}
+		protected virtual Func<double,double> Estimate(IRepositoryResolver repositories)
 		{
 			List<double> bugLifetimes = new List<double>(BugLifetimes(
 				repositories.SelectionDSL()
-					.Commits().TillRevision(predictionRelease)
+					.Commits().TillRevision(model.PredictionRelease)
 					.BugFixes().InCommits()
 			));
 			bugLifetimes.Add(1000000);
@@ -491,6 +842,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class BugLifetimeDistributionExperimental : BugLifetimeDistributionEstimationStrategy
 	{
+		public BugLifetimeDistributionExperimental(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		protected override Func<double,double> Distribution(IEnumerable<double> bugLifetimes)
 		{
 			return time =>
@@ -501,6 +855,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class BugLifetimeDistributionExperimentalMin : BugLifetimeDistributionExperimental
 	{
+		public BugLifetimeDistributionExperimentalMin(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		protected override IEnumerable<double> BugLifetimes(BugFixSelectionExpression bugFixes)
 		{
 			return bugFixes.CalculateMinBugLifetime();
@@ -508,6 +865,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class BugLifetimeDistributionExperimentalMax : BugLifetimeDistributionExperimental
 	{
+		public BugLifetimeDistributionExperimentalMax(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		protected override IEnumerable<double> BugLifetimes(BugFixSelectionExpression bugFixes)
 		{
 			return bugFixes.CalculateMaxBugLifetime();
@@ -515,6 +875,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class BugLifetimeDistributionExponential : BugLifetimeDistributionEstimationStrategy
 	{
+		public BugLifetimeDistributionExponential(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		protected override Func<double,double> Distribution(IEnumerable<double> bugLifetimes)
 		{
 			ExponentialRegression expRegression = new ExponentialRegression();
@@ -531,6 +894,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class BugLifetimeDistributionExponentialMin : BugLifetimeDistributionExponential
 	{
+		public BugLifetimeDistributionExponentialMin(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		protected override IEnumerable<double> BugLifetimes(BugFixSelectionExpression bugFixes)
 		{
 			return bugFixes.CalculateMinBugLifetime();
@@ -538,6 +904,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class BugLifetimeDistributionExponentialMax : BugLifetimeDistributionExponential
 	{
+		public BugLifetimeDistributionExponentialMax(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
 		protected override IEnumerable<double> BugLifetimes(BugFixSelectionExpression bugFixes)
 		{
 			return bugFixes.CalculateMaxBugLifetime();
@@ -546,11 +915,16 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	
 	public class CodeStabilityPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
 	{
+		public event Action<IRepositoryResolver> OnInit;
+		public event Action<ProjectFile> OnNewFile;
+		public event Action<CodeSetData> OnNewCodeSet;
+		
 		public CodeStabilityPostReleaseDefectFilesPrediction()
 		{
 			Title = "Code stability model";
-			FileEstimation = new G3M3();
-			BugLifetimeDistributionEstimation = new BugLifetimeDistributionExperimental();
+			DefectLineProbabilityEstimation = new DefectLineProbabilityForTheCodeOfAuthorInFileRegression(this);
+			BugLifetimeDistributionEstimation = new BugLifetimeDistributionExperimental(this);
+			FileEstimation = new G3M3(this);
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
@@ -598,18 +972,15 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			DefectCodeSizeFromRevisionResolver = (revision) =>
 				DefectCodeSizeFromRevision[revision];
 			
-			EstimateDefectLineProbability(repositories);
-			EstimateBugLifetimeDistribution(repositories);
-			
-			FileEstimation.Init(repositories, this);
+			OnInit(repositories);
 		}
 		public double DefectLineProbability
 		{
-			get; protected set;
+			get { return DefectLineProbabilityEstimation.Estimation; }
 		}
 		public Func<double,double> BugLifetimeDistribution
 		{
-			get; protected set;
+			get { return BugLifetimeDistributionEstimation.Estimation; }
 		}
 		public override string[] PredictedDefectFiles
 		{
@@ -623,6 +994,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			rocEvaluationDelta = FileEstimation.RocEvaluationDelta;
 			return base.EvaluateUsingROC();
+		}
+		public DateTime ReleaseDate
+		{
+			get; protected set;
 		}
 		
 		protected override double GetFileEstimation(ProjectFile file)
@@ -652,41 +1027,14 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					AddedCodeSizeFromRevisionResolver = AddedCodeSizeFromRevisionResolver,
 					DefectCodeSizeFromRevisionResolver = DefectCodeSizeFromRevisionResolver
 				}).ToArray();
-				
-			FileEstimation.NewFile();
+			
+			OnNewFile(file);
 			foreach (var codeFromRevision in codeByRevision)
 			{
-				FileEstimation.NewCodeSet(codeFromRevision);
+				OnNewCodeSet(codeFromRevision);
 			}
 			
 			return FileEstimation.FileEstimation;
-		}
-		protected virtual void EstimateDefectLineProbability(IRepositoryResolver repositories)
-		{
-			DefectLineProbability = repositories.SelectionDSL()
-				.Commits().TillRevision(PredictionRelease)
-				.Files().Reselect(FileSelector)
-				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().CalculateDefectCodeDensity(PredictionRelease);
-			/*
-			double stabilizationPeriod = repositories.SelectionDSL()
-				.Commits().TillRevision(PredictionRelease)
-				.BugFixes().InCommits().CalculateStabilizationPeriod(0.9);
-
-			var stableCode = repositories.SelectionDSL()
-				.Commits().DateIsLesserOrEquelThan(ReleaseDate.AddDays(- stabilizationPeriod))
-				.Files().Reselect(FileSelector)
-				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications();
-
-			DefectLineProbability = stableCode.CalculateDefectCodeDensity(PredictionRelease);*/
-		}
-		protected virtual void EstimateBugLifetimeDistribution(IRepositoryResolver repositories)
-		{
-			BugLifetimeDistribution = BugLifetimeDistributionEstimation.Estimate(
-				repositories,
-				PredictionRelease
-			);
 		}
 		protected IDictionary<string,double> RemainCodeSizeFromRevision
 		{
@@ -720,16 +1068,16 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; set;
 		}
-		protected DateTime ReleaseDate
-		{
-			get; set;
-		}
 		
 		private FileEstimationStrategy FileEstimation
 		{
 			get; set;
 		}
 		private BugLifetimeDistributionEstimationStrategy BugLifetimeDistributionEstimation
+		{
+			get; set;
+		}
+		private DefectLineProbabilityEstimationStrategy DefectLineProbabilityEstimation
 		{
 			get; set;
 		}
