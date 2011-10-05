@@ -7,9 +7,6 @@
 using System;
 using System.Linq;
 
-using MSR.Data.Entities;
-using MSR.Data.Entities.DSL.Selection;
-
 namespace MSR.Data.Entities.DSL.Selection.Metrics
 {
 	/// <summary>
