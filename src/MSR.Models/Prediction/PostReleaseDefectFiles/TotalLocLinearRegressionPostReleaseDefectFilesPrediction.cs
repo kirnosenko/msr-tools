@@ -17,39 +17,49 @@ using MSR.Models.Regressions;
 
 namespace MSR.Models.Prediction.PostReleaseDefectFiles
 {
-	public class SimpleLocPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
+	public class TotalLocLinearRegressionPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
 	{
 		private LinearRegression regression;
-		
-		public SimpleLocPostReleaseDefectFilesPrediction()
+
+		public TotalLocLinearRegressionPostReleaseDefectFilesPrediction()
 		{
+			Title = "Total LOC linear regression model";
+			
 			this.AddTotalLocInFilesTillRevisionPredictor();
 			defaultCutOffValue = 1;
-			
-			Title = "Simple total LOC model";
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
 			base.Init(repositories, releases);
-
+			
+			double dd = repositories.SelectionDSL()
+				.Commits().TillRevision(PredictionRelease)
+				.Modifications().InCommits()
+				.CodeBlocks().InModifications().CalculateDefectDensity(PredictionRelease);
+				
+			context.SetCommits(null, PredictionRelease);
+			
 			regression = new LinearRegression();
-			foreach (var revision in TrainReleases)
+			foreach (var file in GetFilesInRevision(PredictionRelease))
 			{
-				foreach (var file in GetFilesInRevision(revision))
+				double ddForFile = repositories.SelectionDSL()
+					.Commits().TillRevision(PredictionRelease)
+					.Files().IdIs(file.ID)
+					.Modifications().InCommits().InFiles()
+					.CodeBlocks().InModifications().CalculateDefectDensity(PredictionRelease);
+				
+				if (ddForFile >= dd)
 				{
-					context
-						.SetCommits(null, revision)
-						.SetFiles(e => e.IdIs(file.ID));
+					context.SetFiles(e => e.IdIs(file.ID));
 
 					regression.AddTrainingData(
 						GetPredictorValuesFor(context)[0],
-						NumberOfFixedDefectsForFile(file.ID, revision)
+						NumberOfFixedDefectsForFile(file.ID)
 					);
 				}
 			}
-
+			
 			regression.Train();
-			context.SetCommits(null, PredictionRelease);
 		}
 		public override ROCEvaluationResult EvaluateUsingROC()
 		{
@@ -59,18 +69,20 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		protected override double GetFileEstimation(ProjectFile file)
 		{
-			double numberOfBugs = regression.Predict(
+			double numberOfBugsReal = NumberOfFixedDefectsForFile(file.ID);
+			double numberOfBugsEstimation = regression.Predict(
 				GetPredictorValuesFor(context.SetFiles(e => e.IdIs(file.ID)))[0]
 			);
+			double numberOfBugs = numberOfBugsEstimation - numberOfBugsReal;
 			return numberOfBugs > 0 ? numberOfBugs : 0;
 		}
-		protected double NumberOfFixedDefectsForFile(int fileID, string revision)
+		protected double NumberOfFixedDefectsForFile(int fileID)
 		{
 			return repositories.SelectionDSL()
-				.Commits().TillRevision(revision)
+				.Commits().TillRevision(PredictionRelease)
 				.Files().IdIs(fileID)
 				.Modifications().InCommits().InFiles()
-				.CodeBlocks().InModifications().CalculateNumberOfDefects(revision);
+				.CodeBlocks().InModifications().CalculateNumberOfDefects(PredictionRelease);
 		}
 	}
 }

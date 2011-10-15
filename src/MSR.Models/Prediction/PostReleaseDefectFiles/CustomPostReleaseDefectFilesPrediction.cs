@@ -15,7 +15,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	{
 		public CustomPostReleaseDefectFilesPrediction()
 		{
-			Title = "Custom model";
+			Title = "Custom logistic regression model";
 		}
 		public bool AddedLoc
 		{

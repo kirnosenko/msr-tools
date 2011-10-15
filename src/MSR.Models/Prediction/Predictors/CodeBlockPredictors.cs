@@ -22,6 +22,14 @@ namespace MSR.Models.Prediction.Predictors
 			}));
 			return p;
 		}
+		public static T AddTotalLocLogInFilesTillRevisionPredictor<T>(this T p) where T : Prediction
+		{
+			p.AddPredictor((Func<PredictorContext,double>)(c =>
+			{
+				return Math.Log(c.CodeInFilesTillRevision().CalculateLOC());
+			}));
+			return p;
+		}
 		public static T AddAddedLocInFilesInCommitsPredictor<T>(this T p) where T : Prediction
 		{
 			p.AddPredictor((Func<PredictorContext,double>)(c =>

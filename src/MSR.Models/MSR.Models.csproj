@@ -53,7 +53,8 @@
     <Compile Include="Prediction\PostReleaseDefectFiles\PostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\CodeStabilityPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\LogisticRegressionPostReleaseDefectFilesPrediction.cs" />
-    <Compile Include="Prediction\PostReleaseDefectFiles\SimpleLocPostReleaseDefectFilesPrediction.cs" />
+    <Compile Include="Prediction\PostReleaseDefectFiles\SimplestTotalLocPostReleaseDefectFilesPrediction.cs" />
+    <Compile Include="Prediction\PostReleaseDefectFiles\TotalLocLinearRegressionPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\Prediction.cs" />
     <Compile Include="Prediction\PredictorContext.cs" />
     <Compile Include="Prediction\Predictors\CodeBlockPredictors.cs" />
