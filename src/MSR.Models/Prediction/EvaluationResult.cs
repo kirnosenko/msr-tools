@@ -1,10 +1,11 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2011  Semyon Kirnosenko
  */
 
 using System;
+using System.Linq;
 
 namespace MSR.Models.Prediction
 {
@@ -14,13 +15,13 @@ namespace MSR.Models.Prediction
 		private double TN;
 		private double FP;
 		private double FN;
-		
-		public EvaluationResult(int TP, int TN, int FP, int FN)
+
+		public EvaluationResult(string[] defectFiles, string[] nonDefectFiles, string[] predictedDefectFiles, string[] predictedNonDefectFiles)
 		{
-			this.TP = TP;
-			this.TN = TN;
-			this.FP = FP;
-			this.FN = FN;
+			TP = predictedDefectFiles.Intersect(defectFiles).Count();
+			TN = predictedNonDefectFiles.Intersect(nonDefectFiles).Count();
+			FP = predictedDefectFiles.Intersect(nonDefectFiles).Count();
+			FN = predictedNonDefectFiles.Intersect(defectFiles).Count();
 		}
 		public double Precision
 		{

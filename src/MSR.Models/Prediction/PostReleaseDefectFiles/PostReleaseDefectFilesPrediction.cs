@@ -150,22 +150,16 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				return defaultCutOffValue;
 			}
 		}
-		protected EvaluationResult Evaluate(
-			IEnumerable<string> predictedDefectFiles
-		)
+		protected EvaluationResult Evaluate(string[] predictedDefectFiles)
 		{
 			var allFiles = AllFiles.Select(x => x.Path).ToArray();
 			
-			IEnumerable<string> predictedNonDefectFiles = allFiles.Except(predictedDefectFiles);
-			
-			IEnumerable<string> P = DefectFiles;
-			IEnumerable<string> N = allFiles.Except(DefectFiles);
-			int TP = predictedDefectFiles.Intersect(P).Count();
-			int TN = predictedNonDefectFiles.Intersect(N).Count();
-			int FP = predictedDefectFiles.Count() - TP;
-			int FN = predictedNonDefectFiles.Count() - TN;
-
-			return new EvaluationResult(TP, TN, FP, FN);
+			return new EvaluationResult(
+				DefectFiles,
+				allFiles.Except(DefectFiles).ToArray(),
+				predictedDefectFiles,
+				allFiles.Except(predictedDefectFiles).ToArray()
+			);
 		}
 		protected abstract double GetFileEstimation(ProjectFile file);
 		protected ProjectFile[] GetFilesInRevision(string revision)
