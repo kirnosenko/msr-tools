@@ -179,17 +179,22 @@ namespace MSR.Tools.Predictor
 				w.WriteLine("{0} {1}", 0, 0);
 				w.WriteLine("{0} {1}", 1, 1);
 				w.WriteLine("l ROC");
-				for (int i = 0; i < roc.Pf.Length; i++)
+				for (int i = 0; i < roc.Count; i++)
 				{
 					w.WriteLine("{0} {1}", roc.Pf[i], roc.Se[i]);
 				}
-				w.WriteLine("l Sensitivity");
-				for (int i = 0; i < roc.Se.Length; i++)
+				w.WriteLine("l Precision");
+				for (int i = 0; i < roc.Count; i++)
+				{
+					w.WriteLine("{0} {1}", (double)i * 0.01, roc.P[i]);
+				}
+				w.WriteLine("l Sensitivity (Recall)");
+				for (int i = 0; i < roc.Count; i++)
 				{
 					w.WriteLine("{0} {1}", (double)i * 0.01, roc.Se[i]);
 				}
 				w.WriteLine("l Specificity");
-				for (int i = 0; i < roc.Se.Length; i++)
+				for (int i = 0; i < roc.Count; i++)
 				{
 					w.WriteLine("{0} {1}", (double)i * 0.01, roc.Sp[i]);
 				}
@@ -379,7 +384,8 @@ namespace MSR.Tools.Predictor
 					output.AppendLine(RocEvaluationResultToString(
 						modelResults.Average(x => x.RER.AUC),
 						modelResults.Average(x => x.RER.MaxPoint),
-						modelResults.Average(x => x.RER.BalancePoint)
+						modelResults.Average(x => x.RER.BalancePoint),
+						modelResults.Average(x => x.RER.OptimalPoint)
 					));
 				}
 				if (modelResults.First().FileEstimations != null)
@@ -407,12 +413,12 @@ namespace MSR.Tools.Predictor
 		}
 		private string RocEvaluationResultToString(ROCEvaluationResult rer)
 		{
-			return RocEvaluationResultToString(rer.AUC, rer.MaxPoint, rer.BalancePoint);
+			return RocEvaluationResultToString(rer.AUC, rer.MaxPoint, rer.BalancePoint, rer.OptimalPoint);
 		}
-		private string RocEvaluationResultToString(double AUC, double MP, double BP)
+		private string RocEvaluationResultToString(double AUC, double MP, double BP, double OP)
 		{
-			return string.Format("AUC = {0:0.00}, MaxPoint = {1:0.00}, BalancePoint = {2:0.00}",
-				AUC, MP, BP
+			return string.Format("AUC = {0:0.00}, MaxPoint = {1:0.00}, BalancePoint = {2:0.00}, OptimalPoint = {3:0.00}",
+				AUC, MP, BP, OP
 			);
 		}
 		private string FileEstimationsToString(double mean, double median, double max, double min)

@@ -82,7 +82,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				results.Add(Evaluate(predictedDefectFiles));
 			}
 
-			return new ROCEvaluationResult(results.ToArray());
+			return new ROCEvaluationResult(results.ToArray(), rocEvaluationDelta);
 		}
 		public bool UseFileEstimationMeanAsCutOffValue
 		{
