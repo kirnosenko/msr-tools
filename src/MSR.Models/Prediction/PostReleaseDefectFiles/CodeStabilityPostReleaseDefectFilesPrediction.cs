@@ -361,6 +361,33 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			);
 		}
 	}
+	class G2M6 : FileEstimationStrategy
+	{
+		public G2M6(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
+		public override void NewCodeSet(CodeSetData codeSet)
+		{
+			codeSetEstimations.Add(
+				codeSet.EP(model.DefectLineProbability)
+				*
+				(
+					(
+						codeSet.EFDP(model.BugLifetimeDistribution)
+						+
+						(
+							codeSet.EWNRP_REVISION()
+							*
+							codeSet.EWNFP_REVISION(model.DefectLineProbability)
+						)
+					)
+					/
+					2
+				)
+			);
+		}
+	}
+	
 	class G3M1 : FileEstimationStrategy
 	{
 		public G3M1(CodeStabilityPostReleaseDefectFilesPrediction model)
@@ -601,6 +628,67 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				) / 2)
 				*
 				codeSet.ESP()
+			);
+		}
+	}
+
+	class G5M1 : FileEstimationStrategy
+	{
+		public G5M1(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
+		public override void NewCodeSet(CodeSetData codeSet)
+		{
+			codeSetEstimations.Add(
+				codeSet.EP_REVISION(model.DefectLineProbability)
+				*
+				codeSet.EWNRP_REVISION()
+				*
+				codeSet.EWNFP_REVISION(model.DefectLineProbability)
+				*
+				codeSet.ESP()
+			);
+		}
+	}
+	class G5M2 : FileEstimationStrategy
+	{
+		public G5M2(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
+		public override void NewCodeSet(CodeSetData codeSet)
+		{
+			codeSetEstimations.Add(
+				codeSet.EP(model.DefectLineProbability)
+				*
+				codeSet.EFDP(model.BugLifetimeDistribution)
+			);
+		}
+	}
+	class G5M3 : FileEstimationStrategy
+	{
+		public G5M3(CodeStabilityPostReleaseDefectFilesPrediction model)
+			: base(model)
+		{}
+		public override void NewCodeSet(CodeSetData codeSet)
+		{
+			codeSetEstimations.Add(
+				(
+					(
+						codeSet.EP_REVISION(model.DefectLineProbability)
+						*
+						codeSet.EWNRP_REVISION()
+						*
+						codeSet.EWNFP_REVISION(model.DefectLineProbability)
+						*
+						codeSet.ESP()
+					)
+					+
+					(
+						codeSet.EP(model.DefectLineProbability)
+						*
+						codeSet.EFDP(model.BugLifetimeDistribution)
+					)
+				) / 2
 			);
 		}
 	}
@@ -1031,9 +1119,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public CodeStabilityPostReleaseDefectFilesPrediction()
 		{
 			Title = "Code stability model";
-			DefectLineProbabilityEstimation = new DefectLineProbabilityForTheWholeCode(this);
-			BugLifetimeDistributionEstimation = new BugLifetimeDistributionExperimental(this);
-			FileEstimation = new G2M4(this);
+			DefectLineProbabilityEstimation = new DefectLineProbabilityForTheCodeOfAuthorInFileAverage(this);
+			BugLifetimeDistributionEstimation = new BugLifetimeDistributionExperimentalMax(this);
+			FileEstimation = new G5M1(this);
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
