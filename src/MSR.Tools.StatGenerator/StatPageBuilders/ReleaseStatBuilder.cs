@@ -133,7 +133,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					post_release_dd = string.Format(
 						"{0} ({1}%)",
 						postReleaseDD.ToString("F02"),
-						((postReleaseDD / releaseDD) * 100).ToString("F02")
+						((releaseDD > 0 ? postReleaseDD / releaseDD : 0) * 100).ToString("F02")
 					),
 					fixed_defects = string.Format("{0} ({1})",
 						releaseFixesCount,
