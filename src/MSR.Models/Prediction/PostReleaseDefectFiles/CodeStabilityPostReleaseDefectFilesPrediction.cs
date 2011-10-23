@@ -228,7 +228,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 	}
 
-	abstract class FileEstimationStrategy
+	public abstract class FileEstimationStrategy
 	{
 		protected CodeStabilityPostReleaseDefectFilesPrediction model;
 		protected List<double> codeSetEstimations;
@@ -693,7 +693,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 	}
 	
-	abstract class DefectLineProbabilityEstimationStrategy
+	public abstract class DefectLineProbabilityEstimationStrategy
 	{
 		protected CodeStabilityPostReleaseDefectFilesPrediction model;
 
@@ -980,7 +980,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 	}
 	
-	abstract class BugLifetimeDistributionEstimationStrategy
+	public abstract class BugLifetimeDistributionEstimationStrategy
 	{
 		protected CodeStabilityPostReleaseDefectFilesPrediction model;
 		
@@ -1110,19 +1110,12 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 	}
 	
-	public class CodeStabilityPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
+	public abstract class CodeStabilityPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
 	{
 		public event Action<IRepositoryResolver> OnInit;
 		public event Action<ProjectFile> OnNewFile;
 		public event Action<CodeSetData> OnNewCodeSet;
 		
-		public CodeStabilityPostReleaseDefectFilesPrediction()
-		{
-			Title = "Code stability model";
-			DefectLineProbabilityEstimation = new DefectLineProbabilityForTheCodeOfAuthorInFileAverage(this);
-			BugLifetimeDistributionEstimation = new BugLifetimeDistributionExperimentalMax(this);
-			FileEstimation = new G5M1(this);
-		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
 			base.Init(repositories, releases);
@@ -1265,16 +1258,15 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; set;
 		}
-		
-		private FileEstimationStrategy FileEstimation
+		protected FileEstimationStrategy FileEstimation
 		{
 			get; set;
 		}
-		private BugLifetimeDistributionEstimationStrategy BugLifetimeDistributionEstimation
+		protected BugLifetimeDistributionEstimationStrategy BugLifetimeDistributionEstimation
 		{
 			get; set;
 		}
-		private DefectLineProbabilityEstimationStrategy DefectLineProbabilityEstimation
+		protected DefectLineProbabilityEstimationStrategy DefectLineProbabilityEstimation
 		{
 			get; set;
 		}

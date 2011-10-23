@@ -50,6 +50,8 @@
     </Compile>
     <Compile Include="Prediction\EvaluationResult.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\CustomPostReleaseDefectFilesPrediction.cs" />
+    <Compile Include="Prediction\PostReleaseDefectFiles\FastCodeStabilityPostReleaseDefectFilesPrediction.cs" />
+    <Compile Include="Prediction\PostReleaseDefectFiles\FullCodeStabilityPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\PostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\CodeStabilityPostReleaseDefectFilesPrediction.cs" />
     <Compile Include="Prediction\PostReleaseDefectFiles\LogisticRegressionPostReleaseDefectFilesPrediction.cs" />
