@@ -622,8 +622,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 						codeSet.DLN_REVISION(model.DefectLineProbability)
 						*
 						codeSet.EFDP(model.BugLifetimeDistribution)
-						*
-						codeSet.ESP()
 					)
 				) / 2)
 				*
