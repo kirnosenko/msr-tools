@@ -21,7 +21,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			Title = "Simplest total LOC model";
 
-			defaultCutOffValue = 0;
 			FilePortionLimit = 0.2f;
 		}
 		public override ROCEvaluationResult EvaluateUsingROC()
@@ -29,6 +28,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			double maxFileEstimation = FileEstimations.Max();
 			rocEvaluationDelta = (maxFileEstimation + maxFileEstimation / 100) / 100;
 			return base.EvaluateUsingROC();
+		}
+		protected override double DefaultCutOffValue
+		{
+			get { return 0; }
 		}
 		protected override double GetFileEstimation(ProjectFile file)
 		{

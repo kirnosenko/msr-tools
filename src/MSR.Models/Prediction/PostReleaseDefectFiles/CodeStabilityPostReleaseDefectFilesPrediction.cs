@@ -495,20 +495,20 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	
 	abstract class G4 : FileEstimationStrategy
 	{
-		protected double defectCodeSizeInFilePerDefect;
+		protected double cutOffValue;
 		
 		public G4(CodeStabilityPostReleaseDefectFilesPrediction model)
 			: base(model)
 		{
-			EstimateDefectCodeSizeInFilePerDefect = false;
+			EstimateCutOffValue = false;
 		}
 		public override void Init(IRepositoryResolver repositories)
 		{
 			base.Init(repositories);
-
-			if (! EstimateDefectCodeSizeInFilePerDefect)
+			
+			if (! EstimateCutOffValue)
 			{
-				defectCodeSizeInFilePerDefect = 1;
+				cutOffValue = 1;
 			}
 			else
 			{
@@ -530,7 +530,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				
 				var touchedFilesPerDefect = (float)touchedFiles / defectCount;
 				
-				defectCodeSizeInFilePerDefect = deletedLocPerDefect / touchedFilesPerDefect;
+				cutOffValue = deletedLocPerDefect / touchedFilesPerDefect;
 			}
 		}
 		public override double FileEstimation
@@ -549,7 +549,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		public override double DefaultCutOffValue
 		{
-			get { return defectCodeSizeInFilePerDefect; }
+			get { return cutOffValue; }
 		}
 		public override double RocEvaluationDelta
 		{
@@ -559,7 +559,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				return (maxFileEstimation + maxFileEstimation / 100) / 100;
 			}
 		}
-		public bool EstimateDefectCodeSizeInFilePerDefect
+		public bool EstimateCutOffValue
 		{
 			get; set;
 		}
@@ -1170,14 +1170,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get { return BugLifetimeDistributionEstimation.Estimation; }
 		}
-		public override string[] PredictedDefectFiles
-		{
-			get
-			{
-				defaultCutOffValue = FileEstimation.DefaultCutOffValue;
-				return base.PredictedDefectFiles;
-			}
-		}
 		public override ROCEvaluationResult EvaluateUsingROC()
 		{
 			rocEvaluationDelta = FileEstimation.RocEvaluationDelta;
@@ -1187,7 +1179,11 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			get; protected set;
 		}
-		
+
+		protected override double DefaultCutOffValue
+		{
+			get { return FileEstimation.DefaultCutOffValue; }
+		}
 		protected override double GetFileEstimation(ProjectFile file)
 		{
 			var codeBlocks = repositories.SelectionDSL()

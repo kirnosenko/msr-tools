@@ -26,7 +26,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			Title = "Total LOC linear regression model";
 			
 			this.AddTotalLocInFilesTillRevisionPredictor();
-			defaultCutOffValue = 1;
 		}
 		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
 		{
@@ -66,6 +65,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			double maxFileEstimation = FileEstimations.Max();
 			rocEvaluationDelta = (maxFileEstimation + maxFileEstimation / 100) / 100;
 			return base.EvaluateUsingROC();
+		}
+		protected override double DefaultCutOffValue
+		{
+			get { return 1; }
 		}
 		protected override double GetFileEstimation(ProjectFile file)
 		{

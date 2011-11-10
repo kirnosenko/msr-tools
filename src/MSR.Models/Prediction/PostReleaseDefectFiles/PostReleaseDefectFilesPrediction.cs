@@ -22,7 +22,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	{
 		public event Action<PostReleaseDefectFilesPrediction,double> CallBack;
 		
-		protected double defaultCutOffValue;
 		protected double rocEvaluationDelta;
 		private Dictionary<string,double> possibleDefectFiles;
 		private ProjectFile[] allFiles;
@@ -31,7 +30,6 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		
 		public PostReleaseDefectFilesPrediction()
 		{
-			defaultCutOffValue = 0.5;
 			UseFileEstimationMeanAsCutOffValue = false;
 			FilePortionLimit = 1;
 			rocEvaluationDelta = 0.01;
@@ -117,7 +115,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				return allFiles;
 			}
 		}
-		public virtual string[] PredictedDefectFiles
+		public string[] PredictedDefectFiles
 		{
 			get
 			{
@@ -125,8 +123,8 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				{
 					predictedDefectFiles = possibleDefectFiles
 						.Where(x => x.Value >= CutOffValue)
-						.TakeNoMoreThan((int)(possibleDefectFiles.Count * FilePortionLimit))
 						.Select(x => x.Key)
+						.TakeNoMoreThan((int)(possibleDefectFiles.Count * FilePortionLimit))
 						.ToArray();
 				}
 				return predictedDefectFiles;
@@ -148,6 +146,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			get; set;
 		}
 		
+		protected virtual double DefaultCutOffValue
+		{
+			get { return 0.5; }
+		}
 		protected double CutOffValue
 		{
 			get
@@ -156,7 +158,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				{
 					return FileEstimations.Mean();
 				}
-				return defaultCutOffValue;
+				return DefaultCutOffValue;
 			}
 		}
 		protected EvaluationResult Evaluate(string[] predictedDefectFiles)
