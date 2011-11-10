@@ -37,6 +37,7 @@ namespace MSR.Tools.Predictor
 		bool ShowFiles { get; set; }
 		bool Evaluate { get; set; }
 		bool EvaluateUsingROC { get; set; }
+		bool EvaluateRanking { get; set; }
 		bool ReleaseSetGettingAll { get; set; }
 		bool ReleaseSetGettingIncrementalGrowth { get; set; }
 		bool ReleaseSetGettingFixed { get; set; }
@@ -202,6 +203,11 @@ namespace MSR.Tools.Predictor
 		{
 			get { return evaluateUsingROCMenu.Checked; }
 			set { evaluateUsingROCMenu.Checked = value; }
+		}
+		public bool EvaluateRanking
+		{
+			get { return evaluateRankingMenu.Checked; }
+			set { evaluateRankingMenu.Checked = value; }
 		}
 		public bool ReleaseSetGettingAll
 		{

@@ -12,7 +12,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	{
 		public FastCodeStabilityPostReleaseDefectFilesPrediction()
 		{
-			Title = "Code stability model (Fast)";
+			Title = "Code stability model (fast)";
 			DefectLineProbabilityEstimation = new DefectLineProbabilityForTheCodeOfAuthorInFileAverage(this);
 			BugLifetimeDistributionEstimation = new BugLifetimeDistributionExperimentalMax(this);
 			FileEstimation = new G5M2(this);

@@ -63,6 +63,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					CallBack(this, (double)processedFilesCount / allFilesCount);
 				}
 			}
+			possibleDefectFiles = possibleDefectFiles
+				.OrderByDescending(x => x.Value)
+				.ToDictionary(x => x.Key, x => x.Value);
 		}
 		public EvaluationResult Evaluate()
 		{
@@ -83,6 +86,12 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			}
 
 			return new ROCEvaluationResult(results.ToArray(), rocEvaluationDelta);
+		}
+		public virtual RankingEvaluationResult EvaluateRanking()
+		{
+			return new RankingEvaluationResult(
+				GetDefectCodeSizeInFilesAfterRelease(), PredictedDefectFiles
+			);
 		}
 		public bool UseFileEstimationMeanAsCutOffValue
 		{
@@ -200,6 +209,38 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 					.ExistInRevision(PredictionRelease)
 				.Select(x => x.Path)
 				.ToArray();
+		}
+		private Dictionary<string,double> GetDefectCodeSizeInFilesAfterRelease()
+		{
+			var fixCommits = repositories.SelectionDSL()
+				.Commits()
+					.TillRevision(PredictionRelease)
+				.Modifications()
+					.InCommits()
+				.CodeBlocks()
+					.InModifications().ModifiedBy()
+				.Modifications()
+					.ContainCodeBlocks()
+				.Commits()
+					.AfterRevision(PredictionRelease)
+					.AreBugFixes()
+					.ContainModifications();
+			
+			return
+				(
+					from f in repositories.SelectionDSL().Files().ExistInRevision(PredictionRelease)
+					join m in repositories.Repository<Modification>() on f.ID equals m.FileID
+					join c in fixCommits on m.CommitID equals c.ID
+					join cb in repositories.Repository<CodeBlock>() on m.ID equals cb.ModificationID
+					where
+						cb.Size < 0
+					group cb.Size by f.Path into g
+					select new
+					{
+						Path = g.Key,
+						CodeSize = -g.Sum()
+					}
+				).ToDictionary(x => x.Path, x => x.CodeSize);
 		}
 	}
 }

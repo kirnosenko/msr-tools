@@ -95,6 +95,7 @@ namespace MSR.Tools.Predictor
 		bool ShowFiles { get; set; }
 		bool Evaluate { get; set; }
 		bool EvaluateUsingROC { get; set; }
+		bool EvaluateRanking { get; set; }
 		ReleaseSetGettingAlgo ReleaseSetGetting { get; set; }
 		int ReleaseSetSize { get; set; }
 	}
@@ -103,7 +104,8 @@ namespace MSR.Tools.Predictor
 	{
 		public string ModelTitle { get; set; }
 		public EvaluationResult ER { get; set; }
-		public ROCEvaluationResult RER { get; set; }
+		public ROCEvaluationResult RoER { get; set; }
+		public RankingEvaluationResult RaER { get; set; }
 		public double[] FileEstimations { get; set; }
 		public string[] PredictedDefectFiles { get; set; }
 		public string[] DefectFiles { get; set; }
@@ -128,6 +130,7 @@ namespace MSR.Tools.Predictor
 			ShowFiles = false;
 			Evaluate = true;
 			EvaluateUsingROC = true;
+			EvaluateRanking = true;
 			ReleaseSetGetting = ReleaseSetGettingAlgo.IncrementalGrowth;
 			ReleaseSetSize = 3;
 		}
@@ -213,6 +216,10 @@ namespace MSR.Tools.Predictor
 		{
 			get; set;
 		}
+		public bool EvaluateRanking
+		{
+			get; set;
+		}
 		public ReleaseSetGettingAlgo ReleaseSetGetting
 		{
 			get; set;
@@ -277,9 +284,13 @@ namespace MSR.Tools.Predictor
 					}
 					if (EvaluateUsingROC)
 					{
-						modelResult.RER = model.EvaluateUsingROC();
-						rocs.Add(modelResult.RER);
+						modelResult.RoER = model.EvaluateUsingROC();
+						rocs.Add(modelResult.RoER);
 						OnRocAdded(model.Title, releases.Last().Value, rocs.Count - 1);
+					}
+					if (EvaluateRanking)
+					{
+						modelResult.RaER = model.EvaluateRanking();
 					}
 				}
 				
@@ -334,9 +345,13 @@ namespace MSR.Tools.Predictor
 			{
 				output.AppendLine(EvaluationResultToString(modelResult.ER));
 			}
-			if (modelResult.RER != null)
+			if (modelResult.RoER != null)
 			{
-				output.AppendLine(RocEvaluationResultToString(modelResult.RER));
+				output.AppendLine(RocEvaluationResultToString(modelResult.RoER));
+			}
+			if (modelResult.RaER != null)
+			{
+				output.AppendLine(RankingEvaluationResultToString(modelResult.RaER));
 			}
 			if (modelResult.FileEstimations != null)
 			{
@@ -379,13 +394,21 @@ namespace MSR.Tools.Predictor
 						modelResults.Average(x => x.ER.NegPos)
 					));
 				}
-				if (modelResults.First().RER != null)
+				if (modelResults.First().RoER != null)
 				{
 					output.AppendLine(RocEvaluationResultToString(
-						modelResults.Average(x => x.RER.AUC),
-						modelResults.Average(x => x.RER.MaxPoint),
-						modelResults.Average(x => x.RER.BalancePoint),
-						modelResults.Average(x => x.RER.OptimalPoint)
+						modelResults.Average(x => x.RoER.AUC),
+						modelResults.Average(x => x.RoER.MaxPoint),
+						modelResults.Average(x => x.RoER.BalancePoint),
+						modelResults.Average(x => x.RoER.OptimalPoint)
+					));
+				}
+				if (modelResults.First().RaER != null)
+				{
+					output.AppendLine(RankingEvaluationResultToString(
+						modelResults.Average(x => x.RaER.DefectCodeSize),
+						modelResults.Average(x => x.RaER.DefectCodeSizeInSelection),
+						modelResults.Average(x => x.RaER.DefectCodeSizeInSelectionPercent)
 					));
 				}
 				if (modelResults.First().FileEstimations != null)
@@ -411,14 +434,28 @@ namespace MSR.Tools.Predictor
 				P, R, A, NP
 			);
 		}
-		private string RocEvaluationResultToString(ROCEvaluationResult rer)
+		private string RocEvaluationResultToString(ROCEvaluationResult roer)
 		{
-			return RocEvaluationResultToString(rer.AUC, rer.MaxPoint, rer.BalancePoint, rer.OptimalPoint);
+			return RocEvaluationResultToString(roer.AUC, roer.MaxPoint, roer.BalancePoint, roer.OptimalPoint);
 		}
 		private string RocEvaluationResultToString(double AUC, double MP, double BP, double OP)
 		{
 			return string.Format("AUC = {0:0.00}, MaxPoint = {1:0.00}, BalancePoint = {2:0.00}, OptimalPoint = {3:0.00}",
 				AUC, MP, BP, OP
+			);
+		}
+		private string RankingEvaluationResultToString(RankingEvaluationResult raer)
+		{
+			return RankingEvaluationResultToString(
+				raer.DefectCodeSize,
+				raer.DefectCodeSizeInSelection,
+				raer.DefectCodeSizeInSelectionPercent
+			);
+		}
+		private string RankingEvaluationResultToString(double DCS, double SDCS, double SDCSP)
+		{
+			return string.Format("Defect code size = {0:0.00}, Defect code size in selection = {1:0.00} ({2:0.00} %)",
+				DCS, SDCS, SDCSP
 			);
 		}
 		private string FileEstimationsToString(double mean, double median, double max, double min)

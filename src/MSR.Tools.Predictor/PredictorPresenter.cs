@@ -35,6 +35,7 @@ namespace MSR.Tools.Predictor
 			view.ShowFiles = model.ShowFiles;
 			view.Evaluate = model.Evaluate;
 			view.EvaluateUsingROC = model.EvaluateUsingROC;
+			view.EvaluateRanking = model.EvaluateRanking;
 			if (model.ReleaseSetGetting == ReleaseSetGettingAlgo.All)
 			{
 				view.ReleaseSetGettingAll = true;
@@ -76,6 +77,7 @@ namespace MSR.Tools.Predictor
 			model.ShowFiles = view.ShowFiles;
 			model.Evaluate = view.Evaluate;
 			model.EvaluateUsingROC = view.EvaluateUsingROC;
+			model.EvaluateRanking = view.EvaluateRanking;
 			if (view.ReleaseSetGettingAll)
 			{
 				model.ReleaseSetGetting = ReleaseSetGettingAlgo.All;

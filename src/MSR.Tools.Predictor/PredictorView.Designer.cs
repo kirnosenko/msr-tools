@@ -55,6 +55,7 @@
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.splitter2 = new System.Windows.Forms.Splitter();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.evaluateRankingMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.releaseSetSize)).BeginInit();
@@ -98,7 +99,8 @@
 			this.viewMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.showFilesMenu,
             this.evaluateMenu,
-            this.evaluateUsingROCMenu});
+            this.evaluateUsingROCMenu,
+            this.evaluateRankingMenu});
 			this.viewMenu.Name = "viewMenu";
 			this.viewMenu.Size = new System.Drawing.Size(44, 20);
 			this.viewMenu.Text = "View";
@@ -136,14 +138,14 @@
 			// predictMenu
 			// 
 			this.predictMenu.Name = "predictMenu";
-			this.predictMenu.Size = new System.Drawing.Size(152, 22);
+			this.predictMenu.Size = new System.Drawing.Size(148, 22);
 			this.predictMenu.Text = "Predict";
 			this.predictMenu.Click += new System.EventHandler(this.predictMenuClick);
 			// 
 			// showRocForMenu
 			// 
 			this.showRocForMenu.Name = "showRocForMenu";
-			this.showRocForMenu.Size = new System.Drawing.Size(152, 22);
+			this.showRocForMenu.Size = new System.Drawing.Size(148, 22);
 			this.showRocForMenu.Text = "Show ROC for";
 			// 
 			// releaseList
@@ -335,6 +337,12 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Prediction models";
 			// 
+			// evaluateRankingMenu
+			// 
+			this.evaluateRankingMenu.Name = "evaluateRankingMenu";
+			this.evaluateRankingMenu.Size = new System.Drawing.Size(177, 22);
+			this.evaluateRankingMenu.Text = "Evaluate ranking";
+			// 
 			// PredictorView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -395,6 +403,7 @@
 		private System.Windows.Forms.ToolStripMenuItem evaluateMenu;
 		private System.Windows.Forms.ToolStripMenuItem evaluateUsingROCMenu;
 		private System.Windows.Forms.ToolStripMenuItem showRocForMenu;
+		private System.Windows.Forms.ToolStripMenuItem evaluateRankingMenu;
 	}
 }
 
