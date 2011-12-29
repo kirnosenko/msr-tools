@@ -807,7 +807,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		protected void NewCodeSet(CodeSetData codeSet)
 		{
-			Estimation = (codeOfAuthor.Estimation + codeInFile.Estimation) / 2;
+			Estimation = (codeOfAuthor.Estimation + codeInFile.Estimation) - (codeOfAuthor.Estimation * codeInFile.Estimation);
 		}
 	}
 	class DefectLineProbabilityForTheCodeOfAuthorInFileRegression : DefectLineProbabilityEstimationStrategy
@@ -875,20 +875,22 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				
 				if (locAddedInFile > 0)
 				{
-					for (int j = 0; j < allAuthors.Length; j++)
-					{
-						double locAddedInFileByAuthor = codeByAuthorAndFile
-							.Where(x => x.FileID == allFiles[i] && x.Author == allAuthors[j])
-							.Sum(x => x.CodeSize);
-						equations[equation, numberOfFiles + j] = locAddedInFileByAuthor / locAddedInFile;
-					}
-					results[equation] = repositories.SelectionDSL()
+					double dcd = repositories.SelectionDSL()
 						.Commits()
 							.TillRevision(model.PredictionRelease)
 						.Files()
 							.IdIs(allFiles[i])
 						.Modifications().InCommits().InFiles()
 						.CodeBlocks().InModifications().CalculateDefectCodeDensity(model.PredictionRelease);
+					
+					for (int j = 0; j < allAuthors.Length; j++)
+					{
+						double locAddedInFileByAuthor = codeByAuthorAndFile
+							.Where(x => x.FileID == allFiles[i] && x.Author == allAuthors[j])
+							.Sum(x => x.CodeSize);
+						equations[equation, numberOfFiles + j] = (locAddedInFileByAuthor / locAddedInFile);
+					}
+					results[equation] = dcd;
 				}
 				equation++;
 			}
@@ -903,19 +905,20 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				
 				if (locAddedByAuthor > 0)
 				{
-					for (int j = 0; j < allFiles.Length; j++)
-					{
-						double locAddedByAuthorInFile = codeByAuthorAndFile
-							.Where(x => x.Author == allAuthors[i] && x.FileID == allFiles[j])
-							.Sum(x => x.CodeSize);
-						equations[equation, j] = locAddedByAuthorInFile / locAddedByAuthor;
-					}
-					results[equation] = repositories.SelectionDSL()
+					double dcd = repositories.SelectionDSL()
 						.Commits()
 							.AuthorIs(allAuthors[i])
 							.TillRevision(model.PredictionRelease)
 						.Modifications().InCommits()
 						.CodeBlocks().InModifications().CalculateDefectCodeDensity(model.PredictionRelease);
+					for (int j = 0; j < allFiles.Length; j++)
+					{
+						double locAddedByAuthorInFile = codeByAuthorAndFile
+							.Where(x => x.Author == allAuthors[i] && x.FileID == allFiles[j])
+							.Sum(x => x.CodeSize);
+						equations[equation, j] = (locAddedByAuthorInFile / locAddedByAuthor);
+					}
+					results[equation] = dcd;
 				}
 				equation++;
 			}
