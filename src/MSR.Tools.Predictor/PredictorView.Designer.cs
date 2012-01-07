@@ -35,6 +35,8 @@
 			this.showFilesMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.evaluateMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.evaluateUsingROCMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.evaluateRankingMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.showEstimationStatsMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.commandMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.predictMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.showRocForMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,7 +57,7 @@
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.splitter2 = new System.Windows.Forms.Splitter();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.evaluateRankingMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.showTotalResultMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.releaseSetSize)).BeginInit();
@@ -100,7 +102,9 @@
             this.showFilesMenu,
             this.evaluateMenu,
             this.evaluateUsingROCMenu,
-            this.evaluateRankingMenu});
+            this.evaluateRankingMenu,
+            this.showEstimationStatsMenu,
+            this.showTotalResultMenu});
 			this.viewMenu.Name = "viewMenu";
 			this.viewMenu.Size = new System.Drawing.Size(44, 20);
 			this.viewMenu.Text = "View";
@@ -108,23 +112,37 @@
 			// showFilesMenu
 			// 
 			this.showFilesMenu.Name = "showFilesMenu";
-			this.showFilesMenu.Size = new System.Drawing.Size(177, 22);
+			this.showFilesMenu.Size = new System.Drawing.Size(189, 22);
 			this.showFilesMenu.Text = "Show files";
 			this.showFilesMenu.Click += new System.EventHandler(this.SwitchMenuOptionClick);
 			// 
 			// evaluateMenu
 			// 
 			this.evaluateMenu.Name = "evaluateMenu";
-			this.evaluateMenu.Size = new System.Drawing.Size(177, 22);
+			this.evaluateMenu.Size = new System.Drawing.Size(189, 22);
 			this.evaluateMenu.Text = "Evaluate";
 			this.evaluateMenu.Click += new System.EventHandler(this.SwitchMenuOptionClick);
 			// 
 			// evaluateUsingROCMenu
 			// 
 			this.evaluateUsingROCMenu.Name = "evaluateUsingROCMenu";
-			this.evaluateUsingROCMenu.Size = new System.Drawing.Size(177, 22);
+			this.evaluateUsingROCMenu.Size = new System.Drawing.Size(189, 22);
 			this.evaluateUsingROCMenu.Text = "Evaluate using ROC";
 			this.evaluateUsingROCMenu.Click += new System.EventHandler(this.SwitchMenuOptionClick);
+			// 
+			// evaluateRankingMenu
+			// 
+			this.evaluateRankingMenu.Name = "evaluateRankingMenu";
+			this.evaluateRankingMenu.Size = new System.Drawing.Size(189, 22);
+			this.evaluateRankingMenu.Text = "Evaluate ranking";
+			this.evaluateRankingMenu.Click += new System.EventHandler(this.SwitchMenuOptionClick);
+			// 
+			// showEstimationStatsMenu
+			// 
+			this.showEstimationStatsMenu.Name = "showEstimationStatsMenu";
+			this.showEstimationStatsMenu.Size = new System.Drawing.Size(189, 22);
+			this.showEstimationStatsMenu.Text = "Show estimation stats";
+			this.showEstimationStatsMenu.Click += new System.EventHandler(this.SwitchMenuOptionClick);
 			// 
 			// commandMenu
 			// 
@@ -229,8 +247,8 @@
 			// 
 			// releaseSetSize
 			// 
-			this.releaseSetSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.releaseSetSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.releaseSetSize.Location = new System.Drawing.Point(80, 72);
 			this.releaseSetSize.Maximum = new decimal(new int[] {
             1000,
@@ -337,11 +355,12 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Prediction models";
 			// 
-			// evaluateRankingMenu
+			// showTotalResultMenu
 			// 
-			this.evaluateRankingMenu.Name = "evaluateRankingMenu";
-			this.evaluateRankingMenu.Size = new System.Drawing.Size(177, 22);
-			this.evaluateRankingMenu.Text = "Evaluate ranking";
+			this.showTotalResultMenu.Name = "showTotalResultMenu";
+			this.showTotalResultMenu.Size = new System.Drawing.Size(189, 22);
+			this.showTotalResultMenu.Text = "Show total result";
+			this.showTotalResultMenu.Click += new System.EventHandler(this.SwitchMenuOptionClick);
 			// 
 			// PredictorView
 			// 
@@ -404,6 +423,8 @@
 		private System.Windows.Forms.ToolStripMenuItem evaluateUsingROCMenu;
 		private System.Windows.Forms.ToolStripMenuItem showRocForMenu;
 		private System.Windows.Forms.ToolStripMenuItem evaluateRankingMenu;
+		private System.Windows.Forms.ToolStripMenuItem showEstimationStatsMenu;
+		private System.Windows.Forms.ToolStripMenuItem showTotalResultMenu;
 	}
 }
 

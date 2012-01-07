@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2011  Semyon Kirnosenko
+ * Copyright (C) 2011-2012  Semyon Kirnosenko
  */
 
 using System;
@@ -36,6 +36,8 @@ namespace MSR.Tools.Predictor
 			view.Evaluate = model.Evaluate;
 			view.EvaluateUsingROC = model.EvaluateUsingROC;
 			view.EvaluateRanking = model.EvaluateRanking;
+			view.ShowEstimationStats = model.ShowEstimationStats;
+			view.ShowTotalResult = model.ShowTotalResult;
 			if (model.ReleaseSetGetting == ReleaseSetGettingAlgo.All)
 			{
 				view.ReleaseSetGettingAll = true;
@@ -78,6 +80,8 @@ namespace MSR.Tools.Predictor
 			model.Evaluate = view.Evaluate;
 			model.EvaluateUsingROC = view.EvaluateUsingROC;
 			model.EvaluateRanking = view.EvaluateRanking;
+			model.ShowEstimationStats = view.ShowEstimationStats;
+			model.ShowTotalResult = view.ShowTotalResult;
 			if (view.ReleaseSetGettingAll)
 			{
 				model.ReleaseSetGetting = ReleaseSetGettingAlgo.All;

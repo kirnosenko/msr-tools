@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2011  Semyon Kirnosenko
+ * Copyright (C) 2011-2012  Semyon Kirnosenko
  */
 
 using System;
@@ -96,6 +96,8 @@ namespace MSR.Tools.Predictor
 		bool Evaluate { get; set; }
 		bool EvaluateUsingROC { get; set; }
 		bool EvaluateRanking { get; set; }
+		bool ShowEstimationStats { get; set; }
+		bool ShowTotalResult { get; set; }
 		ReleaseSetGettingAlgo ReleaseSetGetting { get; set; }
 		int ReleaseSetSize { get; set; }
 	}
@@ -127,10 +129,15 @@ namespace MSR.Tools.Predictor
 		
 		public PredictorModel()
 		{
-			ShowFiles = false;
-			Evaluate = true;
-			EvaluateUsingROC = true;
-			EvaluateRanking = true;
+			bool justPredictionIsPreferred = true;
+
+			ShowFiles = justPredictionIsPreferred;
+			Evaluate = !justPredictionIsPreferred;
+			EvaluateUsingROC = !justPredictionIsPreferred;
+			EvaluateRanking = !justPredictionIsPreferred;
+			ShowEstimationStats = !justPredictionIsPreferred;
+			ShowTotalResult = !justPredictionIsPreferred;
+
 			ReleaseSetGetting = ReleaseSetGettingAlgo.IncrementalGrowth;
 			ReleaseSetSize = 3;
 		}
@@ -220,6 +227,14 @@ namespace MSR.Tools.Predictor
 		{
 			get; set;
 		}
+		public bool ShowEstimationStats
+		{
+			get; set;
+		}
+		public bool ShowTotalResult
+		{
+			get; set;
+		}
 		public ReleaseSetGettingAlgo ReleaseSetGetting
 		{
 			get; set;
@@ -244,7 +259,10 @@ namespace MSR.Tools.Predictor
 					ShowReleases(releaseSet.Values);
 					results.Add(new List<ModelResult>(Predict(releaseSet)));
 				}
-				ShowTotalModelResult(results);
+				if ((ShowTotalResult) && (Evaluate || EvaluateUsingROC || EvaluateRanking || ShowEstimationStats))
+				{
+					ShowTotalModelResult(results);
+				}
 			}
 			catch (Exception e)
 			{
@@ -269,7 +287,6 @@ namespace MSR.Tools.Predictor
 					model.Init(s, releases.Keys);
 					model.Predict();
 					
-					modelResult.FileEstimations = model.FileEstimations;
 					if (ShowFiles)
 					{
 						modelResult.PredictedDefectFiles = model.PredictedDefectFiles.ToArray();
@@ -291,6 +308,10 @@ namespace MSR.Tools.Predictor
 					if (EvaluateRanking)
 					{
 						modelResult.RaER = model.EvaluateRanking();
+					}
+					if (ShowEstimationStats)
+					{
+						modelResult.FileEstimations = model.FileEstimations;
 					}
 				}
 				
@@ -391,6 +412,7 @@ namespace MSR.Tools.Predictor
 						modelResults.Average(x => x.ER.Precision),
 						modelResults.Average(x => x.ER.Recall),
 						modelResults.Average(x => x.ER.Accuracy),
+						modelResults.Average(x => x.ER.Fmeasure),
 						modelResults.Average(x => x.ER.NegPos)
 					));
 				}
@@ -426,12 +448,12 @@ namespace MSR.Tools.Predictor
 		}
 		private string EvaluationResultToString(EvaluationResult er)
 		{
-			return EvaluationResultToString(er.Precision, er.Recall, er.Accuracy, er.NegPos);
+			return EvaluationResultToString(er.Precision, er.Recall, er.Accuracy, er.Fmeasure, er.NegPos);
 		}
-		private string EvaluationResultToString(double P, double R, double A, double NP)
+		private string EvaluationResultToString(double P, double R, double A, double F, double NP)
 		{
-			return string.Format("P = {0:0.00}, R = {1:0.00}, A = {2:0.00}, NP = {3:0.00}",
-				P, R, A, NP
+			return string.Format("Precision = {0:0.00}, Recall = {1:0.00}, Accuracy = {2:0.00}, F-measure = {3:0.00}, Neg/Pos = {4:0.00}",
+				P, R, A, F, NP
 			);
 		}
 		private string RocEvaluationResultToString(ROCEvaluationResult roer)
