@@ -1,4 +1,10 @@
-﻿2011-08-10 - version 0.3.2
+﻿2012-01-10 - version 0.3.3
+	
+	* more defect prediction models
+	* more evaluation results
+	* fixed bugs
+
+2011-08-10 - version 0.3.2
 	
 	* a command for manual release mapping
 	* some minor improvements
