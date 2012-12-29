@@ -1,8 +1,8 @@
 # ignore this
 bin/
 obj/
+packages/
+TestResults/
 deploy/
 *.user
 *.suo
-TestResult.xml
-*VisualState.xml
