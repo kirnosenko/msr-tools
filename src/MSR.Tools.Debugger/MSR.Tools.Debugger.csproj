@@ -45,10 +45,6 @@
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MSR.Data.Persistent\MSR.Data.Persistent.csproj">
-      <Project>{A6B322D3-6D91-46B4-8E99-64C5E46B626F}</Project>
-      <Name>MSR.Data.Persistent</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MSR.Models\MSR.Models.csproj">
       <Project>{E8BE4CCD-C394-41F0-8D7B-28515D2DDD5F}</Project>
       <Name>MSR.Models</Name>
