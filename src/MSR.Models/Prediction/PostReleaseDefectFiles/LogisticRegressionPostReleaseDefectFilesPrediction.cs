@@ -20,9 +20,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	{
 		private LogisticRegression regression;
 
-		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
+		public override void Init(IRepository repository, IEnumerable<string> releases)
 		{
-			base.Init(repositories, releases);
+			base.Init(repository, releases);
 
 			regression = new LogisticRegression();
 
@@ -55,7 +55,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		protected double FileHasDefects(int fileID, string revision, string previousRevision)
 		{
-			return repositories.SelectionDSL()
+			return repository.SelectionDSL()
 				.Files().IdIs(fileID)
 				.Commits()
 					.AfterRevision(previousRevision)

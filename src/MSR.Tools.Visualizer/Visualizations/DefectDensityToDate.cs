@@ -26,9 +26,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 			Type = VisualizationType.LINEWITHPOINTS;
 			Title = "Defect density to date";
 		}
-		public override void Calc(IRepositoryResolver repositories)
+		public override void Calc(IRepository repository)
 		{
-			base.Calc(repositories);
+			base.Calc(repository);
 
 			x = new double[dates.Count()];
 			tdd = new double[dates.Count()];
@@ -38,11 +38,11 @@ namespace MSR.Tools.Visualizer.Visualizations
 			for (int i = 0; i < dates.Length; i++)
 			{
 				x[i] = (dates[i] - dates[0]).TotalDays;
-				var code = repositories.SelectionDSL()
+				var code = repository.SelectionDSL()
 					.Commits()
 						.DateIsLesserOrEquelThan(dates[i])
 						.Do(c =>
-							revision = repositories.Repository<Commit>().Single(cc =>
+							revision = repository.Queryable<Commit>().Single(cc =>
 								cc.OrderedNumber == c.Max(ccc => ccc.OrderedNumber)
 							).Revision
 						)

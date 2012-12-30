@@ -29,9 +29,9 @@ namespace MSR.Data.Entities.DSL.Mapping
 						.Code(10)
 			.Submit();
 
-			Repository<CodeBlock>().Count()
+			Queryable<CodeBlock>().Count()
 				.Should().Be(1);
-			Repository<CodeBlock>().Single()
+			Queryable<CodeBlock>().Single()
 				.Satisfy(cb =>
 					cb.Size == 10 &&
 					cb.Modification != null &&
@@ -65,19 +65,19 @@ namespace MSR.Data.Entities.DSL.Mapping
 			.Submit();
 
 			var targetModification =
-				from cb in Repository<CodeBlock>().Where(cb => cb.Size < 0)
-				join tcb in Repository<CodeBlock>() on cb.TargetCodeBlockID equals tcb.ID
-				join m in Repository<Modification>() on tcb.ModificationID equals m.ID
+				from cb in Queryable<CodeBlock>().Where(cb => cb.Size < 0)
+				join tcb in Queryable<CodeBlock>() on cb.TargetCodeBlockID equals tcb.ID
+				join m in Queryable<Modification>() on tcb.ModificationID equals m.ID
 				select m;
 
 			(
 				from m in targetModification
-				join f in Repository<ProjectFile>() on m.FileID equals f.ID
+				join f in Queryable<ProjectFile>() on m.FileID equals f.ID
 				select f.Path
 			).Should().Have.SameSequenceAs(Enumerable.Repeat("file1", 3));
 			(
 				from m in targetModification
-				join c in Repository<Commit>() on m.CommitID equals c.ID
+				join c in Queryable<Commit>() on m.CommitID equals c.ID
 				select c.Revision
 			).Should().Have.SameSequenceAs(new string[] { "1", "2", "3" });
 		}
@@ -97,8 +97,8 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.File("file2").Modified()
 						.Code(-10).ForCodeAddedInitiallyInRevision("1")
 			.Submit();
-			
-			Repository<CodeBlock>()
+
+			Queryable<CodeBlock>()
 				.Single(cb => cb.Size == -10)
 				.TargetCodeBlock.Modification.Commit.Revision
 					.Should().Be("2");
@@ -126,26 +126,26 @@ namespace MSR.Data.Entities.DSL.Mapping
 						.CopyCode()
 			.Submit();
 
-			Repository<CodeBlock>()
+			Queryable<CodeBlock>()
 				.Single(cb => cb.Modification.Commit.Revision == "1")
 				.AddedInitiallyInCommit.Revision
 					.Should().Be("1");
-			Repository<CodeBlock>()
+			Queryable<CodeBlock>()
 				.Single(cb => cb.Modification.Commit.Revision == "2" && cb.Size > 0)
 				.AddedInitiallyInCommit.Revision
 					.Should().Be("2");
-			Repository<CodeBlock>()
+			Queryable<CodeBlock>()
 				.Single(cb => cb.Modification.Commit.Revision == "2" && cb.Size < 0)
 				.AddedInitiallyInCommit
 					.Should().Be.Null();
-			Repository<CodeBlock>()
+			Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "3")
 				.Select(cb => cb.AddedInitiallyInCommit.Revision).ToArray()
 					.Should().Have.SameSequenceAs(new string[]
 					{
 						"1", "2"
 					});
-			Repository<CodeBlock>()
+			Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "4")
 				.Select(cb => cb.AddedInitiallyInCommit.Revision).ToArray()
 					.Should().Have.SameSequenceAs(new string[]
@@ -175,8 +175,8 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.AddFile("file2").CopiedFrom("file1", "2").Modified()
 						.CopyCode()
 			.Submit();
-			
-			Repository<CodeBlock>()
+
+			Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "4")
 				.Select(cb => cb.Size).ToArray()
 					.Should().Have.SameSequenceAs(new double[]
@@ -207,7 +207,7 @@ namespace MSR.Data.Entities.DSL.Mapping
 						.CopyCode()
 			.Submit();
 
-			Repository<CodeBlock>()
+			Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "4")
 				.Select(x => x.Size).ToArray()
 					.Should().Have.SameSequenceAs(new double[] { 20, 5 });
@@ -228,8 +228,8 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.File("file2").Modified()
 						.Code(-5).ForCodeAddedInitiallyInRevision("1")
 			.Submit();
-			
-			Repository<CodeBlock>().Single(cb => cb.Size == -5)
+
+			Queryable<CodeBlock>().Single(cb => cb.Size == -5)
 				.TargetCodeBlock.AddedInitiallyInCommit.Revision
 					.Should().Be("1");
 		}
@@ -247,8 +247,8 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.AddFile("file3").CopiedFrom("file2", "1").Modified()
 						.CopyCode()
 			.Submit();
-			
-			Repository<CodeBlock>()
+
+			Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "2")
 				.Select(cb => cb.Size).ToArray()
 					.Should().Have.SameSequenceAs(new double[]
@@ -278,7 +278,7 @@ namespace MSR.Data.Entities.DSL.Mapping
 						.CopyCode()
 			.Submit();
 
-			Repository<CodeBlock>()
+			Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "4")
 				.Select(cb => cb.AddedInitiallyInCommit.Revision).ToArray()
 					.Should().Have.SameSequenceAs(new string[]
@@ -303,8 +303,8 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.File("file1").Delete().Modified()
 						.DeleteCode()
 			.Submit();
-			
-			var codeBlocks = Repository<CodeBlock>()
+
+			var codeBlocks = Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "3");
 			
 			codeBlocks.Count()
@@ -345,7 +345,7 @@ namespace MSR.Data.Entities.DSL.Mapping
 						.DeleteCode()
 			.Submit();
 
-			Repository<CodeBlock>()
+			Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "4")
 				.Select(x => x.Size).ToArray()
 					.Should().Have.SameSequenceAs(new double[] { -20, -5 });
@@ -366,8 +366,8 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.File("file2").Delete().Modified()
 						.DeleteCode()
 			.Submit();
-			
-			Repository<CodeBlock>()
+
+			Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.File.Path == "file2")
 				.Sum(x => x.Size)
 					.Should().Be(0);

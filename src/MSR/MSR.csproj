@@ -55,6 +55,7 @@
     <Compile Include="Data\BugTracking\BugZilla\BugZillaData.cs" />
     <Compile Include="Data\Entities\BugFix.cs" />
     <Compile Include="Data\Entities\Commit.cs" />
+    <Compile Include="Data\Entities\RepositoryHelper.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\BugFixMappingExpression.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\CodeBlockMappingExpression.cs" />
     <Compile Include="Data\Entities\DSL\Mapping\CommitMappingExpression.cs" />
@@ -104,13 +105,11 @@
     <Compile Include="Data\Entities\Mapping\PathSelectors\SkipPathByExtension.cs" />
     <Compile Include="Data\Entities\Mapping\PathSelectors\TakePathByExtension.cs" />
     <Compile Include="Data\Entities\Release.cs" />
-    <Compile Include="Data\Entities\RepositoryResolverHelper.cs" />
+    <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\IDataStore.cs" />
     <Compile Include="Data\InMemoryDataStore.cs" />
     <Compile Include="Data\InMemoryRepository.cs" />
     <Compile Include="Data\InMemorySession.cs" />
-    <Compile Include="Data\IRepository.cs" />
-    <Compile Include="Data\IRepositoryResolver.cs" />
     <Compile Include="Data\ISession.cs" />
     <Compile Include="Data\Persistent\DefaultDataContext.cs" />
     <Compile Include="Data\Persistent\IDataContext.cs" />
@@ -133,7 +132,6 @@
     <Compile Include="Data\VersionControl\Svn\SvnFullUniDiff.cs" />
     <Compile Include="Data\VersionControl\Svn\SvnLog.cs" />
     <Compile Include="Data\Persistent\PersistentDataStore.cs" />
-    <Compile Include="Data\Persistent\PersistentRepository.cs" />
     <Compile Include="Data\Persistent\PersistentSession.cs" />
     <Compile Include="Data\Entities\Mapping\CommitMapper.cs" />
     <Compile Include="Data\Entities\Mapping\EntityMapper.cs" />

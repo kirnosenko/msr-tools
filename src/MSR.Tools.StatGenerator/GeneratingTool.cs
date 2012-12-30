@@ -94,10 +94,10 @@ namespace MSR.Tools.StatGenerator
 					var remainingCodeAge = 
 						(
 							from cb in remainingCode
-							let CommitID = s.Repository<CodeBlock>()
+							let CommitID = s.Queryable<CodeBlock>()
 								.Single(x => x.ID == cb.Key)
 								.AddedInitiallyInCommitID
-							from c in s.Repository<Commit>()
+							from c in s.Queryable<Commit>()
 								where c.ID == CommitID
 							select (now - c.Date).Days
 						).ToList();

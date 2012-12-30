@@ -31,11 +31,11 @@ namespace MSR.Tools.Visualizer.Visualizations
 			Legend = "";
 			TargetDir = "/";
 		}
-		public virtual void Init(IRepositoryResolver repositories)
+		public virtual void Init(IRepository repository)
 		{
 			Initialized = true;
 		}
-		public abstract void Calc(IRepositoryResolver repositories);
+		public abstract void Calc(IRepository repository);
 		public virtual void Draw(IGraphView graph)
 		{
 			graph.Title = Title;

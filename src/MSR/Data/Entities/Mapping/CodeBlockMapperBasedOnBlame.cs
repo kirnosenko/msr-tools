@@ -64,13 +64,13 @@ namespace MSR.Data.Entities.Mapping
 					}
 					
 					foreach (var existentCode in (
-						from cb in expression.Repository<CodeBlock>()
-						join m in expression.Repository<Modification>() on cb.ModificationID equals m.ID
-						join f in expression.Repository<ProjectFile>() on m.FileID equals f.ID
-						join c in expression.Repository<Commit>() on m.CommitID equals c.ID
+						from cb in expression.Queryable<CodeBlock>()
+						join m in expression.Queryable<Modification>() on cb.ModificationID equals m.ID
+						join f in expression.Queryable<ProjectFile>() on m.FileID equals f.ID
+						join c in expression.Queryable<Commit>() on m.CommitID equals c.ID
 							let addedCodeID = cb.Size < 0 ? cb.TargetCodeBlockID : cb.ID
-							let addedCodeRevision = expression.Repository<Commit>()
-								.Single(x => x.ID == expression.Repository<CodeBlock>()
+							let addedCodeRevision = expression.Queryable<Commit>()
+								.Single(x => x.ID == expression.Queryable<CodeBlock>()
 									.Single(y => y.ID == addedCodeID).AddedInitiallyInCommitID
 								).Revision
 						where

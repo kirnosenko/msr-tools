@@ -68,7 +68,7 @@ namespace MSR.Data.Entities.DSL.Selection
 			}
 			return Reselect(s =>
 				from c in s
-				let revisionNumber = Repository<Commit>()
+				let revisionNumber = Queryable<Commit>()
 					.Single(x => x.Revision == revision)
 					.OrderedNumber
 				where
@@ -93,7 +93,7 @@ namespace MSR.Data.Entities.DSL.Selection
 			}
 			return Reselect(s =>
 				from c in s
-				let revisionNumber = Repository<Commit>()
+				let revisionNumber = Queryable<Commit>()
 					.Single(x => x.Revision == revision)
 					.OrderedNumber
 				where
@@ -118,7 +118,7 @@ namespace MSR.Data.Entities.DSL.Selection
 			}
 			return Reselect(s =>
 				from c in s
-				let revisionNumber = Repository<Commit>()
+				let revisionNumber = Queryable<Commit>()
 					.Single(x => x.Revision == revision)
 					.OrderedNumber
 				where
@@ -143,7 +143,7 @@ namespace MSR.Data.Entities.DSL.Selection
 			}
 			return Reselect(s =>
 				from c in s
-				let revisionNumber = Repository<Commit>()
+				let revisionNumber = Queryable<Commit>()
 					.Single(x => x.Revision == revision)
 					.OrderedNumber
 				where

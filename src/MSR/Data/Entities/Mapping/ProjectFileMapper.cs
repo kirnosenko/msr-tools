@@ -27,7 +27,7 @@ namespace MSR.Data.Entities.Mapping
 			
 			string revision = expression.CurrentEntity<Commit>().Revision;
 			ILog log = scmData.Log(revision);
-			var touchedFiles = FilterTouchedFiles(log.TouchedFiles, expression);
+			var touchedFiles = FilterTouchedFiles(log.TouchedFiles);
 			
 			foreach (var touchedFile in touchedFiles)
 			{
@@ -67,7 +67,7 @@ namespace MSR.Data.Entities.Mapping
 		{
 			get; set;
 		}
-		private IEnumerable<TouchedFile> FilterTouchedFiles(IEnumerable<TouchedFile> touchedFiles, IRepositoryResolver repositories)
+		private IEnumerable<TouchedFile> FilterTouchedFiles(IEnumerable<TouchedFile> touchedFiles)
 		{
 			if (PathSelectors != null)
 			{

@@ -27,11 +27,11 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			
 			this.AddTotalLocInFilesTillRevisionPredictor();
 		}
-		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
+		public override void Init(IRepository repository, IEnumerable<string> releases)
 		{
-			base.Init(repositories, releases);
+			base.Init(repository, releases);
 			
-			double dd = repositories.SelectionDSL()
+			double dd = repository.SelectionDSL()
 				.Commits().TillRevision(PredictionRelease)
 				.Modifications().InCommits()
 				.CodeBlocks().InModifications().CalculateDefectDensity(PredictionRelease);
@@ -41,7 +41,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			regression = new LinearRegression();
 			foreach (var file in GetFilesInRevision(PredictionRelease))
 			{
-				double ddForFile = repositories.SelectionDSL()
+				double ddForFile = repository.SelectionDSL()
 					.Commits().TillRevision(PredictionRelease)
 					.Files().IdIs(file.ID)
 					.Modifications().InCommits().InFiles()
@@ -81,7 +81,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		protected double NumberOfFixedDefectsForFile(int fileID)
 		{
-			return repositories.SelectionDSL()
+			return repository.SelectionDSL()
 				.Commits().TillRevision(PredictionRelease)
 				.Files().IdIs(fileID)
 				.Modifications().InCommits().InFiles()

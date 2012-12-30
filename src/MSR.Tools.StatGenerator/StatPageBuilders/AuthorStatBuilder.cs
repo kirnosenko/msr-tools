@@ -22,38 +22,38 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			PageName = "Authors";
 			PageTemplate = "authors.html";
 		}
-		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories)
+		public override IDictionary<string,object> BuildData(IRepository repository)
 		{
 			Dictionary<string,object> result = new Dictionary<string,object>();
 
-			int commits = repositories.Repository<Commit>().Count();
-			var authors = repositories.Repository<Commit>()
+			int commits = repository.Queryable<Commit>().Count();
+			var authors = repository.Queryable<Commit>()
 				.Select(x => x.Author)
 				.Distinct().ToList();
-			double totalLoc = repositories.SelectionDSL()
+			double totalLoc = repository.SelectionDSL()
 				.Files().InDirectory(TargetDir)
 				.Modifications().InFiles()
 				.CodeBlocks().InModifications().CalculateLOC();
-			int totalFiles = repositories.SelectionDSL()
+			int totalFiles = repository.SelectionDSL()
 				.Files().InDirectory(TargetDir).Exist()
 				.Count();
 
 			var codeByAuthor = (from author in authors select new
 			{
 				Name = author,
-				AddedCode = repositories.SelectionDSL()
+				AddedCode = repository.SelectionDSL()
 					.Commits().AuthorIs(author)
 					.Files().InDirectory(TargetDir)
 					.Modifications().InFiles()
 					.CodeBlocks().InModifications().AddedInitiallyInCommits()
 					.Fixed(),
-				RemovedCode = repositories.SelectionDSL()
+				RemovedCode = repository.SelectionDSL()
 					.Commits().AuthorIs(author)
 					.Files().InDirectory(TargetDir)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().Deleted()
 					.Fixed(),
-				TouchedFiles = repositories.SelectionDSL()
+				TouchedFiles = repository.SelectionDSL()
 					.Commits().AuthorIs(author)
 					.Files().InDirectory(TargetDir).Exist().TouchedInCommits()
 			}).ToList();

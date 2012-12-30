@@ -28,12 +28,12 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.AddFile("file1").Modified()
 			.Submit();
 
-			Repository<Modification>().Count()
+			Queryable<Modification>().Count()
 				.Should().Be(1);
-			Repository<Modification>().Single()
+			Queryable<Modification>().Single()
 				.Satisfy(m =>
-					m.Commit == Repository<Commit>().Single(c => c.Revision == "1") &&
-					m.File == Repository<ProjectFile>().Single(f => f.Path == "file1")
+					m.Commit == Queryable<Commit>().Single(c => c.Revision == "1") &&
+					m.File == Queryable<ProjectFile>().Single(f => f.Path == "file1")
 				);
 		}
 		[Test]
@@ -48,7 +48,7 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.File("file1").Modified()
 			.Submit();
 
-			Repository<Modification>().Select(m => m.File.Path).ToArray()
+			Queryable<Modification>().Select(m => m.File.Path).ToArray()
 				.Should().Have.SameSequenceAs(
 					new string[] { "file1", "file2", "file1" }
 				);

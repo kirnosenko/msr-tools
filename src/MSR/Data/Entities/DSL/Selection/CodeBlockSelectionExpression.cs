@@ -30,8 +30,8 @@ namespace MSR.Data.Entities.DSL.Selection
 			return parentExp.AreNotBugFixes().Reselect(s =>
 				(
 					from c in s
-					join m in parentExp.Repository<Modification>() on c.ID equals m.CommitID
-					join cb in parentExp.Repository<CodeBlock>() on m.ID equals cb.ModificationID
+					join m in parentExp.Queryable<Modification>() on c.ID equals m.CommitID
+					join cb in parentExp.Queryable<CodeBlock>() on m.ID equals cb.ModificationID
 					group cb by c into g
 					select new
 					{
@@ -78,7 +78,7 @@ namespace MSR.Data.Entities.DSL.Selection
 		{
 			return Reselect(s =>
 				from cb in s
-				join tcb in Repository<CodeBlock>() on cb.TargetCodeBlockID equals tcb.ID
+				join tcb in Queryable<CodeBlock>() on cb.TargetCodeBlockID equals tcb.ID
 				select tcb
 			);
 		}
@@ -86,7 +86,7 @@ namespace MSR.Data.Entities.DSL.Selection
 		{
 			return Reselect(s =>
 				from tcb in s
-				join cb in Repository<CodeBlock>() on tcb.ID equals cb.TargetCodeBlockID
+				join cb in Queryable<CodeBlock>() on tcb.ID equals cb.TargetCodeBlockID
 				select cb
 			);
 		}
@@ -94,8 +94,8 @@ namespace MSR.Data.Entities.DSL.Selection
 		{
 			return Reselect(s =>
 				from cb in s
-				join m in Repository<Modification>() on cb.ModificationID equals m.ID
-				join c in Repository<Commit>() on m.CommitID equals c.ID
+				join m in Queryable<Modification>() on cb.ModificationID equals m.ID
+				join c in Queryable<Commit>() on m.CommitID equals c.ID
 				join bf in Selection<BugFix>() on c.ID equals bf.CommitID
 				select cb
 			);

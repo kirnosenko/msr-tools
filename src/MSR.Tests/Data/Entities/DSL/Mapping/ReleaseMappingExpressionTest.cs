@@ -24,9 +24,9 @@ namespace MSR.Data.Entities.DSL.Mapping
 				.AddCommit("3")
 			.Submit();
 
-			Repository<Release>().Count()
+			Queryable<Release>().Count()
 				.Should().Be(1);
-			Repository<Release>().Single()
+			Queryable<Release>().Single()
 				.Satisfy(x =>
 					x.Tag == "1.0.0"
 					&&

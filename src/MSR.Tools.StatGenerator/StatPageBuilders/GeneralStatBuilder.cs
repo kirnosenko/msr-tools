@@ -22,18 +22,18 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			PageName = "General";
 			PageTemplate = "general.html";
 		}
-		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories)
+		public override IDictionary<string,object> BuildData(IRepository repository)
 		{
 			Dictionary<string,object> result = new Dictionary<string,object>();
 
-			int commits_count = repositories.Repository<Commit>().Count();
-			int commits_fix_count = repositories.SelectionDSL().Commits().AreBugFixes().Count();
+			int commits_count = repository.Queryable<Commit>().Count();
+			int commits_fix_count = repository.SelectionDSL().Commits().AreBugFixes().Count();
 			string commits_fix_percent = ((double)commits_fix_count / commits_count * 100).ToString("F02");
-			int commits_refactoring_count = repositories.SelectionDSL().Commits().AreRefactorings().Count();
+			int commits_refactoring_count = repository.SelectionDSL().Commits().AreRefactorings().Count();
 			string commits_refactoring_percent = ((double)commits_refactoring_count / commits_count * 100).ToString("F02");
 			
-			DateTime statfrom = repositories.Repository<Commit>().Min(x => x.Date);
-			DateTime statto = repositories.Repository<Commit>().Max(x => x.Date);
+			DateTime statfrom = repository.Queryable<Commit>().Min(x => x.Date);
+			DateTime statto = repository.Queryable<Commit>().Max(x => x.Date);
 
 			result.Add("stat_date", DateTime.Now.ToString());
 			result.Add("stat_period_from", statfrom);
@@ -41,14 +41,14 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			result.Add("stat_period_days", (statto - statfrom).Days);
 			result.Add("stat_period_years", ((statto - statfrom).TotalDays / 365).ToString("F01"));
 			result.Add("authors_count",
-				repositories.Repository<Commit>().Select(x => x.Author).Distinct().Count()
+				repository.Queryable<Commit>().Select(x => x.Author).Distinct().Count()
 			);
 			result.Add("commits_count", commits_count);
 			result.Add("commits_fix_count", commits_fix_count);
 			result.Add("commits_fix_percent", commits_fix_percent);
 			result.Add("commits_refactoring_count", commits_refactoring_count);
 			result.Add("commits_refactoring_percent", commits_refactoring_percent);
-			var files = repositories.SelectionDSL()
+			var files = repository.SelectionDSL()
 				.Files().InDirectory(TargetDir)
 				.Fixed();
 			result.Add("files_current",
@@ -60,7 +60,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			result.Add("files_removed",
 				files.Deleted().Count()
 			);
-			var code = repositories.SelectionDSL()
+			var code = repository.SelectionDSL()
 				.Files().InDirectory(TargetDir)
 				.Modifications().InFiles()
 				.CodeBlocks().InModifications()

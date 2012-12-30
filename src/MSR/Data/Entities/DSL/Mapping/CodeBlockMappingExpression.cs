@@ -22,10 +22,10 @@ namespace MSR.Data.Entities.DSL.Mapping
 			CodeBlockMappingExpression lastCodeBlockExp = null;
 			
 			foreach (var codeByAddedCode in (
-				from cb in exp.Repository<CodeBlock>()
-				join m in exp.Repository<Modification>() on cb.ModificationID equals m.ID
-				join f in exp.Repository<ProjectFile>() on m.FileID equals f.ID
-				join c in exp.Repository<Commit>() on m.CommitID equals c.ID
+				from cb in exp.Queryable<CodeBlock>()
+				join m in exp.Queryable<Modification>() on cb.ModificationID equals m.ID
+				join f in exp.Queryable<ProjectFile>() on m.FileID equals f.ID
+				join c in exp.Queryable<Commit>() on m.CommitID equals c.ID
 					let addedCodeID = cb.Size < 0 ? cb.TargetCodeBlockID : cb.ID
 				where
 					f.ID == exp.CurrentEntity<ProjectFile>().SourceFile.ID &&
@@ -59,9 +59,9 @@ namespace MSR.Data.Entities.DSL.Mapping
 			CodeBlockMappingExpression lastCodeBlockExp = null;
 
 			foreach (var codeByAddedCode in (
-				from cb in exp.Repository<CodeBlock>()
-				join m in exp.Repository<Modification>() on cb.ModificationID equals m.ID
-				join f in exp.Repository<ProjectFile>() on m.FileID equals f.ID
+				from cb in exp.Queryable<CodeBlock>()
+				join m in exp.Queryable<Modification>() on cb.ModificationID equals m.ID
+				join f in exp.Queryable<ProjectFile>() on m.FileID equals f.ID
 					let addedCodeID = cb.Size < 0 ? cb.TargetCodeBlockID : cb.ID
 				where
 					f.ID == exp.CurrentEntity<ProjectFile>().ID
@@ -89,10 +89,10 @@ namespace MSR.Data.Entities.DSL.Mapping
 			
 			return lastCodeBlockExp;
 		}
-		private static string RevisionCodeBlockWasInitiallyAddedIn(IRepositoryResolver repositories, int codeBlockID)
+		private static string RevisionCodeBlockWasInitiallyAddedIn(IRepository repository, int codeBlockID)
 		{
-			return repositories.Repository<Commit>()
-				.Single(c => c.ID == repositories.Repository<CodeBlock>()
+			return repository.Queryable<Commit>()
+				.Single(c => c.ID == repository.Queryable<CodeBlock>()
 					.Single(cb => cb.ID == codeBlockID).AddedInitiallyInCommitID
 				).Revision;
 		}
@@ -119,7 +119,7 @@ namespace MSR.Data.Entities.DSL.Mapping
 		}
 		public ICodeBlockMappingExpression CopiedFrom(string revision)
 		{
-			entity.AddedInitiallyInCommit = Repository<Commit>()
+			entity.AddedInitiallyInCommit = Queryable<Commit>()
 				.Single(c => c.Revision == revision);
 			return this;
 		}

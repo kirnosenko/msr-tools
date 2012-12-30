@@ -55,7 +55,7 @@ namespace MSR.Data
 			using (var s = data.OpenSession())
 			{
 				Entity e = new Entity();
-				s.Repository<Entity>().Add(e);
+				s.Add(e);
 				
 				e.ID.Should().Be(0);
 				
@@ -72,14 +72,14 @@ namespace MSR.Data
 				Entity e1 = new Entity();
 				Entity e2 = new Entity();
 				Entity e3 = new Entity();
-				
-				s.Repository<Entity>().Add(e1);
-				s.Repository<Entity>().Add(e2);
-				s.Repository<Entity>().Add(e3);
+
+				s.Add(e1);
+				s.Add(e2);
+				s.Add(e3);
 
 				s.SubmitChanges();
 
-				s.Repository<Entity>().Select(x => x.ID).ToArray()
+				s.Queryable<Entity>().Select(x => x.ID).ToArray()
 					.Should().Have.UniqueValues();
 			}
 		}
@@ -91,8 +91,8 @@ namespace MSR.Data
 				Entity e1 = new Entity();
 				Entity e2 = new Entity();
 
-				s.Repository<Entity>().Add(e1);
-				s.Repository<Entity>().Add(e2);
+				s.Add(e1);
+				s.Add(e2);
 				
 				e1.AnotherEntity = e2;
 
@@ -111,8 +111,8 @@ namespace MSR.Data
 			
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().Add(e1);
-				s.Repository<Entity>().Add(e2);
+				s.Add(e1);
+				s.Add(e2);
 				
 				e1.AnotherEntity = e2;
 
@@ -120,7 +120,7 @@ namespace MSR.Data
 			}
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().Add(e3);
+				s.Add(e3);
 				
 				e1.AnotherEntity = e3;
 				
@@ -139,15 +139,15 @@ namespace MSR.Data
 			
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().Add(e);
+				s.Add(e);
 				s.SubmitChanges();
 			}
 
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().Count()
+				s.Queryable<Entity>().Count()
 					.Should().Be(1);
-				s.Repository<Entity>().Single()
+				s.Queryable<Entity>().Single()
 					.Should().Be.SameInstanceAs(e);
 			}
 		}
@@ -158,17 +158,17 @@ namespace MSR.Data
 
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().Add(e);
+				s.Add(e);
 				s.SubmitChanges();
 			}
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().First().Data = "";
+				s.Queryable<Entity>().First().Data = "";
 				s.SubmitChanges();
 			}
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().First().Data
+				s.Queryable<Entity>().First().Data
 					.Should().Be("");
 			}
 		}
@@ -180,18 +180,18 @@ namespace MSR.Data
 
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().Add(e);
+				s.Add(e);
 				s.SubmitChanges();
 			}
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().First().Data = "";
-				s.Repository<Entity>().First().Data
+				s.Queryable<Entity>().First().Data = "";
+				s.Queryable<Entity>().First().Data
 					.Should().Be("");
 			}
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().First().Data
+				s.Queryable<Entity>().First().Data
 					.Should().Be("data");
 			}
 		}
@@ -202,26 +202,26 @@ namespace MSR.Data
 
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().Add(e);
+				s.Add(e);
 				s.SubmitChanges();
 			}
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().Delete(e);
+				s.Delete(e);
 			}
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().Count()
+				s.Queryable<Entity>().Count()
 					.Should().Be(1);
 			}
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().Delete(e);
+				s.Delete(e);
 				s.SubmitChanges();
 			}
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Entity>().Count()
+				s.Queryable<Entity>().Count()
 					.Should().Be(0);
 			}
 		}

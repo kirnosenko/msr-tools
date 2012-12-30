@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2012  Semyon Kirnosenko
  */
 
 using System;
@@ -15,7 +15,7 @@ using MSR.Data.Entities.DSL.Selection;
 
 namespace MSR.Data.Entities
 {
-	public class BaseRepositoryTest : IRepositoryResolver
+	public class BaseRepositoryTest : ISession
 	{
 		protected RepositoryMappingExpression mappingDSL;
 		protected RepositorySelectionExpression selectionDSL;
@@ -31,11 +31,26 @@ namespace MSR.Data.Entities
 			mappingDSL = session.MappingDSL();
 			selectionDSL = session.SelectionDSL();
 		}
-		public IRepository<T> Repository<T>() where T : class
+		public void Dispose()
 		{
-			return session.Repository<T>();
 		}
-		public void Submit()
+		public void Add<T>(T entity) where T : class
+		{
+			session.Add(entity);
+		}
+		public void AddRange<T>(IEnumerable<T> entities) where T : class
+		{
+			session.AddRange(entities);
+		}
+		public void Delete<T>(T entity) where T : class
+		{
+			session.Delete(entity);
+		}
+		public IQueryable<T> Queryable<T>() where T : class
+		{
+			return session.Queryable<T>();
+		}
+		public void SubmitChanges()
 		{
 			session.SubmitChanges();
 		}

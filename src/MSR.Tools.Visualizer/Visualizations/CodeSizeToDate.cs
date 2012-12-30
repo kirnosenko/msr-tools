@@ -23,9 +23,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 			Type = VisualizationType.LINEWITHPOINTS;
 			Title = "Code size to date";
 		}
-		public override void Calc(IRepositoryResolver repositories)
+		public override void Calc(IRepository repository)
 		{
-			base.Calc(repositories);
+			base.Calc(repository);
 
 			x = new double[dates.Count()];
 			y = new double[dates.Count()];
@@ -34,7 +34,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 			for (int i = 0; i < dates.Length; i++)
 			{
 				x[i] = (dates[i] - dates[0]).TotalDays;
-				codeSize += repositories.SelectionDSL()
+				codeSize += repository.SelectionDSL()
 					.Commits()
 						.Reselect(e => i > 0 ? e.DateIsGreaterThan(dates[i-1]) : e)
 						.DateIsLesserOrEquelThan(dates[i])

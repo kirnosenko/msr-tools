@@ -8,7 +8,7 @@ using System;
 
 namespace MSR.Data
 {
-	public interface ISession : IDisposable, IRepositoryResolver
+	public interface ISession : IRepository, IDisposable
 	{
 		void SubmitChanges();
 	}

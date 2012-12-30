@@ -34,9 +34,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			FilePortionLimit = 1;
 			rocEvaluationDelta = 0.01;
 		}
-		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
+		public override void Init(IRepository repository, IEnumerable<string> releases)
 		{
-			base.Init(repositories, releases);
+			base.Init(repository, releases);
 			
 			allFiles = null;
 			defectFiles = null;
@@ -175,7 +175,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		protected abstract double GetFileEstimation(ProjectFile file);
 		protected ProjectFile[] GetFilesInRevision(string revision)
 		{
-			return repositories.SelectionDSL()
+			return repository.SelectionDSL()
 				.Files()
 					.Reselect(FileSelector)
 					.ExistInRevision(revision)
@@ -185,7 +185,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		private string[] GetPostReleaseDefectiveFiles()
 		{
 			return GetPostReleaseDefectiveFiles(
-				repositories.SelectionDSL()
+				repository.SelectionDSL()
 					.Commits()
 						.TillRevision(PredictionRelease)
 			);
@@ -193,7 +193,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		private string[] GetPostReleaseDefectiveFilesFromTouchedInRelease()
 		{
 			return GetPostReleaseDefectiveFiles(
-				repositories.SelectionDSL()
+				repository.SelectionDSL()
 					.Commits()
 						.AfterRevision(TrainReleases.Last())
 						.TillRevision(PredictionRelease)
@@ -214,7 +214,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		private Dictionary<string,double> GetDefectCodeSizeInFilesAfterRelease()
 		{
-			var fixCommits = repositories.SelectionDSL()
+			var fixCommits = repository.SelectionDSL()
 				.Commits()
 					.TillRevision(PredictionRelease)
 				.Modifications()
@@ -230,10 +230,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			
 			return
 				(
-					from f in repositories.SelectionDSL().Files().ExistInRevision(PredictionRelease)
-					join m in repositories.Repository<Modification>() on f.ID equals m.FileID
+					from f in repository.SelectionDSL().Files().ExistInRevision(PredictionRelease)
+					join m in repository.Queryable<Modification>() on f.ID equals m.FileID
 					join c in fixCommits on m.CommitID equals c.ID
-					join cb in repositories.Repository<CodeBlock>() on m.ID equals cb.ModificationID
+					join cb in repository.Queryable<CodeBlock>() on m.ID equals cb.ModificationID
 					where
 						cb.Size < 0
 					group cb.Size by f.Path into g

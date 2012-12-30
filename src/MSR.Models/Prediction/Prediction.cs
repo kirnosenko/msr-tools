@@ -18,7 +18,7 @@ namespace MSR.Models.Prediction
 	{
 		private List<Func<PredictorContext,double>> predictors = new List<Func<PredictorContext,double>>();
 		
-		protected IRepositoryResolver repositories;
+		protected IRepository repository;
 		protected PredictorContext context;
 		
 		public string Title
@@ -33,9 +33,9 @@ namespace MSR.Models.Prediction
 		{
 			return predictors.Select(p => p(c)).ToArray();
 		}
-		public virtual void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
+		public virtual void Init(IRepository repository, IEnumerable<string> releases)
 		{
-			this.repositories = repositories;
+			this.repository = repository;
 			PredictionRelease = releases.Last();
 			if (releases.Count() > 1)
 			{
@@ -45,7 +45,7 @@ namespace MSR.Models.Prediction
 			{
 				TrainReleases = releases;
 			}
-			context = new PredictorContext(repositories);
+			context = new PredictorContext(repository);
 		}
 		public string PredictionRelease
 		{

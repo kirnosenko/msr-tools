@@ -26,9 +26,9 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 			graph.XAxisTitle = "Days";
 			base.Draw(graph);
 		}
-		protected override double[] DistributionData(IRepositoryResolver repositories)
+		protected override double[] DistributionData(IRepository repository)
 		{
-			return repositories.SelectionDSL()
+			return repository.SelectionDSL()
 				.BugFixes().CalculateAvarageBugLifetime().ToArray();
 		}
 	}

@@ -20,7 +20,7 @@ namespace MSR.Tools.Visualizer.Visualizations.Regressions
 		{
 			Intervals = 100;
 		}
-		public override void Calc(IRepositoryResolver repositories)
+		public override void Calc(IRepository repository)
 		{
 		}
 		public override void Draw(IGraphView graph)

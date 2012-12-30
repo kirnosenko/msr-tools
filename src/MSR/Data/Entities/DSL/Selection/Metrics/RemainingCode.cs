@@ -20,10 +20,10 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 				from acb in code
 				join dcb in
 					(
-						from cb in code.Repository<CodeBlock>()
-						join m in code.Repository<Modification>() on cb.ModificationID equals m.ID
-						join c in code.Repository<Commit>() on m.CommitID equals c.ID
-						let revisionOrderedNumber = code.Repository<Commit>()
+						from cb in code.Queryable<CodeBlock>()
+						join m in code.Queryable<Modification>() on cb.ModificationID equals m.ID
+						join c in code.Queryable<Commit>() on m.CommitID equals c.ID
+						let revisionOrderedNumber = code.Queryable<Commit>()
 							.Single(x => x.Revision == revision)
 							.OrderedNumber
 						where

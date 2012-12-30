@@ -42,11 +42,11 @@ namespace MSR.Data.Entities.Mapping
 			mapper.Map(
 				mappingDSL.AddCommit("10")
 			);
-			Submit();
-			
-			Repository<ProjectFile>().Count()
+			SubmitChanges();
+
+			Queryable<ProjectFile>().Count()
 				.Should().Be(1);
-			Repository<ProjectFile>().Single()
+			Queryable<ProjectFile>().Single()
 				.Satisfy(f =>
 					f.Path == "file1" &&
 					f.AddedInCommit.Revision == "10"
@@ -66,9 +66,9 @@ namespace MSR.Data.Entities.Mapping
 			mapper.Map(
 				mappingDSL.AddCommit("10")
 			).Single().CurrentEntity<ProjectFile>();
-			Submit();
-			
-			Repository<ProjectFile>().Count()
+			SubmitChanges();
+
+			Queryable<ProjectFile>().Count()
 				.Should().Be(1);
 			file.AddedInCommit.Revision
 				.Should().Be("9");
@@ -86,11 +86,11 @@ namespace MSR.Data.Entities.Mapping
 			mapper.Map(
 				mappingDSL.AddCommit("10")
 			);
-			Submit();
+			SubmitChanges();
 
-			Repository<ProjectFile>().Count()
+			Queryable<ProjectFile>().Count()
 				.Should().Be(2);
-			Repository<ProjectFile>().Single(x => x.Path == "file2")
+			Queryable<ProjectFile>().Single(x => x.Path == "file2")
 				.Satisfy(x =>
 					x.SourceFile.Path == "file1" &&
 					x.SourceCommit.Revision == "9"
@@ -111,9 +111,9 @@ namespace MSR.Data.Entities.Mapping
 			mapper.Map(
 				mappingDSL.AddCommit("10")
 			);
-			Submit();
+			SubmitChanges();
 
-			Repository<ProjectFile>().Single(x => x.Path == "file2")
+			Queryable<ProjectFile>().Single(x => x.Path == "file2")
 				.Satisfy(x =>
 					x.SourceFile.Path == "file1" &&
 					x.SourceCommit.Revision == "9"
@@ -132,9 +132,9 @@ namespace MSR.Data.Entities.Mapping
 			mapper.Map(
 				mappingDSL.AddCommit("10")
 			);
-			Submit();
+			SubmitChanges();
 
-			Repository<ProjectFile>().Single().DeletedInCommit.Revision
+			Queryable<ProjectFile>().Single().DeletedInCommit.Revision
 				.Should().Be("10");
 		}
 		[Test]
@@ -153,9 +153,9 @@ namespace MSR.Data.Entities.Mapping
 			mapper.Map(
 				mappingDSL.AddCommit("10")
 			);
-			Submit();
-			
-			Repository<ProjectFile>()
+			SubmitChanges();
+
+			Queryable<ProjectFile>()
 				.Select(x => x.Path).ToArray()
 					.Should().Have.SameSequenceAs(new string[] { "file1.123" });
 		}
@@ -180,11 +180,11 @@ namespace MSR.Data.Entities.Mapping
 			mapper.Map(
 				mappingDSL.AddCommit("10")
 			);
-			Submit();
-			
-			Repository<ProjectFile>().Count()
+			SubmitChanges();
+
+			Queryable<ProjectFile>().Count()
 				.Should().Be(1);
-			Repository<ProjectFile>()
+			Queryable<ProjectFile>()
 				.Single().Path
 					.Should().Be("/dir1/file2.555");
 		}
@@ -217,9 +217,9 @@ namespace MSR.Data.Entities.Mapping
 			mapper.Map(
 				mappingDSL.Commit("8")
 			);
-			Submit();
-			
-			Repository<ProjectFile>()
+			SubmitChanges();
+
+			Queryable<ProjectFile>()
 				.Where(x => x.Path == "file1.cpp").Count()
 					.Should().Be(1);
 		}

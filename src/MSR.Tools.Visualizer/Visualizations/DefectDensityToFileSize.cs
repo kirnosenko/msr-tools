@@ -22,9 +22,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			Title = "Defect density to file size";
 		}
-		public override void Calc(IRepositoryResolver repositories)
+		public override void Calc(IRepository repository)
 		{
-			var fileIDs = repositories.SelectionDSL()
+			var fileIDs = repository.SelectionDSL()
 				.Files().InDirectory(TargetDir).Exist()
 				.Select(f => f.ID).ToList();
 
@@ -33,7 +33,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 
 			foreach (var fileID in fileIDs)
 			{
-				var code = repositories.SelectionDSL()
+				var code = repository.SelectionDSL()
 					.Files().IdIs(fileID)
 					.Modifications().InFiles()
 					.CodeBlocks().InModifications()

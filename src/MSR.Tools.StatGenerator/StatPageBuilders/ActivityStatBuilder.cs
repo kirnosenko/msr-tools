@@ -23,19 +23,19 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			PageName = "Activity";
 			PageTemplate = "activity.html";
 		}
-		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories)
+		public override IDictionary<string,object> BuildData(IRepository repository)
 		{
 			Dictionary<string, object> result = new Dictionary<string, object>();
 
-			double totalLoc = repositories.SelectionDSL()
+			double totalLoc = repository.SelectionDSL()
 				.Files().InDirectory(TargetDir)
 				.Modifications().InFiles()
 				.CodeBlocks().InModifications().CalculateLOC();
 
 			List<object> monthObjects = new List<object>();
 
-			DateTime statFrom = repositories.Repository<Commit>().Min(x => x.Date);
-			DateTime statTo = repositories.Repository<Commit>().Max(x => x.Date);
+			DateTime statFrom = repository.Queryable<Commit>().Min(x => x.Date);
+			DateTime statTo = repository.Queryable<Commit>().Max(x => x.Date);
 			
 			List<DateTime> monthes = new List<DateTime>();
 			DateTime m = new DateTime(statFrom.Year, statFrom.Month, 1);
@@ -51,7 +51,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			{
 				DateTime nextMonth = month.AddMonths(1);
 				
-				var monthCommits = repositories.SelectionDSL()
+				var monthCommits = repository.SelectionDSL()
 					.Commits()
 						.DateIsGreaterOrEquelThan(month)
 						.DateIsLesserThan(nextMonth)
@@ -60,7 +60,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					.Files().InDirectory(TargetDir)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().Fixed();
-				var totalMonthCommits = repositories.SelectionDSL()
+				var totalMonthCommits = repository.SelectionDSL()
 					.Commits()
 						.DateIsLesserThan(nextMonth)
 						.Fixed();
@@ -93,7 +93,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 						monthAuthorsCount,
 						totalMonthAuthorsCount
 					),
-					files = repositories.SelectionDSL().Files()
+					files = repository.SelectionDSL().Files()
 						.ExistInRevision(lastRevision).Count(),
 					fixed_defects = string.Format("{0} ({1})",
 						monthFixesCount,

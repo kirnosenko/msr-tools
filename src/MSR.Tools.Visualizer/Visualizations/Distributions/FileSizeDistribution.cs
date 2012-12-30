@@ -26,26 +26,26 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 			graph.XAxisTitle = "File size in LOC";
 			base.Draw(graph);
 		}
-		protected override double[] DistributionData(IRepositoryResolver repositories)
+		protected override double[] DistributionData(IRepository repository)
 		{			
-			var fileIDs = repositories.SelectionDSL()
+			var fileIDs = repository.SelectionDSL()
 				.Files()
 					.InDirectory(TargetDir)
 					.Exist()
 				.Select(x => x.ID).ToArray();
 
-			List<double> data = new List<double>(fileIDs.Count());
+			List<double> locData = new List<double>(fileIDs.Count());
 			
 			foreach (var fileID in fileIDs)
 			{
-				data.Add(repositories.SelectionDSL()
+				locData.Add(repository.SelectionDSL()
 					.Files().IdIs(fileID)
 					.Modifications().InFiles()
 					.CodeBlocks().InModifications().CalculateLOC()
 				);
 			}
 			
-			return data.ToArray();
+			return locData.ToArray();
 		}
 	}
 }

@@ -22,9 +22,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			Title = "Defect density to commit size";
 		}
-		public override void Calc(IRepositoryResolver repositories)
+		public override void Calc(IRepository repository)
 		{
-			var revisions = repositories.SelectionDSL()
+			var revisions = repository.SelectionDSL()
 				.Commits()
 				.Select(c => c.Revision)
 				.ToList();
@@ -34,7 +34,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 
 			foreach (var revision in revisions)
 			{
-				var code = repositories.SelectionDSL()
+				var code = repository.SelectionDSL()
 					.Commits().RevisionIs(revision)
 					.Files().InDirectory(TargetDir)
 					.Modifications().InCommits().InFiles()

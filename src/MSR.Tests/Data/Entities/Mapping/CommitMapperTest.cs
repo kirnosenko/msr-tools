@@ -42,11 +42,11 @@ namespace MSR.Data.Entities.Mapping
 			
 			mappingDSL.Revision = "1";
 			mapper.Map(mappingDSL);
-			Submit();
-			
-			Repository<Commit>().Count()
+			SubmitChanges();
+
+			Queryable<Commit>().Count()
 				.Should().Be(1);
-			Repository<Commit>().Single()
+			Queryable<Commit>().Single()
 				.Satisfy(x =>
 					x.Revision == logStub.Revision &&
 					x.Author == logStub.Author &&

@@ -26,24 +26,24 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 			graph.XAxisTitle = "Commit size in LOC";
 			base.Draw(graph);
 		}
-		protected override double[] DistributionData(IRepositoryResolver repositories)
+		protected override double[] DistributionData(IRepository repository)
 		{
-			var commits = repositories.SelectionDSL()
+			var commits = repository.SelectionDSL()
 				.Commits()
 				.Select(x => x.Revision).ToArray();
 
-			List<double> data = new List<double>(commits.Count());
+			List<double> locData = new List<double>(commits.Count());
 			
 			foreach (var commit in commits)
 			{
-				data.Add(repositories.SelectionDSL()
+				locData.Add(repository.SelectionDSL()
 					.Commits().RevisionIs(commit)
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().Added().CalculateLOC()
 				);
 			}
 			
-			return data.ToArray();
+			return locData.ToArray();
 		}
 	}
 }

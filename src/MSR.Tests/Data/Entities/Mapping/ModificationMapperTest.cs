@@ -43,9 +43,9 @@ namespace MSR.Data.Entities.Mapping
 			mapper.Map(
 				commitExp.AddFile("file3")
 			);
-			Submit();
-			
-			Repository<Modification>()
+			SubmitChanges();
+
+			Queryable<Modification>()
 				.Where(m => m.Commit.Revision == "10")
 				.Select(m => m.File.Path)
 				.ToArray()

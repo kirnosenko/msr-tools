@@ -68,9 +68,9 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			DatePeriod = DatePeriod.MONTH;
 		}
-		public override void Calc(IRepositoryResolver repositories)
+		public override void Calc(IRepository repository)
 		{
-			dates = GetDates(repositories);
+			dates = GetDates(repository);
 		}
 		public override void Draw(IGraphView graph)
 		{
@@ -102,12 +102,12 @@ namespace MSR.Tools.Visualizer.Visualizations
 		{
 			get; set;
 		}
-		protected DateTime[] GetDates(IRepositoryResolver repositories)
+		protected DateTime[] GetDates(IRepository repository)
 		{
 			List<DateTime> dates = new List<DateTime>();
 
-			DateTime min = repositories.Repository<Commit>().Min(c => c.Date);
-			DateTime max = repositories.Repository<Commit>().Max(c => c.Date);
+			DateTime min = repository.Queryable<Commit>().Min(c => c.Date);
+			DateTime max = repository.Queryable<Commit>().Max(c => c.Date);
 
 			DateTime date = min;
 			switch (DatePeriod)

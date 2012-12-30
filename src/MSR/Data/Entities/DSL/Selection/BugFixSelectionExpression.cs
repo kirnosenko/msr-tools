@@ -19,7 +19,7 @@ namespace MSR.Data.Entities.DSL.Selection
 		{
 			return parentExp.Reselect(s =>
 				from c in s
-				join bf in parentExp.Repository<BugFix>() on c.ID equals bf.CommitID
+				join bf in parentExp.Queryable<BugFix>() on c.ID equals bf.CommitID
 				select c
 			);
 		}
@@ -27,7 +27,7 @@ namespace MSR.Data.Entities.DSL.Selection
 		{
 			return parentExp.Reselect(s =>
 				from c in s
-				join bf in parentExp.Repository<BugFix>() on c.ID equals bf.CommitID into j
+				join bf in parentExp.Queryable<BugFix>() on c.ID equals bf.CommitID into j
 				from x in j.DefaultIfEmpty()
 				where
 					x == null

@@ -23,26 +23,26 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			PageName = "Releases";
 			PageTemplate = "releases.html";
 		}
-		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories)
+		public override IDictionary<string,object> BuildData(IRepository repository)
 		{
 			Dictionary<string,object> result = new Dictionary<string,object>();
 			
-			double totalLoc = repositories.SelectionDSL()
+			double totalLoc = repository.SelectionDSL()
 				.Files().InDirectory(TargetDir)
 				.Modifications().InFiles()
 				.CodeBlocks().InModifications().CalculateLOC();
 
 			List<object> releaseObjects = new List<object>();
+
+			var releases = repository.AllReleases();
+			releases.Add(repository.LastRevision(), "upcoming");
 			
-			var releases = repositories.AllReleases();
-			releases.Add(repositories.LastRevision(), "upcoming");
-			
-			DateTime statFrom = repositories.Repository<Commit>().Min(x => x.Date);
+			DateTime statFrom = repository.Queryable<Commit>().Min(x => x.Date);
 			
 			string prevRelease = null;
 			foreach (var release in releases)
 			{
-				var releaseCommits = repositories.SelectionDSL()
+				var releaseCommits = repository.SelectionDSL()
 					.Commits()
 						.AfterRevision(prevRelease)
 						.TillRevision(release.Key)
@@ -56,7 +56,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 					.CodeBlocks()
 						.InModifications()
 					.Fixed();
-				var totalReleaseCommits = repositories.SelectionDSL()
+				var totalReleaseCommits = repository.SelectionDSL()
 					.Commits()
 						.TillRevision(release.Key)
 					.Fixed();
@@ -76,7 +76,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 				int releaseCommitsCount = releaseCommits.Count();
 				int releaseAuthorsCount = releaseCommits.Select(c => c.Author).Distinct().Count();
 				int releaseFixesCount = releaseCommits.AreBugFixes().Count();
-				int releaseFilesCount = repositories.SelectionDSL()
+				int releaseFilesCount = repository.SelectionDSL()
 					.Files().ExistInRevision(release.Key).Count();
 				int releaseTouchedFilesCount = releaseCommits
 					.Files()

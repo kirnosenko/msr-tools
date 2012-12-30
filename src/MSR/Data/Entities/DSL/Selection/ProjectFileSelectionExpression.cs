@@ -117,14 +117,14 @@ namespace MSR.Data.Entities.DSL.Selection
 		{
 			return Reselect(s =>
 				from f in s
-				let revisionNumber = Repository<Commit>().Single(x => x.Revision == revision).OrderedNumber
+				let revisionNumber = Queryable<Commit>().Single(x => x.Revision == revision).OrderedNumber
 				where
-					Repository<Commit>().Single(x => x.ID == f.AddedInCommitID).OrderedNumber <= revisionNumber
+					Queryable<Commit>().Single(x => x.ID == f.AddedInCommitID).OrderedNumber <= revisionNumber
 					&&
 					(
 						(f.DeletedInCommitID == null)
 						||
-						(Repository<Commit>().Single(x => x.ID == f.DeletedInCommitID).OrderedNumber > revisionNumber)
+						(Queryable<Commit>().Single(x => x.ID == f.DeletedInCommitID).OrderedNumber > revisionNumber)
 					)
 				select f
 			);

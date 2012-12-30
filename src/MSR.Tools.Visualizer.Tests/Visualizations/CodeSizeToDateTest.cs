@@ -60,8 +60,11 @@ namespace MSR.Tools.Visualizer.Visualizations
 						.DeleteCode()
 			.Submit();
 			
-			visualization.Calc(data);
-			visualization.Draw(graphStub);
+			using (var s = data.OpenSession())
+			{
+				visualization.Calc(s);
+				visualization.Draw(graphStub);
+			}
 			
 			x.Should().Have.SameSequenceAs(new double[]
 			{
@@ -85,8 +88,11 @@ namespace MSR.Tools.Visualizer.Visualizations
 				.AddCommit("3").At(DateTime.Today)
 			.Submit();
 			
-			visualization.Calc(data);
-			visualization.Draw(graphStub);
+			using (var s = data.OpenSession())
+			{
+				visualization.Calc(s);
+				visualization.Draw(graphStub);
+			}
 			
 			x.Length.Should().Be(3);
 		}

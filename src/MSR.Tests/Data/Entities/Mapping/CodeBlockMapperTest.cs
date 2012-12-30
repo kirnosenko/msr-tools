@@ -54,9 +54,9 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("10")
 					.AddFile("file1").Modified()
 			);
-			Submit();
-			
-			Repository<CodeBlock>().Count()
+			SubmitChanges();
+
+			Queryable<CodeBlock>().Count()
 				.Should().Be.EqualTo(0);
 		}
 		[Test]
@@ -79,11 +79,11 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("10")
 					.File("file1").Modified()
 			);
-			Submit();
+			SubmitChanges();
 
-			Repository<CodeBlock>().Count()
+			Queryable<CodeBlock>().Count()
 				.Should().Be.EqualTo(3);
-			Repository<CodeBlock>()
+			Queryable<CodeBlock>()
 				.Select(x => x.Size).ToArray()
 					.Should().Have.SameSequenceAs(
 						new double[] { 100, 3, -1 }
@@ -109,11 +109,11 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("10")
 					.File("file1").Modified()
 			);
-			Submit();
+			SubmitChanges();
 
-			Repository<CodeBlock>().Single(x => x.Size == 1).AddedInitiallyInCommit.Revision
+			Queryable<CodeBlock>().Single(x => x.Size == 1).AddedInitiallyInCommit.Revision
 				.Should().Be("10");
-			Repository<CodeBlock>().Single(x => x.Size == -1).AddedInitiallyInCommit
+			Queryable<CodeBlock>().Single(x => x.Size == -1).AddedInitiallyInCommit
 				.Should().Be.Null();
 		}
 		[Test]
@@ -144,9 +144,9 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("10")
 					.File("file1").Modified()
 			);
-			Submit();
+			SubmitChanges();
 
-			Repository<CodeBlock>().Single(x => x.Modification.Commit.Revision == "10").TargetCodeBlock.Size
+			Queryable<CodeBlock>().Single(x => x.Modification.Commit.Revision == "10").TargetCodeBlock.Size
 				.Should().Be(100);
 		}
 		[Test]
@@ -184,9 +184,9 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("10")
 					.AddFile("file2").CopiedFrom("file1", "7").Modified()
 			);
-			Submit();
-			
-			var code = Repository<CodeBlock>()
+			SubmitChanges();
+
+			var code = Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "10");
 			
 			code.Count()
@@ -226,9 +226,9 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.Commit("7")
 					.File("file2").Modified()
 			);
-			Submit();
+			SubmitChanges();
 
-			var code = Repository<CodeBlock>()
+			var code = Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "7");
 
 			code.Count()
@@ -253,7 +253,7 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("10")
 					.AddFile("file2").CopiedFrom("file1", "1").Modified()
 			);
-			Submit();
+			SubmitChanges();
 			
 			scmData.AssertWasNotCalled(x => x.Diff("10", "file2"));
 		}
@@ -292,9 +292,9 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("10")
 					.AddFile("file2").CopiedFrom("file1", "2").Modified()
 			);
-			Submit();
-			
-			var codeBlocks = Repository<CodeBlock>()
+			SubmitChanges();
+
+			var codeBlocks = Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "10");
 			
 			codeBlocks.Count()
@@ -325,7 +325,7 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("10")
 					.AddFile("file2").CopiedFrom("file1", "1").Modified()
 			);
-			Submit();
+			SubmitChanges();
 
 			scmData.AssertWasNotCalled(x => x.Blame("10", "file2"));
 		}
@@ -342,7 +342,7 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("10")
 					.File("file1").Delete().Modified()
 			);
-			Submit();
+			SubmitChanges();
 
 			scmData.AssertWasNotCalled(x => x.Diff("10", "file1"));
 		}
@@ -363,7 +363,7 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("10")
 					.File("file1").Modified()
 			);
-			Submit();
+			SubmitChanges();
 
 			scmData.AssertWasNotCalled(x => x.Blame("9","file1"));
 		}

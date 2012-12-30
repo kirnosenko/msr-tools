@@ -24,10 +24,10 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.At(DateTime.Today)
 					.WithMessage("log")
 			.Submit();
-			
-			Repository<Commit>().Count()
+
+			Queryable<Commit>().Count()
 				.Should().Be(1);
-			Repository<Commit>().Single()
+			Queryable<Commit>().Single()
 				.Satisfy(c =>
 					c.Revision == "1" &&
 					c.Author == "alan" &&
@@ -43,10 +43,10 @@ namespace MSR.Data.Entities.DSL.Mapping
 			.Submit()
 				.Commit("1").By("alan")
 			.Submit();
-			
-			Repository<Commit>().Count()
+
+			Queryable<Commit>().Count()
 				.Should().Be(1);
-			Repository<Commit>().Single()
+			Queryable<Commit>().Single()
 				.Satisfy(x =>
 					x.Revision == "1"
 					&&
@@ -63,8 +63,8 @@ namespace MSR.Data.Entities.DSL.Mapping
 			.Submit()
 				.AddCommit("3")
 			.Submit();
-			
-			Repository<Commit>().Select(c => c.OrderedNumber)
+
+			Queryable<Commit>().Select(c => c.OrderedNumber)
 				.Should().Have.SameSequenceAs(new int[] { 1,2,3 });
 		}
 	}

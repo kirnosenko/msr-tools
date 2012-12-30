@@ -26,9 +26,9 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 			graph.XAxisTitle = "Removed to added code";
 			base.Draw(graph);
 		}
-		protected override double[] DistributionData(IRepositoryResolver repositories)
+		protected override double[] DistributionData(IRepository repository)
 		{
-			var commits = repositories.Repository<Commit>()
+			var commits = repository.Queryable<Commit>()
 				.Select(c => new
 				{
 					Revision = c.Revision,
@@ -40,7 +40,7 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 			
 			foreach (var c in commits)
 			{
-				var code = repositories.SelectionDSL()
+				var code = repository.SelectionDSL()
 					.Commits()
 						.RevisionIs(c.Revision)
 					.Modifications()
