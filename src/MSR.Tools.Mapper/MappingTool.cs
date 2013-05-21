@@ -525,7 +525,7 @@ namespace MSR.Tools.Mapper
 						error.RealCodeSize
 					);
 				}
-				if (! correct)
+				if ((! correct) && (errorCode.Count > 0))
 				{
 					string latestCodeRevision = repository.LastRevision(errorCode.Select(x => x.SourceRevision));
 
