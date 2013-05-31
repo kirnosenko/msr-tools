@@ -1,0 +1,57 @@
+<div id="grapharea"></div>
+<script type="text/javascript">
+	var r=Raphael("grapharea");
+	fin = function ()
+	{
+        this.flag = r.popup(this.bar.x, this.bar.y, this.bar.value || "0").insertBefore(this);
+    }
+    fout = function () 
+	{
+        this.flag.animate({opacity: 0}, 300, function () {this.remove();});
+    }
+	
+	txtheadattr = 	{ font: "20px sans-serif" };
+	txtauthattr = 	{ font: "14px sans-serif" };
+	txtattr 	=	{ font: "12px sans-serif" };
+	var colors = 	['#0F0', '#FF0'];
+	var authors = [];
+	#foreach($author in $authors)
+	#each
+		authors[authors.length] = '$author.name'
+	#end
+	
+	var dataadded=[];
+	#foreach($author in $authors)
+	#each
+		dataadded[dataadded.length] = $author.added_loc
+	#end
+	
+	var dataremoved=[];
+	#foreach($author in $authors)
+	#each
+		dataremoved[dataremoved.length] = $author.removed_loc
+	#end
+	
+	var data = [dataadded,dataremoved];
+	
+	var options = 
+	{
+		stacked: true, 
+		colors: colors
+	};
+	
+	r.text(420, 7, 	"Author Activity (LOC)").attr(txtheadattr);
+	r.text(380,	35,	"Added").attr(txtattr);
+	r.text(480,	35,	"Removed").attr(txtattr);
+	r.rect(330, 30, 13, 13).attr({fill: colors[0]});
+	r.rect(430, 30, 13, 13).attr({fill: colors[1]});				
+	
+	r.blob		(845,	60,	"%",	30);
+	r.dotchart	(171,	40,	695,	0,	[0,100],	[0,0],	[0.1,0.1],	{max: 1,heat: true, axis: '1 0 0 0'});
+	
+	var iv = 30;
+	for(i=0;i<authors.length;i++)	r.text(100, 90 + i*iv, authors[i]).attr(txtauthattr);
+	
+	r.hbarchart	(200, 75, 640, iv*authors.length*1.04, data, options).hover(fin, fout);
+	
+</script>

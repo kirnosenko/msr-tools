@@ -183,3 +183,9 @@ div#title
     float:left;
     text-align:left;
 }
+
+div#grapharea
+{
+	height: 100%; 
+	width: 100%
+}
