@@ -13,26 +13,29 @@
 	txtheadattr = 	{ font: "20px sans-serif" };
 	txtauthattr = 	{ font: "14px sans-serif" };
 	txtattr 	=	{ font: "12px sans-serif" };
-	var colors = 	['#0F0', '#FF0'];
+	var colors = 	['#0F0', '#FF0', '#00F'];
 	var authors = [];
 	#foreach($author in $authors)
 	#each
 		authors[authors.length] = '$author.name'
 	#end
 	
-	var dataadded=[];
+	var commitsfixed=[];
 	#foreach($author in $authors)
 	#each
-		dataadded[dataadded.length] = $author.added_loc
+		commitsfixed[commitsfixed.length] = $author.fixes
 	#end
 	
-	var dataremoved=[];
+	var commitsrefactored=[];
 	#foreach($author in $authors)
 	#each
-		dataremoved[dataremoved.length] = $author.removed_loc
+		commitsrefactored[commitsrefactored.length] = $author.refactorings
 	#end
 	
-	var data = [dataadded,dataremoved];
+	var commitsrest=[];
+	for(var i=0;i<commitsrefactored.length;i++)	commitsrest[i]= 100 - commitsrefactored[i] - commitsfixed[i] ;
+		
+	var data = [commitsfixed,commitsrefactored,commitsrest];
 	
 	var options = 
 	{
@@ -40,11 +43,13 @@
 		colors: colors
 	};
 	
-	r.text(420, 7, 	"Author Activity (LOC)").attr(txtheadattr);
-	r.text(380,	35,	"Added").attr(txtattr);
-	r.text(480,	35,	"Removed").attr(txtattr);
-	r.rect(330, 30, 13, 13).attr({fill: colors[0]});
-	r.rect(430, 30, 13, 13).attr({fill: colors[1]});				
+	r.text(420, 7, 	"Commit Activity").attr(txtheadattr);
+	r.text(355,	35,	"Fix").attr(txtattr);
+	r.text(440,	35,	"Refactoring").attr(txtattr);	
+	r.text(530,	35,	"Rest").attr(txtattr);	
+	r.rect(320, 30, 13, 13).attr({fill: colors[0]});
+	r.rect(380, 30, 13, 13).attr({fill: colors[1]});	
+	r.rect(490, 30, 13, 13).attr({fill: colors[2]});	
 	
 	r.blob		(845,	60,	"%",	30);
 	r.dotchart	(171,	40,	695,	0,	[0,100],	[0,0],	[0.1,0.1],	{max: 1,heat: true, axis: '1 0 0 0',axisxstep: 10});
