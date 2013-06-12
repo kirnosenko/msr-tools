@@ -59,6 +59,7 @@
     <Compile Include="StatBuilder.cs" />
     <Compile Include="IStatPageBuilder.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="StatPageBuilders\LocGraphBuilder.cs" />
     <Compile Include="StatPageBuilders\ReleaseStatBuilder.cs" />
     <Compile Include="StatPageBuilders\StatPageBuilder.cs" />
   </ItemGroup>

@@ -1,0 +1,82 @@
+<div id="grapharea"></div>
+<script type="text/javascript">
+	var r=Raphael("grapharea");
+	
+	fin = function()
+	{
+		this.tags = r.set();
+        for (var i = 0, ii = this.y.length; i < ii; i++)
+		{
+            this.tags.push(r.tag(this.x, this.y[i], this.values[i], 160, 10).insertBefore(this).attr([{ fill: "#fff" }, { fill: this.symbols[i].attr("fill") }]));
+        }
+	}
+	fout = function()
+	{
+		this.tags && this.tags.remove();	
+	}
+	
+	txtheadattr = 	{ font: "20px sans-serif" };
+	txtauthattr =	{ font: "12px sans-serif" };
+	txtattr 	=	{ font: "14px sans-serif" };
+
+	var xvals = [];
+	#foreach($month in $monthes)
+	#each
+		xvals[xvals.length] = '$month.month'
+	#end
+	
+	xcoordscount = xvals.length;
+	
+	var xvalsbegin=[];
+	for(var i=0;i<xcoordscount;i++)	xvalsbegin[xvalsbegin.length]=i;
+	
+	var colors = 
+	[
+		'#F00','#0F0','#00F','#F0F','#000','#330066','#330099','#3300FF',
+		'#663300','#666633','#669966','#66CC99','#66FFCC','#003333'
+	];
+	
+	var authors = [];
+	#foreach($author in $authors)
+	#each
+		authors[authors.length] = '$author.name'
+	#end
+	
+	var loc = [];
+	#foreach($loc in $locs)
+	#each
+		loc[loc.length] = $loc.loc	
+	#end
+	
+	var k=0;
+	var data = new Array(authors.length);
+	for(var i=0;i<authors.length;i++)	data[i] = new Array(xvals.length);
+	for(var j=0;j<xvals.length;j++)
+		for(var i=0;i<authors.length;i++)
+		{
+			data[i][j] = loc[k];
+			k++;
+		}
+
+	var options = 
+	{
+		smooth:	false,
+		colors:	colors,
+		symbol:	'circle',
+		axis:	'0 0 1 1',
+		axisxstep: xcoordscount-1
+	};
+	
+	r.text(710, 7, 	"Contributed Lines of Code").attr(txtheadattr);
+	
+	var linech=r.linechart(230, 50, 960, 480, xvalsbegin, data, options).hoverColumn(fin,fout);
+	var xText = linech.axis[0].text.items;
+	for(var i in xText) xText[i].attr({'text': xvals[i]}).attr(txtattr).rotate(xcoordscount<90?(-xcoordscount):(-90));
+	
+	var iv=30;
+	for(var i in authors)
+	{
+		r.text(100, 50 + i*iv, authors[i]).attr(txtauthattr);
+		r.rect(165, 50 + i*iv, 25,5).attr({fill: colors[i]});
+	}
+</script>
