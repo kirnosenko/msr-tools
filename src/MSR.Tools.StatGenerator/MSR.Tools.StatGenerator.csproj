@@ -52,6 +52,7 @@
     <Compile Include="StatPageBuilders\ActivityStatBuilder.cs" />
     <Compile Include="StatPageBuilders\AuthorStatBuilder.cs" />
     <Compile Include="StatPageBuilders\CommitGraphBuilder.cs" />
+    <Compile Include="StatPageBuilders\CommitPerMonthGraphBuilder.cs" />
     <Compile Include="StatPageBuilders\FileStatBuilder.cs" />
     <Compile Include="StatPageBuilders\GeneralStatBuilder.cs" />
     <Compile Include="GeneratingTool.cs" />

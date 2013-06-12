@@ -1,0 +1,65 @@
+<div id="grapharea"></div>
+<script type="text/javascript">
+	var r=Raphael("grapharea");
+	
+	txtheadattr = 	{ font: "20px sans-serif" };
+	txtauthattr = 	{ font: "14px sans-serif" };
+	txtattr 	=	{ font: "8px sans-serif" };
+	var colors = 	['#0F0', '#FF0', '#00F'];
+	
+	var authors = [];
+	#foreach($author in $authors)
+	#each
+		authors[authors.length] = '$author.name'
+	#end
+	
+	var monthes = [];
+	#foreach($month in $monthes)
+	#each
+		monthes[monthes.length] = '$month.month'
+	#end
+	
+	var fix = [];
+	#foreach($fix in $fixes)
+	#each
+		fix[fix.length] = $fix.fix
+	#end
+	var refact = [];
+	#foreach($refact in $refactorings)
+	#each
+		refact[refact.length] = $refact.refact
+	#end
+	var rest = [];
+	#foreach($rest in $rests)
+	#each
+		rest[rest.length] = $rest.rest
+	#end
+	
+	var data = [fix,refact,rest];
+	
+	r.text(160, 7, 	"Author Activity per Month(commits)").attr(txtheadattr);
+	r.text(380,	9,	"Fix").attr(txtattr);
+	r.text(480,	9,	"Refacroring").attr(txtattr);
+	r.text(580, 9,  "Rest").attr(txtattr);
+	r.rect(330, 2, 13, 13).attr({fill: colors[0]});
+	r.rect(430, 2, 13, 13).attr({fill: colors[1]});		
+	r.rect(530,	2, 13, 13).attr({fill: colors[2]});
+	
+	var iv = 50;
+	var authlen=authors.length;
+	for(i=0;i<authlen;i++)	r.text(iv, 90 + 2.6*i*iv, authors[i]).attr(txtauthattr);
+	
+	var monthlen = monthes.length;
+	var rectwidth;
+	if(monthlen<=8)			rectwidth=20;
+	else if(monthlen<=15) 	rectwidth=10;
+	else					rectwidth=5;
+	for(i=0;i<monthlen;i++)	r.text(165 + 3*rectwidth*i, iv, monthes[i]).attr(txtauthattr).rotate(-90);
+		
+	for(var i=0;i<authlen;i++)
+		for(var j=0;j<monthlen*3;j++)
+		{
+			r.rect(150+rectwidth*j,85+130*i,rectwidth,data[j%3][i+Math.floor(j/authlen)*authlen]).attr({fill: colors[j%3]});
+			//r.text(165+10*j,70+130*i,data[j%3][i+Math.floor(j/authlen)*authlen]+"%").attr(txtattr).rotate(-90);
+		}					
+</script>
