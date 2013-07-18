@@ -22,11 +22,11 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
             PageName = "Activity Graph";
             PageTemplate = "activitygraph.html";
         }
-        public override IDictionary<string, object> BuildData(IRepositoryResolver repositories)
+        public override IDictionary<string, object> BuildData(IRepository repositories)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
 
-            var authors = repositories.Repository<Commit>()
+            var authors = repositories.Queryable<Commit>()
 				.Select(x => x.Author)
 				.Distinct().ToList();
 

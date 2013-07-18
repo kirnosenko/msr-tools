@@ -24,11 +24,11 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
             PageTemplate = "commitspermonthgraph.html";
         }
 
-        public override IDictionary<string, object> BuildData(IRepositoryResolver repositories)
+        public override IDictionary<string, object> BuildData(IRepository repositories)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
 
-            var authors = repositories.Repository<Commit>()
+            var authors = repositories.Queryable<Commit>()
                 .Select(x => x.Author)
                 .Distinct().ToList();
 
@@ -51,8 +51,8 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
             List<object> refactObjs = new List<object>();
             List<object> restObjs = new List<object>();
 
-			DateTime statFrom = repositories.Repository<Commit>().Min(x => x.Date);
-			DateTime statTo = repositories.Repository<Commit>().Max(x => x.Date);
+			DateTime statFrom = repositories.Queryable<Commit>().Min(x => x.Date);
+			DateTime statTo = repositories.Queryable<Commit>().Max(x => x.Date);
 			
 			List<DateTime> monthes = new List<DateTime>();
 			DateTime m = new DateTime(statFrom.Year, statFrom.Month, 1);

@@ -43,6 +43,7 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\pgadmin3\pgadmin3.config";
 			//configFile = @"E:\repo\gnuplot\gnuplot.config";
 			//configFile = @"E:\repo\couchdb\couchdb.config";
+			//configFile = @"E:\repo\dovecot\dovecot.config";
 
 			//Debug();
 			//Mapping();
@@ -62,8 +63,8 @@ namespace MSR.Tools.Debugger
 		{
 			MappingTool mapper = new MappingTool(configFile);
 
-			//mapper.Info();
-			mapper.Map(true, 1000);
+			mapper.Info();
+			//mapper.Map(true, 1000);
 			//mapper.Truncate(10);
 			//mapper.Check(1992);
 		}

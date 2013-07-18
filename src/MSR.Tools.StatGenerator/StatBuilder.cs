@@ -25,7 +25,14 @@ namespace MSR.Tools.StatGenerator
 			SharedPageTemplate = "page.html";
 			FilesToCopy = new string[]
 			{
-				"stats.css", "sortable.js"
+				"stats.css",
+				"sortable.js",
+				"g.bar-min.js",
+				"g.dot-min.js",
+				"g.line-min.js",
+				"g.pie-min.js",
+				"g.raphael-min.js",
+				"raphael-min.js",
 			};
 			TargetDir = "/";
 			OutputDir = Environment.CurrentDirectory;
