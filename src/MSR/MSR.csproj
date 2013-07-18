@@ -122,6 +122,12 @@
     <Compile Include="Data\VersionControl\Git\GitLog.cs" />
     <Compile Include="Data\VersionControl\Git\TouchedFileGitAction.cs" />
     <Compile Include="Data\VersionControl\Git\IGitClient.cs" />
+    <Compile Include="Data\VersionControl\Hg\CommandLineHgClient.cs" />
+    <Compile Include="Data\VersionControl\Hg\HgBlame.cs" />
+    <Compile Include="Data\VersionControl\Hg\HgData.cs" />
+    <Compile Include="Data\VersionControl\Hg\HgLog.cs" />
+    <Compile Include="Data\VersionControl\Hg\IHgClient.cs" />
+    <Compile Include="Data\VersionControl\Hg\TouchedFileHgAction.cs" />
     <Compile Include="Data\VersionControl\IBlame.cs" />
     <Compile Include="Data\VersionControl\IDiff.cs" />
     <Compile Include="Data\VersionControl\ILog.cs" />
@@ -158,6 +164,7 @@
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
