@@ -21,7 +21,7 @@ namespace MSR.Data.Entities.DSL.Mapping
 		{
 			return new ProjectFileMappingExpression(
 				exp,
-				exp.Repository<ProjectFile>().Single(x =>
+				exp.Queryable<ProjectFile>().Single(x =>
 					x.Path == filePath && x.DeletedInCommitID == null
 				)
 			);
@@ -55,7 +55,7 @@ namespace MSR.Data.Entities.DSL.Mapping
 		}
 		public IProjectFileMappingExpression CopiedFrom(string sourseFilePath, string sourceRevision)
 		{
-			entity.SourceCommit = Repository<Commit>()
+			entity.SourceCommit = Queryable<Commit>()
 				.Single(x => x.Revision == sourceRevision);
 			try
 			{

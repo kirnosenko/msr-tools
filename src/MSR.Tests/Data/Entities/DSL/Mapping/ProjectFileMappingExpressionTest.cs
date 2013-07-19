@@ -28,12 +28,12 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.AddFile("file1")
 			.Submit();
 
-			Repository<ProjectFile>().Count()
+			Queryable<ProjectFile>().Count()
 				.Should().Be(1);
-			Repository<ProjectFile>().Single()
+			Queryable<ProjectFile>().Single()
 				.Satisfy(f =>
 					f.Path == "file1" &&
-					f.AddedInCommit == Repository<Commit>().Single()
+					f.AddedInCommit == Queryable<Commit>().Single()
 				);
 		}
 		[Test]
@@ -53,16 +53,16 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.AddFile("file2").CopiedFrom("file1", "1")
 					.AddFile("file3").CopiedFrom("file1", "3")
 			.Submit();
-			
-			var files = Repository<ProjectFile>().ToList();
-			
-			Repository<ProjectFile>().Single(x => x.Path == "file2")
+
+			var files = Queryable<ProjectFile>().ToList();
+
+			Queryable<ProjectFile>().Single(x => x.Path == "file2")
 				.Satisfy(x =>
 					x.SourceCommit.Revision == "1" &&
 					x.SourceFile.Path == "file1" &&
 					x.SourceFile.DeletedInCommitID != null
 				);
-			Repository<ProjectFile>().Single(x => x.Path == "file3")
+			Queryable<ProjectFile>().Single(x => x.Path == "file3")
 				.Satisfy(x =>
 					x.SourceCommit.Revision == "3" &&
 					x.SourceFile.Path == "file1" &&
@@ -80,9 +80,9 @@ namespace MSR.Data.Entities.DSL.Mapping
 					.File("file1").Delete()
 			.Submit();
 
-			Repository<ProjectFile>().Single().DeletedInCommit
+			Queryable<ProjectFile>().Single().DeletedInCommit
 				.Should().Be(
-					Repository<Commit>().Single(c => c.Revision == "2")
+					Queryable<Commit>().Single(c => c.Revision == "2")
 				);
 		}
 	}

@@ -35,7 +35,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		protected override double GetFileEstimation(ProjectFile file)
 		{
-			return repositories.SelectionDSL()
+			return repository.SelectionDSL()
 				.Commits().TillRevision(PredictionRelease)
 				.Files().IdIs(file.ID)
 				.Modifications().InCommits().InFiles()

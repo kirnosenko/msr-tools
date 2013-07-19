@@ -26,13 +26,13 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 			return
 				(
 					from bf in bugFixes
-					join c in bugFixes.Repository<Commit>() on bf.CommitID equals c.ID
-					join m in bugFixes.Repository<Modification>() on c.ID equals m.CommitID
-					join dcb in bugFixes.Repository<CodeBlock>() on m.ID equals dcb.ModificationID
-					join acb in bugFixes.Repository<CodeBlock>() on dcb.TargetCodeBlockID equals acb.ID
+					join c in bugFixes.Queryable<Commit>() on bf.CommitID equals c.ID
+					join m in bugFixes.Queryable<Modification>() on c.ID equals m.CommitID
+					join dcb in bugFixes.Queryable<CodeBlock>() on m.ID equals dcb.ModificationID
+					join acb in bugFixes.Queryable<CodeBlock>() on dcb.TargetCodeBlockID equals acb.ID
 					where
 						dcb.Size < 0
-					let codeDate = bugFixes.Repository<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
+					let codeDate = bugFixes.Queryable<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
 					group codeDate by c.Date into g
 					select (g.Key - g.Min()).TotalDays
 				).ToArray();
@@ -48,13 +48,13 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 			return
 				(
 					from bf in bugFixes
-					join c in bugFixes.Repository<Commit>() on bf.CommitID equals c.ID
-					join m in bugFixes.Repository<Modification>() on c.ID equals m.CommitID
-					join dcb in bugFixes.Repository<CodeBlock>() on m.ID equals dcb.ModificationID
-					join acb in bugFixes.Repository<CodeBlock>() on dcb.TargetCodeBlockID equals acb.ID
+					join c in bugFixes.Queryable<Commit>() on bf.CommitID equals c.ID
+					join m in bugFixes.Queryable<Modification>() on c.ID equals m.CommitID
+					join dcb in bugFixes.Queryable<CodeBlock>() on m.ID equals dcb.ModificationID
+					join acb in bugFixes.Queryable<CodeBlock>() on dcb.TargetCodeBlockID equals acb.ID
 					where
 						dcb.Size < 0
-					let codeDate = bugFixes.Repository<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
+					let codeDate = bugFixes.Queryable<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
 					group codeDate by c.Date into g
 					select (g.Key - g.Max()).TotalDays
 				).ToArray();
@@ -71,13 +71,13 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 			return
 				(
 					from bf in bugFixes
-					join c in bugFixes.Repository<Commit>() on bf.CommitID equals c.ID
-					join m in bugFixes.Repository<Modification>() on c.ID equals m.CommitID
-					join dcb in bugFixes.Repository<CodeBlock>() on m.ID equals dcb.ModificationID
-					join acb in bugFixes.Repository<CodeBlock>() on dcb.TargetCodeBlockID equals acb.ID
+					join c in bugFixes.Queryable<Commit>() on bf.CommitID equals c.ID
+					join m in bugFixes.Queryable<Modification>() on c.ID equals m.CommitID
+					join dcb in bugFixes.Queryable<CodeBlock>() on m.ID equals dcb.ModificationID
+					join acb in bugFixes.Queryable<CodeBlock>() on dcb.TargetCodeBlockID equals acb.ID
 					where
 						dcb.Size < 0
-					let codeDate = bugFixes.Repository<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
+					let codeDate = bugFixes.Queryable<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
 					group codeDate by c.Date into g
 					select ((g.Key - g.Min()).TotalDays + (g.Key - g.Max()).TotalDays) / 2
 				).ToArray();
@@ -93,13 +93,13 @@ namespace MSR.Data.Entities.DSL.Selection.Metrics
 			return
 				(
 					from bf in bugFixes
-					join c in bugFixes.Repository<Commit>() on bf.CommitID equals c.ID
-					join m in bugFixes.Repository<Modification>() on c.ID equals m.CommitID
-					join dcb in bugFixes.Repository<CodeBlock>() on m.ID equals dcb.ModificationID
-					join acb in bugFixes.Repository<CodeBlock>() on dcb.TargetCodeBlockID equals acb.ID
+					join c in bugFixes.Queryable<Commit>() on bf.CommitID equals c.ID
+					join m in bugFixes.Queryable<Modification>() on c.ID equals m.CommitID
+					join dcb in bugFixes.Queryable<CodeBlock>() on m.ID equals dcb.ModificationID
+					join acb in bugFixes.Queryable<CodeBlock>() on dcb.TargetCodeBlockID equals acb.ID
 					where
 						dcb.Size < 0
-					let codeDate = bugFixes.Repository<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
+					let codeDate = bugFixes.Queryable<Commit>().Single(x => x.ID == acb.AddedInitiallyInCommitID).Date
 					group codeDate by c.Date into g
 					select (g.Max() - g.Min()).TotalDays
 				).ToArray();

@@ -39,18 +39,18 @@ namespace MSR.Data.Entities.Mapping
 			mapper.Map(
 				mappingDSL.AddCommit("1")
 			);
-			Submit();
+			SubmitChanges();
 			
 			if (! isBugFix)
 			{
-				Repository<BugFix>().Count()
+				Queryable<BugFix>().Count()
 					.Should().Be(0);
 			}
 			else
 			{
-				Repository<BugFix>().Count()
+				Queryable<BugFix>().Count()
 					.Should().Be(1);
-				Repository<BugFix>().Single().Commit.Revision
+				Queryable<BugFix>().Single().Commit.Revision
 					.Should().Be("1");
 			}
 		}

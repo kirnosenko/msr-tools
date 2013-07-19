@@ -41,24 +41,24 @@ namespace MSR.Tools.Mapper
 			using (var s = data.OpenSession())
 			{
 				Console.WriteLine("Revisions: {0}",
-					s.Repository<Commit>().Count()
+					s.Queryable<Commit>().Count()
 				);
 				Console.WriteLine("Last revision: {0}", s.LastRevision());
 				Console.WriteLine("Period: {0}-{1}",
-					s.Repository<Commit>().Min(c => c.Date),
-					s.Repository<Commit>().Max(c => c.Date)
+					s.Queryable<Commit>().Min(c => c.Date),
+					s.Queryable<Commit>().Max(c => c.Date)
 				);
 				Console.WriteLine("LOC: {0}",
 					s.SelectionDSL().CodeBlocks().CalculateLOC()
 				);
 				Console.WriteLine("Releases: {0}",
-					s.Repository<Release>().Count()
+					s.Queryable<Release>().Count()
 				);
 				Console.WriteLine("Files: {0}",
-					s.Repository<ProjectFile>().Count()
+					s.Queryable<ProjectFile>().Count()
 				);
 				Console.WriteLine("Fixes: {0}",
-					s.Repository<BugFix>().Count()
+					s.Queryable<BugFix>().Count()
 				);
 			}
 		}
@@ -101,9 +101,9 @@ namespace MSR.Tools.Mapper
 			using (ConsoleTimeLogger.Start("entity mapping time"))
 			using (var s = data.OpenSession())
 			{
-				s.Repository<Release>().Add(new Release()
+				s.Add(new Release()
 				{
-					Commit = s.Repository<Commit>().Single(c =>
+					Commit = s.Queryable<Commit>().Single(c =>
 						c.Revision == revision
 					),
 					Tag = tag
@@ -131,15 +131,15 @@ namespace MSR.Tools.Mapper
 
 				foreach (var codeBlock in addedCodeBlocks)
 				{
-					s.Repository<CodeBlock>().Delete(codeBlock);
+					s.Delete(codeBlock);
 				}
 				foreach (var modification in addedModifications)
 				{
-					s.Repository<Modification>().Delete(modification);
+					s.Delete(modification);
 				}
 				foreach (var file in addedFiles)
 				{
-					s.Repository<ProjectFile>().Delete(file);
+					s.Delete(file);
 				}
 				foreach (var file in deletedFiles)
 				{
@@ -147,11 +147,11 @@ namespace MSR.Tools.Mapper
 				}
 				foreach (var bugFix in addedBugFixes)
 				{
-					s.Repository<BugFix>().Delete(bugFix);
+					s.Delete(bugFix);
 				}
 				foreach (var commit in addedCommits)
 				{
-					s.Repository<Commit>().Delete(commit);
+					s.Delete(commit);
 				}
 
 				s.SubmitChanges();
@@ -184,8 +184,8 @@ namespace MSR.Tools.Mapper
 				double stabilizationPeriod = s.SelectionDSL().BugFixes()
 					.CalculateStabilizationPeriod(stabilizationProbability);
 				
-				DateTime from = s.Repository<Commit>().Single(c => c.Revision == s.FirstRevision()).Date;
-				DateTime to = s.Repository<Commit>().Single(c => c.Revision == s.LastRevision()).Date.AddDays(- stabilizationPeriod);
+				DateTime from = s.Queryable<Commit>().Single(c => c.Revision == s.FirstRevision()).Date;
+				DateTime to = s.Queryable<Commit>().Single(c => c.Revision == s.LastRevision()).Date.AddDays(- stabilizationPeriod);
 				
 				int duration = (to - from).Days;
 				int delta = duration / count;
@@ -195,12 +195,12 @@ namespace MSR.Tools.Mapper
 				{
 					releaseDate = releaseDate.AddDays(delta);
 					
-					var q = s.Repository<Commit>()
+					var q = s.Queryable<Commit>()
 							.Where(x => x.Date <= releaseDate)
 							.OrderByDescending(x => x.Date).ToList();
 					
 					releases.Add(
-						s.Repository<Commit>()
+						s.Queryable<Commit>()
 							.Where(x => x.Date <= releaseDate)
 							.OrderByDescending(x => x.Date)
 							.First().Revision,
@@ -232,7 +232,7 @@ namespace MSR.Tools.Mapper
 			using (var s = data.OpenSession())
 			{
 				string testRevision = stopRevision;
-				if (s.Repository<Commit>().SingleOrDefault(c => c.Revision == testRevision) == null)
+				if (s.Queryable<Commit>().SingleOrDefault(c => c.Revision == testRevision) == null)
 				{
 					Console.WriteLine("Could not find revision {0}.", testRevision);
 					return;
@@ -263,14 +263,14 @@ namespace MSR.Tools.Mapper
 				mapping.Map(data);
 			}
 		}
-		private void CheckEmptyCodeBlocks(IRepositoryResolver repositories, string testRevision)
+		private void CheckEmptyCodeBlocks(IRepository repository, string testRevision)
 		{
 			foreach (var zeroCodeBlock in
-				from cb in repositories.Repository<CodeBlock>()
-				join m in repositories.Repository<Modification>() on cb.ModificationID equals m.ID
-				join f in repositories.Repository<ProjectFile>() on m.FileID equals f.ID
-				join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
-				let testRevisionNumber = repositories.Repository<Commit>()
+				from cb in repository.Queryable<CodeBlock>()
+				join m in repository.Queryable<Modification>() on cb.ModificationID equals m.ID
+				join f in repository.Queryable<ProjectFile>() on m.FileID equals f.ID
+				join c in repository.Queryable<Commit>() on m.CommitID equals c.ID
+				let testRevisionNumber = repository.Queryable<Commit>()
 					.Single(x => x.Revision == testRevision)
 					.OrderedNumber
 				where
@@ -285,14 +285,14 @@ namespace MSR.Tools.Mapper
 				);
 			}
 		}
-		private void CheckTargetsForCodeBlocks(IRepositoryResolver repositories, string testRevision)
+		private void CheckTargetsForCodeBlocks(IRepository repository, string testRevision)
 		{
 			foreach (var codeBlockWithWrongTarget in
-				from cb in repositories.Repository<CodeBlock>()
-				join m in repositories.Repository<Modification>() on cb.ModificationID equals m.ID
-				join f in repositories.Repository<ProjectFile>() on m.FileID equals f.ID
-				join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
-				let testRevisionNumber = repositories.Repository<Commit>()
+				from cb in repository.Queryable<CodeBlock>()
+				join m in repository.Queryable<Modification>() on cb.ModificationID equals m.ID
+				join f in repository.Queryable<ProjectFile>() on m.FileID equals f.ID
+				join c in repository.Queryable<Commit>() on m.CommitID equals c.ID
+				let testRevisionNumber = repository.Queryable<Commit>()
 					.Single(x => x.Revision == testRevision)
 					.OrderedNumber
 				where
@@ -319,15 +319,15 @@ namespace MSR.Tools.Mapper
 				);
 			}
 		}
-		private void CheckCodeSizeForDeletedFiles(IRepositoryResolver repositories, string testRevision)
+		private void CheckCodeSizeForDeletedFiles(IRepository repository, string testRevision)
 		{
 			foreach (var codeSizeForDeletedFile in
 				(
-					from cb in repositories.Repository<CodeBlock>()
-					join m in repositories.Repository<Modification>() on cb.ModificationID equals m.ID
-					join f in repositories.Repository<ProjectFile>() on m.FileID equals f.ID
-					join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
-					let testRevisionNumber = repositories.Repository<Commit>()
+					from cb in repository.Queryable<CodeBlock>()
+					join m in repository.Queryable<Modification>() on cb.ModificationID equals m.ID
+					join f in repository.Queryable<ProjectFile>() on m.FileID equals f.ID
+					join c in repository.Queryable<Commit>() on m.CommitID equals c.ID
+					let testRevisionNumber = repository.Queryable<Commit>()
 						.Single(x => x.Revision == testRevision)
 						.OrderedNumber
 					where
@@ -335,14 +335,14 @@ namespace MSR.Tools.Mapper
 						&&
 						f.DeletedInCommitID != null
 						&&
-						repositories.Repository<Commit>()
+						repository.Queryable<Commit>()
 							.Single(x => x.ID == f.DeletedInCommitID)
 							.OrderedNumber <= testRevisionNumber
 					group cb by f into g
 					select new
 					{
 						Path = g.Key.Path,
-						DeletedInRevision = repositories.Repository<Commit>()
+						DeletedInRevision = repository.Queryable<Commit>()
 							.Single(x => x.ID == g.Key.DeletedInCommitID)
 							.Revision,
 						CodeSize = g.Sum(x => x.Size)
@@ -357,15 +357,15 @@ namespace MSR.Tools.Mapper
 				);
 			}
 		}
-		private void CheckDeletedCodeBlocksVsAdded(IRepositoryResolver repositories, string testRevision)
+		private void CheckDeletedCodeBlocksVsAdded(IRepository repository, string testRevision)
 		{
 			foreach (var codeBlockWithWrongTarget in
 				(
-					from cb in repositories.Repository<CodeBlock>()
-					join m in repositories.Repository<Modification>() on cb.ModificationID equals m.ID
-					join f in repositories.Repository<ProjectFile>() on m.FileID equals f.ID
-					join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
-					let testRevisionNumber = repositories.Repository<Commit>()
+					from cb in repository.Queryable<CodeBlock>()
+					join m in repository.Queryable<Modification>() on cb.ModificationID equals m.ID
+					join f in repository.Queryable<ProjectFile>() on m.FileID equals f.ID
+					join c in repository.Queryable<Commit>() on m.CommitID equals c.ID
+					let testRevisionNumber = repository.Queryable<Commit>()
 						.Single(x => x.Revision == testRevision)
 						.OrderedNumber
 					let addedCodeID = cb.Size < 0 ? cb.TargetCodeBlockID : cb.ID
@@ -375,18 +375,18 @@ namespace MSR.Tools.Mapper
 					select new
 					{
 						CodeSize = g.Sum(),
-						Path = repositories.Repository<ProjectFile>()
-							.Single(f => f.ID == repositories.Repository<Modification>()
-								.Single(m => m.ID == repositories.Repository<CodeBlock>()
+						Path = repository.Queryable<ProjectFile>()
+							.Single(f => f.ID == repository.Queryable<Modification>()
+								.Single(m => m.ID == repository.Queryable<CodeBlock>()
 									.Single(cb => cb.ID == g.Key).ModificationID
 								).FileID
 							).Path,
-						AddedCodeSize = repositories.Repository<CodeBlock>()
+						AddedCodeSize = repository.Queryable<CodeBlock>()
 							.Single(cb => cb.ID == g.Key)
 							.Size,
-						Revision = repositories.Repository<Commit>()
-							.Single(c => c.ID == repositories.Repository<Modification>()
-								.Single(m => m.ID == repositories.Repository<CodeBlock>()
+						Revision = repository.Queryable<Commit>()
+							.Single(c => c.ID == repository.Queryable<Modification>()
+								.Single(m => m.ID == repository.Queryable<CodeBlock>()
 									.Single(cb => cb.ID == g.Key).ModificationID
 								).CommitID
 							).Revision
@@ -402,19 +402,19 @@ namespace MSR.Tools.Mapper
 				);
 			}
 		}
-		private void CheckLinesContent(IRepositoryResolver repositories, IScmData scmData, string testRevision)
+		private void CheckLinesContent(IRepository repository, IScmData scmData, string testRevision)
 		{
-			var existentFiles = repositories.SelectionDSL()
+			var existentFiles = repository.SelectionDSL()
 				.Files()
 					.Reselect(pathFilter)
 					.ExistInRevision(testRevision);
 
 			foreach (var existentFile in existentFiles)
 			{
-				CheckLinesContent(repositories, scmData, testRevision, existentFile, false);
+				CheckLinesContent(repository, scmData, testRevision, existentFile, false);
 			}
 		}
-		private bool CheckLinesContent(IRepositoryResolver repositories, IScmData scmData, string testRevision, ProjectFile file, bool resultOnly)
+		private bool CheckLinesContent(IRepository repository, IScmData scmData, string testRevision, ProjectFile file, bool resultOnly)
 		{
 			IBlame fileBlame = null;
 			try
@@ -433,7 +433,7 @@ namespace MSR.Tools.Mapper
 				return false;
 			}
 			
-			double currentLOC = repositories.SelectionDSL()
+			double currentLOC = repository.SelectionDSL()
 					.Commits().TillRevision(testRevision)
 					.Files().IdIs(file.ID)
 					.Modifications().InCommits().InFiles()
@@ -464,16 +464,16 @@ namespace MSR.Tools.Mapper
 
 			var codeBySourceRevision =
 			(
-				from f in repositories.Repository<ProjectFile>()
-				join m in repositories.Repository<Modification>() on f.ID equals m.FileID
-				join cb in repositories.Repository<CodeBlock>() on m.ID equals cb.ModificationID
-				join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
-				let addedCodeBlock = repositories.Repository<CodeBlock>()
+				from f in repository.Queryable<ProjectFile>()
+				join m in repository.Queryable<Modification>() on f.ID equals m.FileID
+				join cb in repository.Queryable<CodeBlock>() on m.ID equals cb.ModificationID
+				join c in repository.Queryable<Commit>() on m.CommitID equals c.ID
+				let addedCodeBlock = repository.Queryable<CodeBlock>()
 					.Single(x => x.ID == (cb.Size < 0 ? cb.TargetCodeBlockID : cb.ID))
-				let codeAddedInitiallyInRevision = repositories.Repository<Commit>()
+				let codeAddedInitiallyInRevision = repository.Queryable<Commit>()
 					.Single(x => x.ID == addedCodeBlock.AddedInitiallyInCommitID)
 					.Revision
-				let testRevisionNumber = repositories.Repository<Commit>()
+				let testRevisionNumber = repository.Queryable<Commit>()
 					.Single(x => x.Revision == testRevision)
 					.OrderedNumber
 				where
@@ -525,31 +525,31 @@ namespace MSR.Tools.Mapper
 						error.RealCodeSize
 					);
 				}
-				if (! correct)
+				if ((! correct) && (errorCode.Count > 0))
 				{
-					string latestCodeRevision = repositories.LastRevision(errorCode.Select(x => x.SourceRevision));
+					string latestCodeRevision = repository.LastRevision(errorCode.Select(x => x.SourceRevision));
 
-					var commitsFileTouchedIn = repositories.SelectionDSL()
+					var commitsFileTouchedIn = repository.SelectionDSL()
 						.Files().IdIs(file.ID)
 						.Commits().FromRevision(latestCodeRevision).TouchFiles()
 						.OrderBy(c => c.OrderedNumber);
 					
 					foreach (var commit in commitsFileTouchedIn)
 					{
-						if (! CheckLinesContent(repositories, scmData, commit.Revision, file, true))
+						if (!CheckLinesContent(repository, scmData, commit.Revision, file, true))
 						{
 							Console.WriteLine("{0} - incorrectly mapped commit.", commit.Revision);
 							if ((automaticallyFixDiffErrors) && (errorCode.Sum(x => x.CodeSize - x.RealCodeSize) == 0))
 							{
 								var incorrectDeleteCodeBlocks =
-									from cb in repositories.SelectionDSL()
+									from cb in repository.SelectionDSL()
 										.Commits().RevisionIs(commit.Revision)
 										.Files().PathIs(file.Path)
 										.Modifications().InCommits().InFiles()
 										.CodeBlocks().InModifications().Deleted()
-									join tcb in repositories.Repository<CodeBlock>() on cb.TargetCodeBlockID equals tcb.ID
-									join m in repositories.Repository<Modification>() on tcb.ModificationID equals m.ID
-									join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
+									join tcb in repository.Queryable<CodeBlock>() on cb.TargetCodeBlockID equals tcb.ID
+									join m in repository.Queryable<Modification>() on tcb.ModificationID equals m.ID
+									join c in repository.Queryable<Commit>() on m.CommitID equals c.ID
 									where
 										errorCode.Select(x => x.SourceRevision).Contains(c.Revision)
 									select new
@@ -568,19 +568,19 @@ namespace MSR.Tools.Mapper
 										codeBlock = new CodeBlock()
 										{
 											Size = 0,
-											Modification = repositories.SelectionDSL()
+											Modification = repository.SelectionDSL()
 												.Commits().RevisionIs(commit.Revision)
 												.Files().PathIs(file.Path)
 												.Modifications().InCommits().InFiles().Single(),
 										};
-										repositories.Repository<CodeBlock>().Add(codeBlock);
+										repository.Add(codeBlock);
 									}
 									Console.WriteLine("Fix code block size for file {0} in revision {1}:", file.Path, commit.Revision);
 									Console.Write("Was {0}", codeBlock.Size);
 									codeBlock.Size -= difference;
 									if (codeBlock.Size == 0)
 									{
-										repositories.Repository<CodeBlock>().Delete(codeBlock);
+										repository.Delete(codeBlock);
 									}
 									else if ((codeBlock.Size > 0) && (codeBlock.AddedInitiallyInCommitID == null))
 									{
@@ -588,7 +588,7 @@ namespace MSR.Tools.Mapper
 									}
 									else if ((codeBlock.Size < 0) && (codeBlock.TargetCodeBlockID == null))
 									{
-										codeBlock.TargetCodeBlock = repositories.SelectionDSL()
+										codeBlock.TargetCodeBlock = repository.SelectionDSL()
 											.Commits().RevisionIs(error.SourceRevision)
 											.Files().PathIs(file.Path)
 											.Modifications().InFiles()

@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2012  Semyon Kirnosenko
  */
 
 using System;
@@ -19,9 +19,21 @@ namespace MSR.Data.Entities.DSL.Mapping
 		{
 			this.parentExp = parentExp;
 		}
-		public IRepository<T> Repository<T>() where T : class
+		public void Add<T>(T entity) where T : class
 		{
-			return parentExp.Repository<T>();
+			parentExp.Add(entity);
+		}
+		public void AddRange<T>(IEnumerable<T> entities) where T : class
+		{
+			parentExp.AddRange(entities);
+		}
+		public void Delete<T>(T entity) where T : class
+		{
+			parentExp.Delete(entity);
+		}
+		public IQueryable<T> Queryable<T>() where T : class
+		{
+			return parentExp.Queryable<T>();
 		}
 		public IRepositoryMappingExpression Submit()
 		{
@@ -29,7 +41,7 @@ namespace MSR.Data.Entities.DSL.Mapping
 		}
 		public void AddEntity()
 		{
-			Repository<E>().Add(entity);
+			Add(entity);
 		}
 		public virtual T CurrentEntity<T>() where T : class
 		{

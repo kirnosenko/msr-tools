@@ -46,11 +46,11 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("abc")
 					.AddFile("file1").Modified()
 			);
-			Submit();
+			SubmitChanges();
 
-			Repository<CodeBlock>().Count()
+			Queryable<CodeBlock>().Count()
 				.Should().Be(1);
-			Repository<CodeBlock>().Single()
+			Queryable<CodeBlock>().Single()
 				.Satisfy(x =>
 					x.Size == 3
 					&&
@@ -69,9 +69,9 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("abc")
 					.File("file1").Delete().Modified()
 			);
-			Submit();
-			
-			Repository<CodeBlock>()
+			SubmitChanges();
+
+			Queryable<CodeBlock>()
 				.Select(cb => cb.Size).ToArray()
 					.Should().Have.SameSequenceAs(new double[]
 					{
@@ -108,9 +108,9 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("abc")
 					.File("file1").Modified()
 			);
-			Submit();
+			SubmitChanges();
 
-			var code = Repository<CodeBlock>()
+			var code = Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "abc");
 			
 			code.Select(cb => cb.Size).ToArray()
@@ -154,9 +154,9 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("abc")
 					.AddFile("file2").CopiedFrom("file1", "ab").Modified()
 			);
-			Submit();
-			
-			var code = Repository<CodeBlock>()
+			SubmitChanges();
+
+			var code = Queryable<CodeBlock>()
 				.Where(cb => cb.Modification.Commit.Revision == "abc");
 				
 			code.Select(cb => cb.Size).ToArray()
@@ -195,9 +195,9 @@ namespace MSR.Data.Entities.Mapping
 				mappingDSL.AddCommit("abc")
 					.AddFile("file2").CopiedFrom("file1", "a").Modified()
 			);
-			Submit();
-			
-			var code = Repository<CodeBlock>()
+			SubmitChanges();
+
+			var code = Queryable<CodeBlock>()
 				.Single(cb => cb.Size == 5)
 				.AddedInitiallyInCommit.Revision
 					.Should().Be("abc");

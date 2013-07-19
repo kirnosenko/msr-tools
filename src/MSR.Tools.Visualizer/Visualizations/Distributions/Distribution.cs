@@ -25,19 +25,19 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 			ShowProbabilityDensity = false;
 			Intervals = 10;
 		}
-		public override void Calc(IRepositoryResolver repositories)
+		public override void Calc(IRepository repository)
 		{
-			var data = DistributionData(repositories);
+			var ddata = DistributionData(repository);
 			
 			if (ShowProbabilityDistribution)
 			{
-				x = new double[data.Length];
-				y = new double[data.Length];
+				x = new double[ddata.Length];
+				y = new double[ddata.Length];
 				
-				for (int i = 0; i < data.Length; i++)
+				for (int i = 0; i < ddata.Length; i++)
 				{
-					x[i] = data[i];
-					y[i] = (double)data.Where(d => d <= data[i]).Count() / data.Count();
+					x[i] = ddata[i];
+					y[i] = (double)ddata.Where(d => d <= ddata[i]).Count() / ddata.Count();
 				}
 			}
 			
@@ -46,12 +46,12 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 				densityX = new double[Intervals];
 				densityY = new double[Intervals];
 				
-				double delta = data.Max() / Intervals;
+				double delta = ddata.Max() / Intervals;
 				
 				for (int i = 0; i < Intervals; i++)
 				{
 					densityX[i] = i * delta + delta / 2;
-					densityY[i] = (double)data.Where(d => d >= i*delta && d < (i+1)*delta).Count() / data.Count();
+					densityY[i] = (double)ddata.Where(d => d >= i*delta && d < (i+1)*delta).Count() / ddata.Count();
 				}
 			}
 			
@@ -87,6 +87,6 @@ namespace MSR.Tools.Visualizer.Visualizations.Distributions
 		{
 			get; set;
 		}
-		protected abstract double[] DistributionData(IRepositoryResolver repositories);
+		protected abstract double[] DistributionData(IRepository repository);
 	}
 }

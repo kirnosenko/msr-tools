@@ -39,18 +39,18 @@ namespace MSR.Data.Entities.Mapping
 			mapper.Map(
 				mappingDSL.AddCommit("1")
 			);
-			Submit();
+			SubmitChanges();
 
 			if (tag == null)
 			{
-				Repository<Release>().Count()
+				Queryable<Release>().Count()
 					.Should().Be(0);
 			}
 			else
 			{
-				Repository<Release>().Count()
+				Queryable<Release>().Count()
 					.Should().Be(1);
-				Repository<Release>().Single()
+				Queryable<Release>().Single()
 					.Satisfy(x =>
 						x.Tag == tag
 						&&

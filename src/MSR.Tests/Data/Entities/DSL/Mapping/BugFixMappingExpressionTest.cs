@@ -23,10 +23,10 @@ namespace MSR.Data.Entities.DSL.Mapping
 				.AddCommit("2").IsBugFix()
 				.AddCommit("3")
 			.Submit();
-			
-			Repository<BugFix>().Count()
+
+			Queryable<BugFix>().Count()
 				.Should().Be(1);
-			Repository<BugFix>().Single().Commit.Revision
+			Queryable<BugFix>().Single().Commit.Revision
 				.Should().Be("2");
 		}
 	}

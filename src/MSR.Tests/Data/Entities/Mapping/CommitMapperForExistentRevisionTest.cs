@@ -36,7 +36,7 @@ namespace MSR.Data.Entities.Mapping
 			mappingDSL.Revision = "1";
 			mapper.Map(mappingDSL).Count()
 				.Should().Be(1);
-			Repository<Commit>().Count()
+			Queryable<Commit>().Count()
 				.Should().Be(1);
 		}
 	}

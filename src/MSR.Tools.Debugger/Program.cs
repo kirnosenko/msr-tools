@@ -34,8 +34,8 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\django\django.config";
 			//configFile = @"E:\repo\postgresql\postgresql.config";
 			//configFile = @"E:\repo\nhibernate\nhibernate.config";
-			configFile = @"E:\repo\msr\msr.config";
-			//configFile = @"E:\repo\wordpress\wordpress.config"; // 13998 revisions
+			//configFile = @"E:\repo\msr\msr.config";
+			configFile = @"E:\repo\wordpress\wordpress.config"; // 13998 revisions
 			//configFile = @"E:\repo\frund\frund.config";
 			//configFile = @"E:\repo\httpd\httpd.config";
 			//configFile = @"E:\repo\subtle\subtle.config";
@@ -43,13 +43,14 @@ namespace MSR.Tools.Debugger
 			//configFile = @"E:\repo\pgadmin3\pgadmin3.config";
 			//configFile = @"E:\repo\gnuplot\gnuplot.config";
 			//configFile = @"E:\repo\couchdb\couchdb.config";
+			//configFile = @"E:\repo\dovecot\dovecot.config";
 
 			//Debug();
-			Mapping();
+			//Mapping();
 			//PartialMapping();
 			//MapReleases();
-			//MapSyntheticReleases(10, 0.8);
-			//GenerateStat();
+			//MapSyntheticReleases(1, 0.8);
+			GenerateStat();
 
 			Console.ReadKey();
 		}
@@ -62,11 +63,10 @@ namespace MSR.Tools.Debugger
 		{
 			MappingTool mapper = new MappingTool(configFile);
 
-			//mapper.Info();
-			//mapper.Map(true, 215);
-			//mapper.Map(false, 800);
+			mapper.Info();
+			//mapper.Map(true, 1000);
 			//mapper.Truncate(10);
-			mapper.Check(215);
+			//mapper.Check(1992);
 		}
 		static void PartialMapping()
 		{
@@ -88,14 +88,13 @@ namespace MSR.Tools.Debugger
 			mapper.MapReleases(
 				new Dictionary<string,string>()
 				{
-					{ "f29b607b20b61fddf93885132ed0708308770cf8", "1.12.0 BETA 3" },
-					{ "7fb632e2d838f1e75aec512e060841977c6cb5a5", "1.10.0" },
-					{ "72fbb5a89ac45a8795cda0cd1537e7bbe666602f", "1.8.0" },
-					{ "d8b0a5b7da22c4621b3064fca08d55830430bddb", "1.6.0" },
-					{ "71edf25b4a6a1f882e3a463292b3828f40c894c9", "1.4.0" },
-					{ "3f83858cea5aa8bca9647d8363adc35c1f1d5801", "1.2.0" },
-					{ "d4bfe61f1dc71363c0d237b1add257a4e50488d5", "1.0.0" },
-					{ "ccbd6c1cd30acc12df9e91aba0230c848d69b6cc", "0.9.0" },
+					{ "308aee2d8229cbdd26f29eb04954044592dffa9d", "0.1.0" },
+					{ "4d00ea8121fd373525ecf6fa93243efc91666554", "0.1.1" },
+					{ "f0c86737a276553e72a4ff1b070e8e30eaab50a0", "0.2.0" },
+					{ "0e10ffa1fc83ae4d6b3657266865df4c4a3534da", "0.2.1" },
+					{ "4f9d9cdbefa90a8d3673f94d078f196de2ec788b", "0.3.0" },
+					{ "3bab948571635f5b2bf8c9f8ac7ce867c4e57414", "0.3.1" },
+					{ "368d67c4f309ee9b3f437f9c36845f7a02837d41", "0.3.2" },
 				}
 			);
 		}

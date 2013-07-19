@@ -161,7 +161,7 @@ namespace MSR.Data.Entities.DSL.Selection
 			selectionDSL
 				.Commits()
 				.Are(
-					from c in Repository<Commit>()
+					from c in Queryable<Commit>()
 					where c.Revision != "3"
 					select c
 				)
@@ -197,7 +197,7 @@ namespace MSR.Data.Entities.DSL.Selection
 				.Should().Be(1);
 			r2code.Reselect(e => e.Added()).Count()
 				.Should().Be(1);
-			r2code.Are(mappingDSL.Repository<CodeBlock>()).Count()
+			r2code.Are(mappingDSL.Queryable<CodeBlock>()).Count()
 				.Should().Be(3);
 			r2code.Added().Again().Count()
 				.Should().Be(2);

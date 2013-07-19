@@ -1,49 +1,62 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2011  Semyon Kirnosenko
+ * Copyright (C) 2011-2012  Semyon Kirnosenko
  */
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using MSR.Data;
 using MSR.Data.Entities.DSL.Selection;
 
 namespace MSR.Models.Prediction
 {
-	public class PredictorContext : IRepositoryResolver
+	public class PredictorContext : IRepository
 	{
-		private IRepositoryResolver repositories;
-		private Dictionary<string,object> data = new Dictionary<string,object>();
+		private IRepository repository;
+		private Dictionary<string,object> parameters = new Dictionary<string,object>();
 		
-		public PredictorContext(IRepositoryResolver repositories)
+		public PredictorContext(IRepository repository)
 		{
-			this.repositories = repositories;
+			this.repository = repository;
 		}
-		public IRepository<T> Repository<T>() where T : class
+		public void Add<T>(T entity) where T : class
 		{
-			return repositories.Repository<T>();
+			repository.Add(entity);
+		}
+		public void AddRange<T>(IEnumerable<T> entities) where T : class
+		{
+			repository.AddRange(entities);
+		}
+		public void Delete<T>(T entity) where T : class
+		{
+			repository.Delete(entity);
+		}
+		public IQueryable<T> Queryable<T>() where T : class
+		{
+			return repository.Queryable<T>();
 		}
 		public PredictorContext SetValue(string key, object value)
 		{
-			if (data.ContainsKey(key))
+			if (parameters.ContainsKey(key))
 			{
-				data[key] = value;
+				parameters[key] = value;
 			}
 			else
 			{
-				data.Add(key, value);
+				parameters.Add(key, value);
 			}
 			return this;
 		}
 		public T GetValue<T>(string key)
 		{
-			return (T)data[key];
+			return (T)parameters[key];
 		}
 		public void Clear()
 		{
-			data.Clear();
+			parameters.Clear();
 		}
 
 		public PredictorContext SetCommits(Func<CommitSelectionExpression,CommitSelectionExpression> selector)

@@ -240,7 +240,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			model.OnNewFile += NewFile;
 			model.OnNewCodeSet += NewCodeSet;
 		}
-		public virtual void Init(IRepositoryResolver repositories)
+		public virtual void Init(IRepository repository)
 		{
 		}
 		public virtual void NewFile(ProjectFile file)
@@ -502,9 +502,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			EstimateCutOffValue = false;
 		}
-		public override void Init(IRepositoryResolver repositories)
+		public override void Init(IRepository repository)
 		{
-			base.Init(repositories);
+			base.Init(repository);
 			
 			if (! EstimateCutOffValue)
 			{
@@ -512,7 +512,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			}
 			else
 			{
-				var fixCommits = repositories.SelectionDSL()
+				var fixCommits = repository.SelectionDSL()
 					.Commits().TillRevision(model.PredictionRelease).AreBugFixes();
 				var defectCount = fixCommits.Count();
 				var deletedLoc = - fixCommits
@@ -523,8 +523,8 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				var touchedFiles = 
 					(
 						from c in fixCommits
-						join m in repositories.Repository<Modification>() on c.ID equals m.CommitID
-						join f in repositories.Repository<ProjectFile>() on m.FileID equals f.ID
+						join m in repository.Queryable<Modification>() on c.ID equals m.CommitID
+						join f in repository.Queryable<ProjectFile>() on m.FileID equals f.ID
 						select f
 					).Count();
 				
@@ -700,7 +700,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			this.model = model;
 			model.OnInit += Init;
 		}
-		public abstract void Init(IRepositoryResolver repositories);
+		public abstract void Init(IRepository repository);
 		public double Estimation
 		{
 			get; protected set;
@@ -711,9 +711,9 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public DefectLineProbabilityForTheWholeCode(CodeStabilityPostReleaseDefectFilesPrediction model)
 			: base(model)
 		{}
-		public override void Init(IRepositoryResolver repositories)
+		public override void Init(IRepository repository)
 		{
-			Estimation = repositories.SelectionDSL()
+			Estimation = repository.SelectionDSL()
 				.Commits().TillRevision(model.PredictionRelease)
 				.Files().Reselect(model.FileSelector)
 				.Modifications().InCommits().InFiles()
@@ -725,13 +725,13 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public DefectLineProbabilityForTheStableCode(CodeStabilityPostReleaseDefectFilesPrediction model)
 			: base(model)
 		{}
-		public override void Init(IRepositoryResolver repositories)
+		public override void Init(IRepository repository)
 		{
-			double stabilizationPeriod = repositories.SelectionDSL()
+			double stabilizationPeriod = repository.SelectionDSL()
 				.Commits().TillRevision(model.PredictionRelease)
 				.BugFixes().InCommits().CalculateStabilizationPeriod(0.9);
 
-			var stableCode = repositories.SelectionDSL()
+			var stableCode = repository.SelectionDSL()
 				.Commits().DateIsLesserOrEquelThan(model.ReleaseDate.AddDays(-stabilizationPeriod))
 				.Files().Reselect(model.FileSelector)
 				.Modifications().InCommits().InFiles()
@@ -750,14 +750,14 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		{
 			model.OnNewCodeSet += NewCodeSet;
 		}
-		public override void Init(IRepositoryResolver repositories)
+		public override void Init(IRepository repository)
 		{
-			authorByRevision = repositories.SelectionDSL()
+			authorByRevision = repository.SelectionDSL()
 				.Commits().TillRevision(model.PredictionRelease)
 				.ToDictionary(x => x.Revision, x => x.Author);
 			
 			defectLineProbabilityOfAuthor = new SmartDictionary<string,double>(a =>
-				repositories.SelectionDSL()
+				repository.SelectionDSL()
 					.Commits().AuthorIs(a).BeforeRevision(model.PredictionRelease)
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().CalculateDefectCodeDensity(model.PredictionRelease)
@@ -770,20 +770,20 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	}
 	class DefectLineProbabilityForTheCodeInFile : DefectLineProbabilityEstimationStrategy
 	{
-		protected IRepositoryResolver repositories;
+		protected IRepository repository;
 
 		public DefectLineProbabilityForTheCodeInFile(CodeStabilityPostReleaseDefectFilesPrediction model)
 			: base(model)
 		{
 			model.OnNewFile += NewFile;
 		}
-		public override void Init(IRepositoryResolver repositories)
+		public override void Init(IRepository repository)
 		{
-			this.repositories = repositories;
+			this.repository = repository;
 		}
 		protected void NewFile(ProjectFile file)
 		{
-			Estimation = repositories.SelectionDSL()
+			Estimation = repository.SelectionDSL()
 				.Commits().BeforeRevision(model.PredictionRelease)
 				.Files().IdIs(file.ID)
 				.Modifications().InCommits().InFiles()
@@ -802,7 +802,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			codeInFile = new DefectLineProbabilityForTheCodeInFile(model);
 			model.OnNewCodeSet += NewCodeSet;
 		}
-		public override void Init(IRepositoryResolver repositories)
+		public override void Init(IRepository repository)
 		{
 		}
 		protected void NewCodeSet(CodeSetData codeSet)
@@ -824,20 +824,20 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			model.OnNewFile += NewFile;
 			model.OnNewCodeSet += NewCodeSet;
 		}
-		public override void Init(IRepositoryResolver repositories)
+		public override void Init(IRepository repository)
 		{
-			authorByRevision = repositories.SelectionDSL()
+			authorByRevision = repository.SelectionDSL()
 				.Commits().TillRevision(model.PredictionRelease)
 				.ToDictionary(x => x.Revision, x => x.Author);
 			
-			int releaseRevisionOrderedNumber = repositories.Repository<Commit>()
+			int releaseRevisionOrderedNumber = repository.Queryable<Commit>()
 				.Single(x => x.Revision == model.PredictionRelease).OrderedNumber;
 			var codeByAuthorAndFile =
 				(
-					from cb in repositories.Repository<CodeBlock>()
-					join m in repositories.Repository<Modification>() on cb.ModificationID equals m.ID
-					join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
-					join f in repositories.Repository<ProjectFile>() on m.FileID equals f.ID
+					from cb in repository.Queryable<CodeBlock>()
+					join m in repository.Queryable<Modification>() on cb.ModificationID equals m.ID
+					join c in repository.Queryable<Commit>() on m.CommitID equals c.ID
+					join f in repository.Queryable<ProjectFile>() on m.FileID equals f.ID
 					where
 						cb.Size > 0
 						&&
@@ -852,7 +852,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				).ToArray();
 
 			var allFiles = model.AllFiles.Select(x => x.ID).ToArray();
-			var allAuthors = repositories.SelectionDSL()
+			var allAuthors = repository.SelectionDSL()
 				.Commits().TillRevision(model.PredictionRelease)
 				.Select(x => x.Author).Distinct().ToArray();
 			
@@ -875,7 +875,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				
 				if (locAddedInFile > 0)
 				{
-					double dcd = repositories.SelectionDSL()
+					double dcd = repository.SelectionDSL()
 						.Commits()
 							.TillRevision(model.PredictionRelease)
 						.Files()
@@ -905,7 +905,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				
 				if (locAddedByAuthor > 0)
 				{
-					double dcd = repositories.SelectionDSL()
+					double dcd = repository.SelectionDSL()
 						.Commits()
 							.AuthorIs(allAuthors[i])
 							.TillRevision(model.PredictionRelease)
@@ -923,7 +923,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				equation++;
 			}
 			
-			results[numberOfEquations-1] = repositories.SelectionDSL()
+			results[numberOfEquations-1] = repository.SelectionDSL()
 				.Commits()
 					.TillRevision(model.PredictionRelease)
 				.Modifications().InCommits()
@@ -990,28 +990,28 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 			this.model = model;
 			model.OnInit += Init;
 		}
-		public virtual void Init(IRepositoryResolver repositories)
+		public virtual void Init(IRepository repository)
 		{
-			Estimation = Estimate(repositories);
+			Estimation = Estimate(repository);
 		}
 		public Func<double,double> Estimation
 		{
 			get; protected set;
 		}
-		protected virtual Func<double,double> Estimate(IRepositoryResolver repositories)
+		protected virtual Func<double,double> Estimate(IRepository repository)
 		{
 			List<double> bugLifetimes = new List<double>(
 				BugLifetimes(
-					BugFixes(repositories)
+					BugFixes(repository)
 				)
 			);
 			bugLifetimes.Add(1000000);
 
 			return Distribution(bugLifetimes);
 		}
-		protected virtual BugFixSelectionExpression BugFixes(IRepositoryResolver repositories)
+		protected virtual BugFixSelectionExpression BugFixes(IRepository repository)
 		{
-			return repositories.SelectionDSL()
+			return repository.SelectionDSL()
 				.Commits().TillRevision(model.PredictionRelease)
 				.BugFixes().InCommits();
 		}
@@ -1059,13 +1059,13 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		public BugLifetimeDistributionExperimentalForStableCode(CodeStabilityPostReleaseDefectFilesPrediction model)
 			: base(model)
 		{}
-		protected override BugFixSelectionExpression BugFixes(IRepositoryResolver repositories)
+		protected override BugFixSelectionExpression BugFixes(IRepository repository)
 		{
-			double stabilizationPeriod = repositories.SelectionDSL()
+			double stabilizationPeriod = repository.SelectionDSL()
 				.Commits().TillRevision(model.PredictionRelease)
 				.BugFixes().InCommits().CalculateStabilizationPeriod(0.9);
 
-			var stableCommits = repositories.SelectionDSL()
+			var stableCommits = repository.SelectionDSL()
 				.Commits().DateIsLesserOrEquelThan(model.ReleaseDate.AddDays(-stabilizationPeriod));
 				
 			return stableCommits.BugFixes().InCommits();
@@ -1113,45 +1113,45 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 	
 	public abstract class CodeStabilityPostReleaseDefectFilesPrediction : PostReleaseDefectFilesPrediction
 	{
-		public event Action<IRepositoryResolver> OnInit;
+		public event Action<IRepository> OnInit;
 		public event Action<ProjectFile> OnNewFile;
 		public event Action<CodeSetData> OnNewCodeSet;
 		
-		public override void Init(IRepositoryResolver repositories, IEnumerable<string> releases)
+		public override void Init(IRepository repository, IEnumerable<string> releases)
 		{
-			base.Init(repositories, releases);
+			base.Init(repository, releases);
 
-			ReleaseDate = repositories.Repository<Commit>()
+			ReleaseDate = repository.Queryable<Commit>()
 				.Single(x => x.Revision == PredictionRelease)
 				.Date;
 
 			RemainCodeSizeFromRevision = new SmartDictionary<string,double>(r =>
-				repositories.SelectionDSL()
+				repository.SelectionDSL()
 					.Commits().RevisionIs(r)
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().Added().CalculateRemainingCodeSize(PredictionRelease).Sum(x => x.Value)
 			);
 			AddedCodeSizeFromRevision = new SmartDictionary<string,double>(r =>
-				repositories.SelectionDSL()
+				repository.SelectionDSL()
 					.Commits().RevisionIs(r)
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().Added().CalculateLOC()
 			);
 			DefectCodeSizeFromRevision = new SmartDictionary<string,double>(r =>
-				repositories.SelectionDSL()
+				repository.SelectionDSL()
 					.Commits().RevisionIs(r)
 					.Modifications().InCommits()
 					.CodeBlocks().InModifications().CalculateDefectCodeSize(PredictionRelease)
 			);
 			
 			AddedCodeSizeResolver = (revision,pathid) =>
-				repositories.SelectionDSL()
+				repository.SelectionDSL()
 					.Commits().RevisionIs(revision)
 					.Files().IdIs(pathid)
 					.Modifications().InCommits().InFiles()
 					.CodeBlocks().InModifications().Added().CalculateLOC();
 			DefectCodeSizeResolver = (revision,pathid) =>
-				repositories.SelectionDSL()
+				repository.SelectionDSL()
 					.Commits().RevisionIs(revision)
 					.Files().IdIs(pathid)
 					.Modifications().InCommits().InFiles()
@@ -1162,8 +1162,8 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 				AddedCodeSizeFromRevision[revision];
 			DefectCodeSizeFromRevisionResolver = (revision) =>
 				DefectCodeSizeFromRevision[revision];
-			
-			OnInit(repositories);
+
+			OnInit(repository);
 		}
 		public double DefectLineProbability
 		{
@@ -1189,7 +1189,7 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 		}
 		protected override double GetFileEstimation(ProjectFile file)
 		{
-			var codeBlocks = repositories.SelectionDSL()
+			var codeBlocks = repository.SelectionDSL()
 				.Commits().TillRevision(PredictionRelease)
 				.Files().IdIs(file.ID)
 				.Modifications().InCommits().InFiles()
@@ -1197,10 +1197,10 @@ namespace MSR.Models.Prediction.PostReleaseDefectFiles
 
 			var codeByRevision = (
 				from rcb in codeBlocks
-				join cb in repositories.Repository<CodeBlock>() on rcb.Key equals cb.ID
-				join m in repositories.Repository<Modification>() on cb.ModificationID equals m.ID
-				join c in repositories.Repository<Commit>() on m.CommitID equals c.ID
-				join ic in repositories.Repository<Commit>() on cb.AddedInitiallyInCommitID equals ic.ID
+				join cb in repository.Queryable<CodeBlock>() on rcb.Key equals cb.ID
+				join m in repository.Queryable<Modification>() on cb.ModificationID equals m.ID
+				join c in repository.Queryable<Commit>() on m.CommitID equals c.ID
+				join ic in repository.Queryable<Commit>() on cb.AddedInitiallyInCommitID equals ic.ID
 				select new CodeSetData()
 				{
 					Revision = c.Revision,

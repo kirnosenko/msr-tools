@@ -24,11 +24,11 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
             PageTemplate = "locgraph.html";
         }
 
-        public override IDictionary<string, object> BuildData(IRepositoryResolver repositories)
+        public override IDictionary<string, object> BuildData(IRepository repositories)
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
 
-            var authors = repositories.Repository<Commit>()
+            var authors = repositories.Queryable<Commit>()
                 .Select(x => x.Author)
                 .Distinct().ToList();
 
@@ -47,8 +47,8 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 
             result.Add("authors", statByAuthor.OrderBy(x => x.name).ToArray());
 
-            DateTime statFrom = repositories.Repository<Commit>().Min(x => x.Date);
-            DateTime statTo = repositories.Repository<Commit>().Max(x => x.Date);
+            DateTime statFrom = repositories.Queryable<Commit>().Min(x => x.Date);
+            DateTime statTo = repositories.Queryable<Commit>().Max(x => x.Date);
 
             List<object> monthObjs = new List<object>();
             List<object> locObjs = new List<object>();

@@ -13,8 +13,8 @@ namespace MSR.Tools.Visualizer
 {
 	public interface IVisualization
 	{
-		void Init(IRepositoryResolver repositories);
-		void Calc(IRepositoryResolver repositories);
+		void Init(IRepository repository);
+		void Calc(IRepository repository);
 		void Draw(IGraphView graph);
 		
 		bool Initialized { get; }

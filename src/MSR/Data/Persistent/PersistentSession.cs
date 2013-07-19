@@ -1,7 +1,7 @@
 /*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2012  Semyon Kirnosenko
  */
 
 using System;
@@ -29,13 +29,21 @@ namespace MSR.Data.Persistent
 				context = null;
 			}
 		}
-		public IRepository<T> Repository<T>() where T : class
+		public void Add<T>(T entity) where T : class
 		{
-			if (! repositories.ContainsKey(typeof(T)))
-			{
-				repositories[typeof(T)] = new PersistentRepository<T>(context);
-			}
-			return (IRepository<T>)repositories[typeof(T)];
+			context.Add(entity);
+		}
+		public void AddRange<T>(IEnumerable<T> entities) where T : class
+		{
+			context.AddRange(entities);
+		}
+		public void Delete<T>(T entity) where T : class
+		{
+			context.Delete(entity);
+		}
+		public IQueryable<T> Queryable<T>() where T : class
+		{
+			return context.Queryable<T>();
 		}
 		public void SubmitChanges()
 		{

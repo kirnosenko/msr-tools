@@ -67,7 +67,7 @@ M	tests/regressiontests/staticfiles_tests/tests.py".Replace("'", "\"");
 			log.Author
 				.Should().Be("Linus Torvalds");
 			log.Date
-				.Should().Be(DateTime.Parse("11.04.2005 22:47:57"));
+				.Should().Be(new DateTime(2005, 4, 11, 22, 47, 57));
 			log.Message
 				.Should().Be("Rename '.dircache' directory to '.git'");
 		}

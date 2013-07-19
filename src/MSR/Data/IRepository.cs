@@ -1,7 +1,7 @@
-/*
+﻿/*
  * MSR Tools - tools for mining software repositories
  * 
- * Copyright (C) 2010  Semyon Kirnosenko
+ * Copyright (C) 2010-2012  Semyon Kirnosenko
  */
 
 using System;
@@ -10,10 +10,11 @@ using System.Linq;
 
 namespace MSR.Data
 {
-	public interface IRepository<T> : IQueryable<T>, IEnumerable<T>
+	public interface IRepository
 	{
-		void Add(T entity);
-		void AddRange(IEnumerable<T> entities);
-		void Delete(T entity);
+		void Add<T>(T entity) where T : class;
+		void AddRange<T>(IEnumerable<T> entities) where T : class;
+		void Delete<T>(T entity) where T : class;
+		IQueryable<T> Queryable<T>() where T : class;
 	}
 }

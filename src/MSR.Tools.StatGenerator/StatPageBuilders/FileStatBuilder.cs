@@ -26,11 +26,11 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			PageTemplate = "files.html";
 			PathDepthToKeep = new int[] { 1, 2, 3 };
 		}
-		public override IDictionary<string,object> BuildData(IRepositoryResolver repositories)
+		public override IDictionary<string,object> BuildData(IRepository repository)
 		{
 			Dictionary<string,object> result = new Dictionary<string,object>();
 
-			var paths = repositories.SelectionDSL()
+			var paths = repository.SelectionDSL()
 				.Files().InDirectory(TargetDir).Exist()
 				.Select(f => f.Path);
 			var files_count = paths.Count();
@@ -48,7 +48,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			List<object> extObjects = new List<object>();
 			foreach (var ext in extensions)
 			{
-				var code = repositories.SelectionDSL()
+				var code = repository.SelectionDSL()
 					.Files().InDirectory(TargetDir).Exist().PathEndsWith(ext)
 					.Modifications().InFiles()
 					.CodeBlocks().InModifications().Fixed();
@@ -81,7 +81,7 @@ namespace MSR.Tools.StatGenerator.StatPageBuilders
 			List<object> dirObjects = new List<object>();
 			foreach (var dir in dirs)
 			{
-				var code = repositories.SelectionDSL()
+				var code = repository.SelectionDSL()
 					.Files().InDirectory(dir).Exist()
 					.Modifications().InFiles()
 					.CodeBlocks().InModifications().Fixed();

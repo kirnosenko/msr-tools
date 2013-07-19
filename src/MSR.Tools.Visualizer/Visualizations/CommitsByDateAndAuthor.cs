@@ -25,16 +25,16 @@ namespace MSR.Tools.Visualizer.Visualizations
 			Type = VisualizationType.LINEWITHPOINTS;
 			Title = "Commits by date and author";
 		}
-		public override void Init(IRepositoryResolver repositories)
+		public override void Init(IRepository repository)
 		{
-			Authors = repositories.Repository<Commit>()
+			Authors = repository.Queryable<Commit>()
 				.Select(x => x.Author).Distinct().OrderBy(x => x)
 				.ToArray();
-			base.Init(repositories);
+			base.Init(repository);
 		}
-		public override void Calc(IRepositoryResolver repositories)
+		public override void Calc(IRepository repository)
 		{
-			base.Calc(repositories);
+			base.Calc(repository);
 			
 			x = new double[dates.Count()-1];
 			yByAuthor = new Dictionary<string,double[]>();
@@ -55,7 +55,7 @@ namespace MSR.Tools.Visualizer.Visualizations
 					{
 						x[counter] = (dates[j] - dates[0]).TotalDays;
 					}
-					y[counter] = repositories.SelectionDSL().Commits()
+					y[counter] = repository.SelectionDSL().Commits()
 						.DateIsGreaterOrEquelThan(prev)
 						.DateIsLesserThan(dates[j])
 						.AuthorIs(Authors[i])

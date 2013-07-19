@@ -10,9 +10,9 @@ namespace MSR.Data.Entities.DSL.Selection
 {
 	public static class RepositoryResolverHelper
 	{
-		public static RepositorySelectionExpression SelectionDSL(this IRepositoryResolver repositories)
+		public static RepositorySelectionExpression SelectionDSL(this IRepository repository)
 		{
-			return new RepositorySelectionExpression(repositories);
+			return new RepositorySelectionExpression(repository);
 		}
 	}
 }

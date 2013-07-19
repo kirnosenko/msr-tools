@@ -13,7 +13,7 @@ using System.Reflection;
 
 namespace MSR.Data
 {
-	public class InMemoryRepository<T> : IRepository<T> where T : class
+	public class InMemoryRepository<T> : IQueryable<T>, IEnumerable<T> where T : class
 	{
 		private int nextID;
 		private List<T> entities = new List<T>();

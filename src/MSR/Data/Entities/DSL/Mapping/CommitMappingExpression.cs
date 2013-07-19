@@ -19,7 +19,7 @@ namespace MSR.Data.Entities.DSL.Mapping
 		{
 			return new CommitMappingExpression(
 				exp,
-				exp.Repository<Commit>().Single(x =>
+				exp.Queryable<Commit>().Single(x =>
 					x.Revision == revision
 				)
 			);
@@ -35,7 +35,7 @@ namespace MSR.Data.Entities.DSL.Mapping
 			: base(parentExp)
 		{
 			entity = new Commit();
-			entity.OrderedNumber = Repository<Commit>().Count() + 1;
+			entity.OrderedNumber = Queryable<Commit>().Count() + 1;
 			entity.Revision = revision;
 			AddEntity();
 		}

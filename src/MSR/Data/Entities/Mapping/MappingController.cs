@@ -148,21 +148,21 @@ namespace MSR.Data.Entities.Mapping
 		{
 			using (var s = data.OpenSession())
 			{
-				return s.Repository<Commit>().SingleOrDefault(c => c.Revision == revision) != null;
+				return s.Queryable<Commit>().SingleOrDefault(c => c.Revision == revision) != null;
 			}
 		}
 		private int MappingStartRevision(IDataStore data)
 		{
 			using (var s = data.OpenSession())
 			{
-				return s.Repository<Commit>().Count() + 1;
+				return s.Queryable<Commit>().Count() + 1;
 			}
 		}
 		private int NumberOfRevision(IDataStore data, string revision)
 		{
 			using (var s = data.OpenSession())
 			{
-				return s.Repository<Commit>()
+				return s.Queryable<Commit>()
 					.Single(x => x.Revision == revision)
 					.OrderedNumber;
 			}
@@ -171,8 +171,8 @@ namespace MSR.Data.Entities.Mapping
 		{
 			using (var s = data.OpenSession())
 			{
-				return s.Repository<Commit>()
-					.Single(x => x.OrderedNumber == s.Repository<Commit>().Max(y => y.OrderedNumber))
+				return s.Queryable<Commit>()
+					.Single(x => x.OrderedNumber == s.Queryable<Commit>().Max(y => y.OrderedNumber))
 					.Revision;
 			}
 		}

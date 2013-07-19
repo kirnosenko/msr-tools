@@ -19,7 +19,7 @@ namespace MSR.Data.Entities.DSL.Selection
 		{
 			return parentExp.Reselect(s =>
 				from c in s
-				join r in parentExp.Repository<Release>() on c.ID equals r.CommitID
+				join r in parentExp.Queryable<Release>() on c.ID equals r.CommitID
 				select c
 			);
 		}

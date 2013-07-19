@@ -20,12 +20,12 @@ namespace MSR.Data.Entities.DSL.Selection
 		public EntitySelectionExpression(IRepositorySelectionExpression parentExp)
 		{
 			this.parentExp = parentExp;
-			selection = Repository<E>();
+			selection = Queryable<E>();
 			isFixed = false;
 		}
-		public IRepository<T> Repository<T>() where T : class
+		public IQueryable<T> Queryable<T>() where T : class
 		{
-			return parentExp.Repository<T>();
+			return parentExp.Queryable<T>();
 		}
 		public IQueryable<T> Selection<T>() where T : class
 		{

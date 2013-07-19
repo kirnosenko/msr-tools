@@ -483,7 +483,7 @@ private string list_5_2 =
 			log.Author
 				.Should().Be("hp");
 			log.Date
-				.Should().Be(DateTime.Parse("16.01.2002 06:06:17"));
+				.Should().Be(new DateTime(2002, 1, 16, 6, 6, 17));
 			log.Message
 				.Should()
 					.Contain("configure.in: fixes")

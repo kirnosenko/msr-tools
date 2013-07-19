@@ -40,7 +40,7 @@ namespace MSR.Data.Entities.DSL.Selection
 			return parentExp.Reselect(s =>
 				(
 					from c in s
-					join m in parentExp.Repository<Modification>() on c.ID equals m.CommitID
+					join m in parentExp.Queryable<Modification>() on c.ID equals m.CommitID
 					join f in parentExp.Selection<ProjectFile>() on m.FileID equals f.ID
 					select c
 				).Distinct()
@@ -51,7 +51,7 @@ namespace MSR.Data.Entities.DSL.Selection
 			return parentExp.Reselect(s =>
 				(
 					from f in s
-					join m in parentExp.Repository<Modification>() on f.ID equals m.FileID
+					join m in parentExp.Queryable<Modification>() on f.ID equals m.FileID
 					join c in parentExp.Selection<Commit>() on m.CommitID equals c.ID
 					select f
 				).Distinct()
